@@ -1,0 +1,313 @@
+{
+  "$schema": "nexus-mapper/concept-model/v1",
+  "generated_at": "2026-08-01T00:00:00Z",
+  "repo_path": "D:/fengqiao/Documents/项目经历/DBVis",
+  "generator": "nexus-mapper v2",
+  "nodes": [
+    {
+      "id": "algo-engine",
+      "type": "System",
+      "label": "算法步进引擎层",
+      "responsibility": "算法步进状态机层。每个算法在 init() 时预生成全部关键帧步骤（AlgorithmStep），实现统一 AlgorithmEngine 接口；当前仅含快速排序引擎（Lomuto 分区，含练习题数据）与类型定义",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/engines/algorithm/",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["typescript"],
+      "related_reqs": ["v0.1-M1"],
+      "complexity": "medium",
+      "hotspot": false
+    },
+    {
+      "id": "player-visualization",
+      "type": "System",
+      "label": "播放器与可视化层",
+      "responsibility": "GSAP timeline 驱动的通用算法播放器（AlgoPlayer）+ 伪代码面板 + 控制条（键盘优先）+ Canvas 数组渲染器。控制面板是唯一状态修改入口，其余组件只读引擎状态",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/components/player/",
+      "evidence_path": null,
+      "evidence_gap": "AlgoPlayer 中 renderType 分支仅实现 array；tree/linkedlist/graph/sql-table 渲染器未实现（规划中）",
+      "tech_stack": ["svelte", "gsap", "canvas2d"],
+      "related_reqs": ["v0.1-M1"],
+      "complexity": "high",
+      "hotspot": false
+    },
+    {
+      "id": "ui-layout",
+      "type": "System",
+      "label": "布局与页面层",
+      "responsibility": "应用骨架：顶栏/侧栏/面包屑布局、首页内容地图、知识点路由页面（快速排序页完整实现，其余为 WORK IN PROGRESS 占位页）、学习进度页",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/routes/",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["svelte", "sveltekit", "tailwindcss"],
+      "related_reqs": ["v0.1-M0"],
+      "complexity": "medium",
+      "hotspot": false
+    },
+    {
+      "id": "state-layer",
+      "type": "System",
+      "label": "本地持久化状态层",
+      "responsibility": "localStorage 持久化 stores：学习进度/掌握度/错题/连续学习天数（progress.ts）、设置（settings.ts，预留主题与 SQL 引擎切换）、persistentStore 通用封装",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/stores/",
+      "evidence_path": null,
+      "evidence_gap": "addMistake/updateTopicMastery 接口已就绪但无 UI 调用方（grep 确认仅定义处出现）；progress 页为静态占位，未接入 store",
+      "tech_stack": ["svelte-store", "localstorage"],
+      "related_reqs": ["v0.1-基础设施"],
+      "complexity": "low",
+      "hotspot": false
+    },
+    {
+      "id": "sql-engine",
+      "type": "System",
+      "label": "SQL 引擎层",
+      "responsibility": "SQL 执行引擎适配层：统一 SQLEngine 接口（execute/explain/dialect），sql.js 与 MySQL 双实现，MySQL→SQLite 单向方言转换；UI 层不感知底层引擎",
+      "implementation_status": "planned",
+      "code_path": null,
+      "evidence_path": "StructVis-长期开发文档.md",
+      "evidence_gap": "engines/sql/ 目录存在但为空，无任何代码；文档 §3.3/§3.4 定义了接口与方言适配表",
+      "tech_stack": ["sql.js", "sqlite"],
+      "related_reqs": ["v0.1-M2"],
+      "complexity": "high",
+      "hotspot": false
+    },
+    {
+      "id": "content-data",
+      "type": "System",
+      "label": "教材内容数据层",
+      "responsibility": "静态内容数据：教材章节导航、算法题库、SQL 示例库、示例数据库（company/school/shop/library，文档 §5.3）",
+      "implementation_status": "planned",
+      "code_path": null,
+      "evidence_path": "StructVis-长期开发文档.md",
+      "evidence_gap": "src/lib/data/ 目录存在但为空；章节与题库内容未落地",
+      "tech_stack": [],
+      "related_reqs": ["v0.1-M0"],
+      "complexity": "medium",
+      "hotspot": false
+    },
+    {
+      "id": "ds-learning-domain",
+      "type": "Domain",
+      "label": "数据结构自学领域",
+      "responsibility": "对齐李春葆《数据结构教程》第5版的章节体系（线性表/栈队列/树/图/查找/排序），v0.1 聚焦快速排序、单链表、二叉树遍历",
+      "implementation_status": "inferred",
+      "code_path": null,
+      "evidence_path": "StructVis-长期开发文档.md",
+      "evidence_gap": "领域内容仅存在于规划文档；Sidebar 导航已按教材章节分组，但 data/ 无实际内容",
+      "tech_stack": [],
+      "related_reqs": ["v0.1"],
+      "complexity": "low",
+      "hotspot": false
+    },
+    {
+      "id": "db-learning-domain",
+      "type": "Domain",
+      "label": "数据库自学领域",
+      "responsibility": "对齐杨宏霞《数据库技术及应用（MySQL）》的章节体系，v0.1 聚焦基础查询分步执行与建表练习",
+      "implementation_status": "inferred",
+      "code_path": null,
+      "evidence_path": "StructVis-长期开发文档.md",
+      "evidence_gap": "领域内容仅存在于规划文档；SQL 引擎与示例数据均未实现",
+      "tech_stack": [],
+      "related_reqs": ["v0.1"],
+      "complexity": "low",
+      "hotspot": false
+    },
+    {
+      "id": "module-quick-sort-engine",
+      "type": "Module",
+      "label": "QuickSortEngine",
+      "responsibility": "Lomuto 分区快速排序步进引擎：生成 init/compare/swap/pivot/partition/recurse 全类型关键帧，内置 2 道练习题与伪代码",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["typescript"],
+      "related_reqs": [],
+      "complexity": "medium",
+      "hotspot": false
+    },
+    {
+      "id": "module-algo-types",
+      "type": "Module",
+      "label": "AlgorithmEngine 类型定义",
+      "responsibility": "算法引擎统一契约：AlgorithmStep/Highlight/StepType/RenderType/PracticeQuestion/AlgorithmEngine 接口，播放器不感知具体算法",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/engines/algorithm/types.ts",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["typescript"],
+      "related_reqs": [],
+      "complexity": "low",
+      "hotspot": false
+    },
+    {
+      "id": "module-algo-player",
+      "type": "Module",
+      "label": "AlgoPlayer",
+      "responsibility": "通用播放器容器：GSAP timeline 构建（步骤时长表 + 浮点 playbackPos）、播放/暂停/步进/跳转/倍速控制、订阅式重建时间线",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "evidence_path": null,
+      "evidence_gap": "练习模式未接入（practiceQuestions 无消费者）",
+      "tech_stack": ["svelte", "gsap"],
+      "related_reqs": [],
+      "complexity": "high",
+      "hotspot": false
+    },
+    {
+      "id": "module-array-renderer",
+      "type": "Module",
+      "label": "ArrayRenderer",
+      "responsibility": "Canvas 柱状图渲染器：按 playbackPos 补间插值绘制柱子（位置/颜色/标签），支持窗口尺寸自适应与浏览器环境检测",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/visualization/array/ArrayRenderer.svelte",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["svelte", "canvas2d"],
+      "related_reqs": [],
+      "complexity": "medium",
+      "hotspot": false
+    },
+    {
+      "id": "module-array-render-utils",
+      "type": "Module",
+      "label": "array-render-utils",
+      "responsibility": "渲染工具函数：precomputeBarIdentities（跨步骤追踪柱子身份以驱动交换动画）、颜色插值（HSV 空间）、柱子/标签绘制辅助",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["typescript"],
+      "related_reqs": [],
+      "complexity": "medium",
+      "hotspot": false
+    },
+    {
+      "id": "module-progress-store",
+      "type": "Module",
+      "label": "progress store",
+      "responsibility": "学习进度持久化：掌握度更新（>=80 视为完成）、错题记录、连续学习天数计算，存储于 localStorage key=structvis:progress",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/stores/progress.ts",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["svelte-store"],
+      "related_reqs": [],
+      "complexity": "low",
+      "hotspot": false
+    },
+    {
+      "id": "module-persistent-store",
+      "type": "Module",
+      "label": "persistentStore",
+      "responsibility": "带 localStorage 持久化的 writable store 封装：SSR 返回默认值，浏览器端读写，JSON 解析失败静默降级",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/stores/persistent.ts",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["svelte-store"],
+      "related_reqs": [],
+      "complexity": "low",
+      "hotspot": false
+    },
+    {
+      "id": "module-settings-store",
+      "type": "Module",
+      "label": "settings store",
+      "responsibility": "用户设置持久化：主题（当前仅 light，预留扩展）、SQL 引擎（当前仅 sqljs，预留 mysql）、动画速度、提示开关",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/stores/settings.ts",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["svelte-store"],
+      "related_reqs": [],
+      "complexity": "low",
+      "hotspot": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "player-visualization",
+      "target": "algo-engine",
+      "type": "depends_on",
+      "description": "AlgoPlayer/ArrayRenderer 消费 AlgorithmEngine 接口与 AlgorithmStep 类型（AST: QuickSortEngine→types imports；AlgoPlayer/ArrayRenderer 手动确认）"
+    },
+    {
+      "source": "ui-layout",
+      "target": "player-visualization",
+      "type": "depends_on",
+      "description": "routes/ds/quick-sort/+page.svelte 组合 AlgoPlayer 与 QuickSortEngine（manual inspection，svelte module-only 覆盖）"
+    },
+    {
+      "source": "ui-layout",
+      "target": "state-layer",
+      "type": "depends_on",
+      "description": "+layout.svelte onMount 调用 updateStreak() 更新连续学习天数（manual inspection）"
+    },
+    {
+      "source": "state-layer",
+      "target": "content-data",
+      "type": "depends_on",
+      "description": "规划中：进度系统主题 id 对应 content-data 的知识点 id（inferred from design doc）"
+    },
+    {
+      "source": "module-quick-sort-engine",
+      "target": "module-algo-types",
+      "type": "imports",
+      "description": "AST-backed"
+    },
+    {
+      "source": "module-array-render-utils",
+      "target": "module-algo-types",
+      "type": "imports",
+      "description": "AST-backed"
+    },
+    {
+      "source": "module-progress-store",
+      "target": "module-persistent-store",
+      "type": "imports",
+      "description": "AST-backed"
+    },
+    {
+      "source": "module-settings-store",
+      "target": "module-persistent-store",
+      "type": "imports",
+      "description": "AST-backed"
+    },
+    {
+      "source": "module-array-renderer",
+      "target": "module-array-render-utils",
+      "type": "imports",
+      "description": "manual inspection（svelte module-only 覆盖，AST 未提取）"
+    },
+    {
+      "source": "module-algo-player",
+      "target": "module-array-renderer",
+      "type": "imports",
+      "description": "manual inspection"
+    },
+    {
+      "source": "module-algo-player",
+      "target": "module-algo-types",
+      "type": "imports",
+      "description": "manual inspection"
+    },
+    {
+      "source": "module-quick-sort-engine",
+      "target": "module-algo-player",
+      "type": "calls",
+      "description": "quick-sort 页面将引擎实例传给播放器（manual inspection）"
+    }
+  ],
+  "metadata": {
+    "total_files": 34,
+    "total_lines": 3273,
+    "languages": ["typescript", "svelte", "javascript"],
+    "git_commits_analyzed": 0,
+    "analysis_days": 90
+  }
+}

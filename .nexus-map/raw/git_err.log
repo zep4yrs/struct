@@ -1,0 +1,2 @@
+[ERROR] Git command failed: git command failed: git -C D:\fengqiao\Documents\项目经历\DBVis log --since=90 days ago --pretty=format:COMMIT:%H --name-only
+fatal: your current branch 'master' does not have any commits yet

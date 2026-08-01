@@ -1,0 +1,743 @@
+{
+  "languages": [
+    "javascript",
+    "svelte",
+    "typescript"
+  ],
+  "stats": {
+    "total_files": 34,
+    "total_lines": 3273,
+    "parse_errors": 0,
+    "truncated": false,
+    "truncated_nodes": 0,
+    "supported_file_counts": {
+      "javascript": 2,
+      "typescript": 12,
+      "svelte": 20
+    },
+    "languages_with_structural_queries": [
+      "c",
+      "cpp",
+      "csharp",
+      "elixir",
+      "gdscript",
+      "go",
+      "java",
+      "javascript",
+      "kotlin",
+      "lua",
+      "php",
+      "python",
+      "ruby",
+      "rust",
+      "scala",
+      "swift",
+      "tsx",
+      "typescript"
+    ],
+    "languages_with_custom_queries": [],
+    "module_only_file_counts": {
+      "svelte": 20
+    },
+    "known_unsupported_file_counts": {},
+    "configured_but_unavailable_file_counts": {},
+    "custom_language_config_paths": []
+  },
+  "nodes": [
+    {
+      "id": "structvis.eslint.config",
+      "type": "Module",
+      "label": "config",
+      "path": "structvis/eslint.config.js",
+      "lines": 42,
+      "lang": "javascript"
+    },
+    {
+      "id": "structvis.prettier.config",
+      "type": "Module",
+      "label": "config",
+      "path": "structvis/prettier.config.js",
+      "lines": 13,
+      "lang": "javascript"
+    },
+    {
+      "id": "structvis.src.app.d",
+      "type": "Module",
+      "label": "d",
+      "path": "structvis/src/app.d.ts",
+      "lines": 14,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.components.layout.AppLayout",
+      "type": "Module",
+      "label": "AppLayout",
+      "path": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "lines": 49,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.layout.Sidebar",
+      "type": "Module",
+      "label": "Sidebar",
+      "path": "structvis/src/lib/components/layout/Sidebar.svelte",
+      "lines": 163,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.layout.TopBar",
+      "type": "Module",
+      "label": "TopBar",
+      "path": "structvis/src/lib/components/layout/TopBar.svelte",
+      "lines": 87,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.player.AlgoPlayer",
+      "type": "Module",
+      "label": "AlgoPlayer",
+      "path": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "lines": 342,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.player.ControlBar",
+      "type": "Module",
+      "label": "ControlBar",
+      "path": "structvis/src/lib/components/player/ControlBar.svelte",
+      "lines": 364,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.player.PseudocodePanel",
+      "type": "Module",
+      "label": "PseudocodePanel",
+      "path": "structvis/src/lib/components/player/PseudocodePanel.svelte",
+      "lines": 85,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.ui.Logo",
+      "type": "Module",
+      "label": "Logo",
+      "path": "structvis/src/lib/components/ui/Logo.svelte",
+      "lines": 48,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "type": "Module",
+      "label": "QuickSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "lines": 372,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "type": "Class",
+      "label": "QuickSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "start_line": 64,
+      "end_line": 371
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 77,
+      "end_line": 114
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 116,
+      "end_line": 119
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 121,
+      "end_line": 123
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 125,
+      "end_line": 127
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 129,
+      "end_line": 131
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._quickSort",
+      "type": "Function",
+      "label": "_quickSort",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 135,
+      "end_line": 189
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._partition",
+      "type": "Function",
+      "label": "_partition",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 193,
+      "end_line": 353
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._addStep",
+      "type": "Function",
+      "label": "_addStep",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 357,
+      "end_line": 362
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._range",
+      "type": "Function",
+      "label": "_range",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 364,
+      "end_line": 370
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.types",
+      "type": "Module",
+      "label": "types",
+      "path": "structvis/src/lib/engines/algorithm/types.ts",
+      "lines": 109,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.index",
+      "type": "Module",
+      "label": "index",
+      "path": "structvis/src/lib/index.ts",
+      "lines": 2,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.stores.persistent",
+      "type": "Module",
+      "label": "persistent",
+      "path": "structvis/src/lib/stores/persistent.ts",
+      "lines": 36,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.stores.persistent.persistentStore",
+      "type": "Function",
+      "label": "persistentStore",
+      "path": "structvis/src/lib/stores/persistent.ts",
+      "parent": "structvis.src.lib.stores.persistent",
+      "start_line": 8,
+      "end_line": 35
+    },
+    {
+      "id": "structvis.src.lib.stores.progress",
+      "type": "Module",
+      "label": "progress",
+      "path": "structvis/src/lib/stores/progress.ts",
+      "lines": 109,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.stores.progress.updateTopicMastery",
+      "type": "Function",
+      "label": "updateTopicMastery",
+      "path": "structvis/src/lib/stores/progress.ts",
+      "parent": "structvis.src.lib.stores.progress",
+      "start_line": 45,
+      "end_line": 64
+    },
+    {
+      "id": "structvis.src.lib.stores.progress.addMistake",
+      "type": "Function",
+      "label": "addMistake",
+      "path": "structvis/src/lib/stores/progress.ts",
+      "parent": "structvis.src.lib.stores.progress",
+      "start_line": 69,
+      "end_line": 80
+    },
+    {
+      "id": "structvis.src.lib.stores.progress.updateStreak",
+      "type": "Function",
+      "label": "updateStreak",
+      "path": "structvis/src/lib/stores/progress.ts",
+      "parent": "structvis.src.lib.stores.progress",
+      "start_line": 85,
+      "end_line": 108
+    },
+    {
+      "id": "structvis.src.lib.stores.settings",
+      "type": "Module",
+      "label": "settings",
+      "path": "structvis/src/lib/stores/settings.ts",
+      "lines": 18,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils",
+      "type": "Module",
+      "label": "array-render-utils",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "lines": 209,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.precomputeBarIdentities",
+      "type": "Function",
+      "label": "precomputeBarIdentities",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 46,
+      "end_line": 86
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.getBarColors",
+      "type": "Function",
+      "label": "getBarColors",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 91,
+      "end_line": 100
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.getBarColorAtPosition",
+      "type": "Function",
+      "label": "getBarColorAtPosition",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 106,
+      "end_line": 129
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.interpolateColor",
+      "type": "Function",
+      "label": "interpolateColor",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 137,
+      "end_line": 154
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.resolveColor",
+      "type": "Function",
+      "label": "resolveColor",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 156,
+      "end_line": 170
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.parseColor",
+      "type": "Function",
+      "label": "parseColor",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 172,
+      "end_line": 194
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.lerp",
+      "type": "Function",
+      "label": "lerp",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 199,
+      "end_line": 201
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.easeOutCubic",
+      "type": "Function",
+      "label": "easeOutCubic",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 206,
+      "end_line": 208
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.ArrayRenderer",
+      "type": "Module",
+      "label": "ArrayRenderer",
+      "path": "structvis/src/lib/visualization/array/ArrayRenderer.svelte",
+      "lines": 432,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.vitest-examples.greet.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/vitest-examples/greet.spec.ts",
+      "lines": 9,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.vitest-examples.greet",
+      "type": "Module",
+      "label": "greet",
+      "path": "structvis/src/lib/vitest-examples/greet.ts",
+      "lines": 4,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.vitest-examples.greet.greet",
+      "type": "Function",
+      "label": "greet",
+      "path": "structvis/src/lib/vitest-examples/greet.ts",
+      "parent": "structvis.src.lib.vitest-examples.greet",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "id": "structvis.src.routes.+layout",
+      "type": "Module",
+      "label": "+layout",
+      "path": "structvis/src/routes/+layout.svelte",
+      "lines": 21,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/+page.svelte",
+      "lines": 176,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/+page.svelte",
+      "lines": 22,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.index.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/index/+page.svelte",
+      "lines": 31,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.sql.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/sql/+page.svelte",
+      "lines": 31,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.tables.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/tables/+page.svelte",
+      "lines": 31,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/+page.svelte",
+      "lines": 23,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.binary-tree.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/binary-tree/+page.svelte",
+      "lines": 31,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.linear-list.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/linear-list/+page.svelte",
+      "lines": 31,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.quick-sort.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/quick-sort/+page.svelte",
+      "lines": 275,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.quick-sort.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/quick-sort/+page.ts",
+      "lines": 1,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.routes.ds.stack-queue.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/stack-queue/+page.svelte",
+      "lines": 31,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.progress.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/progress/+page.svelte",
+      "lines": 30,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.vite.config",
+      "type": "Module",
+      "label": "config",
+      "path": "structvis/vite.config.ts",
+      "lines": 32,
+      "lang": "typescript"
+    }
+  ],
+  "edges": [
+    {
+      "source": "structvis.eslint.config",
+      "target": "eslint-config-prettier",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "node:path",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "@eslint/js",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "eslint-plugin-svelte",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "eslint/config",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "globals",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "typescript-eslint",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._quickSort",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._partition",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._addStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._range",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.stores.persistent",
+      "target": "structvis.src.lib.stores.persistent.persistentStore",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.persistent",
+      "target": "$app/environment",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.stores.persistent",
+      "target": "svelte/store",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.stores.progress",
+      "target": "structvis.src.lib.stores.progress.updateTopicMastery",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.progress",
+      "target": "structvis.src.lib.stores.progress.addMistake",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.progress",
+      "target": "structvis.src.lib.stores.progress.updateStreak",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.progress",
+      "target": "./persistent",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.stores.settings",
+      "target": "./persistent",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.precomputeBarIdentities",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.getBarColors",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.getBarColorAtPosition",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.interpolateColor",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.resolveColor",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.parseColor",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.lerp",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.easeOutCubic",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "$lib/engines/algorithm/types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.vitest-examples.greet.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.vitest-examples.greet.spec",
+      "target": "./greet",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.vitest-examples.greet",
+      "target": "structvis.src.lib.vitest-examples.greet.greet",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.vite.config",
+      "target": "@tailwindcss/vite",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.vite.config",
+      "target": "vitest/config",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.vite.config",
+      "target": "@sveltejs/adapter-static",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.vite.config",
+      "target": "@sveltejs/kit/vite",
+      "type": "imports"
+    }
+  ],
+  "warnings": [
+    "custom exclude dirs applied: .svelte-kit, gsap_skilled_extracted, .trae-html-share-packages, node_modules",
+    "some languages were parsed with module-only coverage because no structural query template is bundled: svelte (20 files)"
+  ]
+}

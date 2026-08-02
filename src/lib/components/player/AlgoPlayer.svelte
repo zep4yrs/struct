@@ -354,23 +354,25 @@
 			</div>
 
 			<!-- Canvas 主体 -->
-			<div class="canvas-body" bind:this={canvasBodyRef}>
-				{#if engine.renderType === 'array'}
-					<ArrayRenderer steps={engine.steps} {playbackPos} />
-				{:else if engine.renderType === 'tree'}
-					<TreeRenderer steps={engine.steps} {playbackPos} />
-				{:else if engine.renderType === 'linkedlist'}
-					<LinkedRenderer steps={engine.steps} {playbackPos} />
-				{:else if engine.renderType === 'sql-table'}
-					<SqlTableRenderer steps={engine.steps} {playbackPos} />
-				{:else if engine.renderType === 'stack' || engine.renderType === 'queue'}
-					<StackRenderer steps={engine.steps} {playbackPos} mode={engine.renderType} />
-				{:else if engine.renderType === 'er'}
-					<ErRenderer steps={engine.steps} {playbackPos} />
-				{:else if engine.renderType === 'btree'}
-					<BPlusTreeRenderer steps={engine.steps} {playbackPos} />
-				{/if}
-			</div>
+			{#key engineRevision}
+				<div class="canvas-body" bind:this={canvasBodyRef}>
+					{#if engine.renderType === 'array'}
+						<ArrayRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'tree'}
+						<TreeRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'linkedlist'}
+						<LinkedRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'sql-table'}
+						<SqlTableRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'stack' || engine.renderType === 'queue'}
+						<StackRenderer steps={engine.steps} {playbackPos} mode={engine.renderType} />
+					{:else if engine.renderType === 'er'}
+						<ErRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'btree'}
+						<BPlusTreeRenderer steps={engine.steps} {playbackPos} />
+					{/if}
+				</div>
+			{/key}
 
 			<!-- 底部状态栏（字幕式步骤说明） -->
 			<div class="status-bar">

@@ -44,7 +44,7 @@
 	/>
 
 	<div class="flex min-h-0 flex-1">
-		<Sidebar {activeSection} open={sidebarOpen} />
+		<Sidebar {activeSection} open={!isHome && sidebarOpen} />
 
 		<main class="flex-1 overflow-y-auto">
 			{@render children()}

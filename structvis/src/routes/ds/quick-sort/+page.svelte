@@ -103,7 +103,9 @@
 	</div>
 
 	<!-- Visualization player -->
-	<AlgoPlayer {engine} topicId="quick-sort" topicName="快速排序" />
+	<div class="player-wrap">
+		<AlgoPlayer {engine} topicId="quick-sort" topicName="快速排序" />
+	</div>
 </div>
 
 <style>
@@ -111,6 +113,19 @@
 		max-width: 1100px;
 		margin: 0 auto;
 		padding: 48px 32px 64px;
+		min-height: calc(100vh - 48px);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.player-wrap {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-top: 32px;
+		margin-bottom: 32px;
 	}
 
 	/* Section header */

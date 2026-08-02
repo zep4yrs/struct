@@ -104,6 +104,7 @@
 	});
 
 	onDestroy(() => {
+		if (typeof window === 'undefined') return;
 		window.removeEventListener('keydown', handleKeyDown);
 		window.removeEventListener('mousemove', handleProgressMouseMove);
 		window.removeEventListener('mouseup', handleProgressMouseUp);

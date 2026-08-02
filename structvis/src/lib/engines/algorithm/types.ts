@@ -53,6 +53,14 @@ export interface AlgorithmStep {
 	pseudocodeLine: number;
 	/** 当前递归调用栈深度（用于缩进展示） */
 	recursionDepth?: number;
+	/** 表格数据快照（仅 sql-table 渲染器使用） */
+	table?: SqlTableData;
+}
+
+/** SQL 表格数据（sql-table 渲染器） */
+export interface SqlTableData {
+	columns: string[];
+	rows: (string | number)[][];
 }
 
 /**
@@ -70,7 +78,7 @@ export interface PracticeQuestion {
 	stepIndex: number;
 	prompt: string;
 	options?: string[];
-	correctAnswer: any;
+	correctAnswer: string | number | boolean;
 	hint: string;
 	explanation: string;
 }

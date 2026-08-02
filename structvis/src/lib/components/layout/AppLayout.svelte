@@ -9,6 +9,8 @@
 
 	let { children }: Props = $props();
 
+	let sidebarOpen = $state(false);
+
 	function getActiveSection(path: string): 'ds' | 'db' | 'progress' {
 		if (path.startsWith('/db')) return 'db';
 		if (path.startsWith('/progress')) return 'progress';
@@ -34,12 +36,15 @@
 </script>
 
 <div class="flex min-h-screen flex-col" style="background: var(--color-paper);">
-	<TopBar {crumb} />
+	<TopBar
+		{crumb}
+		showSidebarBtn={!isHome}
+		sidebarOpen={sidebarOpen}
+		onToggleSidebar={() => (sidebarOpen = !sidebarOpen)}
+	/>
 
 	<div class="flex min-h-0 flex-1">
-		{#if !isHome}
-			<Sidebar {activeSection} />
-		{/if}
+		<Sidebar {activeSection} open={sidebarOpen} />
 
 		<main class="flex-1 overflow-y-auto">
 			{@render children()}

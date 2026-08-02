@@ -69,6 +69,54 @@
 }
 
 /* ============================================================
+   Dark Theme — 通过 <html class="dark"> 切换
+   ============================================================ */
+
+.dark {
+  color-scheme: dark;
+
+  --color-paper: #161514;           /* 墨纸 — 页面背景 */
+  --color-surface: #1E1D1B;         /* 深面 — 卡片/面板背景 */
+  --color-subtle: #282624;          /* 深浅灰 — 次级背景/hover */
+  --color-code-bg: #0F0E0D;         /* 更深 — 代码块背景 */
+
+  --color-ink: #E9E6E0;             /* 暖白 — 主文字 */
+  --color-ink-2: #A6A39B;           /* 灰 — 次文字 */
+  --color-ink-3: #6B6861;           /* 暗灰 — 辅助文字/占位 */
+  --color-ink-inverse: #161514;     /* 反白（深底上文字变深） */
+
+  --color-academic: #6FA8CE;        /* 学术蓝提亮 — 链接/关键字 */
+  --color-accent: #F5A623;          /* 琥珀提亮 — 当前步进高亮 */
+  --color-success: #5CB088;         /* 绿提亮 — 完成/正确 */
+  --color-danger: #D96A6E;          /* 红提亮 — 错误 */
+  --color-warning: #D9A93F;         /* 赭石提亮 — 警告 */
+
+  --color-line-hair: #2C2A27;       /* 细线 */
+  --color-line-regular: #3E3B36;    /* 边框 */
+}
+
+.dark body::before {
+  opacity: 0.15;
+}
+
+/* 暗色下标签的硬编码浅色背景需要覆盖 */
+.dark .tag-accent {
+  background: rgba(217, 119, 6, 0.16);
+  border-color: rgba(217, 119, 6, 0.4);
+  color: #FCD34D;
+}
+.dark .tag-success {
+  background: rgba(45, 106, 79, 0.22);
+  border-color: rgba(45, 106, 79, 0.5);
+  color: #6EE7B7;
+}
+.dark .tag-blue {
+  background: rgba(27, 73, 101, 0.3);
+  border-color: rgba(27, 73, 101, 0.55);
+  color: #93C5FD;
+}
+
+/* ============================================================
    Base Styles
    ============================================================ */
 
@@ -242,6 +290,16 @@ code, pre, .mono {
 .btn-icon svg {
   width: 14px;
   height: 14px;
+}
+.btn-icon-lg {
+  padding: var(--spacing-2);
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+}
+.btn-icon-lg svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* 标签 */

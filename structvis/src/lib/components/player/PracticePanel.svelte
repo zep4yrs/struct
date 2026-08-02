@@ -119,7 +119,7 @@
 					</span>
 					{#if !isCorrect && question.correctAnswer !== undefined && question.correctAnswer !== null}
 						<span class="correct-answer">
-							正确答案：<span class="mono">{question.correctAnswer}</span>
+							正确答案：<span class="mono">{String(question.correctAnswer)}</span>
 						</span>
 					{/if}
 				</div>

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import Logo from '$lib/components/ui/Logo.svelte';
+	import { resolve } from '$app/paths';
+	import type { RouteId } from '$app/types';
 
 	interface TopicCard {
 		title: string;
@@ -11,21 +13,87 @@
 	}
 
 	const dsTopics: TopicCard[] = [
-		{ title: '快速排序', description: '分治策略 · 平均 O(n log n)', href: '/ds/quick-sort', count: '交互式', progress: 0 },
-		{ title: '二叉树遍历', description: '前/中/后/层序 · 递归与迭代', href: '/ds/binary-tree', count: '交互式', progress: 0 },
-		{ title: '单链表', description: '插入/删除/反转', href: '/ds/linear-list', count: '交互式', progress: 0 },
-		{ title: '栈和队列', description: '出栈序列 · 括号匹配', href: '/ds/stack-queue', count: '规划中', planned: true },
-		{ title: '冒泡/插入/选择', description: '基础排序对比', href: '#', count: '规划中', planned: true },
+		{
+			title: '快速排序',
+			description: '分治策略 · 平均 O(n log n)',
+			href: '/ds/quick-sort',
+			count: '交互式',
+			progress: 0
+		},
+		{
+			title: '二叉树遍历',
+			description: '前/中/后/层序 · 递归与迭代',
+			href: '/ds/binary-tree',
+			count: '交互式',
+			progress: 0
+		},
+		{
+			title: '单链表',
+			description: '插入/删除/反转',
+			href: '/ds/linear-list',
+			count: '交互式',
+			progress: 0
+		},
+		{
+			title: '栈和队列',
+			description: '出栈序列 · 括号匹配',
+			href: '/ds/stack-queue',
+			count: '规划中',
+			planned: true
+		},
+		{
+			title: '冒泡/插入/选择',
+			description: '基础排序对比',
+			href: '#',
+			count: '规划中',
+			planned: true
+		},
 		{ title: '图的遍历', description: 'BFS / DFS', href: '#', count: '规划中', planned: true }
 	];
 
 	const dbTopics: TopicCard[] = [
-		{ title: 'SQL 基础查询', description: 'SELECT / JOIN / GROUP BY', href: '/db/sql', count: '分步执行', progress: 0 },
-		{ title: '建表练习', description: 'CREATE TABLE / 数据类型', href: '/db/tables', count: '交互式', progress: 0 },
-		{ title: '索引原理', description: 'B+ 树 · 执行计划', href: '/db/index', count: '规划中', planned: true },
-		{ title: '数据更新', description: 'INSERT / UPDATE / DELETE', href: '#', count: '规划中', planned: true },
-		{ title: 'E-R 模型', description: '概念模型 · 关系转换', href: '#', count: '规划中', planned: true },
-		{ title: '关系规范化', description: '函数依赖 · 范式分解', href: '#', count: '规划中', planned: true }
+		{
+			title: 'SQL 基础查询',
+			description: 'SELECT / JOIN / GROUP BY',
+			href: '/db/sql',
+			count: '分步执行',
+			progress: 0
+		},
+		{
+			title: '建表练习',
+			description: 'CREATE TABLE / 数据类型',
+			href: '/db/tables',
+			count: '交互式',
+			progress: 0
+		},
+		{
+			title: '索引原理',
+			description: 'B+ 树 · 执行计划',
+			href: '/db/index',
+			count: '规划中',
+			planned: true
+		},
+		{
+			title: '数据更新',
+			description: 'INSERT / UPDATE / DELETE',
+			href: '#',
+			count: '规划中',
+			planned: true
+		},
+		{
+			title: 'E-R 模型',
+			description: '概念模型 · 关系转换',
+			href: '#',
+			count: '规划中',
+			planned: true
+		},
+		{
+			title: '关系规范化',
+			description: '函数依赖 · 范式分解',
+			href: '#',
+			count: '规划中',
+			planned: true
+		}
 	];
 
 	function handleCardClick(e: MouseEvent, planned?: boolean) {
@@ -33,13 +101,13 @@
 	}
 </script>
 
-<div class="max-w-5xl mx-auto px-8 py-16">
+<div class="mx-auto max-w-5xl px-8 py-16">
 	<!-- Hero -->
-	<section class="mb-20 pb-12 border-b" style="border-color: var(--color-line-hair);">
-		<div class="flex items-end gap-6 mb-8">
+	<section class="mb-20 border-b pb-12" style="border-color: var(--color-line-hair);">
+		<div class="mb-8 flex items-end gap-6">
 			<Logo size={56} />
 			<h1
-				class="font-display text-5xl font-medium leading-none"
+				class="font-display text-5xl leading-none font-medium"
 				style="letter-spacing: -0.03em; color: var(--color-ink);"
 			>
 				StructVis<span style="color: var(--color-accent); font-weight: 400;">/</span>
@@ -47,7 +115,7 @@
 		</div>
 
 		<p
-			class="font-display text-2xl font-normal italic max-w-xl"
+			class="font-display max-w-xl text-2xl font-normal italic"
 			style="line-height: 1.35; color: var(--color-ink-2);"
 		>
 			看见数据结构与数据库的每一步跳动。<br />
@@ -60,15 +128,15 @@
 	<!-- 数据结构 -->
 	<section class="mb-16">
 		<div class="section-label mb-4">数据结构 · 李春葆《数据结构教程》第5版</div>
-		<h2 class="font-display text-2xl font-medium mb-6" style="letter-spacing: -0.01em;">
+		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">
 			数据结构与算法
 		</h2>
 
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-			{#each dsTopics as topic}
+		<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+			{#each dsTopics as topic (topic.title)}
 				<a
-					href={topic.href}
-					class="topic-card block p-4 rounded-md border no-underline transition-all"
+					href={topic.planned ? undefined : resolve(topic.href as RouteId)}
+					class="topic-card block rounded-md border p-4 no-underline transition-all"
 					style="
 						background: var(--color-surface);
 						border-color: var(--color-line-hair);
@@ -78,11 +146,11 @@
 					onclick={(e) => handleCardClick(e, topic.planned)}
 					title={topic.planned ? '规划中，敬请期待' : ''}
 				>
-					<div class="flex items-start justify-between mb-2">
+					<div class="mb-2 flex items-start justify-between">
 						<h3 class="text-base font-medium" style="color: var(--color-ink);">{topic.title}</h3>
 						{#if topic.planned}
 							<span
-								class="text-[10px] font-mono uppercase tracking-wider"
+								class="font-mono text-[10px] tracking-wider uppercase"
 								style="color: var(--color-ink-3);"
 							>
 								soon
@@ -91,11 +159,11 @@
 							<span class="tag tag-blue" style="font-size: 10px;">{topic.count}</span>
 						{/if}
 					</div>
-					<p class="text-xs mb-3" style="color: var(--color-ink-2); line-height: 1.6;">
+					<p class="mb-3 text-xs" style="color: var(--color-ink-2); line-height: 1.6;">
 						{topic.description}
 					</p>
 					{#if topic.progress !== undefined && !topic.planned}
-						<div class="w-full h-0.5 rounded-full" style="background: var(--color-subtle);">
+						<div class="h-0.5 w-full rounded-full" style="background: var(--color-subtle);">
 							<div
 								class="h-full rounded-full transition-all"
 								style="width: {topic.progress}%; background: var(--color-success);"
@@ -110,15 +178,15 @@
 	<!-- 数据库 -->
 	<section>
 		<div class="section-label mb-4">数据库 · 杨宏霞《数据库技术及应用（MySQL）》</div>
-		<h2 class="font-display text-2xl font-medium mb-6" style="letter-spacing: -0.01em;">
+		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">
 			数据库与 SQL
 		</h2>
 
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-			{#each dbTopics as topic}
+		<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+			{#each dbTopics as topic (topic.title)}
 				<a
-					href={topic.href}
-					class="topic-card block p-4 rounded-md border no-underline transition-all"
+					href={topic.planned ? undefined : resolve(topic.href as RouteId)}
+					class="topic-card block rounded-md border p-4 no-underline transition-all"
 					style="
 						background: var(--color-surface);
 						border-color: var(--color-line-hair);
@@ -128,11 +196,11 @@
 					onclick={(e) => handleCardClick(e, topic.planned)}
 					title={topic.planned ? '规划中，敬请期待' : ''}
 				>
-					<div class="flex items-start justify-between mb-2">
+					<div class="mb-2 flex items-start justify-between">
 						<h3 class="text-base font-medium" style="color: var(--color-ink);">{topic.title}</h3>
 						{#if topic.planned}
 							<span
-								class="text-[10px] font-mono uppercase tracking-wider"
+								class="font-mono text-[10px] tracking-wider uppercase"
 								style="color: var(--color-ink-3);"
 							>
 								soon
@@ -141,11 +209,11 @@
 							<span class="tag tag-blue" style="font-size: 10px;">{topic.count}</span>
 						{/if}
 					</div>
-					<p class="text-xs mb-3" style="color: var(--color-ink-2); line-height: 1.6;">
+					<p class="mb-3 text-xs" style="color: var(--color-ink-2); line-height: 1.6;">
 						{topic.description}
 					</p>
 					{#if topic.progress !== undefined && !topic.planned}
-						<div class="w-full h-0.5 rounded-full" style="background: var(--color-subtle);">
+						<div class="h-0.5 w-full rounded-full" style="background: var(--color-subtle);">
 							<div
 								class="h-full rounded-full transition-all"
 								style="width: {topic.progress}%; background: var(--color-success);"
@@ -159,7 +227,7 @@
 
 	<!-- Footer -->
 	<footer
-		class="mt-20 pt-8 border-t flex justify-between items-center font-mono text-[11px] uppercase tracking-wider"
+		class="mt-20 flex items-center justify-between border-t pt-8 font-mono text-[11px] tracking-wider uppercase"
 		style="border-color: var(--color-line-hair); color: var(--color-ink-3); letter-spacing: 0.08em;"
 	>
 		<span>StructVis · v0.1-dev</span>

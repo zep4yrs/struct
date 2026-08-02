@@ -4,12 +4,15 @@
 	import type { AlgorithmEngine, StepType, PracticeQuestion } from '$lib/engines/algorithm/types';
 	import { addMistake, updateTopicMastery } from '$lib/stores/progress';
 	import ArrayRenderer from '$lib/visualization/array/ArrayRenderer.svelte';
+	import TreeRenderer from '$lib/visualization/tree/TreeRenderer.svelte';
+	import LinkedRenderer from '$lib/visualization/linkedlist/LinkedRenderer.svelte';
+	import SqlTableRenderer from '$lib/visualization/sqltable/SqlTableRenderer.svelte';
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
 	import PracticePanel from './PracticePanel.svelte';
 
 	interface Props {
-		engine: AlgorithmEngine;
+		engine: AlgorithmEngine<unknown>;
 		topicId?: string;
 		topicName?: string;
 	}
@@ -76,9 +79,13 @@
 		});
 	}
 
-	// === 练习模式 ===
+	// === 演示 / 练习模式 ===
+	// demo：纯播放，不弹题；practice：播放到练习步骤暂停出题
+
+	let mode = $state<'demo' | 'practice'>('demo');
 
 	function checkPracticeAt(stepId: number) {
+		if (mode !== 'practice') return;
 		if (activeQuestion !== null) return;
 		const question = engine.practiceQuestions?.find(
 			(q) => q.stepIndex === stepId && !answeredStepIds.includes(stepId)
@@ -102,7 +109,7 @@
 				type: 'algorithm',
 				question: activeQuestion.prompt,
 				wrongAnswer: result.answer,
-				correctAnswer: activeQuestion.correctAnswer,
+				correctAnswer: String(activeQuestion.correctAnswer),
 				explanation: activeQuestion.explanation
 			});
 		}
@@ -213,11 +220,32 @@
 			<!-- 顶部标题栏 -->
 			<div class="canvas-header">
 				<div class="canvas-title">{engine.name}</div>
-				<div class="canvas-meta">
-					<span class="meta-step">
-						第 <span class="current-num">{String(currentStepIdx + 1).padStart(2, '0')}</span>
-						<span class="total-num"> / {engine.totalSteps} 步</span>
-					</span>
+				<div class="header-right">
+					<div class="mode-switch" role="tablist" aria-label="播放模式">
+						<button
+							class="mode-btn {mode === 'demo' ? 'active' : ''}"
+							role="tab"
+							aria-selected={mode === 'demo'}
+							onclick={() => (mode = 'demo')}
+						>
+							演示
+						</button>
+						<button
+							class="mode-btn {mode === 'practice' ? 'active' : ''}"
+							role="tab"
+							aria-selected={mode === 'practice'}
+							onclick={() => (mode = 'practice')}
+						>
+							练习
+						</button>
+					</div>
+					<div class="canvas-meta">
+						<span class="meta-step">
+							第
+							<span class="current-num">{String(currentStepIdx + 1).padStart(2, '0')}</span>
+							<span class="total-num"> / {engine.totalSteps} 步</span>
+						</span>
+					</div>
 				</div>
 			</div>
 
@@ -225,6 +253,12 @@
 			<div class="canvas-body">
 				{#if engine.renderType === 'array'}
 					<ArrayRenderer steps={engine.steps} {playbackPos} />
+				{:else if engine.renderType === 'tree'}
+					<TreeRenderer steps={engine.steps} {playbackPos} />
+				{:else if engine.renderType === 'linkedlist'}
+					<LinkedRenderer steps={engine.steps} {playbackPos} />
+				{:else if engine.renderType === 'sql-table'}
+					<SqlTableRenderer steps={engine.steps} {playbackPos} />
 				{/if}
 
 				{#if activeQuestion}
@@ -313,6 +347,44 @@
 		letter-spacing: -0.01em;
 	}
 
+	.header-right {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
+	.mode-switch {
+		display: flex;
+		background: var(--color-surface);
+		border: 1px solid var(--color-line-regular);
+		border-radius: 6px;
+		padding: 2px;
+		gap: 2px;
+	}
+
+	.mode-btn {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--color-ink-3);
+		background: transparent;
+		border: none;
+		border-radius: 4px;
+		padding: 4px 10px;
+		cursor: pointer;
+		transition: color 0.15s, background 0.15s;
+	}
+
+	.mode-btn:hover {
+		color: var(--color-ink);
+	}
+
+	.mode-btn.active {
+		background: var(--color-ink);
+		color: var(--color-paper);
+	}
+
 	.canvas-meta {
 		font-family: var(--font-mono);
 		font-size: 11px;
@@ -378,7 +450,11 @@
 
 	.panel-body {
 		flex: 1;
-		overflow: hidden;
+		min-height: 0;
+		overflow-y: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.panel-controls {

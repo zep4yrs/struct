@@ -24,7 +24,8 @@
 		height: 100%;
 		overflow: hidden;
 		display: flex;
-		align-items: stretch;
+		align-items: center;
+		justify-content: center;
 	}
 
 	pre {

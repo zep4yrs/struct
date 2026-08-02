@@ -2,10 +2,8 @@
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HighlightType } from '$lib/engines/algorithm/types';
-	import {
-		precomputeBarIdentities,
-		easeOutCubic
-	} from './array-render-utils';
+	import { precomputeBarIdentities, easeOutCubic } from './array-render-utils';
+	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -17,6 +15,7 @@
 	let canvasEl: HTMLCanvasElement | undefined;
 	let ctx: CanvasRenderingContext2D | null = null;
 	let dpr = 1;
+	let unwatchTheme: (() => void) | undefined;
 
 	let barIdsAtStep = $derived(precomputeBarIdentities(steps));
 
@@ -44,10 +43,6 @@
 		partitionBg: 'rgba(27, 73, 101, 0.04)',
 		partitionBorder: 'rgba(27, 73, 101, 0.12)'
 	});
-
-	function resolveCSSVar(name: string): string {
-		return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#999';
-	}
 
 	function updateColorsFromCSS() {
 		if (!browser) return;
@@ -87,7 +82,10 @@
 	}
 
 	// 获取柱子颜色状态
-	function getBarState(position: number, step: AlgorithmStep): {
+	function getBarState(
+		position: number,
+		step: AlgorithmStep
+	): {
 		fill: string;
 		border: string;
 		compareRing: boolean;
@@ -106,8 +104,12 @@
 		const hasSorted = highlights.some((h) => h.type === 'sorted' && h.indices.includes(position));
 		const hasCompare = highlights.some((h) => h.type === 'compare' && h.indices.includes(position));
 		const hasSwap = highlights.some((h) => h.type === 'swap' && h.indices.includes(position));
-		const hasPointerI = highlights.some((h) => h.type === 'pointer-i' && h.indices.includes(position));
-		const hasPointerJ = highlights.some((h) => h.type === 'pointer-j' && h.indices.includes(position));
+		const hasPointerI = highlights.some(
+			(h) => h.type === 'pointer-i' && h.indices.includes(position)
+		);
+		const hasPointerJ = highlights.some(
+			(h) => h.type === 'pointer-j' && h.indices.includes(position)
+		);
 
 		if (hasPivot) {
 			fill = colors.pivot;
@@ -284,12 +286,7 @@
 		ctx.fillText(`[${index}]`, x + 0.5, y);
 	}
 
-	function drawPartitionBg(
-		fromStep: AlgorithmStep,
-		toStep: AlgorithmStep,
-		t: number,
-		n: number
-	) {
+	function drawPartitionBg(fromStep: AlgorithmStep, toStep: AlgorithmStep, t: number, n: number) {
 		if (!ctx) return;
 
 		const fromHl = fromStep.highlights.find((h) => h.type === 'partition');
@@ -326,12 +323,7 @@
 		ctx.setLineDash([]);
 	}
 
-	function drawPointerLabels(
-		fromStep: AlgorithmStep,
-		toStep: AlgorithmStep,
-		t: number,
-		n: number
-	) {
+	function drawPointerLabels(fromStep: AlgorithmStep, toStep: AlgorithmStep, t: number, n: number) {
 		if (!ctx) return;
 
 		const pointerDefs = [
@@ -376,8 +368,8 @@
 
 		dpr = window.devicePixelRatio || 1;
 		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(300, rect.width);
-		canvasHeight = Math.max(200, Math.min(360, rect.height));
+		canvasWidth = Math.max(300, Math.min(760, rect.width - 64));
+		canvasHeight = Math.max(200, Math.min(340, rect.height - 48));
 
 		canvasEl.width = canvasWidth * dpr;
 		canvasEl.height = canvasHeight * dpr;
@@ -402,11 +394,17 @@
 		resizeCanvas();
 		window.addEventListener('resize', resizeCanvas);
 		draw();
+		// 暗/亮主题切换时重取色并重绘
+		unwatchTheme = watchThemeChange(() => {
+			updateColorsFromCSS();
+			draw();
+		});
 	});
 
 	onDestroy(() => {
 		if (!browser) return;
 		window.removeEventListener('resize', resizeCanvas);
+		unwatchTheme?.();
 	});
 </script>
 

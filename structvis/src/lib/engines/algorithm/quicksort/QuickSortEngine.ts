@@ -5,13 +5,7 @@
  * 引擎是纯逻辑的，不涉及任何渲染，只产出 AlgorithmStep 数据。
  */
 
-import type {
-	AlgorithmEngine,
-	AlgorithmStep,
-	Highlight,
-	PracticeQuestion,
-	StepType
-} from '../types';
+import type { AlgorithmEngine, AlgorithmStep, PracticeQuestion } from '../types';
 
 const PSEUDOCODE: string[] = [
 	'function quickSort(arr, low, high)',
@@ -53,7 +47,12 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 		type: 'choose-next',
 		stepIndex: 10,
 		prompt: '当前 arr[j] = 2，pivot = 7。判断后应该做什么？',
-		options: ['arr[j] <= pivot，i++ 然后交换', 'arr[j] > pivot，什么都不做', '直接和 pivot 交换', 'j++ 跳过'],
+		options: [
+			'arr[j] <= pivot，i++ 然后交换',
+			'arr[j] > pivot，什么都不做',
+			'直接和 pivot 交换',
+			'j++ 跳过'
+		],
 		correctAnswer: 'arr[j] <= pivot，i++ 然后交换',
 		hint: '回想 partition 的逻辑：找到小于等于 pivot 的元素，就把它换到"小于区"里',
 		explanation:
@@ -103,9 +102,7 @@ export class QuickSortEngine implements AlgorithmEngine<number[]> {
 			description: '排序完成！所有元素已就位',
 			detail: `共执行 ${this.steps.length} 步。快速排序的平均时间复杂度是 O(n log n)，最坏情况 O(n²)。`,
 			data: [...arr],
-			highlights: [
-				{ type: 'sorted', indices: arr.map((_, i) => i) }
-			],
+			highlights: [{ type: 'sorted', indices: arr.map((_, i) => i) }],
 			pseudocodeLine: 6,
 			recursionDepth: 0
 		});
@@ -180,9 +177,7 @@ export class QuickSortEngine implements AlgorithmEngine<number[]> {
 			type: 'recurse-exit',
 			description: `分区 [${low}...${high}] 排序完成，返回上一层`,
 			data: [...arr],
-			highlights: [
-				{ type: 'sorted', indices: [...sortedIndices] }
-			],
+			highlights: [{ type: 'sorted', indices: [...sortedIndices] }],
 			pseudocodeLine: 5,
 			recursionDepth: depth
 		});

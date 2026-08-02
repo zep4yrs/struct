@@ -17,9 +17,10 @@
 
 	interface Props {
 		activeSection: 'ds' | 'db' | 'progress';
+		open: boolean;
 	}
 
-	let { activeSection }: Props = $props();
+	let { activeSection, open }: Props = $props();
 
 	const dsGroups: NavGroup[] = [
 		{
@@ -94,9 +95,14 @@
 </script>
 
 <aside
-	class="hidden h-full w-56 flex-shrink-0 overflow-y-auto border-r py-4 md:block"
-	style="border-color: var(--color-line-hair); background: var(--color-paper);"
+	class="hidden h-full flex-shrink-0 overflow-hidden border-r transition-[width,color] duration-300 md:block"
+	style="
+		border-color: {open ? 'var(--color-line-hair)' : 'transparent'};
+		background: var(--color-paper);
+		width: {open ? '224px' : '0px'};
+	"
 >
+	<div class="h-full w-56 overflow-y-auto py-4">
 	{#each groups as group (group.title)}
 		<div class="mb-6">
 			<div
@@ -118,7 +124,7 @@
 						opacity: {item.planned ? '0.5' : '1'};
 						cursor: {item.planned ? 'not-allowed' : 'pointer'};
 					"
-					onclick={(e: MouseEvent) => item.planned && e.preventDefault()}
+			onclick={(e: MouseEvent) => item.planned && e.preventDefault()}
 					title={item.planned ? '规划中，敬请期待' : ''}
 				>
 					<span class="flex-1 truncate">{item.title}</span>
@@ -163,4 +169,5 @@
 			</a>
 		</div>
 	{/if}
+	</div>
 </aside>

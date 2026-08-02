@@ -66,7 +66,7 @@ export interface SqlTableData {
 /**
  * 渲染类型 — 告诉播放器用什么渲染器
  */
-export type RenderType = 'array' | 'tree' | 'linkedlist' | 'graph' | 'sql-table';
+export type RenderType = 'array' | 'tree' | 'linkedlist' | 'stack' | 'queue' | 'graph' | 'sql-table';
 
 /**
  * 练习题类型

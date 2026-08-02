@@ -7,6 +7,7 @@
 	import TreeRenderer from '$lib/visualization/tree/TreeRenderer.svelte';
 	import LinkedRenderer from '$lib/visualization/linkedlist/LinkedRenderer.svelte';
 	import SqlTableRenderer from '$lib/visualization/sqltable/SqlTableRenderer.svelte';
+	import StackRenderer from '$lib/visualization/stack/StackRenderer.svelte';
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
 	import PracticePanel from './PracticePanel.svelte';
@@ -259,6 +260,8 @@
 					<LinkedRenderer steps={engine.steps} {playbackPos} />
 				{:else if engine.renderType === 'sql-table'}
 					<SqlTableRenderer steps={engine.steps} {playbackPos} />
+				{:else if engine.renderType === 'stack' || engine.renderType === 'queue'}
+					<StackRenderer steps={engine.steps} {playbackPos} mode={engine.renderType} />
 				{/if}
 
 				{#if activeQuestion}

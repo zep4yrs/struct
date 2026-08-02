@@ -2,28 +2,28 @@
 
 > generated_by: nexus-mapper v2
 > verified_at: 2026-08-02
-> provenance: AST-backed for TypeScript (34 files，含引擎 4 类)；Svelte 25 文件为 module-only 覆盖，组件间依赖 inferred from manual inspection；git 仅 2 commits，hotspots 为 low risk 全量文件（insufficient history）
+> provenance: AST-backed for TypeScript (36 files，含引擎 5 类)；Svelte 26 文件为 module-only 覆盖，组件间依赖 inferred from manual inspection；git 4 commits，hotspots 为 low risk 全量文件（insufficient history）
 
 ## 项目是什么
 
-**StructVis（位于 `structvis/`）**：数据结构与数据库自学工具，纯前端 SvelteKit 静态站（adapter-static）。核心价值：把算法/SQL 过程变成可步进、可试错、可练习的交互演示，对齐李春葆《数据结构教程》与杨宏霞《数据库技术及应用（MySQL）》。状态：**v0.1 已完成**（git 基线 `559fa85` + 内容扩充 `2cf0101`）。
+**StructVis（位于 `structvis/`）**：数据结构与数据库自学工具，纯前端 SvelteKit 静态站（adapter-static）。核心价值：把算法/SQL 过程变成可步进、可试错、可练习的交互演示，对齐李春葆《数据结构教程》与杨宏霞《数据库技术及应用（MySQL）》。状态：**v0.1 已完成**，v0.2 已开始（栈和队列 `8982eed`）。
 
 ## 代码库结构（源码集中在 structvis/src/，43 个源模块）
 
-- `lib/engines/` — **引擎层**：`algorithm/`（QuickSortEngine、BinaryTreeEngine 四遍历、SinglyLinkedListEngine 插删）+ `sql/SelectEngine`（FROM→WHERE→GROUP BY→SELECT→ORDER BY 分步）+ `types.ts`（AlgorithmEngine<TInput> 契约、AlgorithmStep、SqlTableData）**已实现**
-- `lib/visualization/` — **渲染器层**：array/tree/linkedlist/sqltable 四种 Canvas 渲染器，按 `engine.renderType` 插件化；`visualization-utils.ts`（resolveCSSVar + watchThemeChange 主题联动）**已实现**
+- `lib/engines/` — **引擎层**：`algorithm/`（QuickSortEngine、BinaryTreeEngine 四遍历、SinglyLinkedListEngine 插删、StackQueueEngine 压栈/出栈/入队/出队）+ `sql/SelectEngine`（FROM→WHERE→GROUP BY→SELECT→ORDER BY 分步）+ `types.ts`（AlgorithmEngine<TInput> 契约、AlgorithmStep、SqlTableData；RenderType 含 stack/queue）**已实现**
+- `lib/visualization/` — **渲染器层**：array/tree/linkedlist/sqltable/stack 五种 Canvas 渲染器（stack 渲染器经 mode prop 同时服务 stack/queue 两种 renderType），按 `engine.renderType` 插件化；`visualization-utils.ts`（resolveCSSVar + watchThemeChange 主题联动）**已实现**
 - `lib/components/player/` — **播放器**：AlgoPlayer（GSAP timeline、演示/练习双模式、答题落库）+ ControlBar（键盘）+ PseudocodePanel + PracticePanel **已实现**
-- `lib/components/layout/` + `lib/stores/` + `lib/styles/` — 布局（Sidebar 顶栏按钮显隐切换、TopBar 主题切换）、localStorage stores（progress/settings/persistent）、亮暗 token **已实现**
+- `lib/components/layout/` + `lib/stores/` + `lib/styles/` — 布局（Sidebar 顶栏按钮显隐切换，首页强制收起）、localStorage stores（progress/settings/persistent）、亮暗 token **已实现**
 - `lib/data/` — **空目录**，规划中的课程内容数据层
-- `routes/` — 7 个已实现页面：`/`（首页）、`/ds`、`/ds/quick-sort`、`/ds/binary-tree`、`/ds/linear-list`、`/db/sql`、`/progress`；**残余占位页**：`/ds/stack-queue`、`/db/tables`、`/db/index`
+- `routes/` — 8 个已实现页面：`/`（首页）、`/ds`、`/ds/quick-sort`、`/ds/binary-tree`、`/ds/linear-list`、`/ds/stack-queue`、`/db/sql`、`/progress`；**残余占位页**：`/db/tables`、`/db/index`
 
 ## 关键事实与证据缺口
 
 - **文档权威性**：根目录 `StructVis-长期开发文档.md` 为准；`N08-UI-Design.md` 是过时 React 时代设计稿（学术蓝 #2563EB），实现遵循编辑技术极简主义（纸白/琥珀 #D97706，`src/lib/styles/app.css` token 为准）
 - **主题联动**：渲染器不硬编码颜色，经 `resolveCSSVar` 取 token，`.dark` 切换由 MutationObserver 驱动重绘；页面数据面板"示例/自定义"互斥切换（同位置交叉淡入淡出）
-- **测试面**：12 个测试（greet 1 + BinaryTree 4 + SinglyLinkedList 3 + SelectEngine 4），引擎 spec 与引擎同目录；`requireAssertions` 强制断言
-- **Git**：2 commits（`559fa85` 基线 + `2cf0101` v0.1 扩充，30 文件 +3310/-200）→ 热点分析降级（insufficient history）
-- **残余断层**：`/ds/stack-queue`、`/db/tables`、`/db/index` 占位；settings store 无 `/settings` 路由（TopBar 齿轮位已用主题切换占用）；`prettier --check` 全量仍有历史格式欠账
+- **测试面**：19 个测试（greet 1 + BinaryTree 4 + SinglyLinkedList 3 + StackQueue 7 + SelectEngine 4），引擎 spec 与引擎同目录；`requireAssertions` 强制断言
+- **Git**：4 commits（`559fa85` 基线 + `2cf0101` v0.1 扩充 + `81509fa` map + `8982eed` 栈队列）→ 热点分析仍降级（insufficient history）；AppLayout/AlgoPlayer/types.ts 为最高变更频次文件（3 次）
+- **残余断层**：`/db/tables`、`/db/index` 占位；settings store 无 `/settings` 路由（TopBar 齿轮位已用主题切换占用）；`prettier --check` 全量仍有历史格式欠账
 
 ## 技术栈
 

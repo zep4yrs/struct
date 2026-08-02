@@ -1,33 +1,33 @@
 # StructVis 项目索引 — Nexus Map
 
 > generated_by: nexus-mapper v2
-> verified_at: 2026-08-01
-> provenance: AST-backed for TypeScript (12 files); Svelte 组件为 module-only 覆盖，组件间依赖关系 inferred from manual inspection；git 仓库存在但无任何 commit，hotspots 部分跳过
+> verified_at: 2026-08-02
+> provenance: AST-backed for TypeScript (34 files，含引擎 4 类)；Svelte 25 文件为 module-only 覆盖，组件间依赖 inferred from manual inspection；git 仅 2 commits，hotspots 为 low risk 全量文件（insufficient history）
 
 ## 项目是什么
 
-**StructVis（位于 `structvis/`）**：数据结构与数据库自学工具，纯前端 SvelteKit 静态站（adapter-static → GitHub Pages）。核心价值：把算法过程变成可交互、可步进、可试错的练习，对齐李春葆《数据结构教程》与杨宏霞《数据库技术及应用（MySQL）》。状态：**v0.1 开发中**（M0 骨架 + M1 快速排序样板已完成，文档自称"v0.1 规划中"，代码进度快于文档头部标注）。
+**StructVis（位于 `structvis/`）**：数据结构与数据库自学工具，纯前端 SvelteKit 静态站（adapter-static）。核心价值：把算法/SQL 过程变成可步进、可试错、可练习的交互演示，对齐李春葆《数据结构教程》与杨宏霞《数据库技术及应用（MySQL）》。状态：**v0.1 已完成**（git 基线 `559fa85` + 内容扩充 `2cf0101`）。
 
-## 代码库结构（全部代码在 structvis/src/，34 个源文件）
+## 代码库结构（源码集中在 structvis/src/，43 个源模块）
 
-- `lib/engines/algorithm/` — 算法步进引擎层：`QuickSortEngine.ts`（Lomuto 分区，生成全类型关键帧）+ `types.ts`（AlgorithmEngine 统一契约）**已实现**
-- `lib/components/player/` — `AlgoPlayer.svelte`（GSAP timeline 播放器）+ `PseudocodePanel` + `ControlBar`（键盘优先）**已实现**；`PracticePanel.svelte`（阶段 A 新增，练习弹层）**已实现**
-- `lib/visualization/array/` — Canvas 柱状图渲染器 + `array-render-utils.ts`（身份追踪/颜色插值）**已实现**
-- `lib/stores/` — localStorage 持久化：progress（掌握度/错题/streak）、settings、persistent **已实现**
-- `lib/components/layout/` + `routes/` — 布局与页面：`/ds/quick-sort` 完整实现（含练习模式）；`/progress` 已接入进度数据（阶段 A）；`/ds/binary-tree`、`/ds/linear-list`、`/ds/stack-queue`、`/db/*` 均为 **WORK IN PROGRESS 占位页**
-- `lib/data/`、`lib/engines/sql/`、`lib/visualization/tree|graph/` — 目录存在但**为空**（规划中）
+- `lib/engines/` — **引擎层**：`algorithm/`（QuickSortEngine、BinaryTreeEngine 四遍历、SinglyLinkedListEngine 插删）+ `sql/SelectEngine`（FROM→WHERE→GROUP BY→SELECT→ORDER BY 分步）+ `types.ts`（AlgorithmEngine<TInput> 契约、AlgorithmStep、SqlTableData）**已实现**
+- `lib/visualization/` — **渲染器层**：array/tree/linkedlist/sqltable 四种 Canvas 渲染器，按 `engine.renderType` 插件化；`visualization-utils.ts`（resolveCSSVar + watchThemeChange 主题联动）**已实现**
+- `lib/components/player/` — **播放器**：AlgoPlayer（GSAP timeline、演示/练习双模式、答题落库）+ ControlBar（键盘）+ PseudocodePanel + PracticePanel **已实现**
+- `lib/components/layout/` + `lib/stores/` + `lib/styles/` — 布局（Sidebar 顶栏按钮显隐切换、TopBar 主题切换）、localStorage stores（progress/settings/persistent）、亮暗 token **已实现**
+- `lib/data/` — **空目录**，规划中的课程内容数据层
+- `routes/` — 7 个已实现页面：`/`（首页）、`/ds`、`/ds/quick-sort`、`/ds/binary-tree`、`/ds/linear-list`、`/db/sql`、`/progress`；**残余占位页**：`/ds/stack-queue`、`/db/tables`、`/db/index`
 
 ## 关键事实与证据缺口
 
-- **文档权威性**：以根目录 `StructVis-长期开发文档.md` 为准。根目录 `N08-UI-Design.md` 是**过时设计稿**（声称 React 19 + Radix + 学术蓝 #2563EB），与实现（Svelte 5 + Tailwind v4 + 纸白 #FAF9F6 + 琥珀 #D97706）不符，实现遵循长期开发文档 §6.1"编辑技术极简主义"。`ui-design-reference.html` 为视觉参考稿。
-- **状态断层（阶段 A 已闭合一部分）**：练习系统（`practiceQuestions`）已接线到 AlgoPlayer/PracticePanel；`addMistake`/`updateTopicMastery` 已由练习答题触发并接入 `/progress` 页。**残余断层**：settings store 无 `/settings` 路由。
-- **测试面**：vitest 已配置（node 环境、`requireAssertions: true`），但仅 `vitest-examples/greet.spec.ts` 样板，无业务测试。
-- **Git 历史**：仓库无任何 commit → 无法做热点/耦合分析（降级探测）。
-- **第三方资源**：`gsap_skilled_extracted/`（GSAP skills 插件，开发参考用）、`.trae-html-share-packages/` 非项目代码。
+- **文档权威性**：根目录 `StructVis-长期开发文档.md` 为准；`N08-UI-Design.md` 是过时 React 时代设计稿（学术蓝 #2563EB），实现遵循编辑技术极简主义（纸白/琥珀 #D97706，`src/lib/styles/app.css` token 为准）
+- **主题联动**：渲染器不硬编码颜色，经 `resolveCSSVar` 取 token，`.dark` 切换由 MutationObserver 驱动重绘；页面数据面板"示例/自定义"互斥切换（同位置交叉淡入淡出）
+- **测试面**：12 个测试（greet 1 + BinaryTree 4 + SinglyLinkedList 3 + SelectEngine 4），引擎 spec 与引擎同目录；`requireAssertions` 强制断言
+- **Git**：2 commits（`559fa85` 基线 + `2cf0101` v0.1 扩充，30 文件 +3310/-200）→ 热点分析降级（insufficient history）
+- **残余断层**：`/ds/stack-queue`、`/db/tables`、`/db/index` 占位；settings store 无 `/settings` 路由（TopBar 齿轮位已用主题切换占用）；`prettier --check` 全量仍有历史格式欠账
 
 ## 技术栈
 
-Svelte 5（runes 强制开启）+ SvelteKit + Tailwind CSS v4 + GSAP 3.15（唯一 runtime 依赖）+ Canvas 2D + Vitest + adapter-static。
+Svelte 5（runes）+ SvelteKit + Tailwind v4 + GSAP 3.15（唯一 runtime 依赖，AlgoPlayer）+ Canvas 2D + Vitest + adapter-static。`animejs` 在 devDependencies 但源码无引用（推断：遗留）。
 
 ## [操作指南] 强制执行步骤
 

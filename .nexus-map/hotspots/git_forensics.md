@@ -1,40 +1,32 @@
-# Git 热点与耦合分析 — Git Forensics
+# Git 热点与耦合分析
 
 > generated_by: nexus-mapper v2
-> verified_at: 2026-08-01
-> provenance: 降级探测 — 仓库 `.git` 存在但 master 分支无任何 commit，git_detective.py 无法执行
+> verified_at: 2026-08-02
+> provenance: git_detective.py 产出（90 天窗口）
+> 降级说明：仓库仅 2 commits（`559fa85` 基线 + `2cf0101` v0.1 扩充），热点/耦合数据无统计意义，以下为限制性解读
 
-## 结论：热点分析跳过
+## 基础数据
 
-```
-[ERROR] git -C <repo> log --since=90 days ago --name-only
-fatal: your current branch 'master' does not have any commits yet
-```
+- 提交数：2；作者数：1
+- 结构：一次全量基线（71 文件）+ 一次内容扩充（30 文件 +3310/-200）
 
-- 仓库是新建的（`git init` 后从未 commit），没有任何历史
-- 因此：无 hotspots、无 coupling_pairs、无作者/提交频率数据
-- 后续 commit 积累后（建议至少 20+ commits），重新运行：
+## Hotspots（全部 low risk，无排序意义）
 
-```bash
-python <skill>/scripts/git_detective.py <repo> --days 90 > .nexus-map/raw/git_stats.json
-```
+20 个文件 changes=2（两轮提交都改动），包括：AlgoPlayer/ControlBar/PracticePanel（player 三件套）、AppLayout/Sidebar/TopBar、QuickSortEngine、ArrayRenderer、settings.ts、app.css、4 个播放器页、AGENTS.md。
 
-## 无 git 数据时的替代风险提示（基于 AST 静态判断）
+解读：这不是"核心热点"证据，而是"两轮全量迭代都触及的文件"。唯一可推断的事实：**播放器、布局、引擎契约、主题 token 是跨迭代稳定变更面**，与 dependencies.md 的风险提示（types.ts/app.css 影响半径大）相互印证。
 
-以下内容**不是** git 分析结论，仅作为无热点数据时的工程直觉补充：
+## 新增文件（仅出现在 commit 2）
 
-- **修改频率预期最高的文件**：`QuickSortEngine.ts`（371 行，步进生成逻辑最复杂）、`AlgoPlayer.svelte`（341 行，timeline 控制）、`array-render-utils.ts`（208 行）——若后续 git 热点出现偏离，值得质疑"核心系统"假设
-- **强耦合候选对**：QuickSortEngine ↔ types（接口变更必然波及）；AlgoPlayer ↔ ArrayRenderer（renderType 分支扩展时必然共变）——扩展新渲染器（tree/graph）时这两个文件是主要变更面
+- 引擎：BinaryTreeEngine(+spec)、SinglyLinkedListEngine(+spec)、SelectEngine(+spec)
+- 渲染器：TreeRenderer、LinkedRenderer、SqlTableRenderer、visualization-utils.ts
+- 这些新系统自创建起即带测试（对比 QuickSortEngine 无测试 → 测试实践在演进）
 
-## 提交建议（对齐文档 §7.3 Conventional Commits）
+## Coupling pairs
 
-仓库尚无首次提交。首次提交建议按逻辑分层：
-1. `chore: init structvis sveltekit scaffold`（脚手架部分）
-2. `feat: quicksort stepwise engine + player`（引擎+播放器）
-3. `feat: array renderer with tween animation`
-4. `feat: layout, navigation and design tokens`
-5. `test: vitest scaffold`
+co_changes=2 且 coupling_score=1.0 的文件对：**全部 20 个 changes=2 文件互为完全耦合**（两轮都同时变动）。无解释价值，跳过。
 
-## 证据缺口
+## 风险结论
 
-- 无任何 commit 数据：Evolution 维度（热点、耦合对、变更风险）整体缺失，本文件的后续部分仅剩静态推断
+- insufficient history：热点与耦合结论仅作定性参考，不得作为重构决策依据
+- 真正值得注意的耦合点（手动推断）：`types.ts`（契约）与 4 引擎 + AlgoPlayer + 4 渲染器；`app.css` token 与全部渲染器

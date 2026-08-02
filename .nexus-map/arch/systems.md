@@ -1,59 +1,68 @@
-# 系统边界 — Systems
+# 系统边界与代码位置
 
 > generated_by: nexus-mapper v2
-> verified_at: 2026-08-01
-> provenance: AST-backed for TypeScript; Svelte 组件关系 inferred from manual inspection（svelte 为 module-only 覆盖，见 raw/ast_nodes.json stats）
+> verified_at: 2026-08-02
+> provenance: AST-backed for TypeScript；Svelte 组件边界 inferred from manual inspection（svelte 为 module-only 覆盖）
 
-## 系统一览
+## 1. 算法引擎层 — `structvis/src/lib/engines/`
 
-| 系统 | 状态 | 代码位置 | 职责 |
-|------|------|---------|------|
-| algo-engine 算法步进引擎层 | implemented | `structvis/src/lib/engines/algorithm/` | 引擎预生成全部关键帧步骤，实现 AlgorithmEngine 接口；当前仅 QuickSortEngine |
-| player-visualization 播放器与可视化层 | implemented | `structvis/src/lib/components/player/` + `src/lib/visualization/array/` | GSAP timeline 播放器、伪代码面板、控制条、Canvas 数组渲染器 |
-| ui-layout 布局与页面层 | implemented | `structvis/src/routes/` + `src/lib/components/layout/` + `ui/` | 应用骨架、首页内容地图、知识点页面 |
-| state-layer 本地持久化状态层 | implemented | `structvis/src/lib/stores/` | progress/settings/persistent，localStorage 持久化 |
-| sql-engine SQL 引擎层 | planned | `structvis/src/lib/engines/sql/`（目录为空） | SQL 执行适配（sql.js/MySQL），未开始 |
-| content-data 教材内容数据层 | planned | `structvis/src/lib/data/`（目录为空） | 章节/题库/示例数据库，未开始 |
+职责：把算法/SQL 执行过程编译为分步关键帧，供播放器消费。统一契约在 `algorithm/types.ts`：
 
-## 各系统边界细节
+- `AlgorithmEngine<TInput>` 接口：`init(input)` / `stepForward()` / `stepBackward()` / `steps: AlgorithmStep[]` / `totalSteps` / `pseudocode` / `practiceQuestions` / `renderType: 'array' | 'tree' | 'linkedlist' | 'sql-table'`
+- `AlgorithmStep`：`{ data: number[]; highlights: Highlight[]; pseudocodeLine; description }`，SQL 引擎额外带可选 `table?: SqlTableData`（列/行快照）
+- 引擎数据编码约定：数组用值序列；树用层序编码（-1 空节点）；链表用值序列；SQL 表用 `SqlTableData`
 
-### 1. algo-engine（置信度高）
-- 唯一实现：`QuickSortEngine`（Lomuto 分区；关键帧类型覆盖 init/compare/swap/pivot-select/partition-start/partition-end/recurse-enter/recurse-exit/complete/default）
-- 契约层：`types.ts` 定义 AlgorithmStep/Highlight/StepType/RenderType/PracticeQuestion/AlgorithmEngine
-- 边界规则：引擎是纯逻辑的，不 import 任何 DOM/Canvas/Svelte 内容（AST import 边确认仅依赖 `../types`）
-- 练习题数据（PRACTICE_QUESTIONS）内嵌在引擎中，未独立成 data 文件
+子目录：
 
-### 2. player-visualization（置信度高）
-- `AlgoPlayer.svelte`：唯一状态修改入口（play/pause/prev/next/reset/jumpTo/changeSpeed），单向数据流；GSAP timeline 步骤时长表驱动浮点 playbackPos；**阶段 A 新增练习模式**：接收 `topicId`/`topicName` props，播放/步进到 `practiceQuestions` 命中步骤时暂停出题，答题期间拦截全部控制操作
-- `PracticePanel.svelte`（阶段 A 新增）：练习浮层，选项 A-D、键盘 1-4/Enter/H、提示框、答后解析；答对调 `updateTopicMastery(+10)`，答错调 `addMistake` 并记入错题本
-- `ControlBar.svelte`：键盘快捷键（空格=播放/暂停、左右箭头=步进）+ 进度条拖拽 + 倍速（0.5/1/1.5/2）；新增 `disabled` prop（答题期间禁用）
-- `ArrayRenderer.svelte`：Canvas 柱状图，`precomputeBarIdentities` 追踪交换动画
-- **当前局限**：`engine.renderType === 'array'` 分支硬编码，tree/graph/linkedlist/sql-table 渲染器均未实现
+| 引擎 | 文件 | 说明 |
+| --- | --- | --- |
+| QuickSortEngine | `algorithm/quicksort/QuickSortEngine.ts` | Lomuto 分区，全类型高亮关键帧（pivot/sorted/compare/partition/pointer-i/j） |
+| BinaryTreeEngine | `algorithm/binarytree/BinaryTreeEngine.ts` | preorder/inorder/postorder/levelorder 四模式，递归/队列生成访问序列 |
+| SinglyLinkedListEngine | `algorithm/linkedlist/SinglyLinkedListEngine.ts` | insert/delete，pre/p 指针定位，新节点用 index -1 表示 |
+| SelectEngine | `sql/SelectEngine.ts` | SELECT 迷你解析（尾先切子句 ORDER BY→GROUP BY→WHERE→FROM），逻辑执行序生成步骤；WHERE 逐行 current 高亮并收缩结果集 |
 
-### 3. ui-layout（置信度高）
-- `AppLayout.svelte`：TopBar（面包屑）+ Sidebar（教材章节分组导航）+ 内容区；面包屑按 `/ds/*`、`/db/*`、`/progress` 路由前缀生成
-- 首页 `+page.svelte`：内容地图（ds 6 卡片 / db 6 卡片，planned 项置灰）
-- 完整页面仅 `/ds/quick-sort`；其余 6 个路由页面为统一"WORK IN PROGRESS"占位模板
-- `+layout.svelte` 在 onMount 调用 `updateStreak()`（这是 state-layer 目前唯一的 UI 接线点）
+测试：每个引擎同目录 `.spec.ts`（见 test_coverage.md）。
 
-### 4. state-layer（置信度高，阶段 A 后接线基本完整）
-- `persistentStore` 工厂：SSR 返回默认值，浏览器读写 localStorage，解析失败静默回退
-- `progress.ts`：掌握度（>=80 完成）、错题、连续学习天数；**阶段 A 已接线**：`updateTopicMastery`/`addMistake` 由练习答题触发，`/progress` 页展示统计、掌握度列表与错题本
-- `settings.ts`：theme（仅 'light'）、sqlEngine（仅 'sqljs'）、animationSpeed、showHints —— 预留扩展点，仍无 `/settings` 路由页面（残余断层）
+## 2. Canvas 渲染器层 — `structvis/src/lib/visualization/`
 
-### 5. sql-engine / 6. content-data（planned，置信度中）
-- 设计契约见 `StructVis-长期开发文档.md` §3.3（SQLEngine 接口 + ExplainNode 统一格式）、§3.4（方言适配表）、§5.3（示例数据库清单）
-- 目录已创建（占位意图明确）但无任何文件
+职责：按 `engine.renderType` 插件化绘制关键帧。AlgoPlayer 模板内 4 分支分发：
 
-## 边界之外的资产（非系统）
+- `array/ArrayRenderer.svelte` — 柱状图，bar 身份追踪（array-render-utils）、分区背景、指针文字标签、easeOutCubic 插值
+- `tree/TreeRenderer.svelte` — 层序重建树，中序布局 + 深度分层，圆节点 + 高亮
+- `linkedlist/LinkedRenderer.svelte` — 节点框 + 箭头 + NULL 尾，整链水平居中，新节点虚线框
+- `sqltable/SqlTableRenderer.svelte` — 表格（表头/边框/当前行琥珀底/行数 footer）
+- `visualization-utils.ts` — `resolveCSSVar()` 读 token；`watchThemeChange()` 用 MutationObserver 监听 `<html class>` 变化回调重绘
 
-- `gsap_skilled_extracted/gsap-skills-main/` — 第三方 GSAP 官方 skills 插件包，供开发时参考 GSAP 用法，不应视为项目代码
-- `N08-UI-Design.md` — 过时的 React 时代设计稿（技术栈与配色均已变更，见 domains.md）
-- `ui-design-reference.html` — 视觉参考稿
-- `.trae-html-share-packages/` — trae 分享包归档
+统一约定：画布限制最大逻辑尺寸（宽 ≤760、四周留边），外层 wrap flex 居中；颜色全部走 CSS token（不硬编码），暗色主题即插即用。
 
-## 已知证据缺口
+## 3. 播放器 — `structvis/src/lib/components/player/`
 
-- git 无历史：无法用热点数据佐证"核心系统"判断（降级）
-- svelte module-only 覆盖：组件间 import 关系来自人工阅读，未经过 AST 验证
-- `/settings` 页面与 settings store 的接线状态是动态的，后续若实现设置 UI，需重跑 nexus-mapper 更新本文件
+- `AlgoPlayer.svelte` — 编排核心：GSAP timeline（paused，playbackPos 驱动渲染器）；演示/练习双模式（mode-switch，练习模式遇 practiceQuestions 暂停出题）；快捷键、进度条、步进/跳转；答题回调 `updateTopicMastery`/`addMistake` 落 progress store
+- `ControlBar.svelte` — 播放控制（键盘优先），onDestroy 有 SSR 守卫（prerender 500 的历史根因）
+- `PseudocodePanel.svelte` — 伪代码行高亮（activeLine），面板内居中
+- `PracticePanel.svelte` — 练习弹层（选择/填空、正确/错误态、解释），`correctAnswer` 类型收窄为 `string | number | boolean`
+
+## 4. 布局与状态 — `structvis/src/lib/components/layout/` + `stores/` + `styles/`
+
+- `AppLayout.svelte` — 顶栏 + 内容区；侧栏显隐状态（sidebarOpen，非持久化）；面包屑（crumb 按路由映射）
+- `Sidebar.svelte` — 常驻侧栏，顶栏按钮切换显隐（宽度 224↔0 过渡动画），非抽屉非浮层
+- `TopBar.svelte` — 侧栏切换按钮（panel-left 图标，40px 大号）+ 主题切换（太阳/月亮）
+- `stores/persistent.ts` — localStorage 包装 store
+- `stores/settings.ts` — theme('light'|'dark')/sqlEngine/animationSpeed/showHints，toggleTheme
+- `stores/progress.ts` — topic mastery/错题/streak，addMistake/updateTopicMastery
+- `styles/app.css` — 亮暗双 token 体系（:root 与 .dark），字体、间距、按钮、标签组件类
+
+## 5. 页面层 — `structvis/src/routes/`
+
+- `/`（首页）— 卡片式导航，planned 项禁用态
+- `/ds`、`/db` — 目录页
+- `/ds/quick-sort`、`/ds/binary-tree`、`/ds/linear-list`、`/db/sql` — 播放器页：页头 + 数据面板（示例/自定义互斥切换 + 校验）+ 播放器（player-wrap 剩余空间居中）
+- `/progress` — 进度展示
+- 占位：`/ds/stack-queue`、`/db/tables`、`/db/index`（规划中）
+- 布局：`+layout.ts`（prerender/ssr=false? 静态导出）、`layout.css`
+
+## 6. 规划中系统（planned）
+
+- `lib/data/` 数据层 — 空目录，练习数据当前由引擎内嵌
+- 图结构可视化（visualization/graph 不存在）— 对应 /ds 图结构导航 planned
+- 残余占位页 stack-queue / tables / index

@@ -1,0 +1,231 @@
+{
+  "analysis_period_days": 90,
+  "stats": {
+    "total_commits": 2,
+    "total_authors": 1
+  },
+  "hotspots": [
+    {
+      "path": "AGENTS.md",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/layout/Sidebar.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/layout/TopBar.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/player/ControlBar.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/player/PracticePanel.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/player/PseudocodePanel.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/engines/algorithm/types.ts",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/stores/settings.ts",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/styles/app.css",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/visualization/array/ArrayRenderer.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/routes/+layout.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/routes/+page.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/routes/db/sql/+page.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/routes/ds/+page.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/routes/ds/binary-tree/+page.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/routes/ds/linear-list/+page.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/routes/ds/quick-sort/+page.svelte",
+      "changes": 2,
+      "risk": "low"
+    }
+  ],
+  "coupling_pairs": [
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/components/layout/Sidebar.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/components/layout/TopBar.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/components/player/ControlBar.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/components/player/PracticePanel.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/components/player/PseudocodePanel.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/engines/algorithm/types.ts",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/stores/settings.ts",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/styles/app.css",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/lib/visualization/array/ArrayRenderer.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/routes/+layout.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/routes/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/routes/db/sql/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/routes/ds/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/routes/ds/binary-tree/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/routes/ds/linear-list/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "AGENTS.md",
+      "file_b": "structvis/src/routes/ds/quick-sort/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "file_b": "structvis/src/lib/components/layout/Sidebar.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    }
+  ]
+}

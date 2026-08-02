@@ -1,59 +1,42 @@
-# 领域概念 — Domains
+# 核心领域概念
 
 > generated_by: nexus-mapper v2
-> verified_at: 2026-08-01
-> provenance: 领域定义来自 `StructVis-长期开发文档.md`（根目录）人工阅读；仓库代码仅落地面向快速排序的教学可视化样板。unsupported language downgrade: 无（代码语言均受支持；svelte 为 module-only 覆盖）
+> verified_at: 2026-08-02
+> provenance: manual inspection（领域概念来自长期开发文档与代码阅读，非 AST 推导）
 
-## 核心领域概念
+## 1. 步进关键帧模型（algorithm-step）
 
-### 1. 交互式步进可视化（Stepwise Visualization）
+- 引擎把一次算法执行编译为**关键帧序列**（steps），每帧含：`data`（当前数据结构快照）、`highlights`（高亮类型 + indices）、`pseudocodeLine`（伪代码行号）、`description`（字幕文本）
+- 高亮类型集：`current`（琥珀）/ `compare`（学术蓝）/ `sorted`（绿）/ `pivot`（红）/ `swap` / `partition` / `pointer-i` / `pointer-j` / `recurse-enter|exit`
+- 数据编码约定：数组=值序列；树=层序（-1 空节点）；链表=值序列（新节点 index -1）；SQL=可选 `step.table`（SqlTableData 列/行快照）
+- 播放器按 `renderType` 选择渲染器，渲染器只消费 steps + playbackPos（浮点，插值用）
 
-项目第一性概念。不是被动看动画，而是每一步可暂停、可自己操作、可试错的练习。实现上拆为两层（文档 §3.7）：
-- **引擎关键帧**（Engine Keyframes）：`AlgorithmStep` 序列，纯逻辑产出
-- **渲染补间**（Render Tween）：GSAP timeline 在关键帧间插值，浮点 `playbackPos` 驱动，60fps 平滑
+## 2. SQL 逻辑执行顺序（sql-execution-order）
 
-已实现：AlgoPlayer 用 GSAP timeline + `renderProxy.pos` 浮点进度驱动 ArrayRenderer；步骤时长表（STEP_DURATIONS）对应文档 §3.7 的节奏建议。
+- 教学核心：`FROM → WHERE → GROUP BY → SELECT → ORDER BY`
+- 解析器"尾先切子句"（ORDER BY → GROUP BY → WHERE → FROM），非法 SQL 抛错（页面 try/catch 显示）
+- WHERE 逐行求值并**实际收缩**中间结果（_currentTable/_currentRows），GROUP BY 用 COUNT(*)，SELECT 投影列，ORDER BY 单列排序
 
-### 2. 算法引擎契约（AlgorithmEngine Contract）
+## 3. 演示 / 练习双模式
 
-"一套播放器 + N 个算法引擎"插件化模式的基石（文档 §3.6）：
-- 引擎声明 `renderType`（array/tree/linkedlist/graph/sql-table），播放器按类型匹配渲染器 —— 当前仅 array 落地
-- 引擎自带 `pseudocode` 与 `practiceQuestions` —— 练习数据阶段 A 已接线（AlgoPlayer 暂停出题 → PracticePanel 答题 → 进度接口）
+- **演示**：纯播放，不弹题，用于连贯观察
+- **练习**：播放到 `practiceQuestions[].stepIndex` 暂停弹题（PracticePanel），答题后 `updateTopicMastery(+10/错)` / `addMistake` 落库，答过的题不重复弹（answeredStepIds）
+- 模式切换在播放器右上角（mode-switch），不重置播放位置
 
-### 3. 单向数据流（Unidirectional Data Flow）
+## 4. 主题 token 体系（theme-tokens）
 
-文档 §3.8：引擎是唯一真相源，只有控制面板能改状态，其他模块纯渲染。实现已遵守（ControlBar 回调 → AlgoPlayer 控制函数 → engine.setProgress → 响应式视图）。
+- `app.css` 定义 `:root`（亮）与 `.dark` 两套 token（paper/surface/ink/accent 等 ~30 个）
+- `settings.theme` 持久化；`+layout.svelte` `$effect` 同步 `<html class="dark">`
+- 渲染器不硬编码颜色：`resolveCSSVar('--color-x')` 取值，`watchThemeChange`（MutationObserver 监听 html class）触发重绘——暗色切换无需渲染器感知业务
 
-### 4. 知识点三模式（三种学习模式）
+## 5. 学习进度（learning-progress）
 
-文档 §5.1：每个知识点 = 动画演示 + 分步练习 + 测试。当前代码：演示模式 ✓；**分步练习**（阶段 A：stepIndex 暂停出题、即时判错、错题本联动）✓；测试（考试）模式未开始。
+- `progress.ts` store：topic 掌握度（0-100，答题累积）、错题列表（含错误答案/正确解释）、连续学习天数
+- 由 PracticePanel 答题驱动写入；`/progress` 页读取展示
+- 全量 localStorage 持久化（persistent store 包装）
 
-### 5. 本地学习进度（Local Learning Progress）
+## 6. 数据面板交互范式（页面层）
 
-掌握度（0-100，>=80 完成）、错题本、连续学习天数，localStorage 持久化（key: `structvis:progress`）。阶段 A 已接线：答对 `updateTopicMastery(+10)`、答错 `addMistake`，`/progress` 页展示统计/掌握度/错题本。
-
-### 6. SQL 分步执行与方言适配（SQL Step Execution + Dialect Adaptation）
-
-文档 §3.3/§3.4：统一 `SQLEngine` 接口（execute/explain/dialect），sql.js（SQLite WASM）与 MySQL 双实现，MySQL→SQLite 单向方言转换（AUTO_INCREMENT→AUTOINCREMENT、strip ENGINE= 等）。**全部未实现**（engines/sql/ 空）。
-
-### 7. 编辑技术极简主义（Editorial Technical Minimalism）
-
-设计系统定位（文档 §6.1，实现于 `src/lib/styles/app.css` @theme）：纸白 `#FAF9F6` + 墨黑 `#1A1A1A`、Fraunces（标题衬线）/ DM Sans（正文）/ JetBrains Mono（代码）、0.5px 细线、琥珀 `#D97706` 做步进高亮、极淡纸纹噪声。
-
-## 文档体系说明（重要，避免误导）
-
-| 文档 | 状态 | 说明 |
-|------|------|------|
-| `StructVis-长期开发文档.md`（根目录） | **权威，当前** | 与代码一致：Svelte 5、GSAP、Canvas 2D、编辑技术极简主义；含 v0.1→v1.0 路线图 |
-| `N08-UI-Design.md`（根目录） | **过时** | 声称 React 19 + Radix UI + shadcn/ui + framer-motion + 学术蓝 `#2563EB`；技术栈与配色均与实现不符（Svelte 5 + Tailwind + 琥珀）。设计稿中的交互原则（键盘优先、状态可见、不靠颜色 alone、prefers-reduced-motion）已被实现继承，但 token 级内容以 app.css 为准 |
-| `ui-design-reference.html` | 视觉参考稿 | 浏览器打开看效果用 |
-| `structvis/README.md` | 脚手架模板 | sv 模板默认内容，无项目信息 |
-
-## 路线图快照（verified_at: 2026-08-01，来源：StructVis-长期开发文档.md §4）
-
-- **v0.1**（进行中）：快速排序 ✓ / 单链表 / 二叉树遍历 + SQL 基础查询 + 建表练习 + 进度系统 + 主题切换 + 响应式
-- **v0.2**：栈队列、排序对比、二分查找、图 BFS/DFS、SQL 题库、数据更新、索引可视化、错题本、掌握度、自定义输入、速度控制
-- **v0.3**：教学辅助（演示投影模式、讲授剧本、班级码、统计，可选 MySQL 后端）
-- **v1.0**：两本教材核心章节全覆盖
-
-> 注意：文档头部"状态：v0.1 规划中"未随代码更新，实际代码已推进到 M1（快速排序样板完成）。
+- 播放器页顶部数据面板：**示例 / 自定义互斥切换**（同一行交叉淡入淡出，隐藏方绝对定位不占位）
+- 自定义输入带校验：数量上下限、数字合法性、位置范围、删除目标存在性；SQL 解析失败显示引擎错误
+- 自定义后的引擎重建不丢当前模式/树（二叉树页 switchMode 保留自定义树）

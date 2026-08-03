@@ -9,10 +9,14 @@
 import type {
 	AlgorithmEngine,
 	AlgorithmStep,
+	DemoScriptItem,
+	EngineCustomConfig,
+	EnginePreset,
 	Highlight,
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { parseNumberList } from '../parseInput';
 
 export type TraversalMode = 'preorder' | 'inorder' | 'postorder' | 'levelorder';
 
@@ -125,12 +129,90 @@ export class BinaryTreeEngine implements AlgorithmEngine<TreeEngineInput> {
 	pseudocode: string[] = [];
 	practiceQuestions: PracticeQuestion[] = [];
 
+	readonly demoScript: DemoScriptItem[] = [
+		{
+			type: 'init',
+			narration:
+				'这是用层序编码表示的一棵二叉树。遍历就是按照某种顺序"访问"每个节点一次。这里演示先序 / 中序 / 后序 / 层序四种遍历。'
+		},
+		{
+			type: 'recurse-enter',
+			narration:
+				'递归进入子树。先序：根→左→右；中序：左→根→右；后序：左→右→根。区别只在"访问根"发生在什么时候。'
+		},
+		{
+			type: 'compare',
+			narration: '访问当前节点，把它的值记入遍历序列。'
+		},
+		{
+			type: 'recurse-exit',
+			narration: '当前子树访问完毕，递归返回上一层。'
+		},
+		{
+			type: 'complete',
+			narration:
+				'遍历完成。层序遍历按层从上到下、每层从左到右，其他三种则是深度优先，靠递归栈实现。'
+		}
+	];
+
 	steps: AlgorithmStep[] = [];
 	totalSteps = 0;
 	playbackPos = 0;
 
 	private _stepId = 0;
 	private _tree: number[] = [];
+
+	private static DEFAULT_TREE = [10, 5, 15, 3, 7, 12, 20];
+
+	presets: EnginePreset[] = [
+		{ name: '前序遍历', description: '根 → 左 → 右（教材示例树）' },
+		{ name: '中序遍历', description: '左 → 根 → 右（教材示例树）' },
+		{ name: '后序遍历', description: '左 → 右 → 根（教材示例树）' },
+		{ name: '层序遍历', description: '逐层从左到右（教材示例树）' }
+	];
+
+	customConfig: EngineCustomConfig = {
+		title: '自定义二叉树',
+		fields: [
+			{
+				key: 'mode',
+				label: '遍历方式',
+				type: 'select',
+				options: [
+					{ value: 'preorder', label: '前序' },
+					{ value: 'inorder', label: '中序' },
+					{ value: 'postorder', label: '后序' },
+					{ value: 'levelorder', label: '层序' }
+				],
+				default: 'preorder'
+			},
+			{
+				key: 'tree',
+				label: '层序编码',
+				type: 'text',
+				placeholder: '逗号分隔，-1 表示空节点',
+				default: '10, 5, 15, 3, 7, 12, 20'
+			}
+		]
+	};
+
+	applyPreset(name: string): void {
+		const modeMap: Record<string, TraversalMode> = {
+			前序遍历: 'preorder',
+			中序遍历: 'inorder',
+			后序遍历: 'postorder',
+			层序遍历: 'levelorder'
+		};
+		const mode: TraversalMode | undefined = modeMap[name];
+		if (mode) this.init({ tree: BinaryTreeEngine.DEFAULT_TREE, mode });
+	}
+
+	applyCustom(values: Record<string, string>): void {
+		const tree = parseNumberList(values.tree ?? '', { min: 1, max: 31, label: '节点' });
+		if (tree[0] === -1) throw new Error('根节点不能为空');
+		const mode = (values.mode ?? 'preorder') as TraversalMode;
+		this.init({ tree, mode });
+	}
 
 	init(input: TreeEngineInput): void {
 		const { tree, mode } = input;

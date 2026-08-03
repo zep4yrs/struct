@@ -1,18 +1,17 @@
-<script lang="ts"></script>
+<script lang="ts">
+	import TopicGrid from '$lib/components/ui/TopicGrid.svelte';
+	import { dsTopics } from '$lib/content/topics';
+</script>
 
-<div class="mx-auto max-w-4xl p-8">
+<div class="mx-auto max-w-7xl px-8 py-16">
 	<div class="section-label mb-4">数据结构</div>
 	<h1 class="font-display mb-2 text-3xl font-medium" style="letter-spacing: -0.02em;">
 		数据结构与算法
 	</h1>
-	<p class="mb-8" style="color: var(--color-ink-2); max-width: 500px;">
-		李春葆《数据结构教程》第5版配套自学练习。每个知识点都有步进可视化 + 交互式练习。
+	<p class="mb-10" style="color: var(--color-ink-2); max-width: 560px;">
+		李春葆《数据结构教程》第5版配套自学练习。每个知识点都有步进可视化 + 交互式练习，
+		卡片底部的进度条反映你的掌握度。
 	</p>
 
-	<div
-		class="rounded-lg border p-8 text-center"
-		style="border-color: var(--color-line-hair); background: var(--color-surface);"
-	>
-		<p style="color: var(--color-ink-3);">从左侧选择一个知识点开始学习 →</p>
-	</div>
+	<TopicGrid topics={dsTopics} />
 </div>

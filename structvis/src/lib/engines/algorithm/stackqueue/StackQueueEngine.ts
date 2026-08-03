@@ -9,11 +9,14 @@
 import type {
 	AlgorithmEngine,
 	AlgorithmStep,
+	EngineCustomConfig,
+	EnginePreset,
 	Highlight,
 	PracticeQuestion,
 	RenderType,
 	StepType
 } from '../types';
+import { parseNumberList } from '../parseInput';
 
 export type StackQueueStructure = 'stack' | 'queue';
 export type StackQueueOperation = 'push' | 'pop' | 'enqueue' | 'dequeue';
@@ -97,6 +100,94 @@ export class StackQueueEngine implements AlgorithmEngine<StackQueueEngineInput> 
 	playbackPos = 0;
 
 	private _stepId = 0;
+
+	presets: EnginePreset[] = [
+		{ name: '压栈 66', description: '栈 [12, 99, 37, 8] 压入 66' },
+		{ name: '出栈 8（栈顶）', description: '栈 [12, 99, 37, 8] 取出栈顶 8' },
+		{ name: '出栈 66（错误示例）', description: '目标与栈顶不一致，操作失败' },
+		{ name: '入队 66', description: '队列 [12, 99, 37, 8] 入队 66' },
+		{ name: '出队 12（队头）', description: '队列 [12, 99, 37, 8] 取出队头 12' }
+	];
+
+	customConfig: EngineCustomConfig = {
+		title: '自定义操作',
+		fields: [
+			{
+				key: 'structure',
+				label: '结构',
+				type: 'select',
+				options: [
+					{ value: 'stack', label: '栈' },
+					{ value: 'queue', label: '队列' }
+				],
+				default: 'stack'
+			},
+			{
+				key: 'values',
+				label: '初始元素',
+				type: 'text',
+				placeholder: '逗号分隔，如 12, 99, 37, 8',
+				default: '12, 99, 37, 8'
+			},
+			{
+				key: 'operation',
+				label: '操作',
+				type: 'select',
+				options: [
+					{ value: 'push', label: '压入' },
+					{ value: 'pop', label: '取出' }
+				],
+				default: 'push'
+			},
+			{
+				key: 'target',
+				label: '目标值',
+				type: 'text',
+				placeholder: '压入或取出的值',
+				default: '66'
+			}
+		]
+	};
+
+	applyPreset(name: string): void {
+		if (name === '压栈 66') {
+			this.init({ structure: 'stack', values: [12, 99, 37, 8], operation: 'push', target: 66 });
+		} else if (name === '出栈 8（栈顶）') {
+			this.init({ structure: 'stack', values: [12, 99, 37, 8], operation: 'pop', target: 8 });
+		} else if (name === '出栈 66（错误示例）') {
+			this.init({ structure: 'stack', values: [12, 99, 37, 8], operation: 'pop', target: 66 });
+		} else if (name === '入队 66') {
+			this.init({ structure: 'queue', values: [12, 99, 37, 8], operation: 'enqueue', target: 66 });
+		} else if (name === '出队 12（队头）') {
+			this.init({ structure: 'queue', values: [12, 99, 37, 8], operation: 'dequeue', target: 12 });
+		}
+	}
+
+	applyCustom(values: Record<string, string>): void {
+		const structure = (values.structure ?? 'stack') as StackQueueStructure;
+		const seq = parseNumberList(values.values ?? '', { min: 1, max: 12, label: '元素' });
+		const target = parseInt(values.target ?? '', 10);
+		if (isNaN(target)) throw new Error('目标值必须是数字');
+
+		const isInsert = values.operation !== 'pop';
+		if (!isInsert) {
+			const headIdx = structure === 'stack' ? seq.length - 1 : 0;
+			const head = seq[headIdx];
+			if (head !== target) {
+				const headLabel = structure === 'stack' ? '栈顶' : '队头';
+				throw new Error(`当前${headLabel}元素是 ${head}，与目标 ${target} 不一致`);
+			}
+		}
+
+		const operation = isInsert
+			? structure === 'stack'
+				? 'push'
+				: 'enqueue'
+			: structure === 'stack'
+				? 'pop'
+				: 'dequeue';
+		this.init({ structure, values: seq, operation, target });
+	}
 
 	init(input: StackQueueEngineInput): void {
 		const { structure, values, operation, target } = input;

@@ -1,40 +1,54 @@
 {
   "$schema": "nexus-mapper/concept-model/v1",
-  "generated_at": "2026-08-02T09:00:00Z",
+  "generated_at": "2026-08-03T00:00:00Z",
   "repo_path": "D:/fengqiao/Documents/项目经历/DBVis",
   "generator": "nexus-mapper v2",
   "nodes": [
     {
-      "id": "structvis.engine-layer",
+      "id": "structvis-engine-layer",
       "type": "System",
-      "label": "算法引擎层",
-      "responsibility": "把算法/SQL 执行过程生成分步关键帧（data/highlights/pseudocodeLine），统一实现 AlgorithmEngine 泛型接口；含 QuickSort/BinaryTree/SinglyLinkedList/StackQueue 四个算法引擎与 SelectEngine SQL 引擎",
+      "label": "引擎层",
+      "responsibility": "把算法/SQL/数据库操作过程编译为分步关键帧（AlgorithmStep 序列），纯数据生成器，不触碰 DOM；含 13 个引擎类 + create-table 函数组 + 20 个 spec 测试",
       "implementation_status": "implemented",
       "code_path": "structvis/src/lib/engines/",
       "evidence_path": null,
       "evidence_gap": null,
       "tech_stack": ["typescript", "vitest"],
+      "related_reqs": ["REQ-001", "REQ-002", "REQ-003"],
       "complexity": "high",
-      "hotspot": false
+      "hotspot": true
     },
     {
-      "id": "structvis.visualization-layer",
+      "id": "engine-contract",
+      "type": "Module",
+      "label": "算法引擎契约",
+      "responsibility": "AlgorithmEngine<TInput> 泛型接口与 AlgorithmStep/Highlight/StepType/SqlTableData/DemoScriptItem 类型定义；是全仓库影响半径最大的契约文件（新增引擎必备改点）",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/engines/algorithm/types.ts",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["typescript"],
+      "complexity": "medium",
+      "hotspot": true
+    },
+    {
+      "id": "renderer-layer",
       "type": "System",
       "label": "Canvas 渲染器层",
-      "responsibility": "按 engine.renderType 插件化渲染：array/tree/linkedlist/sqltable/stack 五种 Canvas 渲染器（stack 渲染器经 mode prop 同时服务 stack/queue 两种 renderType），统一订阅主题 token 变化（visualization-utils 的 resolveCSSVar/watchThemeChange）",
+      "responsibility": "按 engine.renderType 插件化绘制关键帧，只消费 steps + playbackPos；array/tree/linkedlist/sqltable/stack/er/btree 七种渲染器，颜色全部走 CSS token 支持暗色",
       "implementation_status": "implemented",
       "code_path": "structvis/src/lib/visualization/",
       "evidence_path": null,
       "evidence_gap": null,
-      "tech_stack": ["svelte", "canvas2d"],
-      "complexity": "high",
+      "tech_stack": ["svelte", "canvas"],
+      "complexity": "medium",
       "hotspot": false
     },
     {
-      "id": "structvis.player",
+      "id": "player-system",
       "type": "System",
-      "label": "播放器编排",
-      "responsibility": "AlgoPlayer 负责播放/暂停/步进/跳转（GSAP timeline）、演示/练习双模式、练习出题与答题落库；ControlBar 键盘优先；PseudocodePanel/PracticePanel 为子面板",
+      "label": "多媒体播放器",
+      "responsibility": "GSAP timeline 编排 playbackPos，驱动渲染器；演示/练习/投影三种模式：练习遇 stepIndex 弹题落 progress store，投影全屏大字号由 demoScript 旁白 + presenterNote 驱动",
       "implementation_status": "implemented",
       "code_path": "structvis/src/lib/components/player/",
       "evidence_path": null,
@@ -44,23 +58,36 @@
       "hotspot": true
     },
     {
-      "id": "structvis.layout-ui",
+      "id": "layout-store-system",
       "type": "System",
-      "label": "布局与状态层",
-      "responsibility": "AppLayout/Sidebar(抽屉切换)/TopBar(主题切换) 布局；settings/progress/persistent 三个 localStorage 持久化 store；app.css 亮暗双 token 体系",
+      "label": "布局与状态",
+      "responsibility": "AppLayout/TopBar/Sidebar 外壳 + ui（Logo/TopicGrid）+ localStorage stores（progress/settings/persistent）+ 亮暗 token 体系",
       "implementation_status": "implemented",
       "code_path": "structvis/src/lib/components/layout/",
       "evidence_path": null,
       "evidence_gap": null,
-      "tech_stack": ["svelte", "tailwind-v4"],
+      "tech_stack": ["svelte", "typescript"],
       "complexity": "medium",
       "hotspot": false
     },
     {
-      "id": "structvis.routes",
+      "id": "content-layer",
+      "type": "System",
+      "label": "课程内容目录",
+      "responsibility": "首页 /ds /db 目录页的卡片数据源：dsTopics（8 项）+ dbTopics（6 项）+ TopicCard 接口，TopicGrid 消费；取代早期规划中的空 lib/data/",
+      "implementation_status": "implemented",
+      "code_path": "structvis/src/lib/content/topics.ts",
+      "evidence_path": null,
+      "evidence_gap": null,
+      "tech_stack": ["typescript"],
+      "complexity": "low",
+      "hotspot": false
+    },
+    {
+      "id": "player-manager-system",
       "type": "System",
       "label": "页面层",
-      "responsibility": "7 个已实现页面：首页、/ds 目录、/ds/quick-sort、/ds/binary-tree、/ds/linear-list、/db/sql、/progress；每页含数据面板（示例/自定义互斥切换）",
+      "responsibility": "组装引擎实例 + 数据面板（示例/自定义互斥切换与校验）+ 播放器；19 个功能页面无占位页，prerender=true、trailingSlash='always'、adapter-static 输出 docs/",
       "implementation_status": "implemented",
       "code_path": "structvis/src/routes/",
       "evidence_path": null,
@@ -70,38 +97,12 @@
       "hotspot": false
     },
     {
-      "id": "structvis.data-layer",
-      "type": "System",
-      "label": "数据层",
-      "responsibility": "lib/data/ 规划中的题库/课程内容数据层",
-      "implementation_status": "planned",
-      "code_path": null,
-      "evidence_path": "StructVis-长期开发文档.md",
-      "evidence_gap": "structvis/src/lib/data/ 目录为空；当前练习数据由各引擎内嵌 practiceQuestions 提供",
-      "tech_stack": [],
-      "complexity": "low",
-      "hotspot": false
-    },
-    {
-      "id": "structvis.graph-visualization",
-      "type": "System",
-      "label": "图结构可视化",
-      "responsibility": "图遍历/图算法的 Canvas 渲染器",
-      "implementation_status": "planned",
-      "code_path": null,
-      "evidence_path": "StructVis-长期开发文档.md",
-      "evidence_gap": "旧 AGENTS.md 记载 visualization/graph/ 为空目录，本次探测 file_tree 中已无该目录；对应 /ds 图结构导航项仍为 planned",
-      "tech_stack": [],
-      "complexity": "low",
-      "hotspot": false
-    },
-    {
-      "id": "domain.algorithm-step",
-      "type": "Domain",
-      "label": "步进关键帧模型",
-      "responsibility": "AlgorithmStep 契约：data(或 step.table)/highlights/pseudocodeLine/description；引擎契约 AlgorithmEngine<TInput>（init/stepForward/stepBackward/steps/practiceQuestions/renderType）",
+      "id": "db-engine-family",
+      "type": "Module",
+      "label": "数据库引擎族",
+      "responsibility": "ErEngine（E-R 图）/ IndexEngine（B+ 树、getIndexPresets）/ NormalizeEngine（范式判定）；与 sql/ 引擎族共同构成数据库课程覆盖",
       "implementation_status": "implemented",
-      "code_path": "structvis/src/lib/engines/algorithm/types.ts",
+      "code_path": "structvis/src/lib/engines/db/",
       "evidence_path": null,
       "evidence_gap": null,
       "tech_stack": ["typescript"],
@@ -109,95 +110,62 @@
       "hotspot": false
     },
     {
-      "id": "domain.sql-execution-order",
-      "type": "Domain",
-      "label": "SQL 逻辑执行顺序",
-      "responsibility": "SelectEngine 按 FROM→WHERE→GROUP BY→SELECT→ORDER BY 生成步骤，WHERE 逐行 current 高亮并实际收缩结果集",
+      "id": "sql-engine-family",
+      "type": "Module",
+      "label": "SQL 引擎族",
+      "responsibility": "SelectEngine（SELECT 分步 FROM→WHERE→GROUP BY→SELECT→ORDER BY→LIMIT，含 presenterNote 讲授旁白）、DmlEngine（增删改）、create-table.ts（CREATE TABLE 解析）",
       "implementation_status": "implemented",
-      "code_path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "code_path": "structvis/src/lib/engines/sql/",
       "evidence_path": null,
       "evidence_gap": null,
       "tech_stack": ["typescript"],
-      "complexity": "medium",
+      "complexity": "high",
       "hotspot": false
     },
     {
-      "id": "domain.learning-progress",
+      "id": "lesson-narrative",
       "type": "Domain",
-      "label": "学习进度",
-      "responsibility": "进度 store：topic mastery/错题/连续天数，由 PracticePanel 答题回调驱动，/progress 页展示",
+      "label": "讲授剧本与投影模式",
+      "responsibility": "v0.3 专属：DemoScriptItem 按步骤类型配旁白，步骤级 presenterNote 优先；AlgoPlayer projector 全屏态自动全屏、Esc/空格/←→ 键盘控制",
       "implementation_status": "implemented",
-      "code_path": "structvis/src/lib/stores/progress.ts",
+      "code_path": "structvis/src/lib/components/player/AlgoPlayer.svelte",
       "evidence_path": null,
       "evidence_gap": null,
-      "tech_stack": ["typescript", "localstorage"],
+      "tech_stack": ["svelte", "gsap"],
       "complexity": "low",
       "hotspot": false
     },
     {
-      "id": "domain.theme-tokens",
-      "type": "Domain",
-      "label": "亮暗主题 token",
-      "responsibility": "app.css 定义 :root 与 .dark 两套设计 token；settings.theme 持久化；渲染器通过 watchThemeChange(MutationObserver) 重取色重绘",
-      "implementation_status": "implemented",
-      "code_path": "structvis/src/lib/styles/app.css",
-      "evidence_path": null,
-      "evidence_gap": null,
-      "tech_stack": ["css"],
-      "complexity": "low",
-      "hotspot": false
+      "id": "data-layer-planned",
+      "type": "Module",
+      "label": "数据层（规划）",
+      "responsibility": "原规划的 lib/data/ 为空目录；练习数据当前由引擎内嵌 + content/topics.ts 承担目录数据，数据层未落地",
+      "implementation_status": "planned",
+      "code_path": null,
+      "evidence_path": "StructVis-长期开发文档.md",
+      "evidence_gap": "仓库中未发现 lib/data/ 落地文件，仅在设计与长期规划文档中出现"
     }
   ],
   "edges": [
-    {
-      "source": "structvis.player",
-      "target": "structvis.engine-layer",
-      "type": "depends_on",
-      "description": "AlgoPlayer 接收 AlgorithmEngine<unknown>，驱动 stepForward/stepBackward"
-    },
-    {
-      "source": "structvis.player",
-      "target": "structvis.visualization-layer",
-      "type": "depends_on",
-      "description": "按 renderType 分发到 4 个渲染器"
-    },
-    {
-      "source": "structvis.player",
-      "target": "structvis.layout-ui",
-      "type": "depends_on",
-      "description": "练习答题调用 progress store；主题切换触发渲染器重绘"
-    },
-    {
-      "source": "structvis.routes",
-      "target": "structvis.player",
-      "type": "depends_on",
-      "description": "各播放器页组装 engine 传入 AlgoPlayer"
-    },
-    {
-      "source": "structvis.routes",
-      "target": "structvis.engine-layer",
-      "type": "depends_on",
-      "description": "页面创建/init 引擎实例"
-    },
-    {
-      "source": "structvis.routes",
-      "target": "structvis.layout-ui",
-      "type": "depends_on",
-      "description": "页面复用布局/样式与 settings"
-    },
-    {
-      "source": "structvis.visualization-layer",
-      "target": "structvis.layout-ui",
-      "type": "depends_on",
-      "description": "渲染器读取 app.css token（resolveCSSVar）"
-    }
+    { "source": "player-manager-system", "target": "player-system", "type": "depends_on", "description": "页面创建引擎并传入 AlgoPlayer" },
+    { "source": "player-manager-system", "target": "structvis-engine-layer", "type": "depends_on", "description": "各页面 new 引擎实例并 init" },
+    { "source": "player-manager-system", "target": "content-layer", "type": "depends_on", "description": "目录页消费 dsTopics/dbTopics" },
+    { "source": "player-manager-system", "target": "layout-store-system", "type": "depends_on", "description": "AppLayout 外壳包裹各页面" },
+    { "source": "player-system", "target": "structvis-engine-layer", "type": "depends_on", "description": "AlgoPlayer 通过 engine.renderType/engine.steps/engine.demoScript 消费引擎" },
+    { "source": "player-system", "target": "renderer-layer", "type": "depends_on", "description": "AlgoPlayer 模板按 renderType 分支分发七渲染器" },
+    { "source": "player-system", "target": "layout-store-system", "type": "depends_on", "description": "答题回调 updateTopicMastery/addMistake 写 progress store" },
+    { "source": "renderer-layer", "target": "layout-store-system", "type": "depends_on", "description": "resolveCSSVar/watchThemeChange 读 app.css token" },
+    { "source": "structvis-engine-layer", "target": "engine-contract", "type": "depends_on", "description": "13 引擎类均实现 AlgorithmEngine" },
+    { "source": "sql-engine-family", "target": "engine-contract", "type": "depends_on", "description": "SelectEngine/DmlEngine implements AlgorithmEngine" },
+    { "source": "db-engine-family", "target": "engine-contract", "type": "depends_on", "description": "ErEngine/IndexEngine/NormalizeEngine implements AlgorithmEngine" },
+    { "source": "player-system", "target": "lesson-narrative", "type": "depends_on", "description": "投影模式消费 demoScript + presenterNote" },
+    { "source": "data-layer-planned", "target": "content-layer", "type": "depends_on", "description": "planned 数据层如落地将与 content 分流" }
   ],
   "metadata": {
-    "total_files": 166,
-    "total_lines": 22748,
-    "languages": ["javascript", "typescript", "svelte"],
-    "git_commits_analyzed": 2,
-    "analysis_days": 90,
-    "notes": "total_files 含 structvis/.svelte-kit/ 构建产物(120 js)；真实源文件约 46 个（src/ 43 + 根配置）；svelte 25 文件为 module-only 覆盖"
+    "total_files": 82,
+    "total_lines": 14287,
+    "languages": ["typescript", "svelte", "javascript"],
+    "git_commits_analyzed": 5,
+    "analysis_days": 90
   }
 }

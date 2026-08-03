@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { fade, fly } from 'svelte/transition';
+	import { expoOut } from 'svelte/easing';
 	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
 
 	interface Props {
@@ -63,6 +65,10 @@
 		window.addEventListener('keydown', handleKeyDown);
 	});
 
+	function prefersReducedMotion(): boolean {
+		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	}
+
 	onDestroy(() => {
 		window.removeEventListener('keydown', handleKeyDown);
 	});
@@ -75,8 +81,15 @@
 	});
 </script>
 
-<div class="practice-overlay">
-	<div class="practice-card">
+<div class="practice-overlay" transition:fade={{ duration: 240 }}>
+	<div
+		class="practice-card"
+		transition:fly={{
+			y: prefersReducedMotion() ? 0 : 12,
+			duration: prefersReducedMotion() ? 0 : 240,
+			easing: expoOut
+		}}
+	>
 		<header class="practice-header">
 			<span class="panel-title">练习 · Practice</span>
 			<span class="tag tag-accent">{TYPE_LABELS[question.type] ?? question.type}</span>
@@ -159,14 +172,14 @@
 
 <style>
 	.practice-overlay {
-		position: absolute;
+		position: fixed;
 		inset: 0;
-		z-index: 20;
+		z-index: 80;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: 32px;
-		background: rgba(250, 249, 246, 0.9);
+		background: rgba(20, 20, 20, 0.35);
 	}
 
 	.practice-card {
@@ -177,18 +190,18 @@
 		background: var(--color-surface);
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-lg);
-		padding: 24px 28px 28px;
+		padding: 16px 24px;
 		box-shadow:
 			0 1px 2px rgba(0, 0, 0, 0.04),
-			0 8px 32px rgba(0, 0, 0, 0.08);
+			0 8px 32px rgba(0, 0, 0, 0.06);
 	}
 
 	.practice-header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: 20px;
-		padding-bottom: 14px;
+		margin-bottom: 16px;
+		padding-bottom: 12px;
 		border-bottom: 1px solid var(--color-line-hair);
 	}
 

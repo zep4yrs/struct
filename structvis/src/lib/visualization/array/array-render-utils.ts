@@ -41,7 +41,9 @@ const DEFAULT_COLOR = 'var(--color-ink)';
  * 预计算每一步的柱子 ID 映射
  *
  * 通过比较相邻步骤，追踪每个柱子（按原始索引）在每一步的位置。
- * 这样交换动画时，我们知道哪根柱子该滑到哪里。
+ * 通用匹配策略（不止两元素交换）：
+ * - 值相同优先继承（保持相对顺序），实现交换 / 单位置复制 / 区间重排的滑动动画
+ * - 同一来源被多位置引用时，值未变化的位置让位（克隆新 id，原地淡入），变化位置继承原 id
  */
 export function precomputeBarIdentities(steps: AlgorithmStep[]): number[][] {
 	if (steps.length === 0) return [];
@@ -53,6 +55,8 @@ export function precomputeBarIdentities(steps: AlgorithmStep[]): number[][] {
 	// 第 0 步：位置 i 的柱子就是原始索引 i
 	barIdsAtPosition[0] = Array.from({ length: n }, (_, i) => i);
 
+	let cloneCounter = n;
+
 	// 对每一步，比较和上一步的数据，算出哪些位置的柱子交换了
 	for (let s = 1; s < steps.length; s++) {
 		const prevData = steps[s - 1].data;
@@ -61,23 +65,58 @@ export function precomputeBarIdentities(steps: AlgorithmStep[]): number[][] {
 		const currIds = [...prevIds];
 
 		// 找出数据变化的位置
-		const changedPositions: number[] = [];
+		const changed: number[] = [];
 		for (let i = 0; i < n; i++) {
 			if (prevData[i] !== currData[i]) {
-				changedPositions.push(i);
+				changed.push(i);
 			}
 		}
 
-		// 如果恰好两个位置变了，就是交换
-		if (changedPositions.length === 2) {
-			const [a, b] = changedPositions;
-			// 验证确实是交换
-			if (prevData[a] === currData[b] && prevData[b] === currData[a]) {
-				[currIds[a], currIds[b]] = [currIds[b], currIds[a]];
+		if (changed.length > 0) {
+			const changedSet = new Set(changed);
+			// id -> 当前占用位置（先登记所有未变化的位置）
+			const holder = new Map<number, number>();
+			for (let i = 0; i < n; i++) {
+				if (!changedSet.has(i)) holder.set(prevIds[i], i);
+			}
+
+			const used = new Set<number>();
+			for (const pos of changed) {
+				const v = currData[pos];
+				// 在上一轮变化位置中找第一个值相等且未被占用的来源
+				let src = -1;
+				for (const q of changed) {
+					if (!used.has(q) && prevData[q] === v) {
+						src = q;
+						break;
+					}
+				}
+
+				if (src < 0) {
+					// 值找不到来源（理论上是新值），分配克隆 id（原地淡入）
+					currIds[pos] = cloneCounter++;
+					continue;
+				}
+
+				used.add(src);
+				const id = prevIds[src];
+				const existingPos = holder.get(id);
+
+				if (existingPos === undefined) {
+					holder.set(id, pos);
+					currIds[pos] = id;
+				} else if (prevData[existingPos] === currData[existingPos]) {
+					// 占用者值未变：让位克隆，变化位置继承 id（产生滑动动画）
+					holder.delete(id);
+					holder.set(id, pos);
+					currIds[existingPos] = cloneCounter++;
+					currIds[pos] = id;
+				} else {
+					// 占用者也变了：新来者克隆
+					currIds[pos] = cloneCounter++;
+				}
 			}
 		}
-		// 其他情况（多于两个位置变了，或值不匹配），保持不变
-		// （理论上排序算法每步最多交换两个元素）
 
 		barIdsAtPosition[s] = currIds;
 	}

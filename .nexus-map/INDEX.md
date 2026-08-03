@@ -1,33 +1,32 @@
 # StructVis 项目索引 — Nexus Map
 
 > generated_by: nexus-mapper v2
-> verified_at: 2026-08-02
-> provenance: AST-backed for TypeScript (36 files，含引擎 5 类)；Svelte 26 文件为 module-only 覆盖，组件间依赖 inferred from manual inspection；git 4 commits，hotspots 为 low risk 全量文件（insufficient history）
+> verified_at: 2026-08-03
+> provenance: AST-backed for TypeScript/JavaScript（82 文件，8 系统，Node 零截断）；Svelte 35 文件为 module-only 覆盖，组件间依赖 inferred from manual inspection；git 5 commits 但工作区含大量未提交变更（v0.2 全量 + v0.3 首件）→ hotspots 数据仅为已提交历史，不代表当前活跃变更
 
 ## 项目是什么
 
-**StructVis（位于 `structvis/`）**：数据结构与数据库自学工具，纯前端 SvelteKit 静态站（adapter-static）。核心价值：把算法/SQL 过程变成可步进、可试错、可练习的交互演示，对齐李春葆《数据结构教程》与杨宏霞《数据库技术及应用（MySQL）》。状态：**v0.1 已完成**，v0.2 已开始（栈和队列 `8982eed`）。
+**StructVis（位于 `structvis/`）**：数据结构与数据库自学工具，纯前端 SvelteKit 静态站（adapter-static，输出 `docs/`，GitHub Pages `/struct` 部署）。核心价值：把算法/SQL/SQL 建表/索引动画变成可步进、可试错、可练习、可投影讲授的交互演示，对齐李春葆《数据结构教程》与杨宏霞《数据库技术及应用（MySQL）》。状态：**v0.2 已完成**，**v0.3 教学辅助已开工（演示投影模式 + 讲授剧本已落地）**。
 
-## 代码库结构（源码集中在 structvis/src/，43 个源模块）
+## 代码库结构（structvis/src/，82 源文件，14287 行）
 
-- `lib/engines/` — **引擎层**：`algorithm/`（QuickSortEngine、BinaryTreeEngine 四遍历、SinglyLinkedListEngine 插删、StackQueueEngine 压栈/出栈/入队/出队）+ `sql/SelectEngine`（FROM→WHERE→GROUP BY→SELECT→ORDER BY 分步）+ `types.ts`（AlgorithmEngine<TInput> 契约、AlgorithmStep、SqlTableData；RenderType 含 stack/queue）**已实现**
-- `lib/visualization/` — **渲染器层**：array/tree/linkedlist/sqltable/stack 五种 Canvas 渲染器（stack 渲染器经 mode prop 同时服务 stack/queue 两种 renderType），按 `engine.renderType` 插件化；`visualization-utils.ts`（resolveCSSVar + watchThemeChange 主题联动）**已实现**
-- `lib/components/player/` — **播放器**：AlgoPlayer（GSAP timeline、演示/练习双模式、答题落库）+ ControlBar（键盘）+ PseudocodePanel + PracticePanel **已实现**
-- `lib/components/layout/` + `lib/stores/` + `lib/styles/` — 布局（Sidebar 顶栏按钮显隐切换，首页强制收起）、localStorage stores（progress/settings/persistent）、亮暗 token **已实现**
-- `lib/data/` — **空目录**，规划中的课程内容数据层
-- `routes/` — 8 个已实现页面：`/`（首页）、`/ds`、`/ds/quick-sort`、`/ds/binary-tree`、`/ds/linear-list`、`/ds/stack-queue`、`/db/sql`、`/progress`；**残余占位页**：`/db/tables`、`/db/index`
+- `lib/engines/` — **引擎层**（13 引擎类）：`algorithm/`（QuickSortEngine、自顶向下四排序 basicsort/、BinaryTreeEngine 四遍历、SinglyLinkedListEngine、StackQueueEngine）+ `sql/`（SelectEngine 分步、DmlEngine、create-table）+ `db/`（ErEngine、IndexEngine、NormalizeEngine）+ `algorithm/types.ts` 契约 + `parseInput.ts`；**已实现 + 全套 spec**
+- `lib/visualization/` — **渲染器层**：array/tree/linkedlist/sqltable/stack/er/btree 七种 Canvas 渲染器，按 `engine.renderType` 插件化；`visualization-utils.ts`（resolveCSSVar + watchThemeChange 主题联动）**已实现**
+- `lib/components/player/` — **播放器**：AlgoPlayer（GSAP timeline、演示/练习/**投影**三模式）+ ControlBar + PseudocodePanel + PracticePanel **已实现**
+- `lib/components/layout/` + `ui/` + `stores/` + `styles/` — AppLayout/TopBar/Sidebar、Logo/TopicGrid、progress/settings/persistent stores、亮暗 token **已实现**
+- `lib/content/topics.ts` — **课程目录数据层**（dsTopics×8 + dbTopics×6，TopicCard）已实现；`lib/data/` 仍为空（规划中）
+- `routes/` — **18 个功能页面，无占位页**：`/`、`/ds`、`/db`、ds 全 6 排序+树+链表+栈队列 9 页、db 五页（er/index/normalize/sql/tables/update）、`/progress`；`+layout.ts` prerender=true、trailingSlash='always'
 
-## 关键事实与证据缺口
+## 关键事实
 
-- **文档权威性**：根目录 `StructVis-长期开发文档.md` 为准；`N08-UI-Design.md` 是过时 React 时代设计稿（学术蓝 #2563EB），实现遵循编辑技术极简主义（纸白/琥珀 #D97706，`src/lib/styles/app.css` token 为准）
-- **主题联动**：渲染器不硬编码颜色，经 `resolveCSSVar` 取 token，`.dark` 切换由 MutationObserver 驱动重绘；页面数据面板"示例/自定义"互斥切换（同位置交叉淡入淡出）
-- **测试面**：19 个测试（greet 1 + BinaryTree 4 + SinglyLinkedList 3 + StackQueue 7 + SelectEngine 4），引擎 spec 与引擎同目录；`requireAssertions` 强制断言
-- **Git**：4 commits（`559fa85` 基线 + `2cf0101` v0.1 扩充 + `81509fa` map + `8982eed` 栈队列）→ 热点分析仍降级（insufficient history）；AppLayout/AlgoPlayer/types.ts 为最高变更频次文件（3 次）
-- **残余断层**：`/db/tables`、`/db/index` 占位；settings store 无 `/settings` 路由（TopBar 齿轮位已用主题切换占用）；`prettier --check` 全量仍有历史格式欠账
+- **演示投影模式（v0.3）**：`AlgorithmEngine.demoScript?: DemoScriptItem[]` 按 StepType 配旁白；`AlgorithmStep.presenterNote?` 步骤级旁白优先；AlgoPlayer 有 `engine.demoScript` 时头部出现「投影」按钮 → 全屏覆盖 + requestFullscreen 自动进出，键盘 `Esc`/`Space`/`←→`，大字号讲授
+- **契约字段**：仅 `engine.demoScript` 为可选（不破坏既有引擎）；7 个引擎配齐讲解（quicksort 全分区阶段 + 四排序 + 二叉树 + SQL，SQL 关键步骤用 presenterNote）
+- **测试**：96 个测试 / 15 spec 文件（`npm run test`），`requireAssertions` 强制断言；`npm run check`（svelte-check 0 errors）、`npm run build` 自建 + 部署产物进 `structvis/docs/` 已验证
+- **部署**：git remote `git@github.com:zep4yrs/struct.git`（master）；`.nojekyll` 防 Pages 丢弃 `_app`；本次 v0.3 变更**尚未提交/推送**
 
 ## 技术栈
 
-Svelte 5（runes）+ SvelteKit + Tailwind v4 + GSAP 3.15（唯一 runtime 依赖，AlgoPlayer）+ Canvas 2D + Vitest + adapter-static。`animejs` 在 devDependencies 但源码无引用（推断：遗留）。
+Svelte 5（runes）+ SvelteKit（adapter-static）+ Tailwind v4 + GSAP 3.15（唯一 runtime 依赖，AlgoPlayer）+ Canvas 2D + Vitest。`animejs` 在 devDependencies 但源码无引用（遗留推断）。
 
 ## [操作指南] 强制执行步骤
 
@@ -49,7 +48,7 @@ Svelte 5（runes）+ SvelteKit + Tailwind v4 + GSAP 3.15（唯一 runtime 依赖
 ### 步骤2 — 按任务类型追加操作（步骤1 完成后执行）
 
 - 若任务涉及**接口修改、新增跨模块调用、删除/重命名公共函数**：
-  → 必须运行 `query_graph.py --impact <目标文件>` 确认影响半径后再写代码。
+  → 必须运行 `query_graph.py --impact <目标文件>` 确认影响半径后再写标代码。
 - 若任务需要**判断某文件被谁引用**：
   → 运行 `query_graph.py --who-imports <模块名>`。
 - 若仓库结构已发生重大变化（新增系统、重构模块边界）：

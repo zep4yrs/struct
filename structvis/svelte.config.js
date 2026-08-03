@@ -7,7 +7,7 @@ const config = {
 		runes: ({ filename }) => filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 	},
 	kit: {
-		adapter: adapter({ pages: 'docs', assets: 'docs' }),
+		adapter: adapter({ pages: '../docs', assets: '../docs' }),
 		paths: {
 			base: '/struct',
 			relative: true

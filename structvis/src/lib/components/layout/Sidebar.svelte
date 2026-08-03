@@ -47,9 +47,10 @@
 			title: '排序算法',
 			items: [
 				{ title: '快速排序', href: '/ds/quick-sort' },
-				{ title: '冒泡排序', href: '#', planned: true },
-				{ title: '插入排序', href: '#', planned: true },
-				{ title: '归并排序', href: '#', planned: true }
+				{ title: '冒泡排序', href: '/ds/bubble-sort' },
+				{ title: '直接插入排序', href: '/ds/insertion-sort' },
+				{ title: '简单选择排序', href: '/ds/selection-sort' },
+				{ title: '归并排序', href: '/ds/merge-sort' }
 			]
 		},
 		{
@@ -65,22 +66,32 @@
 		{
 			title: '基础',
 			items: [
+				{ title: '数据库系统概述', href: '#', planned: true },
 				{ title: '数据库和表', href: '/db/tables' },
-				{ title: '数据查询', href: '/db/sql' }
+				{ title: '数据查询', href: '/db/sql' },
+				{ title: '高级查询', href: '#', planned: true },
+				{ title: '数据更新', href: '/db/update' }
 			]
 		},
 		{
 			title: '进阶',
 			items: [
-				{ title: '数据更新', href: '#', planned: true },
-				{ title: '索引与视图', href: '#', planned: true }
+				{ title: '索引原理', href: '/db/index' },
+				{ title: '视图', href: '#', planned: true }
 			]
 		},
 		{
 			title: '设计',
 			items: [
-				{ title: 'E-R 模型', href: '#', planned: true },
-				{ title: '关系规范化', href: '#', planned: true }
+				{ title: 'E-R 模型', href: '/db/er' },
+				{ title: '关系规范化', href: '/db/normalize' }
+			]
+		},
+		{
+			title: '运维',
+			items: [
+				{ title: '事务与并发控制', href: '#', planned: true },
+				{ title: '用户与权限管理', href: '#', planned: true }
 			]
 		}
 	];

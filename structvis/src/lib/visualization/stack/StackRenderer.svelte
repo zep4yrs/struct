@@ -287,8 +287,8 @@
 
 		dpr = window.devicePixelRatio || 1;
 		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(300, Math.min(480, rect.width - 64));
-		canvasHeight = Math.max(200, Math.min(340, rect.height - 48));
+		canvasWidth = Math.max(300, rect.width - 24);
+		canvasHeight = Math.max(200, rect.height - 24);
 
 		canvasEl.width = canvasWidth * dpr;
 		canvasEl.height = canvasHeight * dpr;

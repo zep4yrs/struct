@@ -9,10 +9,13 @@
 import type {
 	AlgorithmEngine,
 	AlgorithmStep,
+	EngineCustomConfig,
+	EnginePreset,
 	Highlight,
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { parseNumberList } from '../parseInput';
 
 export type ListOperation = 'insert' | 'delete';
 
@@ -74,6 +77,74 @@ export class SinglyLinkedListEngine implements AlgorithmEngine<ListEngineInput> 
 	playbackPos = 0;
 
 	private _stepId = 0;
+
+	presets: EnginePreset[] = [
+		{ name: '插入 66 到第 3 位', description: '[12, 99, 37, 8] 在第 3 位插入 66' },
+		{ name: '删除节点 37', description: '[12, 99, 37, 8] 删除值为 37 的节点' }
+	];
+
+	customConfig: EngineCustomConfig = {
+		title: '自定义链表操作',
+		fields: [
+			{
+				key: 'values',
+				label: '节点值序列',
+				type: 'text',
+				placeholder: '逗号分隔，如 12, 99, 37, 8',
+				default: '12, 99, 37, 8'
+			},
+			{
+				key: 'operation',
+				label: '操作',
+				type: 'select',
+				options: [
+					{ value: 'insert', label: '插入' },
+					{ value: 'delete', label: '删除' }
+				],
+				default: 'insert'
+			},
+			{
+				key: 'target',
+				label: '插入位置 / 要删除的值',
+				type: 'text',
+				placeholder: '插入：位置（1 起）；删除：节点值',
+				default: '3'
+			},
+			{
+				key: 'value',
+				label: '插入值',
+				type: 'text',
+				placeholder: '新节点的值',
+				default: '66'
+			}
+		]
+	};
+
+	applyPreset(name: string): void {
+		if (name === '插入 66 到第 3 位') {
+			this.init({ values: [12, 99, 37, 8], operation: 'insert', target: 3, value: 66 });
+		} else if (name === '删除节点 37') {
+			this.init({ values: [12, 99, 37, 8], operation: 'delete', target: 37 });
+		}
+	}
+
+	applyCustom(values: Record<string, string>): void {
+		const list = parseNumberList(values.values ?? '', { min: 1, max: 12, label: '节点' });
+		const target = parseInt(values.target ?? '', 10);
+		if (isNaN(target)) throw new Error('目标参数必须是数字');
+
+		if (values.operation === 'insert') {
+			if (target < 1 || target > list.length + 1) {
+				throw new Error(`插入位置需在 1 ~ ${list.length + 1} 之间`);
+			}
+			const value = parseInt(values.value ?? '', 10);
+			if (isNaN(value)) throw new Error('插入值必须是数字');
+			this.init({ values: list, operation: 'insert', target, value });
+		} else {
+			if (!list.includes(target)) throw new Error(`列表中不存在节点 ${target}`);
+			this.init({ values: list, operation: 'delete', target });
+		}
+	}
 
 	init(input: ListEngineInput): void {
 		const { values, operation, target, value } = input;

@@ -2,7 +2,7 @@
 
 > generated_by: nexus-mapper v2
 > verified_at: 2026-08-03
-> provenance: AST-backed for TypeScript/JavaScript（82 文件，8 系统，Node 零截断）；Svelte 35 文件为 module-only 覆盖，组件间依赖 inferred from manual inspection；git 5 commits 但工作区含大量未提交变更（v0.2 全量 + v0.3 首件）→ hotspots 数据仅为已提交历史，不代表当前活跃变更
+> provenance: AST-backed for TypeScript/JavaScript（82 文件，8 系统，Node 零截断）；Svelte 35 文件为 module-only 覆盖，组件间依赖 inferred from manual inspection；git 10 commits 已全部推送（合并了远程旧部署历史），工作区干净
 
 ## 项目是什么
 
@@ -21,8 +21,8 @@
 
 - **演示投影模式（v0.3）**：`AlgorithmEngine.demoScript?: DemoScriptItem[]` 按 StepType 配旁白；`AlgorithmStep.presenterNote?` 步骤级旁白优先；AlgoPlayer 有 `engine.demoScript` 时头部出现「投影」按钮 → 全屏覆盖 + requestFullscreen 自动进出，键盘 `Esc`/`Space`/`←→`，大字号讲授
 - **契约字段**：仅 `engine.demoScript` 为可选（不破坏既有引擎）；7 个引擎配齐讲解（quicksort 全分区阶段 + 四排序 + 二叉树 + SQL，SQL 关键步骤用 presenterNote）
-- **测试**：96 个测试 / 15 spec 文件（`npm run test`），`requireAssertions` 强制断言；`npm run check`（svelte-check 0 errors）、`npm run build` 自建 + 部署产物进 `structvis/docs/` 已验证
-- **部署**：git remote `git@github.com:zep4yrs/struct.git`（master）；`.nojekyll` 防 Pages 丢弃 `_app`；本次 v0.3 变更**尚未提交/推送**
+- **测试**：96 个测试 / 15 spec 文件（`npm run test`），`requireAssertions` 强制断言；`npm run check`（svelte-check 0 errors）、`npm run build` 自建 + 部署产物进仓库根 `docs/` 已验证
+- **部署**：git remote `git@github.com:zep4yrs/struct.git`（master，10 commits 全部已推送）；**v0.3 已上线** `https://zep4yrs.github.io/struct/`（Pages 源=master 根 `/docs`，`svelte.config.js` adapter 输出 `../docs`，`.nojekyll` 防 Pages 丢弃 `_app`）；`/ds/quick-sort` 为 `ssr=false` 客户端渲染页（空壳正常）
 
 ## 技术栈
 

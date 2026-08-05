@@ -71,11 +71,41 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'merge-sort',
 		badge: '交互式'
 	},
-	{ title: '图的遍历', description: 'BFS / DFS', href: '#', badge: '规划中', planned: true },
-	{ title: '串与数组', description: '模式匹配 · 稀疏矩阵', href: '#', badge: '规划中', planned: true },
-	{ title: '二叉搜索树', description: '查找 · 插入 · 删除', href: '#', badge: '规划中', planned: true },
-	{ title: '哈夫曼树', description: '带权路径长度 · 编码', href: '#', badge: '规划中', planned: true },
-	{ title: '二分查找', description: '有序表折半 · O(log n)', href: '#', badge: '规划中', planned: true },
+	{
+		title: '图的遍历',
+		description: 'BFS 队列扩散 · DFS 递归深入',
+		href: '/ds/graph-traversal',
+		topicId: 'graph-traversal',
+		badge: '交互式'
+	},
+	{
+		title: '串与数组',
+		description: '模式匹配 · 稀疏矩阵',
+		href: '#',
+		badge: '规划中',
+		planned: true
+	},
+	{
+		title: '二叉搜索树',
+		description: '查找 · 插入 · 删除',
+		href: '#',
+		badge: '规划中',
+		planned: true
+	},
+	{
+		title: '哈夫曼树',
+		description: '带权路径长度 · 编码',
+		href: '#',
+		badge: '规划中',
+		planned: true
+	},
+	{
+		title: '二分查找',
+		description: '有序表折半 · O(log n)',
+		href: '#',
+		badge: '规划中',
+		planned: true
+	},
 	{ title: '哈希表', description: '散列函数 · 冲突处理', href: '#', badge: '规划中', planned: true }
 ];
 

@@ -66,6 +66,8 @@ export interface AlgorithmStep {
 	btree?: BPlusTreeData;
 	/** 图数据快照（仅 graph 渲染器使用） */
 	graph?: GraphData;
+	/** KMP 匹配快照（仅 kmp 渲染器使用） */
+	kmp?: KmpData;
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -153,11 +155,40 @@ export interface GraphData {
 	nodeNote?: Record<number, string>;
 }
 
+/** KMP 匹配快照（kmp 渲染器：文本行 + 模式行 + next 数组行） */
+export interface KmpData {
+	/** 文本串 */
+	text: string;
+	/** 模式串 */
+	pattern: string;
+	/** 模式串对齐文本的起始下标（0-based；buildNext 阶段表示模式内 j 指针位置） */
+	i: number;
+	/** 模式串内比较位置（0-based；buildNext 阶段表示 k 指针位置，可 < 0） */
+	j: number;
+	/** 本帧表现：正在比较 / 命中 / 失配 / 整体命中 / 整体失败 */
+	phase: 'compare' | 'match' | 'mismatch' | 'found' | 'failed';
+	/** 是否在"求 next 数组"阶段（该阶段无文本对齐，直接显示模式串与 next 行） */
+	buildNext?: boolean;
+	/** next 数组（值为教材 1-based 记法，下标 0 恒为 0 占位；长度 = 模式长 + 1） */
+	next: number[];
+	/** 当前高亮的 next 位置（1-based 下标） */
+	nextIndex?: number;
+}
+
 /**
  * 渲染类型 — 告诉播放器用什么渲染器
  */
 export type RenderType =
-	'array' | 'tree' | 'linkedlist' | 'stack' | 'queue' | 'graph' | 'sql-table' | 'er' | 'btree';
+	| 'array'
+	| 'tree'
+	| 'linkedlist'
+	| 'stack'
+	| 'queue'
+	| 'graph'
+	| 'kmp'
+	| 'sql-table'
+	| 'er'
+	| 'btree';
 
 /**
  * 练习题类型

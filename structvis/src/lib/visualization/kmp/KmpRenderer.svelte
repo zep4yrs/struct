@@ -1,0 +1,233 @@
+<script lang="ts">
+	import { onMount, onDestroy, tick } from 'svelte';
+	import { browser } from '$app/environment';
+	import type { AlgorithmStep, KmpData } from '$lib/engines/algorithm/types';
+	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
+
+	interface Props {
+		steps: AlgorithmStep[];
+		playbackPos: number;
+	}
+
+	let { steps, playbackPos }: Props = $props();
+
+	let canvasEl: HTMLCanvasElement | undefined;
+	let ctx: CanvasRenderingContext2D | null = null;
+	let dpr = 1;
+	let unwatchTheme: (() => void) | undefined;
+
+	let canvasWidth = 640;
+	let canvasHeight = 400;
+
+	const LOGICAL_W = 1000;
+	const LOGICAL_H = 560;
+	const MIN_SCALE = 0.8;
+
+	/** 字符格宽 */
+	const CHAR_W = 30;
+	const CHAR_H = 34;
+
+	let colors = $state({
+		ink: '#1A1A1A',
+		ink2: '#6B6B6B',
+		ink3: '#9A9A9A',
+		accent: '#D97706',
+		success: '#2D6A4F',
+		successDeep: '#1F4D38',
+		danger: '#B4442C',
+		line: '#D4D0C8'
+	});
+
+	function updateColorsFromCSS() {
+		if (!browser) return;
+		colors = {
+			ink: resolveCSSVar('--color-ink'),
+			ink2: resolveCSSVar('--color-ink-2'),
+			ink3: resolveCSSVar('--color-ink-3'),
+			accent: resolveCSSVar('--color-accent'),
+			success: resolveCSSVar('--color-success'),
+			successDeep: resolveCSSVar('--color-success-deep') || resolveCSSVar('--color-success'),
+			danger: resolveCSSVar('--color-danger') || '#B4442C',
+			line: resolveCSSVar('--color-line-regular')
+		};
+	}
+
+	/** 当前帧 */
+	function frame(): KmpData | undefined {
+		const step = steps[Math.min(Math.floor(playbackPos), steps.length - 1)];
+		return step?.kmp;
+	}
+
+	const drawMono = 'ui-monospace, SFMono-Regular, Menlo, monospace';
+
+	function draw() {
+		if (!ctx) return;
+		const f = frame();
+		ctx.save();
+		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+		const scale = Math.min(canvasWidth / LOGICAL_W, canvasHeight / LOGICAL_H, 1.35);
+		ctx.scale(scale, scale);
+		if (!f) {
+			ctx.restore();
+			return;
+		}
+
+		const m = f.pattern.length;
+		const cellColor = (ch: string): string => (ch === ' ' ? 'transparent' : colors.ink2);
+		const phaseColor =
+			f.phase === 'match' || f.phase === 'found'
+				? colors.success
+				: f.phase === 'mismatch'
+					? colors.danger
+					: colors.accent;
+
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+
+		if (f.buildNext) {
+			// 阶段 1：求 next。只显示模式串（j/k 双指针）与 next 数组行
+			const yPat = 190;
+			ctx.font = `600 26px ${drawMono}`;
+			const absX = (idx: number) => 120 + idx * CHAR_W + CHAR_W / 2;
+			for (let k = 0; k < m; k++) {
+				const highlighted = k === f.i || k === f.j;
+				ctx.fillStyle = highlighted ? phaseColor : cellColor(f.pattern[k]);
+				ctx.fillText(f.pattern[k], absX(k), yPat);
+				if (highlighted) {
+					ctx.strokeStyle = phaseColor;
+					ctx.lineWidth = 2;
+					ctx.strokeRect(absX(k) - CHAR_W / 2 + 2, yPat - 20, CHAR_W - 4, CHAR_H - 4);
+				}
+			}
+			ctx.font = `600 16px ${drawMono}`;
+			ctx.fillStyle = colors.ink3;
+			ctx.fillText('↑ j', absX(Math.min(f.i, m - 1)), yPat + 34);
+			ctx.fillText('↑ k', absX(Math.max(f.j, 0)), yPat + 56);
+		} else {
+			// 阶段 2：匹配。文本行 + 对齐的模式行 + next 行
+			const yText = 120;
+			ctx.font = `600 26px ${drawMono}`;
+			for (let k = 0; k < f.text.length; k++) {
+				const x = 120 + k * CHAR_W + CHAR_W / 2;
+				const isCompare = k === f.i;
+				ctx.fillStyle = isCompare ? phaseColor : cellColor(f.text[k]);
+				ctx.fillText(f.text[k], x, yText);
+			}
+			ctx.font = `600 16px ${drawMono}`;
+			ctx.fillStyle = colors.ink3;
+			ctx.fillText('↑ i', 120 + f.i * CHAR_W + CHAR_W / 2, yText + 34);
+
+			const yPat = 240;
+			ctx.font = `600 26px ${drawMono}`;
+			for (let k = 0; k < m; k++) {
+				const x = 120 + (f.i + k) * CHAR_W + CHAR_W / 2;
+				const isCompare = k === f.j;
+				ctx.fillStyle = isCompare ? phaseColor : cellColor(f.pattern[k]);
+				ctx.fillText(f.pattern[k], x, yPat);
+				if (isCompare) {
+					ctx.strokeStyle = phaseColor;
+					ctx.lineWidth = 2;
+					ctx.strokeRect(120 + (f.i + k) * CHAR_W + 2, yPat - 20, CHAR_W - 4, CHAR_H - 4);
+				}
+			}
+			ctx.font = `600 16px ${drawMono}`;
+			ctx.fillStyle = colors.ink3;
+			if (f.j >= 0 && f.j < m) {
+				ctx.fillText('↑ j', 120 + (f.i + f.j) * CHAR_W + CHAR_W / 2, yPat + 34);
+			}
+
+			if (f.phase === 'found' || f.phase === 'failed') {
+				const label = f.phase === 'found' ? '匹配成功' : '匹配失败';
+				ctx.font = `600 18px ${drawMono}`;
+				ctx.fillStyle = f.phase === 'found' ? colors.success : colors.danger;
+				ctx.textAlign = 'left';
+				ctx.fillText(label, 60, yPat + 80);
+			}
+		}
+
+		// 阶段 1/2 共用的 next 数组行
+		const yNext = f.buildNext ? 330 : 400;
+		ctx.font = `500 20px ${drawMono}`;
+		ctx.fillStyle = colors.ink3;
+		ctx.textAlign = 'left';
+		ctx.fillText('next', 60, yNext - 26);
+		ctx.textAlign = 'center';
+		for (let k = 1; k <= m; k++) {
+			const x = 120 + (k - 1) * CHAR_W + CHAR_W / 2;
+			const hl = f.nextIndex === k;
+			ctx.fillStyle = hl ? phaseColor : colors.ink2;
+			ctx.font = `500 20px ${drawMono}`;
+			ctx.fillText(String(f.next[k] ?? 0), x, yNext);
+			ctx.font = `500 13px ${drawMono}`;
+			ctx.fillStyle = colors.ink3;
+			ctx.fillText(`[${k}]`, x, yNext + 22);
+		}
+
+		ctx.restore();
+	}
+
+	function resizeCanvas() {
+		if (!browser || !canvasEl) return;
+		const container = canvasEl.parentElement;
+		if (!container) return;
+
+		dpr = window.devicePixelRatio || 1;
+		const rect = container.getBoundingClientRect();
+		canvasWidth = Math.max(Math.max(320, rect.width - 24), LOGICAL_W * MIN_SCALE);
+		canvasHeight = Math.max(Math.max(240, rect.height - 24), LOGICAL_H * MIN_SCALE);
+
+		canvasEl.width = canvasWidth * dpr;
+		canvasEl.height = canvasHeight * dpr;
+		canvasEl.style.width = `${canvasWidth}px`;
+		canvasEl.style.height = `${canvasHeight}px`;
+
+		ctx = canvasEl.getContext('2d');
+		if (ctx) ctx.scale(dpr, dpr);
+
+		updateColorsFromCSS();
+		draw();
+	}
+
+	$effect(() => {
+		if (!browser) return;
+		void playbackPos;
+		void steps;
+		tick().then(() => draw());
+	});
+
+	onMount(() => {
+		resizeCanvas();
+		window.addEventListener('resize', resizeCanvas);
+		draw();
+		unwatchTheme = watchThemeChange(() => {
+			updateColorsFromCSS();
+			draw();
+		});
+	});
+
+	onDestroy(() => {
+		if (!browser) return;
+		window.removeEventListener('resize', resizeCanvas);
+		unwatchTheme?.();
+	});
+</script>
+
+<div class="kmp-canvas-wrap">
+	<canvas bind:this={canvasEl}></canvas>
+</div>
+
+<style>
+	.kmp-canvas-wrap {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+</style>

@@ -58,10 +58,7 @@
 		return n.keys.length * KEY_W + 8;
 	}
 
-	function drawNode(
-		n: BPlusNode,
-		hl: 'current' | 'sorted' | 'pivot' | 'compare' | null
-	) {
+	function drawNode(n: BPlusNode, hl: 'current' | 'sorted' | 'pivot' | 'compare' | null) {
 		const w = nodeWidth(n);
 		const x = n.x;
 		const y = n.y;
@@ -148,9 +145,7 @@
 		}
 
 		// 2. 叶子链表箭头（按 x 排序的可见叶子）
-		const leaves = tree.nodes
-			.filter((n) => n.leaf)
-			.sort((a, b) => a.x - b.x);
+		const leaves = tree.nodes.filter((n) => n.leaf).sort((a, b) => a.x - b.x);
 		for (let i = 0; i < leaves.length - 1; i++) {
 			const a = leaves[i];
 			const b = leaves[i + 1];

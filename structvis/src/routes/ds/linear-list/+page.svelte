@@ -11,7 +11,9 @@
 		return e;
 	}
 
-	let engine = $state(createEngine({ values: [12, 99, 37, 8], operation: 'insert', target: 3, value: 66 }));
+	let engine = $state(
+		createEngine({ values: [12, 99, 37, 8], operation: 'insert', target: 3, value: 66 })
+	);
 </script>
 
 <div class="page">

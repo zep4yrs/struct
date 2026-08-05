@@ -114,9 +114,15 @@
 		ctx.stroke();
 		ctx.beginPath();
 		ctx.moveTo(x2, y2);
-		ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI / 6), y2 - headLen * Math.sin(angle - Math.PI / 6));
+		ctx.lineTo(
+			x2 - headLen * Math.cos(angle - Math.PI / 6),
+			y2 - headLen * Math.sin(angle - Math.PI / 6)
+		);
 		ctx.moveTo(x2, y2);
-		ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI / 6), y2 - headLen * Math.sin(angle + Math.PI / 6));
+		ctx.lineTo(
+			x2 - headLen * Math.cos(angle + Math.PI / 6),
+			y2 - headLen * Math.sin(angle + Math.PI / 6)
+		);
 		ctx.stroke();
 	}
 
@@ -228,7 +234,13 @@
 		drawLabel('front', containerX - 46, labelY, colors.current, 'right');
 		drawArrow(containerX - 40, labelY, containerX - 6, labelY, colors.current);
 		drawLabel('rear', containerX + containerW + 46, labelY, colors.ink3, 'left');
-		drawArrow(containerX + containerW + 6, labelY, containerX + containerW + 40, labelY, colors.ink3);
+		drawArrow(
+			containerX + containerW + 6,
+			labelY,
+			containerX + containerW + 40,
+			labelY,
+			colors.ink3
+		);
 
 		// 容器外框
 		ctx.strokeStyle = colors.nodeBorder;

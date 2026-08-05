@@ -70,8 +70,7 @@ const STACK_PRACTICE: PracticeQuestion[] = [
 		options: ['栈底', '栈顶', '中间', '任意位置'],
 		correctAnswer: '栈顶',
 		hint: '栈是后进先出（LIFO）结构',
-		explanation:
-			'栈只在栈顶进行插入（压栈）和删除（出栈）操作，栈底是封闭的，因此元素后进先出。'
+		explanation: '栈只在栈顶进行插入（压栈）和删除（出栈）操作，栈底是封闭的，因此元素后进先出。'
 	}
 ];
 
@@ -83,8 +82,7 @@ const QUEUE_PRACTICE: PracticeQuestion[] = [
 		options: ['队头', '队尾', '中间', '任意位置'],
 		correctAnswer: '队尾',
 		hint: '队列是先进先出（FIFO）结构',
-		explanation:
-			'入队发生在队尾（rear 端），出队发生在队头（front 端），先入队的元素先出队。'
+		explanation: '入队发生在队尾（rear 端），出队发生在队头（front 端），先入队的元素先出队。'
 	}
 ];
 
@@ -264,7 +262,12 @@ export class StackQueueEngine implements AlgorithmEngine<StackQueueEngineInput> 
 		const headLabel = structure === 'stack' ? '栈顶' : '队头';
 		const opName = structure === 'stack' ? '出栈' : '出队';
 		if (seq.length === 0) {
-			this._emit('recurse-exit', `${structure === 'stack' ? '栈' : '队'}为空，${opName}失败（下溢）。`, seq, 1);
+			this._emit(
+				'recurse-exit',
+				`${structure === 'stack' ? '栈' : '队'}为空，${opName}失败（下溢）。`,
+				seq,
+				1
+			);
 			return;
 		}
 
@@ -303,7 +306,9 @@ export class StackQueueEngine implements AlgorithmEngine<StackQueueEngineInput> 
 			`${headLabel}指针${structure === 'stack' ? '下移' : '后移'}，元素 ${headValue} 已${opName}。`,
 			after,
 			structure === 'stack' ? 4 : 4,
-			after.length > 0 ? [{ type: 'current', indices: [structure === 'stack' ? after.length - 1 : 0] }] : []
+			after.length > 0
+				? [{ type: 'current', indices: [structure === 'stack' ? after.length - 1 : 0] }]
+				: []
 		);
 
 		this._emit(

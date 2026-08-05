@@ -49,10 +49,7 @@ const VALID_TYPES = [
  * 失败时抛出 CreateTableError（message 为教学化错误提示）。
  */
 export function parseCreateTable(sql: string): CreateTableResult {
-	const clean = sql
-		.replace(/\s+/g, ' ')
-		.replace(/;\s*$/, '')
-		.trim();
+	const clean = sql.replace(/\s+/g, ' ').replace(/;\s*$/, '').trim();
 
 	const m = clean.match(/^CREATE\s+TABLE\s+([^\s(]+)\s*\((.*)\)\s*$/is);
 	if (!m) throw err('语句应以 CREATE TABLE 表名 (…) 开头');

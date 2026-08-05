@@ -75,8 +75,7 @@
 		</div>
 		<h1 class="page-title">建表练习</h1>
 		<p class="page-desc">
-			<b>CREATE TABLE</b> 定义表的结构：列名、数据类型与约束（主键 / 非空 / 唯一 / 外键）。
-			选择示例或输入自己的建表语句，系统即时解析并展示表结构，错误会给出教学提示。
+			<b>CREATE TABLE</b> 定义表的结构：列名、数据类型与约束（主键 / 非空 / 唯一 / 外键）。 选择示例或输入自己的建表语句，系统即时解析并展示表结构，错误会给出教学提示。
 		</p>
 	</div>
 
@@ -108,10 +107,7 @@
 				</div>
 			</div>
 			<div class="view-switch">
-				<button
-					class="op-btn {!showCustom ? 'active' : ''}"
-					onclick={() => (showCustom = false)}
-				>
+				<button class="op-btn {!showCustom ? 'active' : ''}" onclick={() => (showCustom = false)}>
 					示例
 				</button>
 				<button class="op-btn {showCustom ? 'active' : ''}" onclick={() => (showCustom = true)}>
@@ -135,7 +131,11 @@
 			<div class="schema-table">
 				<div class="schema-head">
 					<span class="schema-name mono">{result.tableName}</span>
-					<span class="schema-meta">共 {result.columns.length} 列{result.foreignKeys.length > 0 ? ` · ${result.foreignKeys.length} 个外键` : ''}</span>
+					<span class="schema-meta"
+						>共 {result.columns.length} 列{result.foreignKeys.length > 0
+							? ` · ${result.foreignKeys.length} 个外键`
+							: ''}</span
+					>
 				</div>
 				<div class="col-list">
 					{#each result.columns as col, i (col.name)}

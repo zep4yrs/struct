@@ -43,7 +43,7 @@
 	<TopBar
 		{crumb}
 		showSidebarBtn={!isHome}
-		sidebarOpen={sidebarOpen}
+		{sidebarOpen}
 		onToggleSidebar={() => (sidebarOpen = !sidebarOpen)}
 	/>
 

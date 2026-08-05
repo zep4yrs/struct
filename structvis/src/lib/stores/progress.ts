@@ -66,7 +66,9 @@ export function updateTopicMastery(topicId: string, delta: number): void {
 /**
  * 添加错题记录
  */
-export function addMistake(mistake: Omit<MistakeRecord, 'id' | 'timestamp' | 'reviewCount' | 'mastered'>): void {
+export function addMistake(
+	mistake: Omit<MistakeRecord, 'id' | 'timestamp' | 'reviewCount' | 'mastered'>
+): void {
 	progress.update((p) => {
 		p.mistakes.push({
 			...mistake,

@@ -98,8 +98,7 @@
 		traverse(0);
 
 		const levelH =
-			(canvasHeight - PADDING_TOP - PADDING_BOTTOM - NODE_RADIUS * 2) /
-			Math.max(1, maxDepth);
+			(canvasHeight - PADDING_TOP - PADDING_BOTTOM - NODE_RADIUS * 2) / Math.max(1, maxDepth);
 		const posInMid: Record<number, number> = {};
 		midOrder.forEach((idx, k) => (posInMid[idx] = k));
 

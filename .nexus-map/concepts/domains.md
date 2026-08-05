@@ -9,14 +9,15 @@
 - 引擎把一次算法执行编译为**关键帧序列**（steps），每帧含：`data`（快照）、`highlights`（高亮类型 + indices）、`pseudocodeLine`、`description`（字幕文本）
 - 高亮类型集：`pivot`/`compare`/`swap`/`sorted`/`current`/`partition`/`pointer-i`/`pointer-j`
 - StepType（决定动画时长与讲授旁白匹配）：`init`/`compare`/`swap`/`pivot-select`/`partition-start`/`partition-end`/`recurse-enter`/`recurse-exit`/`complete`/`default`
-- 数据编码约定：数组=值序列；树=层序（-1 空节点）；链表=值序列（新节点 index -1）；SQL=可选 `step.table`（SqlTableData 列/行快照）；**图=可选 `step.graph`（GraphData 节点/边 + 逐帧 nodeState/edgeState 快照）**
+- 数据编码约定：数组=值序列；树=层序（-1 空节点）；链表=值序列（新节点 index -1）；SQL=可选 `step.table`（SqlTableData 列/行快照）；**图=可选 `step.graph`（GraphData 节点/边 + 逐帧 nodeState/edgeState/nodeNote 快照）**
 - 播放器按 `renderType` 选择渲染器，渲染器只消费 steps + playbackPos（浮点，插值用）
 
 ## 1b. 图状态快照模型（graph-snapshot）
 
-- `GraphData.nodes`（id+label）+ `edges`（from/to/weight/label）+ 可选 `directed`
-- `nodeState`：unvisited/frontier（队/栈中）/visited/current（正在访问）/done（完成）；`edgeState`：normal/tried/candidate（虚线）/selected/current
-- 渲染器环形自动布局（引擎不预置坐标）；DFS/BFS/Prim/Kruskal/Dijkstra 共用契约，状态语义逐算法复用
+- `GraphData.nodes`（id+label）+ `edges`（from/to/weight/label）+ 可选 `directed` + 可选 `nodeNote`（节点下方小字标注，Dijkstra 的 dist 实时值）
+- `nodeState`：unvisited/frontier（队/栈中或候选端点）/visited/current（正在处理）/done（确定）；`edgeState`：normal/tried（考察过/松弛无效/成环跳过）/candidate（候选或正在松弛）/selected/current
+- 渲染器环形自动布局（引擎不预置坐标）；DFS/BFS/Prim/Kruskal/Dijkstra 共用契约，状态语义逐算法复用；加权图边权标签、有向图箭头
+- 图算法专用步骤类型：edge-candidate（考察候选边/扫描）、edge-select（选中边/确定顶点）、edge-reject（成环跳过/松弛无效）——AlgoPlayer STEP_DURATIONS 已配动画时长
 
 ## 2. SQL 逻辑执行顺序（sql-execution-order）
 

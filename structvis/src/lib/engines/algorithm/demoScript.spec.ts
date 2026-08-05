@@ -9,6 +9,8 @@ import { BinaryTreeEngine } from './binarytree/BinaryTreeEngine';
 import { GraphTraversalEngine } from './graph/GraphTraversalEngine';
 import { MstEngine } from './graph/MstEngine';
 import { DijkstraEngine } from './graph/DijkstraEngine';
+import { TopoSortEngine } from './graph/TopoSortEngine';
+import { CriticalPathEngine } from './graph/CriticalPathEngine';
 import { SelectEngine, type SqlTable } from '../sql/SelectEngine';
 
 type EngineFactory = () => AlgorithmEngine<unknown>;
@@ -124,6 +126,36 @@ describe('讲授剧本 demoScript', () => {
 					],
 					directed: true,
 					start: 0
+				});
+				return e;
+			}
+		],
+		[
+			'TopoSortEngine',
+			() => {
+				const e = new TopoSortEngine();
+				e.init({
+					labels: ['0', '1', '2', '3'],
+					edges: [
+						[0, 1],
+						[0, 2],
+						[1, 3]
+					]
+				});
+				return e;
+			}
+		],
+		[
+			'CriticalPathEngine',
+			() => {
+				const e = new CriticalPathEngine();
+				e.init({
+					labels: ['0', '1', '2', '3'],
+					edges: [
+						[0, 1, 3],
+						[1, 2, 4],
+						[0, 2, 5]
+					]
 				});
 				return e;
 			}

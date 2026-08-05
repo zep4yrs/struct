@@ -93,6 +93,20 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式'
 	},
 	{
+		title: '拓扑排序',
+		description: 'Kahn 入度法 · 环检测',
+		href: '/ds/topo-sort',
+		topicId: 'topo-sort',
+		badge: '交互式'
+	},
+	{
+		title: '关键路径',
+		description: 'AOE 网络 · ve/vl 判定',
+		href: '/ds/critical-path',
+		topicId: 'critical-path',
+		badge: '交互式'
+	},
+	{
 		title: '串与数组',
 		description: '模式匹配 · 稀疏矩阵',
 		href: '#',

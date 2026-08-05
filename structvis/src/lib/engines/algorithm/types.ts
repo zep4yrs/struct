@@ -33,6 +33,9 @@ export type StepType =
 	| 'partition-end' // 分区完成
 	| 'recurse-enter' // 进入递归
 	| 'recurse-exit' // 递归返回
+	| 'edge-candidate' // 考察候选边（图算法）
+	| 'edge-select' // 选中边 / 确定顶点（图算法）
+	| 'edge-reject' // 跳过边（成环 / 松弛无效）
 	| 'complete' // 全部完成
 	| 'default'; // 默认
 
@@ -146,6 +149,8 @@ export interface GraphData {
 	nodeState?: Record<number, GraphNodeState>;
 	/** 边状态覆写（key 为边索引，缺省 normal） */
 	edgeState?: Record<number, GraphEdgeState>;
+	/** 节点下方标注（key 为节点 id；Dijkstra 的 dist 等） */
+	nodeNote?: Record<number, string>;
 }
 
 /**

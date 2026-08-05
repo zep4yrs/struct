@@ -110,6 +110,9 @@
 		'partition-end': 1.2,
 		'recurse-enter': 0.8,
 		'recurse-exit': 0.8,
+		'edge-candidate': 1.1,
+		'edge-select': 1.2,
+		'edge-reject': 0.9,
 		complete: 1.5,
 		default: 1.0
 	};

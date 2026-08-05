@@ -7,6 +7,8 @@ import { SelectionSortEngine } from './basicsort/SelectionSortEngine';
 import { MergeSortEngine } from './basicsort/MergeSortEngine';
 import { BinaryTreeEngine } from './binarytree/BinaryTreeEngine';
 import { GraphTraversalEngine } from './graph/GraphTraversalEngine';
+import { MstEngine } from './graph/MstEngine';
+import { DijkstraEngine } from './graph/DijkstraEngine';
 import { SelectEngine, type SqlTable } from '../sql/SelectEngine';
 
 type EngineFactory = () => AlgorithmEngine<unknown>;
@@ -88,6 +90,39 @@ describe('讲授剧本 demoScript', () => {
 						[1, 3]
 					],
 					mode: 'bfs',
+					start: 0
+				});
+				return e;
+			}
+		],
+		[
+			'MstEngine',
+			() => {
+				const e = new MstEngine();
+				e.init({
+					labels: ['0', '1', '2', '3', '4'],
+					edges: [
+						[0, 1, 2],
+						[1, 2, 3],
+						[1, 4, 5]
+					],
+					mode: 'kruskal',
+					start: 0
+				});
+				return e;
+			}
+		],
+		[
+			'DijkstraEngine',
+			() => {
+				const e = new DijkstraEngine();
+				e.init({
+					labels: ['0', '1', '2'],
+					edges: [
+						[0, 1, 2],
+						[1, 2, 3]
+					],
+					directed: true,
 					start: 0
 				});
 				return e;

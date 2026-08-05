@@ -46,6 +46,36 @@ export function parseLabelList(
 }
 
 /**
+ * 解析图的带权边列表，如 "0-1:5, 1-2:3, 2-0:1"。
+ * 返回 [from, to, weight]；校验端点非负且不超过 maxIndex，权重为正整数。
+ */
+export function parseWeightedEdgeList(
+	text: string,
+	opts: { maxIndex: number; min?: number; label?: string } = { maxIndex: 0 }
+): [number, number, number][] {
+	const { maxIndex, min, label = '边' } = opts;
+	const parts = text
+		.split(/[,，\s]+/)
+		.map((s) => s.trim())
+		.filter((s) => s.length > 0);
+	if (parts.length === 0) throw new Error(`请输入${label}列表`);
+	const edges: [number, number, number][] = [];
+	for (const p of parts) {
+		const m = /^(\d+)\s*[-–]\s*(\d+)\s*:\s*(\d+)$/.exec(p);
+		if (!m) throw new Error(`"${p}" 不是有效的带权边，格式应为 0-1:5`);
+		const a = parseInt(m[1], 10);
+		const b = parseInt(m[2], 10);
+		const w = parseInt(m[3], 10);
+		if (a === b) throw new Error(`边 "${p}" 两端不能是同一个顶点`);
+		if (a > maxIndex || b > maxIndex) throw new Error(`边 "${p}" 的顶点编号超出节点范围`);
+		if (w <= 0) throw new Error(`边 "${p}" 的权重必须为正整数`);
+		edges.push([a, b, w]);
+	}
+	if (min !== undefined && edges.length < min) throw new Error(`至少需要 ${min} 条${label}`);
+	return edges;
+}
+
+/**
  * 解析图的边列表，如 "0-1, 1-2, 2-0"。
  * 返回 [from, to] 对；校验端点非负且不超过 maxIndex。
  */

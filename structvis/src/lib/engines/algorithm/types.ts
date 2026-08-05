@@ -61,6 +61,8 @@ export interface AlgorithmStep {
 	er?: ErDiagramData;
 	/** B+ 树数据快照（仅 btree 渲染器使用） */
 	btree?: BPlusTreeData;
+	/** 图数据快照（仅 graph 渲染器使用） */
+	graph?: GraphData;
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -112,6 +114,38 @@ export interface BPlusNode {
 export interface BPlusTreeData {
 	nodes: BPlusNode[];
 	edges: { from: string; to: string }[];
+}
+
+/** 图节点状态 */
+export type GraphNodeState = 'unvisited' | 'frontier' | 'visited' | 'current' | 'done';
+
+/** 图边状态 */
+export type GraphEdgeState = 'normal' | 'candidate' | 'tried' | 'selected' | 'current';
+
+/** 图节点（graph 渲染器；坐标由渲染器自动布局，引擎不预置） */
+export interface GraphNode {
+	id: number;
+	label: string;
+}
+
+/** 图边；weight 用于有权图（MST/最短路），label 为可选边上的文字 */
+export interface GraphEdge {
+	from: number;
+	to: number;
+	weight?: number;
+	label?: string;
+}
+
+/** 图数据快照（graph 渲染器） */
+export interface GraphData {
+	nodes: GraphNode[];
+	edges: GraphEdge[];
+	/** 有向图（渲染箭头） */
+	directed?: boolean;
+	/** 节点状态覆写（key 为节点 id，缺省 unvisited） */
+	nodeState?: Record<number, GraphNodeState>;
+	/** 边状态覆写（key 为边索引，缺省 normal） */
+	edgeState?: Record<number, GraphEdgeState>;
 }
 
 /**

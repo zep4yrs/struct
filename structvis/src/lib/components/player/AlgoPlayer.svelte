@@ -12,6 +12,7 @@
 	import StackRenderer from '$lib/visualization/stack/StackRenderer.svelte';
 	import ErRenderer from '$lib/visualization/er/ErRenderer.svelte';
 	import BPlusTreeRenderer from '$lib/visualization/btree/BPlusTreeRenderer.svelte';
+	import GraphRenderer from '$lib/visualization/graph/GraphRenderer.svelte';
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
 	import PracticePanel from './PracticePanel.svelte';
@@ -409,6 +410,8 @@
 						<ErRenderer steps={engine.steps} {playbackPos} />
 					{:else if engine.renderType === 'btree'}
 						<BPlusTreeRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'graph'}
+						<GraphRenderer steps={engine.steps} {playbackPos} />
 					{/if}
 				</div>
 			{/key}
@@ -603,6 +606,8 @@
 						<ErRenderer steps={engine.steps} {playbackPos} />
 					{:else if engine.renderType === 'btree'}
 						<BPlusTreeRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'graph'}
+						<GraphRenderer steps={engine.steps} {playbackPos} />
 					{/if}
 				{/key}
 			</main>

@@ -6,6 +6,7 @@ import { InsertionSortEngine } from './basicsort/InsertionSortEngine';
 import { SelectionSortEngine } from './basicsort/SelectionSortEngine';
 import { MergeSortEngine } from './basicsort/MergeSortEngine';
 import { BinaryTreeEngine } from './binarytree/BinaryTreeEngine';
+import { GraphTraversalEngine } from './graph/GraphTraversalEngine';
 import { SelectEngine, type SqlTable } from '../sql/SelectEngine';
 
 type EngineFactory = () => AlgorithmEngine<unknown>;
@@ -72,6 +73,23 @@ describe('讲授剧本 demoScript', () => {
 			() => {
 				const e = new BinaryTreeEngine();
 				e.init({ tree: [1, 2, 3, 4, 5], mode: 'preorder' });
+				return e;
+			}
+		],
+		[
+			'GraphTraversalEngine',
+			() => {
+				const e = new GraphTraversalEngine();
+				e.init({
+					labels: ['0', '1', '2', '3', '4', '5'],
+					edges: [
+						[0, 1],
+						[0, 2],
+						[1, 3]
+					],
+					mode: 'bfs',
+					start: 0
+				});
 				return e;
 			}
 		],

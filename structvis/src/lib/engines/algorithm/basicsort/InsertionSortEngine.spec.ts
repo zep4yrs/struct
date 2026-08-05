@@ -14,14 +14,10 @@ describe('InsertionSortEngine', () => {
 		e.init([5, 2, 8]);
 		const roundStart = e.steps.find((s) => s.type === 'partition-start');
 		expect(roundStart).toBeDefined();
-		expect(roundStart!.highlights).toEqual([
-			{ type: 'partition', indices: [0, 1] }
-		]);
+		expect(roundStart!.highlights).toEqual([{ type: 'partition', indices: [0, 1] }]);
 		const compare = e.steps.find((s) => s.type === 'compare');
 		expect(compare).toBeDefined();
-		expect(
-			compare!.highlights.some((h) => h.type === 'pointer-j' && h.label === 'j')
-		).toBe(true);
+		expect(compare!.highlights.some((h) => h.type === 'pointer-j' && h.label === 'j')).toBe(true);
 	});
 
 	it('后移步骤把较大元素右移一位', () => {

@@ -32,17 +32,49 @@
 	<!-- 表1 -->
 	<rect x="30" y="8" width="22" height="8" rx="2" fill="currentColor" opacity="0.15" />
 	<rect x="30" y="8" width="22" height="8" rx="2" stroke="currentColor" stroke-width="1.5" />
-	<line x1="34" y1="12" x2="48" y2="12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+	<line
+		x1="34"
+		y1="12"
+		x2="48"
+		y2="12"
+		stroke="currentColor"
+		stroke-width="1.2"
+		stroke-linecap="round"
+	/>
 	<!-- 表2 -->
 	<rect x="30" y="20" width="22" height="8" rx="2" fill="currentColor" opacity="0.15" />
 	<rect x="30" y="20" width="22" height="8" rx="2" stroke="currentColor" stroke-width="1.5" />
-	<line x1="34" y1="24" x2="48" y2="24" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+	<line
+		x1="34"
+		y1="24"
+		x2="48"
+		y2="24"
+		stroke="currentColor"
+		stroke-width="1.2"
+		stroke-linecap="round"
+	/>
 	<!-- 表3 -->
 	<rect x="30" y="32" width="22" height="8" rx="2" fill="currentColor" opacity="0.15" />
 	<rect x="30" y="32" width="22" height="8" rx="2" stroke="currentColor" stroke-width="1.5" />
-	<line x1="34" y1="36" x2="48" y2="36" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+	<line
+		x1="34"
+		y1="36"
+		x2="48"
+		y2="36"
+		stroke="currentColor"
+		stroke-width="1.2"
+		stroke-linecap="round"
+	/>
 	<!-- 表4 -->
 	<rect x="30" y="44" width="22" height="8" rx="2" fill="currentColor" opacity="0.15" />
 	<rect x="30" y="44" width="22" height="8" rx="2" stroke="currentColor" stroke-width="1.5" />
-	<line x1="34" y1="48" x2="48" y2="48" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+	<line
+		x1="34"
+		y1="48"
+		x2="48"
+		y2="48"
+		stroke="currentColor"
+		stroke-width="1.2"
+		stroke-linecap="round"
+	/>
 </svg>

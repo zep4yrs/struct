@@ -17,9 +17,7 @@ describe('parseCreateTable', () => {
 		const r = parseCreateTable(
 			'CREATE TABLE 选课 (学号 INT, 课程号 VARCHAR(10), FOREIGN KEY (学号) REFERENCES 学生(学号))'
 		);
-		expect(r.foreignKeys).toEqual([
-			{ column: '学号', refTable: '学生', refColumn: '学号' }
-		]);
+		expect(r.foreignKeys).toEqual([{ column: '学号', refTable: '学生', refColumn: '学号' }]);
 	});
 
 	it('多行语句（含换行与缩进）', () => {
@@ -31,9 +29,7 @@ describe('parseCreateTable', () => {
 	});
 
 	it('未知类型报错', () => {
-		expect(() => parseCreateTable('CREATE TABLE t (a SUPERTYPE)')).toThrowError(
-			/未知数据类型/
-		);
+		expect(() => parseCreateTable('CREATE TABLE t (a SUPERTYPE)')).toThrowError(/未知数据类型/);
 	});
 
 	it('VARCHAR 缺少长度报错', () => {

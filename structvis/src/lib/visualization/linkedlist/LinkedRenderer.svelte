@@ -143,8 +143,7 @@
 		// 新节点（虚线框）出现在最前面
 		const hasNewNode = hl.hasNewNode;
 		const segW = NODE_W + ARROW_LEN;
-		const totalW =
-			(hasNewNode ? segW + 10 : 0) + values.length * segW + NULL_W + 20;
+		const totalW = (hasNewNode ? segW + 10 : 0) + values.length * segW + NULL_W + 20;
 		const originX = Math.max(10, (canvasWidth - totalW) / 2);
 
 		if (hasNewNode) {

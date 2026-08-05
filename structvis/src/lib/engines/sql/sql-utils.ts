@@ -6,15 +6,9 @@
 import type { SqlTable } from './SelectEngine';
 
 /** 求值一条 WHERE 条件（支持 AND / OR 组合） */
-export function evalSqlWhere(
-	cond: string,
-	row: (string | number)[],
-	table: SqlTable
-): boolean {
+export function evalSqlWhere(cond: string, row: (string | number)[], table: SqlTable): boolean {
 	const orParts = cond.split(/\s+OR\s+/i);
-	return orParts.some((p) =>
-		p.split(/\s+AND\s+/i).every((c) => evalSqlCond(c.trim(), row, table))
-	);
+	return orParts.some((p) => p.split(/\s+AND\s+/i).every((c) => evalSqlCond(c.trim(), row, table)));
 }
 
 function evalSqlCond(cond: string, row: (string | number)[], table: SqlTable): boolean {
@@ -55,8 +49,7 @@ function evalSqlCond(cond: string, row: (string | number)[], table: SqlTable): b
 	const cell = row[ci];
 	// 右侧可能是另一列（如 JOIN ON 学生.学号 = 选课.学号），也可能是字面值
 	const valCol = table.columns.indexOf(valRaw.replace(/^'|'$/g, ''));
-	const val: string | number =
-		valCol >= 0 ? row[valCol] : valRaw.replace(/^'|'$/g, '');
+	const val: string | number = valCol >= 0 ? row[valCol] : valRaw.replace(/^'|'$/g, '');
 	const a = typeof cell === 'number' ? cell : parseFloat(String(cell));
 	const b = typeof val === 'number' ? val : parseFloat(String(val));
 	if (isNaN(a) || isNaN(b)) {

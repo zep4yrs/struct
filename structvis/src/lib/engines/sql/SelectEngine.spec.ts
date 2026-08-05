@@ -79,12 +79,7 @@ describe('SelectEngine', () => {
 	it('AND 组合条件', () => {
 		const steps = run('SELECT 姓名 FROM 学生 WHERE 成绩 >= 80 AND 成绩 <= 95');
 		const last = steps[steps.length - 1];
-		expect(last.table?.rows).toEqual([
-			['张三'],
-			['李四'],
-			['赵六'],
-			['周八']
-		]);
+		expect(last.table?.rows).toEqual([['张三'], ['李四'], ['赵六'], ['周八']]);
 	});
 
 	it('OR 组合条件', () => {
@@ -126,11 +121,7 @@ describe('SelectEngine', () => {
 	it('执行计划算子链', () => {
 		const e = new SelectEngine();
 		e.init({ sql: 'SELECT 姓名 FROM 学生 WHERE 成绩 >= 85', tables: TABLES });
-		expect(e.pseudocode).toEqual([
-			'SCAN FROM 学生',
-			'FILTER 成绩 >= 85',
-			'SELECT 姓名'
-		]);
+		expect(e.pseudocode).toEqual(['SCAN FROM 学生', 'FILTER 成绩 >= 85', 'SELECT 姓名']);
 	});
 
 	it('JOIN：两表连接查询（学生 ↔ 选课）', () => {
@@ -149,13 +140,21 @@ describe('SelectEngine', () => {
 	it('JOIN：连接后的表带前缀列名', () => {
 		const steps = run('SELECT * FROM 学生 JOIN 选课 ON 学生.学号 = 选课.学号');
 		const last = steps[steps.length - 1];
-		expect(last.table?.columns).toEqual(['学生.学号', '学生.姓名', '学生.专业', '学生.成绩', '选课.学号', '选课.课程号', '选课.成绩']);
+		expect(last.table?.columns).toEqual([
+			'学生.学号',
+			'学生.姓名',
+			'学生.专业',
+			'学生.成绩',
+			'选课.学号',
+			'选课.课程号',
+			'选课.成绩'
+		]);
 		expect(last.table?.rows).toHaveLength(5);
 	});
 
 	it('JOIN + WHERE：连接后再筛选', () => {
 		const steps = run(
-			"SELECT 学生.姓名, 选课.成绩 FROM 学生 JOIN 选课 ON 学生.学号 = 选课.学号 WHERE 选课.成绩 >= 80"
+			'SELECT 学生.姓名, 选课.成绩 FROM 学生 JOIN 选课 ON 学生.学号 = 选课.学号 WHERE 选课.成绩 >= 80'
 		);
 		const last = steps[steps.length - 1];
 		expect(last.table?.rows).toEqual([
@@ -189,7 +188,7 @@ describe('SelectEngine', () => {
 
 	it('子查询：IN (SELECT ...)', () => {
 		const steps = run(
-			"SELECT 姓名 FROM 学生 WHERE 学号 IN (SELECT 学号 FROM 选课 WHERE 成绩 > 80)"
+			'SELECT 姓名 FROM 学生 WHERE 学号 IN (SELECT 学号 FROM 选课 WHERE 成绩 > 80)'
 		);
 		const last = steps[steps.length - 1];
 		expect(last.table?.rows).toEqual([['张三'], ['李四']]);

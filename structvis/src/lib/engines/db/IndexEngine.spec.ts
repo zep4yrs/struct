@@ -9,7 +9,11 @@ function run(preset: string) {
 
 describe('IndexEngine', () => {
 	it('预设列表包含 3 个演示', () => {
-		expect(getIndexPresets().map((p) => p.name)).toEqual(['等值查找', '范围查找', '插入（叶分裂）']);
+		expect(getIndexPresets().map((p) => p.name)).toEqual([
+			'等值查找',
+			'范围查找',
+			'插入（叶分裂）'
+		]);
 	});
 
 	it('等值查找：初始步揭示整棵树', () => {

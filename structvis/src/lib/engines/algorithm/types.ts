@@ -70,6 +70,8 @@ export interface AlgorithmStep {
 	kmp?: KmpData;
 	/** 哈夫曼树快照（仅 huffman 渲染器使用） */
 	huffman?: HuffmanData;
+	/** 哈希表快照（仅 hashtable 渲染器使用） */
+	hash?: HashData;
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -195,6 +197,34 @@ export interface HuffmanData {
 	wpl: number;
 }
 
+/** 哈希表快照（hashtable 渲染器：槽位数组 + 探测序列） */
+export interface HashData {
+	/** 布局模式：线性探测（单行槽位）/ 链地址法（槽位 + 链表） */
+	mode: 'linear' | 'chain';
+	/** 槽位数 m */
+	size: number;
+	/** 槽位内容（null = 空槽；链地址法下恒为 null） */
+	slots: (number | null)[];
+	/** 链地址法：槽位下标 → 链上关键字（表头 → 表尾） */
+	chains?: Record<number, number[]>;
+	/** 正在插入/查找的关键字 */
+	key?: number;
+	/** 关键字的显示文本（如教材中的 "01"） */
+	keyLabel?: string;
+	/** H(key) = key mod m 的散列结果 */
+	hashValue?: number;
+	/** 当前探测序列（已探测过的槽位下标，含当前槽） */
+	probe?: number[];
+	/** 当前探测到的槽位（高亮） */
+	current?: number;
+	/** 放入/命中的槽位（成功色） */
+	placed?: number;
+	/** 查找是否命中（search 模式） */
+	found?: boolean;
+	/** 完成帧统计说明（ASL 等） */
+	summary?: string;
+}
+
 /**
  * 渲染类型 — 告诉播放器用什么渲染器
  */
@@ -207,6 +237,7 @@ export type RenderType =
 	| 'graph'
 	| 'kmp'
 	| 'huffman'
+	| 'hashtable'
 	| 'sql-table'
 	| 'er'
 	| 'btree';

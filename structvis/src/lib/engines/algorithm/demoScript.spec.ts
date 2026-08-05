@@ -15,6 +15,7 @@ import { BinarySearchEngine } from './search/BinarySearchEngine';
 import { KMPEngine } from './search/KMPEngine';
 import { BstEngine } from './bst/BstEngine';
 import { HuffmanEngine } from './huffman/HuffmanEngine';
+import { HashTableEngine } from './hash/HashTableEngine';
 import { SelectEngine, type SqlTable } from '../sql/SelectEngine';
 
 type EngineFactory = () => AlgorithmEngine<unknown>;
@@ -193,6 +194,14 @@ describe('讲授剧本 demoScript', () => {
 			() => {
 				const e = new HuffmanEngine();
 				e.init({ weights: [4, 2, 7, 5, 9] });
+				return e;
+			}
+		],
+		[
+			'HashTableEngine',
+			() => {
+				const e = new HashTableEngine();
+				e.init({ keys: [22, 41, 53, 46, 30, 13, 1, 67], mode: 'construct', size: 11 });
 				return e;
 			}
 		],

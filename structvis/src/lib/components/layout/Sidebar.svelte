@@ -56,7 +56,7 @@
 			title: '查找',
 			items: [
 				{ title: '二分查找', href: '/ds/binary-search' },
-				{ title: '哈希表', href: '#', planned: true }
+				{ title: '哈希表', href: '/ds/hash-table' }
 			]
 		}
 	];

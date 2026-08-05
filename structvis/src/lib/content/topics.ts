@@ -107,11 +107,11 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式'
 	},
 	{
-		title: '串与数组',
-		description: '模式匹配 · 稀疏矩阵',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		title: '串的模式匹配（KMP）',
+		description: 'next 数组 · i 不回退 · O(n+m)',
+		href: '/ds/kmp',
+		topicId: 'kmp',
+		badge: '交互式'
 	},
 	{
 		title: '二叉搜索树',
@@ -130,9 +130,9 @@ export const dsTopics: TopicCard[] = [
 	{
 		title: '二分查找',
 		description: '有序表折半 · O(log n)',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		href: '/ds/binary-search',
+		topicId: 'binary-search',
+		badge: '交互式'
 	},
 	{ title: '哈希表', description: '散列函数 · 冲突处理', href: '#', badge: '规划中', planned: true }
 ];

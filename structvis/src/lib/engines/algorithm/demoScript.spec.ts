@@ -11,6 +11,8 @@ import { MstEngine } from './graph/MstEngine';
 import { DijkstraEngine } from './graph/DijkstraEngine';
 import { TopoSortEngine } from './graph/TopoSortEngine';
 import { CriticalPathEngine } from './graph/CriticalPathEngine';
+import { BinarySearchEngine } from './search/BinarySearchEngine';
+import { KMPEngine } from './search/KMPEngine';
 import { SelectEngine, type SqlTable } from '../sql/SelectEngine';
 
 type EngineFactory = () => AlgorithmEngine<unknown>;
@@ -157,6 +159,22 @@ describe('讲授剧本 demoScript', () => {
 						[0, 2, 5]
 					]
 				});
+				return e;
+			}
+		],
+		[
+			'BinarySearchEngine',
+			() => {
+				const e = new BinarySearchEngine();
+				e.init({ data: [5, 13, 19, 21, 37, 56], target: 21 });
+				return e;
+			}
+		],
+		[
+			'KMPEngine',
+			() => {
+				const e = new KMPEngine();
+				e.init({ text: 'acabaabaabcacaabc', pattern: 'abaabcac' });
 				return e;
 			}
 		],

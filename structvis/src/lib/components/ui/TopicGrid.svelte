@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
-	import type { RouteId } from '$app/types';
+	import { base } from '$app/paths';
 	import { progress } from '$lib/stores/progress';
 	import type { TopicCard } from '$lib/content/topics';
 
@@ -18,7 +17,7 @@
 <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	{#each topics as topic (topic.title)}
 		<a
-			href={topic.planned ? undefined : resolve(topic.href as RouteId)}
+			href={topic.planned ? undefined : base + topic.href}
 			class="topic-card block rounded-md border p-4 no-underline transition-all"
 			style="
 				background: var(--color-surface);

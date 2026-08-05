@@ -68,6 +68,8 @@ export interface AlgorithmStep {
 	graph?: GraphData;
 	/** KMP 匹配快照（仅 kmp 渲染器使用） */
 	kmp?: KmpData;
+	/** 哈夫曼树快照（仅 huffman 渲染器使用） */
+	huffman?: HuffmanData;
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -175,6 +177,24 @@ export interface KmpData {
 	nextIndex?: number;
 }
 
+/** 哈夫曼树结点（森林由多个根并列） */
+export interface HuffmanNode {
+	id: number;
+	value: number;
+	left: number;
+	right: number;
+	parent: number;
+}
+
+/** 哈夫曼树快照（huffman 渲染器：森林并列布局） */
+export interface HuffmanData {
+	nodes: HuffmanNode[];
+	/** 当前森林的根 id 列表（初始为全部叶子，逐步合并至单个根） */
+	roots: number[];
+	/** 累计带权路径长度（完成帧给出） */
+	wpl: number;
+}
+
 /**
  * 渲染类型 — 告诉播放器用什么渲染器
  */
@@ -186,6 +206,7 @@ export type RenderType =
 	| 'queue'
 	| 'graph'
 	| 'kmp'
+	| 'huffman'
 	| 'sql-table'
 	| 'er'
 	| 'btree';

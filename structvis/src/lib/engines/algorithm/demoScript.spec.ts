@@ -13,6 +13,8 @@ import { TopoSortEngine } from './graph/TopoSortEngine';
 import { CriticalPathEngine } from './graph/CriticalPathEngine';
 import { BinarySearchEngine } from './search/BinarySearchEngine';
 import { KMPEngine } from './search/KMPEngine';
+import { BstEngine } from './bst/BstEngine';
+import { HuffmanEngine } from './huffman/HuffmanEngine';
 import { SelectEngine, type SqlTable } from '../sql/SelectEngine';
 
 type EngineFactory = () => AlgorithmEngine<unknown>;
@@ -175,6 +177,22 @@ describe('讲授剧本 demoScript', () => {
 			() => {
 				const e = new KMPEngine();
 				e.init({ text: 'acabaabaabcacaabc', pattern: 'abaabcac' });
+				return e;
+			}
+		],
+		[
+			'BstEngine',
+			() => {
+				const e = new BstEngine();
+				e.init({ tree: [10, 5, 15, 3, 7, 12, 20], mode: 'delete', target: 15 });
+				return e;
+			}
+		],
+		[
+			'HuffmanEngine',
+			() => {
+				const e = new HuffmanEngine();
+				e.init({ weights: [4, 2, 7, 5, 9] });
 				return e;
 			}
 		],

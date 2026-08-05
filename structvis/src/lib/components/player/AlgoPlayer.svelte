@@ -14,6 +14,7 @@
 	import BPlusTreeRenderer from '$lib/visualization/btree/BPlusTreeRenderer.svelte';
 	import GraphRenderer from '$lib/visualization/graph/GraphRenderer.svelte';
 	import KmpRenderer from '$lib/visualization/kmp/KmpRenderer.svelte';
+	import HuffmanRenderer from '$lib/visualization/huffman/HuffmanRenderer.svelte';
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
 	import PracticePanel from './PracticePanel.svelte';
@@ -416,6 +417,10 @@
 						<BPlusTreeRenderer steps={engine.steps} {playbackPos} />
 					{:else if engine.renderType === 'graph'}
 						<GraphRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'kmp'}
+						<KmpRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'huffman'}
+						<HuffmanRenderer steps={engine.steps} {playbackPos} />
 					{/if}
 				</div>
 			{/key}
@@ -614,6 +619,8 @@
 						<GraphRenderer steps={engine.steps} {playbackPos} />
 					{:else if engine.renderType === 'kmp'}
 						<KmpRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'huffman'}
+						<HuffmanRenderer steps={engine.steps} {playbackPos} />
 					{/if}
 				{/key}
 			</main>

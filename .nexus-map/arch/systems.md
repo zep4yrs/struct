@@ -9,7 +9,7 @@
 职责：把算法/SQL/DDL/索引过程编译为分步关键帧，供播放器消费。统一契约在 `algorithm/types.ts`：
 
 - `AlgorithmEngine<TInput>` 接口：`init(input)` / `steps: AlgorithmStep[]` / `totalSteps` / `playbackPos` / `pseudocode` / `practiceQuestions` / `renderType` / 可选 `presets` / `customConfig` / `applyPreset` / `applyCustom` / **`demoScript?: DemoScriptItem[]`（v0.3 讲授剧本）**
-- `AlgorithmStep`：`{ data; highlights: Highlight[]; pseudocodeLine; description; page?; recursionDepth? }` + optional `presenterNote`（步骤级旁白）与 `table?: SqlTableData`
+- `AlgorithmStep`：`{ data; highlights: Highlight[]; pseudocodeLine; description; page?; recursionDepth? }` + optional `presenterNote`（步骤级旁白）与 `table?: SqlTableData`、`er?: ErDiagramData`、`btree?: BPlusTreeData`、`graph?: GraphData`（各专用渲染器快照）
 - StepType union：`init | compare | swap | pivot-select | partition-start | partition-end | recurse-enter | recurse-exit | complete | default`
 
 子目录与引擎（13 类）：
@@ -21,6 +21,7 @@
 | 二叉树 | `algorithm/binarytree/BinaryTreeEngine.ts` | preorder/inorder/postorder/levelorder，递归步进入/返回 |
 | 链表 | `algorithm/linkedlist/SinglyLinkedListEngine.ts` | insert/delete |
 | 栈队列 | `algorithm/stackqueue/StackQueueEngine.spec.ts` → 实现 `StackQueueEngine` | renderType 随 structure 返回 'stack'/'queue' |
+| 图遍历 | `algorithm/graph/GraphTraversalEngine.ts` | BFS（队列）/DFS（递归），`graph` 快照逐帧 nodeState，含 `demoScript` |
 | SQL 查询 | `sql/SelectEngine.ts` | FROM→WHERE→GROUP BY→SELECT→ORDER BY→LIMIT；关键阶段携带 `presenterNote`；含 `demoScript` |
 | DML | `sql/DmlEngine.ts` | INSERT/UPDATE/DELETE 分步 |
 | 建表 | `sql/create-table.ts`（函数非类） | `parseCreateTable` 解析 CREATE TABLE |
@@ -36,6 +37,7 @@
 - `tree/TreeRenderer.svelte`、`linkedlist/LinkedRenderer.svelte`、`sqltable/SqlTableRenderer.svelte`
 - `stack/StackRenderer.svelte`（stack/queue 二合一 mode prop）
 - `er/ErRenderer.svelte`（E-R 图）、`btree/BPlusTreeRenderer.svelte`（B+ 树）——v0.2 数据库页新增
+- `graph/GraphRenderer.svelte`（图：环形自动布局、节点五态/边五态配色、边权标签、有向箭头）——v1.0 图专题新增
 - `visualization-utils.ts` — `resolveCSSVar()` 读 token、`watchThemeChange()`（MutationObserver）驱动暗色重绘
 
 ## 3. 播放器 — `structvis/src/lib/components/player/`
@@ -54,7 +56,7 @@
 ## 5. 页面层 — `structvis/src/routes/`
 
 - 目录页：`/` 首页（卡片导航）、`/ds`、`/db`
-- ds 播放器页：quick-sort、bubble-sort、insertion-sort、merge-sort、selection-sort、binary-tree、linear-list、stack-queue（共 8）
+- ds 播放器页：quick-sort、bubble-sort、insertion-sort、merge-sort、selection-sort、binary-tree、linear-list、stack-queue、graph-traversal（共 9）
 - db 播放器页：er、index（索引原理）、normalize、sql、tables（建表解析）、update —— **全实现，无占位**
 - `/progress` 进度页
 - 构建配置：`+layout.ts` 是 `prerender = true`、`trailingSlash = 'always'`；`+layout.svelte` 切 dark class
@@ -62,4 +64,4 @@
 ## 6. 规划中系统（planned）
 
 - `lib/data/` 数据层 — 空目录，课程目录已由其 concurrently `content/topics.ts` 承担
-- 图结构可视化（`visualization/graph`）— 主计划仍在；`settings` 无 `/settings` 路由（TopBar 占用齿轮位）
+- 图专题后续增量 — 最小生成树（Prim/Kruskal）、最短路径（Dijkstra），复用 `graph` 渲染器与契约；`settings` 无 `/settings` 路由（TopBar 占用齿轮位）

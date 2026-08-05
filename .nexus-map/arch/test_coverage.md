@@ -8,7 +8,7 @@
 
 - 运行器：Vitest v4（`test:unit` 脚本），node 环境，`requireAssertions: true`（强制每条测试必须有断言）
 - 命令：`npm run test`（CI 一键）、`npm run test:unit`（watch）
-- 引擎 spec 与引擎源码同目录（`*.spec.ts`），共 **15 个 spec 文件 / 96 个测试**
+- 引擎 spec 与引擎源码同目录（`*.spec.ts`），共 **16 个 spec 文件 / 105 个测试**
 
 ## 覆盖矩阵（当前实测）
 
@@ -21,6 +21,7 @@
 | `engines/algorithm/binarytree/BinaryTreeEngine.spec.ts` | 4 | BinaryTreeEngine | 前/中/后/层序四遍历访问序列 |
 | `engines/algorithm/linkedlist/SinglyLinkedListEngine.spec.ts` | 3 | SinglyLinkedListEngine | 插入/删除步骤、data 序列、高亮 indices |
 | `engines/algorithm/stackqueue/StackQueueEngine.spec.ts` | 7 | StackQueueEngine | push/pop/enqueue/dequeue、renderType 切换、栈顶一致性、空栈下溢、题随结构切换 |
+| `engines/algorithm/graph/GraphTraversalEngine.spec.ts` | 9 | **GraphTraversalEngine（v1.0 图专题新增）** | BFS/DFS 访问序列、graph 快照状态累积、frontier 标记、非连通图、applyCustom 校验/重建、applyPreset、demoScript 覆盖 |
 | `engines/algorithm/demoScript.spec.ts` | 2 | **讲授剧本（v0.3 新增）** | 7 引擎 demoScript 覆盖实际产生的全部步骤类型（default 除外）；SelectEngine presenterNote 优先于类型旁白 |
 | `engines/db/ErEngine.spec.ts` | 9 | ErEngine | E-R 图实体/联系/关系模式生成 |
 | `engines/db/IndexEngine.spec.ts` | 11 | IndexEngine | B+ 树查找/范围/插入分裂关键帧 |

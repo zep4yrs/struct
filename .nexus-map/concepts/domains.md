@@ -9,8 +9,14 @@
 - 引擎把一次算法执行编译为**关键帧序列**（steps），每帧含：`data`（快照）、`highlights`（高亮类型 + indices）、`pseudocodeLine`、`description`（字幕文本）
 - 高亮类型集：`pivot`/`compare`/`swap`/`sorted`/`current`/`partition`/`pointer-i`/`pointer-j`
 - StepType（决定动画时长与讲授旁白匹配）：`init`/`compare`/`swap`/`pivot-select`/`partition-start`/`partition-end`/`recurse-enter`/`recurse-exit`/`complete`/`default`
-- 数据编码约定：数组=值序列；树=层序（-1 空节点）；链表=值序列（新节点 index -1）；SQL=可选 `step.table`（SqlTableData 列/行快照）
+- 数据编码约定：数组=值序列；树=层序（-1 空节点）；链表=值序列（新节点 index -1）；SQL=可选 `step.table`（SqlTableData 列/行快照）；**图=可选 `step.graph`（GraphData 节点/边 + 逐帧 nodeState/edgeState 快照）**
 - 播放器按 `renderType` 选择渲染器，渲染器只消费 steps + playbackPos（浮点，插值用）
+
+## 1b. 图状态快照模型（graph-snapshot）
+
+- `GraphData.nodes`（id+label）+ `edges`（from/to/weight/label）+ 可选 `directed`
+- `nodeState`：unvisited/frontier（队/栈中）/visited/current（正在访问）/done（完成）；`edgeState`：normal/tried/candidate（虚线）/selected/current
+- 渲染器环形自动布局（引擎不预置坐标）；DFS/BFS/Prim/Kruskal/Dijkstra 共用契约，状态语义逐算法复用
 
 ## 2. SQL 逻辑执行顺序（sql-execution-order）
 

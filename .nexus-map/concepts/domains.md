@@ -16,8 +16,8 @@
 
 - `GraphData.nodes`（id+label）+ `edges`（from/to/weight/label）+ 可选 `directed` + 可选 `nodeNote`（节点下方小字标注，Dijkstra 的 dist 实时值）
 - `nodeState`：unvisited/frontier（队/栈中或候选端点）/visited/current（正在处理）/done（确定）；`edgeState`：normal/tried（考察过/松弛无效/成环跳过）/candidate（候选或正在松弛）/selected/current
-- 渲染器环形自动布局（引擎不预置坐标）；DFS/BFS/Prim/Kruskal/Dijkstra 共用契约，状态语义逐算法复用；加权图边权标签、有向图箭头
-- 图算法专用步骤类型：edge-candidate（考察候选边/扫描）、edge-select（选中边/确定顶点）、edge-reject（成环跳过/松弛无效）——AlgoPlayer STEP_DURATIONS 已配动画时长
+- 渲染器环形自动布局（引擎不预置坐标）；DFS/BFS/Prim/Kruskal/Dijkstra/Kahn/AOE 共用契约，状态语义逐算法复用；加权图边权标签、有向图箭头；nodeNote 用于入度（in=2）/dist/ve-vl 标注
+- 图算法专用步骤类型：edge-candidate（考察候选边/扫描）、edge-select（选中边/确定顶点/输出）、edge-reject（成环跳过/松弛无效/环检测失败）——AlgoPlayer STEP_DURATIONS 已配动画时长
 
 ## 2. SQL 逻辑执行顺序（sql-execution-order）
 

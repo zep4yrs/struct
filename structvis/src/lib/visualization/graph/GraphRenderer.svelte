@@ -33,6 +33,7 @@
 
 	const NODE_FONT = '600 15px ui-monospace, SFMono-Regular, Menlo, monospace';
 	const WEIGHT_FONT = '500 13px ui-monospace, SFMono-Regular, Menlo, monospace';
+	const NOTE_FONT = '500 13px ui-monospace, SFMono-Regular, Menlo, monospace';
 
 	let colors = $state({
 		surface: '#FFFFFF',
@@ -147,7 +148,7 @@
 		}
 	}
 
-	function drawNode(n: GraphNode, pos: Pos, state: GraphNodeState) {
+	function drawNode(n: GraphNode, pos: Pos, state: GraphNodeState, note?: string) {
 		const { fill, border, text } = nodeFill(state);
 		const R = 26;
 		ctx!.fillStyle = fill;
@@ -162,6 +163,11 @@
 		ctx!.textAlign = 'center';
 		ctx!.textBaseline = 'middle';
 		ctx!.fillText(n.label, pos.x, pos.y + 1);
+		if (note !== undefined) {
+			ctx!.fillStyle = colors.ink2;
+			ctx!.font = NOTE_FONT;
+			ctx!.fillText(note, pos.x, pos.y + R + 16);
+		}
 	}
 
 	function draw() {
@@ -198,7 +204,8 @@
 			const p = positions.get(n.id);
 			if (!p) continue;
 			const state = g.nodeState?.[n.id] ?? 'unvisited';
-			drawNode(n, p, state);
+			const note = g.nodeNote?.[n.id];
+			drawNode(n, p, state, note);
 		}
 
 		ctx.restore();

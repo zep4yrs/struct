@@ -79,6 +79,20 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式'
 	},
 	{
+		title: '最小生成树',
+		description: 'Prim 扩张树 · Kruskal 避环选边',
+		href: '/ds/mst',
+		topicId: 'mst',
+		badge: '交互式'
+	},
+	{
+		title: '最短路径',
+		description: 'Dijkstra 贪心 · dist 松弛',
+		href: '/ds/shortest-path',
+		topicId: 'shortest-path',
+		badge: '交互式'
+	},
+	{
 		title: '串与数组',
 		description: '模式匹配 · 稀疏矩阵',
 		href: '#',

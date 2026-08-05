@@ -116,16 +116,16 @@ export const dsTopics: TopicCard[] = [
 	{
 		title: '二叉搜索树',
 		description: '查找 · 插入 · 删除',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		href: '/ds/bst',
+		topicId: 'bst',
+		badge: '交互式'
 	},
 	{
 		title: '哈夫曼树',
 		description: '带权路径长度 · 编码',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		href: '/ds/huffman',
+		topicId: 'huffman',
+		badge: '交互式'
 	},
 	{
 		title: '二分查找',

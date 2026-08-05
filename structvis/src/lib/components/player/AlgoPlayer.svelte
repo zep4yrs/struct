@@ -15,6 +15,7 @@
 	import GraphRenderer from '$lib/visualization/graph/GraphRenderer.svelte';
 	import KmpRenderer from '$lib/visualization/kmp/KmpRenderer.svelte';
 	import HuffmanRenderer from '$lib/visualization/huffman/HuffmanRenderer.svelte';
+	import HashtableRenderer from '$lib/visualization/hashtable/HashtableRenderer.svelte';
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
 	import PracticePanel from './PracticePanel.svelte';
@@ -421,6 +422,8 @@
 						<KmpRenderer steps={engine.steps} {playbackPos} />
 					{:else if engine.renderType === 'huffman'}
 						<HuffmanRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'hashtable'}
+						<HashtableRenderer steps={engine.steps} {playbackPos} />
 					{/if}
 				</div>
 			{/key}
@@ -621,6 +624,8 @@
 						<KmpRenderer steps={engine.steps} {playbackPos} />
 					{:else if engine.renderType === 'huffman'}
 						<HuffmanRenderer steps={engine.steps} {playbackPos} />
+					{:else if engine.renderType === 'hashtable'}
+						<HashtableRenderer steps={engine.steps} {playbackPos} />
 					{/if}
 				{/key}
 			</main>

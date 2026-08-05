@@ -134,7 +134,13 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'binary-search',
 		badge: '交互式'
 	},
-	{ title: '哈希表', description: '散列函数 · 冲突处理', href: '#', badge: '规划中', planned: true }
+	{
+		title: '哈希表',
+		description: '散列函数 · 冲突处理',
+		href: '/ds/hash-table',
+		topicId: 'hash-table',
+		badge: '交互式'
+	}
 ];
 
 export const dbTopics: TopicCard[] = [

@@ -2,14 +2,14 @@
 
 > generated_by: nexus-mapper v2
 > verified_at: 2026-08-06
-> provenance: 文件系统扫描 + vitest 配置阅读 + 实际运行（353/353 通过）+ Playwright E2E 22/22 通过
+> provenance: 文件系统扫描 + vitest 配置阅读 + 实际运行（364/364 通过）+ Playwright E2E 22/22 通过
 
 ## 测试配置
 
 - 运行器：Vitest v4（`test:unit` 脚本），`requireAssertions: true`（强制每条测试必须有断言）
 - 双项目：`server`（node 环境，引擎/存储层）+ `client`（jsdom 环境，`.svelte.spec.ts` 组件/渲染器测试，setup `src/test-setup.ts`：matchMedia / getBoundingClientRect / element.animate stub + 记录式 canvas 2D 上下文 + 内联设计 token 供 resolveCSSVar）
 - 命令：`npm run test`（CI 一键）、`npm run test:unit`（watch）
-- 引擎 spec 与引擎源码同目录（`*.spec.ts`），共 **35 个 spec 文件 / 353 个测试**
+- 引擎 spec 与引擎源码同目录（`*.spec.ts`），共 **36 个 spec 文件 / 364 个测试**
 
 ## 覆盖矩阵（当前实测）
 
@@ -46,6 +46,7 @@
 | `engines/sql/SelectEngine.spec.ts` | 20 | SelectEngine | WHERE 收缩、GROUP BY、投影、ORDER BY、多表连接、子查询 |
 | `engines/sql/AdvancedQueryEngine.spec.ts` | 17 | **AdvancedQueryEngine（v0.5 新增）** | HAVING 人数/平均分过滤、LEFT JOIN 保留未选课学生、UNION 去重、EXISTS/NOT EXISTS 相关子查询（SELECT 1 常量列直判非空）、applyPreset/custom sql |
 | `engines/db/TransactionEngine.spec.ts` | 9 | **TransactionEngine（v0.5 新增）** | commit/rollback/lost-update 三模式、Σ 守恒终态、undo 日志回滚恢复、丢失更新 T2 覆盖 T1、步骤链 BEGIN/一致性检查/COMMIT |
+| `engines/algorithm/graph/GraphStorageEngine.spec.ts` | 11 | **GraphStorageEngine（v0.6 新增）** | 邻接矩阵/邻接表两种存储模式、init/每条边/complete 步骤数正确、对称填充、双向链表、applyPreset/applyCustom 重建、带权图、pseudocode 切换、2 道练习、graph 快照节点数、getCurrentStep/getProgress |
 | `engines/sql/DmlEngine.spec.ts` | 8 | DmlEngine | INSERT/UPDATE/DELETE 分步 |
 | `engines/sql/ViewEngine.spec.ts` | 11 | ViewEngine（v0.4 新增） | CREATE VIEW 解析、基表更新后视图自动刷新、隐藏列/聚合/连接视图、伪代码计划 |
 | `engines/sql/create-table.spec.ts` | 8 | create-table.ts | CREATE TABLE 解析、约束/外键 |
@@ -61,5 +62,5 @@
 ## 证据缺口
 
 - **Canvas 像素级无验证**：记录式 stub 断言绘制调用与颜色，不验证像素/布局视觉结果（缺 visual regression 基建，属计划外）
-- **实际运行验证**：`npm run check`（svelte-check 0 errors）、`npm run test`（353/353，双项目）、`npm run test:e2e`（22/22）、`npm run build`（adapter-static 全量预渲染到根 `docs/`）本轮均通过；`prettier --check` 全量已清零
+- **实际运行验证**：`npm run check`（svelte-check 0 errors）、`npm run test`（364/364，双项目）、`npm run test:e2e`（22/22）、`npm run build`（adapter-static 全量预渲染到根 `docs/`）本轮均通过；`prettier --check` 全量已清零
 - **测试基建坑位备忘**：① Svelte 5 transition 依赖 WAAPI，`element.animate` stub 必须在微任务中触发 `onfinish`，否则弹窗 outro 永不完成、节点不移除；② GSAP timeline 被 mock 后 `playbackPos` 不随动画推进，练习流测试需通过捕获 `tl.to` 的 renderProxy/onUpdate 手动 `advanceTo(n)` 模拟推进；③ 弹窗关闭断言需 `waitFor`（outro 跨多轮微任务）；④ AlgoPlayer 的 status 文本由 `$derived(currentStep)` 驱动，重建引擎后须先离开第 0 步再应用预设，`currentStepIdx` 发生真实变化才能重算；⑤ cmd 控制台 GBK 管道查看中文源码易现乱码（误判编码），中文文案核实以 read 工具/UTF-8 显式解码为准

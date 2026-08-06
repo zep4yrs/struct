@@ -26,6 +26,7 @@
 | 最短路径 | `algorithm/graph/DijkstraEngine.ts` | 单源 Dijkstra，dist 松弛关键帧 + `nodeNote` 实时标注，含 `demoScript` |
 | 拓扑排序 | `algorithm/graph/TopoSortEngine.ts` | Kahn 入度法，入度 nodeNote 实时标注 + 环检测（edge-reject），含 `demoScript` |
 | 关键路径 | `algorithm/graph/CriticalPathEngine.ts` | AOE 拓扑→ve→vl→关键活动判定四阶段，nodeNote ve/vl 双标注，含 `demoScript` |
+| 图的存储 | `algorithm/graph/GraphStorageEngine.ts`（v0.6 新增） | 邻接矩阵 vs 邻接表逐步构建；3 preset（无向矩阵/无向表/带权有向矩阵）；2 道练习；复用 graph 渲染器，通过 nodeState/edgeState 控制高亮 |
 | 二分查找 | `algorithm/search/BinarySearchEngine.ts` | 有序表折半，partition+pivot+low/high 指针高亮，复用 array 渲染器，含 `demoScript` |
 | KMP | `algorithm/search/KMPEngine.ts` | 求 next 数组（buildNext 帧）→ 匹配（i 不回退），renderType 'kmp'，含 `demoScript` |
 | 二叉搜索树 | `algorithm/bst/BstEngine.ts` | 查找/插入/删除三模式（伪代码与练习按模式切换），层序快照复用 tree 渲染器，含 `demoScript` |
@@ -38,7 +39,7 @@
 | 建表 | `sql/create-table.ts`（函数非类） | `parseCreateTable` 解析 CREATE TABLE |
 | 数据库 | `db/ErEngine.ts` / `IndexEngine.ts`（B+ 树）/ `NormalizeEngine.ts` / `TransactionEngine.ts`（v0.5 新增） | E-R/索引/范式/事务（renderType: er/btree/…/sql-table）；TransactionEngine 三模式（commit/rollback/lost-update），undo 日志回滚演示，A/B 账户 Σ 守恒 |
 
-测试：每个引擎族带 `.spec.ts`（引擎 + 组件/stores 共 353 测试，见 test_coverage.md）。
+测试：每个引擎族带 `.spec.ts`（引擎 + 组件/stores 共 364 测试，见 test_coverage.md）。
 
 ## 2. Canvas 渲染器层 — `structvis/src/lib/visualization/`
 
@@ -70,6 +71,7 @@
 - 目录页：`/` 首页（卡片导航）、`/ds`、`/db`
 - ds 播放器页：quick-sort、bubble-sort、insertion-sort、merge-sort、selection-sort、binary-tree、linear-list、stack-queue、graph-traversal、mst、shortest-path、topo-sort、critical-path、binary-search、kmp、bst、huffman、hash-table（共 18，全部已实现）
 - db 播放器页：er、index（索引原理）、normalize、sql、tables（建表解析）、update、advanced-query（高级查询）、overview（数据库系统概述概念页+练习）、transaction（事务与并发控制）、users（用户与权限管理概念页+练习）—— **全实现，无占位**（杨宏霞《数据库技术及应用》v0.2 范围已全部覆盖）
+- ds 播放器页：quick-sort、bubble-sort、insertion-sort、merge-sort、selection-sort、binary-tree、linear-list、stack-queue、graph-traversal、mst、shortest-path、topo-sort、critical-path、binary-search、kmp、bst、huffman、hash-table、graph-storage（图的存储，v0.6 新增）—— **共 19，全部已实现**
 - `/progress` 进度页
 - 构建配置：`+layout.ts` 是 `prerender = true`、`trailingSlash = 'always'`；`+layout.svelte` 切 dark class
 

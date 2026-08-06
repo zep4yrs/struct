@@ -196,6 +196,7 @@ test.describe('主题与导航', () => {
 		await expect(page.locator('.canvas-title')).toHaveText('快速排序');
 
 		await page.goto('/');
+		await waitForHydratedGlobal(page);
 		await page.getByRole('button', { name: '显示导航' }).click();
 		await page.getByRole('navigation', { name: '课程目录' }).getByText('图的遍历').click();
 		await expect(page.getByRole('heading', { name: '图的遍历' })).toBeVisible();
@@ -208,5 +209,75 @@ test.describe('主题与导航', () => {
 		await expect(page.getByText('还没有学习记录')).toBeVisible();
 		await page.locator('main').getByRole('link', { name: '快速排序' }).click();
 		await expect(page.getByRole('heading', { name: '快速排序' })).toBeVisible();
+	});
+});
+
+test.describe('搜索', () => {
+	test('搜索弹窗：按钮打开、关键词过滤、Enter 跳转、Esc 关闭', async ({ page }) => {
+		await page.goto('/');
+		await waitForHydratedGlobal(page);
+
+		await page.getByRole('button', { name: '搜索课程' }).click();
+		const dialog = page.getByRole('dialog', { name: '搜索课程' });
+		await expect(dialog).toBeVisible();
+
+		await dialog.getByRole('textbox', { name: '搜索关键词' }).fill('排序');
+		await expect(dialog.getByText('快速排序')).toBeVisible();
+		await expect(dialog.getByText('冒泡排序')).toBeVisible();
+		await expect(dialog.getByText('二叉树遍历')).toBeHidden();
+
+		await dialog.getByRole('textbox', { name: '搜索关键词' }).press('Enter');
+		await expect(page.getByRole('heading', { name: '快速排序' })).toBeVisible();
+	});
+
+	test('搜索无结果提示与 / 快捷键打开', async ({ page }) => {
+		await page.goto('/');
+		await waitForHydratedGlobal(page);
+
+		await page.keyboard.press('/');
+		const dialog = page.getByRole('dialog', { name: '搜索课程' });
+		await expect(dialog).toBeVisible();
+
+		await dialog.getByRole('textbox', { name: '搜索关键词' }).fill('不存在的课程xyz');
+		await expect(dialog.getByText(/没有找到/)).toBeVisible();
+
+		await page.keyboard.press('Escape');
+		await expect(dialog).toBeHidden();
+	});
+});
+
+test.describe('数据库 · 视图', () => {
+	test('视图页：播放器渲染、演示数据切换、搜索可定位', async ({ page }) => {
+		await page.goto('/struct/db/view');
+		await expect(page.getByRole('heading', { name: '视图创建与使用' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await expect(page.locator('.canvas-title')).toHaveText('视图创建与使用');
+		await expect(page.locator('.pseudocode .line')).toHaveCount(5);
+
+		await page.locator('.title-btn', { hasText: '演示数据' }).click();
+		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeVisible();
+		await page.locator('.preset-item', { hasText: '连接视图' }).click();
+		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeHidden();
+		await expect(page.locator('.title-btn', { hasText: '连接视图' })).toContainText('连接视图');
+	});
+
+	test('视图页：练习模式弹题', async ({ page }) => {
+		await page.goto('/struct/db/view');
+		await expect(page.getByRole('heading', { name: '视图创建与使用' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await page.keyboard.press('Home');
+		await expect(page.locator('.current-num')).toHaveText('01');
+
+		await page.getByRole('tab', { name: '练习' }).click();
+		await page.getByTitle('下一步 (→)').click();
+		await expect(page.locator('.current-num')).toHaveText('02');
+
+		const dialog = page.getByRole('dialog', { name: '练习题目' });
+		await expect(dialog).toBeVisible();
+		await expect(dialog.locator('.question-title')).toContainText('视图（VIEW）在数据库中保存的是什么');
+		await dialog.locator('.option', { hasText: '一条 SELECT 查询定义' }).click();
+		await dialog.getByRole('button', { name: '提交答案' }).click();
+		await expect(dialog.locator('.feedback')).toContainText('回答正确');
 	});
 });

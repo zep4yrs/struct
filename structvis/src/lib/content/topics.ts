@@ -189,9 +189,9 @@ export const dbTopics: TopicCard[] = [
 	{
 		title: '视图',
 		description: '创建视图 · 查询与更新',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		href: '/db/view',
+		topicId: 'view',
+		badge: '分步执行'
 	},
 	{
 		title: 'E-R 模型',

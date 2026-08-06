@@ -73,6 +73,7 @@
 - db 播放器页：er、index（索引原理）、normalize、sql、tables（建表解析）、update、advanced-query（高级查询）、overview（数据库系统概述概念页+练习）、transaction（事务与并发控制）、users（用户与权限管理概念页+练习）—— **全实现，无占位**（杨宏霞《数据库技术及应用》v0.2 范围已全部覆盖）
 - ds 播放器页：quick-sort、bubble-sort、insertion-sort、merge-sort、selection-sort、binary-tree、linear-list、stack-queue、graph-traversal、mst、shortest-path、topo-sort、critical-path、binary-search、kmp、bst、huffman、hash-table、graph-storage（图的存储，v0.6 新增）—— **共 19，全部已实现**
 - `/progress` 进度页
+- `/settings` 设置页（动画速度/显示提示/主题，v0.7 新增）
 - 构建配置：`+layout.ts` 是 `prerender = true`、`trailingSlash = 'always'`；`+layout.svelte` 切 dark class
 
 ## 6. 规划中系统（planned）

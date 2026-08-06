@@ -1,8 +1,8 @@
 # 静态测试面
 
 > generated_by: nexus-mapper v2
-> verified_at: 2026-08-05
-> provenance: 文件系统扫描 + vitest 配置阅读 + 实际运行（316/316 通过）；播放器测试批已运行 `npm run test`
+> verified_at: 2026-08-06
+> provenance: 文件系统扫描 + vitest 配置阅读 + 实际运行（316/316 通过）+ Playwright E2E 12/12 通过
 
 ## 测试配置
 
@@ -48,8 +48,15 @@
 | `engines/sql/create-table.spec.ts` | 8 | create-table.ts | CREATE TABLE 解析、约束/外键 |
 | `vitest-examples/greet.spec.ts` | 1 | 样板 | vitest 环境自检（历史样板） |
 
+## E2E 测试面（Playwright，v0.4 验收新增）
+
+- 命令：`npm run test:e2e`（等价 `npx playwright test`）；`npm run test:all` 先单测后 E2E
+- 配置：`playwright.config.ts` — chromium 单项目、baseURL `http://localhost:5173/struct`、webServer 自动起 vite dev（`--port 5173 --strictPort`）；`test-results/`、`playwright-report/` 已入 .gitignore
+- 用例（`e2e/app.spec.ts`，12 个）：首页区块、冒泡排序页渲染（引擎名/总步数/9 行伪代码）、下一步推进+伪代码激活行+Home、播放/暂停自动推进、演示数据预设重建、自定义输入合法重建/非法报错、练习答对/答错弹题流、投影模式进入/ArrowRight 推进/Esc 退出、暗色主题 html.dark+theme-color 同步、侧边栏导航跳转、进度页空状态
+- **E2E 基建坑位备忘**：① vite dev 冷启动首编有水合竞态——SSR HTML 已渲染但 Svelte 事件系统未挂载，首个加载页交互全失效（点击已派发但无响应），功能探测后 `reload` 可恢复；测试用「点击下一步轮询 `.current-num` 变 02」与「主题开关 toggle 往返」两个水合等待 helper（`waitForHydrated`/`waitForHydratedGlobal`）；② 真实 GSAP tween 下 `playbackPos` 滞后于 `currentStepIdx`（compare 步长 1s），连续步进前须 `settleTween`（等 1.3s），否则 `floor(playbackPos)+1` 仍指旧步骤；③ 主题按钮文案随状态翻转，恢复点击须按新文案查找；④ 自定义弹窗 aria-label 来自 `engine.customConfig.title`（冒泡排序为「自定义数据」），非法输入文案为 `"x" 不是有效数字`
+
 ## 证据缺口
 
 - **Canvas 像素级无验证**：记录式 stub 断言绘制调用与颜色，不验证像素/布局视觉结果（缺 visual regression 基建，属计划外）
-- **实际运行验证**：`npm run check`（svelte-check 0 errors）、`npm run test`（316/316，双项目）、`npm run build`（adapter-static 全量预渲染到根 `docs/`）本轮均通过；`prettier --check` 全量已清零
-- **测试基建坑位备忘**：① Svelte 5 transition 依赖 WAAPI，`element.animate` stub 必须在微任务中触发 `onfinish`，否则弹窗 outro 永不完成、节点不移除；② GSAP timeline 被 mock 后 `playbackPos` 不随动画推进，练习流测试需通过捕获 `tl.to` 的 renderProxy/onUpdate 手动 `advanceTo(n)` 模拟推进；③ 弹窗关闭断言需 `waitFor`（outro 跨多轮微任务）；④ AlgoPlayer 的 status 文本由 `$derived(currentStep)` 驱动，重建引擎后须先离开第 0 步再应用预设，`currentStepIdx` 发生真实变化才能重算
+- **实际运行验证**：`npm run check`（svelte-check 0 errors）、`npm run test`（316/316，双项目）、`npm run test:e2e`（12/12）、`npm run build`（adapter-static 全量预渲染到根 `docs/`）本轮均通过；`prettier --check` 全量已清零
+- **测试基建坑位备忘**：① Svelte 5 transition 依赖 WAAPI，`element.animate` stub 必须在微任务中触发 `onfinish`，否则弹窗 outro 永不完成、节点不移除；② GSAP timeline 被 mock 后 `playbackPos` 不随动画推进，练习流测试需通过捕获 `tl.to` 的 renderProxy/onUpdate 手动 `advanceTo(n)` 模拟推进；③ 弹窗关闭断言需 `waitFor`（outro 跨多轮微任务）；④ AlgoPlayer 的 status 文本由 `$derived(currentStep)` 驱动，重建引擎后须先离开第 0 步再应用预设，`currentStepIdx` 发生真实变化才能重算；⑤ cmd 控制台 GBK 管道查看中文源码易现乱码（误判编码），中文文案核实以 read 工具/UTF-8 显式解码为准

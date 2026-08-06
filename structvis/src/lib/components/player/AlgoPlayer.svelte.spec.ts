@@ -22,6 +22,7 @@ const gsapState = vi.hoisted(() => {
 		play: vi.fn(),
 		seek: vi.fn(),
 		tweenTo: vi.fn(),
+		getTweensOf: vi.fn(() => []),
 		timeScale: vi.fn()
 	};
 	return {

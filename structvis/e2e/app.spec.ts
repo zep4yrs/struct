@@ -190,9 +190,15 @@ test.describe('主题与导航', () => {
 		await page.goto('/');
 		await waitForHydratedGlobal(page);
 		await page.getByRole('button', { name: '显示导航' }).click();
-		await page.getByRole('navigation', { name: '课程目录' }).getByText('快速排序').click();
+		const nav = page.getByRole('navigation', { name: '课程目录' });
+		await nav.getByText('快速排序').click();
 		await expect(page.getByRole('heading', { name: '快速排序' })).toBeVisible();
 		await expect(page.locator('.canvas-title')).toHaveText('快速排序');
+
+		await page.goto('/');
+		await page.getByRole('button', { name: '显示导航' }).click();
+		await page.getByRole('navigation', { name: '课程目录' }).getByText('图的遍历').click();
+		await expect(page.getByRole('heading', { name: '图的遍历' })).toBeVisible();
 	});
 
 	test('进度页：空状态与学习记录入口', async ({ page }) => {

@@ -40,7 +40,13 @@
 		},
 		{
 			title: '图结构',
-			items: [{ title: '图的遍历', href: '#', planned: true }]
+			items: [
+				{ title: '图的遍历', href: '/ds/graph-traversal' },
+				{ title: '最短路径', href: '/ds/shortest-path' },
+				{ title: '最小生成树', href: '/ds/mst' },
+				{ title: '拓扑排序', href: '/ds/topo-sort' },
+				{ title: '关键路径', href: '/ds/critical-path' }
+			]
 		},
 		{
 			title: '排序算法',

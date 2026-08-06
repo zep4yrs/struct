@@ -220,6 +220,7 @@
 		if (!tl) return;
 		if (activeQuestion !== null) return;
 		pause();
+		killControlTweens();
 		const target = Math.max(0, Math.floor(playbackPos) - 1);
 		tl.tweenTo(target);
 		currentStepIdx = target;
@@ -229,16 +230,25 @@
 		if (!tl) return;
 		if (activeQuestion !== null) return;
 		pause();
+		killControlTweens();
 		const target = Math.min(engine.totalSteps - 1, Math.floor(playbackPos) + 1);
 		tl.tweenTo(target);
 		currentStepIdx = target;
 		checkPracticeAt(target);
 	}
 
+	// tweenTo() 生成的控制 tween 只向前播放；若不清除，seek 后退后它仍会把
+	// 播放头拉回原位（Home/End/进度条跳动后步骤继续漂移的根因）
+	function killControlTweens() {
+		if (!tl) return;
+		tl.getTweensOf(tl).forEach((t) => t.kill());
+	}
+
 	function reset() {
 		if (!tl) return;
 		if (activeQuestion !== null) return;
 		pause();
+		killControlTweens();
 		tl.seek(0);
 		currentStepIdx = 0;
 		playbackPos = 0;
@@ -249,6 +259,7 @@
 		if (!tl) return;
 		if (activeQuestion !== null) return;
 		pause();
+		killControlTweens();
 		tl.seek(step);
 		currentStepIdx = step;
 		playbackPos = step;
@@ -267,6 +278,14 @@
 			answeredStepIds = [];
 			activeQuestion = null;
 			tick().then(() => {
+				// 旧 timeline 若带未完成的 tweenTo 控制 tween，重建后其 onComplete 仍会
+				// 触发并改写 currentStepIdx（预设/自定义重建后步骤漂移的根因），必须先销毁；
+				// 初始挂载（revision 0）时 tl 已由 onMount 创建，不可销毁
+				if (engineRevision > 0 && tl) {
+					tl.pause();
+					tl.kill();
+					tl = null;
+				}
 				if (engineRevision === 0 || !canvasBodyRef || prefersReducedMotion()) {
 					buildTimeline();
 					currentStepIdx = 0;

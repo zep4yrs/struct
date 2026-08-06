@@ -76,7 +76,7 @@
 - `/settings` 设置页（动画速度/显示提示/主题，v0.7 新增）
 - 构建配置：`+layout.ts` 是 `prerender = true`、`trailingSlash = 'always'`；`+layout.svelte` 切 dark class
 
-## 6. 规划中系统（planned）
+## 6. 已完成项（原 planned 已落地）
 
-- `lib/data/` 数据层 — 空目录，课程目录已由其 concurrently `content/topics.ts` 承担
-- 图专题后续增量 — 图的存储（邻接矩阵/邻接表）；复用 `graph` 渲染器与契约；`settings` 无 `/settings` 路由（TopBar 占用齿轮位）
+- `lib/data/` 数据层 — 原规划为空目录；实际课程目录、引擎预设、示例数据集均由 `content/topics.ts` 与各引擎内联 preset 承担，无需独立目录
+- `/settings` 路由 — v0.7 已完成（动画速度/显示提示/主题切换，TopBar 齿轮 + Sidebar 底部入口）

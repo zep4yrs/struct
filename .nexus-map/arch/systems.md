@@ -32,12 +32,13 @@
 | 哈夫曼树 | `algorithm/huffman/HuffmanEngine.ts` | 每次选两最小根合并建树，renderType 'huffman'（森林多根布局），WPL 练习，含 `demoScript` |
 | 哈希表 | `algorithm/hash/HashTableEngine.ts` | 线性探测构造/查找/链地址法三模式，除留余数法 + ASL(成功) 统计，renderType 'hashtable'，含 `demoScript` |
 | SQL 查询 | `sql/SelectEngine.ts` | FROM→WHERE→GROUP BY→SELECT→ORDER BY→LIMIT；关键阶段携带 `presenterNote`；含 `demoScript` |
+| 高级查询 | `sql/AdvancedQueryEngine.ts`（v0.5 新增） | HAVING / LEFT JOIN / UNION / EXISTS / NOT EXISTS 四种子句 dispatch；EXISTS 相关子查询经 `_subqueryNonEmpty` 直接判 WHERE 非空（SELECT 1 常量列 SelectEngine 不支持）；`_group` 支持 tableCols 定位、`_project` 支持表前缀列 |
 | DML | `sql/DmlEngine.ts` | INSERT/UPDATE/DELETE 分步 |
 | 视图 | `sql/ViewEngine.ts`（v0.4 新增） | CREATE VIEW 解析→底层 SELECT 复用→视图完成→查询视图→基表更新后视图自动刷新（动态性演示） |
 | 建表 | `sql/create-table.ts`（函数非类） | `parseCreateTable` 解析 CREATE TABLE |
-| 数据库 | `db/ErEngine.ts` / `IndexEngine.ts`（B+ 树）/ `NormalizeEngine.ts` | E-R/索引/范式（renderType: er/btree/…） |
+| 数据库 | `db/ErEngine.ts` / `IndexEngine.ts`（B+ 树）/ `NormalizeEngine.ts` / `TransactionEngine.ts`（v0.5 新增） | E-R/索引/范式/事务（renderType: er/btree/…/sql-table）；TransactionEngine 三模式（commit/rollback/lost-update），undo 日志回滚演示，A/B 账户 Σ 守恒 |
 
-测试：每个引擎族带 `.spec.ts`（引擎 240 + 组件/stores 20，共 260 测试，见 test_coverage.md）。
+测试：每个引擎族带 `.spec.ts`（引擎 + 组件/stores 共 353 测试，见 test_coverage.md）。
 
 ## 2. Canvas 渲染器层 — `structvis/src/lib/visualization/`
 
@@ -68,7 +69,7 @@
 
 - 目录页：`/` 首页（卡片导航）、`/ds`、`/db`
 - ds 播放器页：quick-sort、bubble-sort、insertion-sort、merge-sort、selection-sort、binary-tree、linear-list、stack-queue、graph-traversal、mst、shortest-path、topo-sort、critical-path、binary-search、kmp、bst、huffman、hash-table（共 18，全部已实现）
-- db 播放器页：er、index（索引原理）、normalize、sql、tables（建表解析）、update —— **全实现，无占位**
+- db 播放器页：er、index（索引原理）、normalize、sql、tables（建表解析）、update、advanced-query（高级查询）、overview（数据库系统概述概念页+练习）、transaction（事务与并发控制）、users（用户与权限管理概念页+练习）—— **全实现，无占位**（杨宏霞《数据库技术及应用》v0.2 范围已全部覆盖）
 - `/progress` 进度页
 - 构建配置：`+layout.ts` 是 `prerender = true`、`trailingSlash = 'always'`；`+layout.svelte` 切 dark class
 

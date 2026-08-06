@@ -103,6 +103,9 @@
 	let tl: gsap.core.Timeline | null = null;
 	let renderProxy = { pos: 0 };
 	let canvasBodyRef = $state<HTMLDivElement | null>(null);
+	// 每个步骤（idx）在 timeline 上的结束秒数：tweenTo/seek 的参数必须是时间位置
+	// 而非步骤序数，否则非 1s 步长（swap=1.2、complete=1.5…）会错位（卡步/漂移）
+	let stepEndSeconds: number[] = [];
 
 	const STEP_DURATIONS: Record<StepType, number> = {
 		init: 0.8,
@@ -129,10 +132,16 @@
 
 		renderProxy.pos = 0;
 		tl = gsap.timeline({ paused: true });
+		// stepEndSeconds[i] = 播放头到达 pos=i 的秒数（idx 到时间位置的换算表）
+		stepEndSeconds = [];
+		let accSeconds = 0;
 
 		for (let i = 0; i < engine.steps.length - 1; i++) {
 			const nextStep = engine.steps[i + 1];
 			const duration = STEP_DURATIONS[nextStep.type] || STEP_DURATIONS.default;
+
+			stepEndSeconds.push(accSeconds);
+			accSeconds += duration;
 
 			tl.to(renderProxy, {
 				pos: i + 1,
@@ -151,6 +160,7 @@
 			});
 		}
 
+		stepEndSeconds.push(accSeconds);
 		tl.eventCallback('onComplete', () => {
 			isPlaying = false;
 		});
@@ -222,7 +232,7 @@
 		pause();
 		killControlTweens();
 		const target = Math.max(0, Math.floor(playbackPos) - 1);
-		tl.tweenTo(target);
+		tl.tweenTo(stepEndSeconds[target] ?? 0);
 		currentStepIdx = target;
 	}
 
@@ -232,7 +242,7 @@
 		pause();
 		killControlTweens();
 		const target = Math.min(engine.totalSteps - 1, Math.floor(playbackPos) + 1);
-		tl.tweenTo(target);
+		tl.tweenTo(stepEndSeconds[target] ?? stepEndSeconds[stepEndSeconds.length - 1] ?? 0);
 		currentStepIdx = target;
 		checkPracticeAt(target);
 	}
@@ -261,7 +271,7 @@
 		if (activeQuestion !== null) return;
 		pause();
 		killControlTweens();
-		tl.seek(step);
+		tl.seek(stepEndSeconds[step] ?? stepEndSeconds[stepEndSeconds.length - 1] ?? 0);
 		currentStepIdx = step;
 		playbackPos = step;
 		checkPracticeAt(step);

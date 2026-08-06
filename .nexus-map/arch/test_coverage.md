@@ -2,14 +2,14 @@
 
 > generated_by: nexus-mapper v2
 > verified_at: 2026-08-06
-> provenance: 文件系统扫描 + vitest 配置阅读 + 实际运行（316/316 通过）+ Playwright E2E 12/12 通过
+> provenance: 文件系统扫描 + vitest 配置阅读 + 实际运行（353/353 通过）+ Playwright E2E 22/22 通过
 
 ## 测试配置
 
 - 运行器：Vitest v4（`test:unit` 脚本），`requireAssertions: true`（强制每条测试必须有断言）
 - 双项目：`server`（node 环境，引擎/存储层）+ `client`（jsdom 环境，`.svelte.spec.ts` 组件/渲染器测试，setup `src/test-setup.ts`：matchMedia / getBoundingClientRect / element.animate stub + 记录式 canvas 2D 上下文 + 内联设计 token 供 resolveCSSVar）
 - 命令：`npm run test`（CI 一键）、`npm run test:unit`（watch）
-- 引擎 spec 与引擎源码同目录（`*.spec.ts`），共 **32 个 spec 文件 / 316 个测试**
+- 引擎 spec 与引擎源码同目录（`*.spec.ts`），共 **35 个 spec 文件 / 353 个测试**
 
 ## 覆盖矩阵（当前实测）
 
@@ -44,6 +44,8 @@
 | `engines/db/IndexEngine.spec.ts` | 11 | IndexEngine | B+ 树查找/范围/插入分裂关键帧 |
 | `engines/db/NormalizeEngine.spec.ts` | 7 | NormalizeEngine | 范式判定 |
 | `engines/sql/SelectEngine.spec.ts` | 20 | SelectEngine | WHERE 收缩、GROUP BY、投影、ORDER BY、多表连接、子查询 |
+| `engines/sql/AdvancedQueryEngine.spec.ts` | 17 | **AdvancedQueryEngine（v0.5 新增）** | HAVING 人数/平均分过滤、LEFT JOIN 保留未选课学生、UNION 去重、EXISTS/NOT EXISTS 相关子查询（SELECT 1 常量列直判非空）、applyPreset/custom sql |
+| `engines/db/TransactionEngine.spec.ts` | 9 | **TransactionEngine（v0.5 新增）** | commit/rollback/lost-update 三模式、Σ 守恒终态、undo 日志回滚恢复、丢失更新 T2 覆盖 T1、步骤链 BEGIN/一致性检查/COMMIT |
 | `engines/sql/DmlEngine.spec.ts` | 8 | DmlEngine | INSERT/UPDATE/DELETE 分步 |
 | `engines/sql/ViewEngine.spec.ts` | 11 | ViewEngine（v0.4 新增） | CREATE VIEW 解析、基表更新后视图自动刷新、隐藏列/聚合/连接视图、伪代码计划 |
 | `engines/sql/create-table.spec.ts` | 8 | create-table.ts | CREATE TABLE 解析、约束/外键 |
@@ -53,11 +55,11 @@
 
 - 命令：`npm run test:e2e`（等价 `npx playwright test`）；`npm run test:all` 先单测后 E2E
 - 配置：`playwright.config.ts` — chromium 单项目、baseURL `http://localhost:5173/struct`、webServer 自动起 vite dev（`--port 5173 --strictPort`）；`test-results/`、`playwright-report/` 已入 .gitignore
-- 用例（`e2e/app.spec.ts`，16 个）：首页区块、冒泡排序页渲染（引擎名/总步数/9 行伪代码）、下一步推进+伪代码激活行+Home、播放/暂停自动推进、演示数据预设重建、自定义输入合法重建/非法报错、练习答对/答错弹题流、投影模式进入/ArrowRight 推进/Esc 退出、暗色主题 html.dark+theme-color 同步、侧边栏导航跳转、进度页空状态、搜索弹窗（过滤/Enter 跳转/无结果/`/` 快捷键）、视图页（渲染/演示数据切换/练习弹题）
-- **E2E 基建坑位备忘**：① vite dev 冷启动首编有水合竞态——SSR HTML 已渲染但 Svelte 事件系统未挂载，首个加载页交互全失效（点击已派发但无响应），功能探测后 `reload` 可恢复；测试用「点击下一步轮询 `.current-num` 变 02」与「主题开关 toggle 往返」两个水合等待 helper（`waitForHydrated`/`waitForHydratedGlobal`）；② 真实 GSAP tween 下 `playbackPos` 滞后于 `currentStepIdx`（compare 步长 1s），连续步进前须 `settleTween`（等 1.3s），否则 `floor(playbackPos)+1` 仍指旧步骤；③ 主题按钮文案随状态翻转，恢复点击须按新文案查找；④ 自定义弹窗 aria-label 来自 `engine.customConfig.title`（冒泡排序为「自定义数据」），非法输入文案为 `"x" 不是有效数字`；⑤ 全量并行（12 workers）下播放器控制时序 flaky——`tweenTo` 控制 tween 是独立 tween，`tl.getTweensOf(tl)` 漏杀会导致 Home/重建后播放头被拉回（currentStepIdx 漂移），已改 `gsap.killTweensOf(tl)` 治本并连续 3 轮全量验证；⑥ 访问深层路由须用全路径（`goto('/struct/db/view')`），`goto('/db/view')` 会解析到 host 根而命中 base 提示页
+- 用例（`e2e/app.spec.ts`，22 个）：首页区块、冒泡排序页渲染（引擎名/总步数/9 行伪代码）、下一步推进+伪代码激活行+Home、播放/暂停自动推进、演示数据预设重建、自定义输入合法重建/非法报错、练习答对/答错弹题流、投影模式进入/ArrowRight 推进/Esc 退出、暗色主题 html.dark+theme-color 同步、侧边栏导航跳转、进度页空状态、搜索弹窗（过滤/Enter 跳转/无结果/`/` 快捷键）、数据库·概述（概念区块+练习即时反馈）、数据库·高级查询（渲染/四种子句切换/HAVING 逐步至完成/练习弹题）、数据库·事务与权限（事务页逐步至回滚结论、用户权限页概念+练习）、视图页（渲染/演示数据切换/练习弹题）
+- **E2E 基建坑位备忘**：① vite dev 冷启动首编有水合竞态——SSR HTML 已渲染但 Svelte 事件系统未挂载，首个加载页交互全失效（点击已派发但无响应），功能探测后 `reload` 可恢复；测试用「点击下一步轮询 `.current-num` 变 02」与「主题开关 toggle 往返」两个水合等待 helper（`waitForHydrated`/`waitForHydratedGlobal`）；② 真实 GSAP tween 下 `playbackPos` 滞后于 `currentStepIdx`（compare 步长 1s），连续步进前须 `settleTween`（等 1.3s），否则 `floor(playbackPos)+1` 仍指旧步骤；③ 主题按钮文案随状态翻转，恢复点击须按新文案查找；④ 自定义弹窗 aria-label 来自 `engine.customConfig.title`（冒泡排序为「自定义数据」），非法输入文案为 `"x" 不是有效数字`；⑤ 全量并行（12 workers）下播放器控制时序 flaky——`tweenTo` 控制 tween 是独立 tween，`tl.getTweensOf(tl)` 漏杀会导致 Home/重建后播放头被拉回（currentStepIdx 漂移），已改 `gsap.killTweensOf(tl)` 治本并连续 3 轮全量验证；⑥ 访问深层路由须用全路径（`goto('/struct/db/view')`），`goto('/db/view')` 会解析到 host 根而命中 base 提示页；⑦ **`tweenTo(idx)/seek(idx)` 不可把步骤序数当 timeline 秒数**——非 1s 步长（swap=1.2、complete=1.5）会错位导致卡步死循环（事务回滚页预设切换后卡 ROLLBACK 的根因），v0.5 已改 `stepEndSeconds[target]` 秒数换算（AlgoPlayer.buildTimeline 构建换算表，单测断言同步改为秒数）
 
 ## 证据缺口
 
 - **Canvas 像素级无验证**：记录式 stub 断言绘制调用与颜色，不验证像素/布局视觉结果（缺 visual regression 基建，属计划外）
-- **实际运行验证**：`npm run check`（svelte-check 0 errors）、`npm run test`（327/327，双项目）、`npm run test:e2e`（16/16）、`npm run build`（adapter-static 全量预渲染到根 `docs/`）本轮均通过；`prettier --check` 全量已清零
+- **实际运行验证**：`npm run check`（svelte-check 0 errors）、`npm run test`（353/353，双项目）、`npm run test:e2e`（22/22）、`npm run build`（adapter-static 全量预渲染到根 `docs/`）本轮均通过；`prettier --check` 全量已清零
 - **测试基建坑位备忘**：① Svelte 5 transition 依赖 WAAPI，`element.animate` stub 必须在微任务中触发 `onfinish`，否则弹窗 outro 永不完成、节点不移除；② GSAP timeline 被 mock 后 `playbackPos` 不随动画推进，练习流测试需通过捕获 `tl.to` 的 renderProxy/onUpdate 手动 `advanceTo(n)` 模拟推进；③ 弹窗关闭断言需 `waitFor`（outro 跨多轮微任务）；④ AlgoPlayer 的 status 文本由 `$derived(currentStep)` 驱动，重建引擎后须先离开第 0 步再应用预设，`currentStepIdx` 发生真实变化才能重算；⑤ cmd 控制台 GBK 管道查看中文源码易现乱码（误判编码），中文文案核实以 read 工具/UTF-8 显式解码为准

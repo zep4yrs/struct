@@ -412,3 +412,17 @@ test.describe('数据库 · 视图', () => {
 		await expect(dialog.locator('.feedback')).toContainText('回答正确');
 	});
 });
+
+test.describe('设置', () => {
+	test('设置页：渲染三项设置并切换主题', async ({ page }) => {
+		await page.goto('/struct/settings');
+		await expect(page.getByRole('heading', { name: '设置' })).toBeVisible();
+		await expect(page.getByText('动画速度')).toBeVisible();
+		await expect(page.getByText('显示提示')).toBeVisible();
+		await expect(page.locator('.setting-label', { hasText: '主题' })).toBeVisible();
+
+		const before = await page.locator('html').getAttribute('class');
+		await page.locator('.page').getByRole('button', { name: /切换到.*主题/ }).click();
+		await expect(page.locator('html').getAttribute('class')).not.toBe(before);
+	});
+});

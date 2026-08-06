@@ -38,6 +38,7 @@
 		if (path.startsWith('/db/tables')) return '数据库 / [current]建表练习[/current]';
 		if (path.startsWith('/db')) return '数据库';
 		if (path.startsWith('/progress')) return '[current]学习进度[/current]';
+		if (path.startsWith('/settings')) return '设置';
 		return '';
 	}
 

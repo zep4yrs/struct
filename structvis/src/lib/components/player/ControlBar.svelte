@@ -121,6 +121,7 @@
 			bind:this={progressRef}
 			onmousedown={handleProgressMouseDown}
 			role="slider"
+			aria-label="播放进度"
 			aria-valuemin={0}
 			aria-valuemax={totalSteps - 1}
 			aria-valuenow={currentStep}
@@ -138,7 +139,7 @@
 	<!-- 控制按钮 + 速度 -->
 	<div class="controls-row">
 		<div class="ctrl-buttons">
-			<button class="icon-btn" onclick={onReset} title="重置 (Home)">
+			<button class="icon-btn" onclick={onReset} title="重置 (Home)" aria-label="重置 (Home)">
 				<svg
 					viewBox="0 0 16 16"
 					fill="none"
@@ -152,7 +153,7 @@
 				</svg>
 			</button>
 
-			<button class="icon-btn" onclick={onPrev} title="上一步 (←)">
+			<button class="icon-btn" onclick={onPrev} title="上一步 (←)" aria-label="上一步 (←)">
 				<svg viewBox="0 0 16 16" fill="currentColor">
 					<polygon points="10 3 4 8 10 13 10 3"></polygon>
 					<rect x="2" y="3" width="2" height="10" rx="1"></rect>
@@ -163,6 +164,7 @@
 				class="play-btn"
 				onclick={isPlaying ? onPause : onPlay}
 				title={isPlaying ? '暂停 (Space)' : '播放 (Space)'}
+				aria-label={isPlaying ? '暂停 (Space)' : '播放 (Space)'}
 			>
 				{#if isPlaying}
 					<svg viewBox="0 0 16 16" fill="currentColor">
@@ -176,7 +178,7 @@
 				{/if}
 			</button>
 
-			<button class="icon-btn" onclick={onNext} title="下一步 (→)">
+			<button class="icon-btn" onclick={onNext} title="下一步 (→)" aria-label="下一步 (→)">
 				<svg viewBox="0 0 16 16" fill="currentColor">
 					<polygon points="6 3 12 8 6 13 6 3"></polygon>
 					<rect x="12" y="3" width="2" height="10" rx="1"></rect>
@@ -284,7 +286,9 @@
 		background: var(--color-surface);
 		color: var(--color-ink-2);
 		cursor: pointer;
-		transition: all 120ms ease-out;
+		transition:
+			border-color 120ms ease-out,
+			color 120ms ease-out;
 	}
 
 	.icon-btn:hover {
@@ -308,7 +312,9 @@
 		background: var(--color-ink);
 		color: var(--color-ink-inverse);
 		cursor: pointer;
-		transition: all 150ms ease-out;
+		transition:
+			background-color 150ms ease-out,
+			transform 150ms ease-out;
 		margin: 0 2px;
 	}
 
@@ -359,7 +365,7 @@
 		background: transparent;
 		color: var(--color-ink-2);
 		cursor: pointer;
-		transition: all 120ms ease-out;
+		transition: color 120ms ease-out;
 	}
 
 	.speed-opt:hover {

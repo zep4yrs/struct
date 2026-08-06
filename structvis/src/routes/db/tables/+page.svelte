@@ -286,7 +286,10 @@
 		background: var(--color-surface);
 		color: var(--color-ink-2);
 		cursor: pointer;
-		transition: all 120ms var(--ease-out);
+		transition:
+			border-color 120ms var(--ease-out),
+			color 120ms var(--ease-out),
+			background-color 120ms var(--ease-out);
 	}
 
 	.op-btn:hover {
@@ -358,7 +361,9 @@
 		background: var(--color-ink);
 		color: var(--color-ink-inverse);
 		cursor: pointer;
-		transition: all 120ms var(--ease-out);
+		transition:
+			background-color 120ms var(--ease-out),
+			border-color 120ms var(--ease-out);
 	}
 
 	.apply-btn:hover {

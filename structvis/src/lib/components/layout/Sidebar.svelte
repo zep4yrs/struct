@@ -104,7 +104,8 @@
 	}
 </script>
 
-<aside
+<nav
+	aria-label="课程目录"
 	class="hidden h-full flex-shrink-0 overflow-hidden border-r transition-[width,color] duration-300 md:block"
 	style="
 		border-color: {open ? 'var(--color-line-hair)' : 'transparent'};
@@ -180,4 +181,4 @@
 			</div>
 		{/if}
 	</div>
-</aside>
+</nav>

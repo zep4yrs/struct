@@ -17,6 +17,17 @@
 	$effect(() => {
 		document.documentElement.classList.toggle('dark', $settings.theme === 'dark');
 	});
+
+	// 浏览器 UI（滚动条/地址栏）颜色跟随主题
+	$effect(() => {
+		let meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+		if (!meta) {
+			meta = document.createElement('meta');
+			meta.name = 'theme-color';
+			document.head.appendChild(meta);
+		}
+		meta.content = $settings.theme === 'dark' ? '#161514' : '#FCFAF6';
+	});
 </script>
 
 <svelte:head>

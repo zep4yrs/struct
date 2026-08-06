@@ -1,0 +1,231 @@
+{
+  "analysis_period_days": 90,
+  "stats": {
+    "total_commits": 5,
+    "total_authors": 1
+  },
+  "hotspots": [
+    {
+      "path": ".nexus-map/INDEX.md",
+      "changes": 3,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/arch/systems.md",
+      "changes": 3,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/arch/test_coverage.md",
+      "changes": 3,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/concepts/concept_model.json",
+      "changes": 3,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/hotspots/git_forensics.md",
+      "changes": 3,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "changes": 3,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "changes": 3,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/engines/algorithm/types.ts",
+      "changes": 3,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/routes/ds/stack-queue/+page.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/arch/dependencies.md",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/concepts/domains.md",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/raw/ast_nodes.json",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/raw/file_tree.txt",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": ".nexus-map/raw/git_stats.json",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "AGENTS.md",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/layout/Sidebar.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/layout/TopBar.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/player/ControlBar.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/player/PracticePanel.svelte",
+      "changes": 2,
+      "risk": "low"
+    },
+    {
+      "path": "structvis/src/lib/components/player/PseudocodePanel.svelte",
+      "changes": 2,
+      "risk": "low"
+    }
+  ],
+  "coupling_pairs": [
+    {
+      "file_a": ".nexus-map/INDEX.md",
+      "file_b": ".nexus-map/arch/systems.md",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/INDEX.md",
+      "file_b": ".nexus-map/arch/test_coverage.md",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/INDEX.md",
+      "file_b": ".nexus-map/concepts/concept_model.json",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/INDEX.md",
+      "file_b": ".nexus-map/hotspots/git_forensics.md",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/arch/systems.md",
+      "file_b": ".nexus-map/arch/test_coverage.md",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/arch/systems.md",
+      "file_b": ".nexus-map/concepts/concept_model.json",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/arch/systems.md",
+      "file_b": ".nexus-map/hotspots/git_forensics.md",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/arch/test_coverage.md",
+      "file_b": ".nexus-map/concepts/concept_model.json",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/arch/test_coverage.md",
+      "file_b": ".nexus-map/hotspots/git_forensics.md",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/concepts/concept_model.json",
+      "file_b": ".nexus-map/hotspots/git_forensics.md",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "file_b": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "file_b": "structvis/src/lib/engines/algorithm/types.ts",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "file_b": "structvis/src/lib/engines/algorithm/types.ts",
+      "co_changes": 3,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "file_b": "structvis/src/routes/ds/stack-queue/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "file_b": "structvis/src/routes/ds/stack-queue/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": "structvis/src/lib/engines/algorithm/types.ts",
+      "file_b": "structvis/src/routes/ds/stack-queue/+page.svelte",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/INDEX.md",
+      "file_b": ".nexus-map/arch/dependencies.md",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/INDEX.md",
+      "file_b": ".nexus-map/concepts/domains.md",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/INDEX.md",
+      "file_b": ".nexus-map/raw/ast_nodes.json",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    },
+    {
+      "file_a": ".nexus-map/INDEX.md",
+      "file_b": ".nexus-map/raw/file_tree.txt",
+      "co_changes": 2,
+      "coupling_score": 1.0
+    }
+  ]
+}

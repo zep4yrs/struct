@@ -1,0 +1,3537 @@
+{
+  "languages": [
+    "javascript",
+    "svelte",
+    "typescript"
+  ],
+  "stats": {
+    "total_files": 82,
+    "total_lines": 14287,
+    "parse_errors": 0,
+    "truncated": false,
+    "truncated_nodes": 0,
+    "supported_file_counts": {
+      "javascript": 3,
+      "typescript": 44,
+      "svelte": 35
+    },
+    "languages_with_structural_queries": [
+      "c",
+      "cpp",
+      "csharp",
+      "elixir",
+      "gdscript",
+      "go",
+      "java",
+      "javascript",
+      "kotlin",
+      "lua",
+      "php",
+      "python",
+      "ruby",
+      "rust",
+      "scala",
+      "swift",
+      "tsx",
+      "typescript"
+    ],
+    "languages_with_custom_queries": [],
+    "module_only_file_counts": {
+      "svelte": 35
+    },
+    "known_unsupported_file_counts": {},
+    "configured_but_unavailable_file_counts": {},
+    "custom_language_config_paths": []
+  },
+  "nodes": [
+    {
+      "id": "structvis.eslint.config",
+      "type": "Module",
+      "label": "config",
+      "path": "structvis/eslint.config.js",
+      "lines": 42,
+      "lang": "javascript"
+    },
+    {
+      "id": "structvis.prettier.config",
+      "type": "Module",
+      "label": "config",
+      "path": "structvis/prettier.config.js",
+      "lines": 13,
+      "lang": "javascript"
+    },
+    {
+      "id": "structvis.src.app.d",
+      "type": "Module",
+      "label": "d",
+      "path": "structvis/src/app.d.ts",
+      "lines": 14,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.components.layout.AppLayout",
+      "type": "Module",
+      "label": "AppLayout",
+      "path": "structvis/src/lib/components/layout/AppLayout.svelte",
+      "lines": 58,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.layout.Sidebar",
+      "type": "Module",
+      "label": "Sidebar",
+      "path": "structvis/src/lib/components/layout/Sidebar.svelte",
+      "lines": 185,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.layout.TopBar",
+      "type": "Module",
+      "label": "TopBar",
+      "path": "structvis/src/lib/components/layout/TopBar.svelte",
+      "lines": 138,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.player.AlgoPlayer",
+      "type": "Module",
+      "label": "AlgoPlayer",
+      "path": "structvis/src/lib/components/player/AlgoPlayer.svelte",
+      "lines": 1236,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.player.ControlBar",
+      "type": "Module",
+      "label": "ControlBar",
+      "path": "structvis/src/lib/components/player/ControlBar.svelte",
+      "lines": 376,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.player.PracticePanel",
+      "type": "Module",
+      "label": "PracticePanel",
+      "path": "structvis/src/lib/components/player/PracticePanel.svelte",
+      "lines": 416,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.player.PseudocodePanel",
+      "type": "Module",
+      "label": "PseudocodePanel",
+      "path": "structvis/src/lib/components/player/PseudocodePanel.svelte",
+      "lines": 89,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.ui.Logo",
+      "type": "Module",
+      "label": "Logo",
+      "path": "structvis/src/lib/components/ui/Logo.svelte",
+      "lines": 48,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.components.ui.TopicGrid",
+      "type": "Module",
+      "label": "TopicGrid",
+      "path": "structvis/src/lib/components/ui/TopicGrid.svelte",
+      "lines": 67,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.content.topics",
+      "type": "Module",
+      "label": "topics",
+      "path": "structvis/src/lib/content/topics.ts",
+      "lines": 161,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.spec.ts",
+      "lines": 37,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine",
+      "type": "Module",
+      "label": "BubbleSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "lines": 237,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "type": "Class",
+      "label": "BubbleSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine",
+      "start_line": 46,
+      "end_line": 236
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 106,
+      "end_line": 112
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 114,
+      "end_line": 116
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 118,
+      "end_line": 193
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine._range",
+      "type": "Function",
+      "label": "_range",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 195,
+      "end_line": 199
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 201,
+      "end_line": 219
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 221,
+      "end_line": 223
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 225,
+      "end_line": 227
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 229,
+      "end_line": 231
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/BubbleSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "start_line": 233,
+      "end_line": 235
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.spec.ts",
+      "lines": 42,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine",
+      "type": "Module",
+      "label": "InsertionSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "lines": 221,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "type": "Class",
+      "label": "InsertionSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine",
+      "start_line": 47,
+      "end_line": 220
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 104,
+      "end_line": 110
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 112,
+      "end_line": 114
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 116,
+      "end_line": 177
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine._range",
+      "type": "Function",
+      "label": "_range",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 179,
+      "end_line": 183
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 185,
+      "end_line": 203
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 205,
+      "end_line": 207
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 209,
+      "end_line": 211
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 213,
+      "end_line": 215
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/InsertionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "start_line": 217,
+      "end_line": 219
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.spec.ts",
+      "lines": 39,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine",
+      "type": "Module",
+      "label": "MergeSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "lines": 245,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "type": "Class",
+      "label": "MergeSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine",
+      "start_line": 48,
+      "end_line": 244
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 108,
+      "end_line": 114
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 116,
+      "end_line": 118
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 120,
+      "end_line": 185
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine._merge",
+      "type": "Function",
+      "label": "_merge",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 187,
+      "end_line": 201
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine._range",
+      "type": "Function",
+      "label": "_range",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 203,
+      "end_line": 207
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 209,
+      "end_line": 227
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 229,
+      "end_line": 231
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 233,
+      "end_line": 235
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 237,
+      "end_line": 239
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/MergeSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "start_line": 241,
+      "end_line": 243
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.spec.ts",
+      "lines": 36,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine",
+      "type": "Module",
+      "label": "SelectionSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "lines": 269,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "type": "Class",
+      "label": "SelectionSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine",
+      "start_line": 49,
+      "end_line": 268
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 113,
+      "end_line": 119
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 121,
+      "end_line": 123
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 125,
+      "end_line": 225
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine._range",
+      "type": "Function",
+      "label": "_range",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 227,
+      "end_line": 231
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 233,
+      "end_line": 251
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 253,
+      "end_line": 255
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 257,
+      "end_line": 259
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 261,
+      "end_line": 263
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/basicsort/SelectionSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "start_line": 265,
+      "end_line": 267
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.spec.ts",
+      "lines": 34,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.spec.collectSeq",
+      "type": "Function",
+      "label": "collectSeq",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.spec.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.spec",
+      "start_line": 6,
+      "end_line": 15
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine",
+      "type": "Module",
+      "label": "BinaryTreeEngine",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "lines": 384,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "type": "Class",
+      "label": "BinaryTreeEngine",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine",
+      "start_line": 125,
+      "end_line": 383
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 199,
+      "end_line": 208
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 210,
+      "end_line": 215
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 217,
+      "end_line": 239
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._modeLabel",
+      "type": "Function",
+      "label": "_modeLabel",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 241,
+      "end_line": 252
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._leftOf",
+      "type": "Function",
+      "label": "_leftOf",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 254,
+      "end_line": 256
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._rightOf",
+      "type": "Function",
+      "label": "_rightOf",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 258,
+      "end_line": 260
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._visit",
+      "type": "Function",
+      "label": "_visit",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 263,
+      "end_line": 272
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._genRecursive",
+      "type": "Function",
+      "label": "_genRecursive",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 274,
+      "end_line": 313
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._genLevelorder",
+      "type": "Function",
+      "label": "_genLevelorder",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 315,
+      "end_line": 344
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 346,
+      "end_line": 366
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 368,
+      "end_line": 370
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 372,
+      "end_line": 374
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 376,
+      "end_line": 378
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/binarytree/BinaryTreeEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "start_line": 380,
+      "end_line": 382
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/algorithm/demoScript.spec.ts",
+      "lines": 117,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.demoScript.spec.collectEmittedTypes",
+      "type": "Function",
+      "label": "collectEmittedTypes",
+      "path": "structvis/src/lib/engines/algorithm/demoScript.spec.ts",
+      "parent": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "start_line": 24,
+      "end_line": 26
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.spec.ts",
+      "lines": 32,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine",
+      "type": "Module",
+      "label": "SinglyLinkedListEngine",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "lines": 277,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "type": "Class",
+      "label": "SinglyLinkedListEngine",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine",
+      "start_line": 68,
+      "end_line": 276
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 123,
+      "end_line": 129
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 131,
+      "end_line": 147
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 149,
+      "end_line": 173
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine._genInsert",
+      "type": "Function",
+      "label": "_genInsert",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 175,
+      "end_line": 204
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine._genDelete",
+      "type": "Function",
+      "label": "_genDelete",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 206,
+      "end_line": 239
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 241,
+      "end_line": 259
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 261,
+      "end_line": 263
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 265,
+      "end_line": 267
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 269,
+      "end_line": 271
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "start_line": 273,
+      "end_line": 275
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.parseInput",
+      "type": "Module",
+      "label": "parseInput",
+      "path": "structvis/src/lib/engines/algorithm/parseInput.ts",
+      "lines": 31,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.parseInput.parseNumberList",
+      "type": "Function",
+      "label": "parseNumberList",
+      "path": "structvis/src/lib/engines/algorithm/parseInput.ts",
+      "parent": "structvis.src.lib.engines.algorithm.parseInput",
+      "start_line": 6,
+      "end_line": 30
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "type": "Module",
+      "label": "QuickSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "lines": 452,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "type": "Class",
+      "label": "QuickSortEngine",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "start_line": 71,
+      "end_line": 451
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 146,
+      "end_line": 154
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 156,
+      "end_line": 158
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 161,
+      "end_line": 196
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 198,
+      "end_line": 201
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 203,
+      "end_line": 205
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 207,
+      "end_line": 209
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 211,
+      "end_line": 213
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._quickSort",
+      "type": "Function",
+      "label": "_quickSort",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 217,
+      "end_line": 269
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._partition",
+      "type": "Function",
+      "label": "_partition",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 273,
+      "end_line": 433
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._addStep",
+      "type": "Function",
+      "label": "_addStep",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 437,
+      "end_line": 442
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._range",
+      "type": "Function",
+      "label": "_range",
+      "path": "structvis/src/lib/engines/algorithm/quicksort/QuickSortEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "start_line": 444,
+      "end_line": 450
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.spec.ts",
+      "lines": 73,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine",
+      "type": "Module",
+      "label": "StackQueueEngine",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "lines": 353,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "type": "Class",
+      "label": "StackQueueEngine",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine",
+      "start_line": 91,
+      "end_line": 352
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 152,
+      "end_line": 164
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 166,
+      "end_line": 190
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 192,
+      "end_line": 234
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine._genInsert",
+      "type": "Function",
+      "label": "_genInsert",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 237,
+      "end_line": 260
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine._genRemove",
+      "type": "Function",
+      "label": "_genRemove",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 263,
+      "end_line": 315
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 317,
+      "end_line": 335
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 337,
+      "end_line": 339
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 341,
+      "end_line": 343
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 345,
+      "end_line": 347
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/algorithm/stackqueue/StackQueueEngine.ts",
+      "parent": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "start_line": 349,
+      "end_line": 351
+    },
+    {
+      "id": "structvis.src.lib.engines.algorithm.types",
+      "type": "Module",
+      "label": "types",
+      "path": "structvis/src/lib/engines/algorithm/types.ts",
+      "lines": 221,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/db/ErEngine.spec.ts",
+      "lines": 69,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.spec.run",
+      "type": "Function",
+      "label": "run",
+      "path": "structvis/src/lib/engines/db/ErEngine.spec.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine.spec",
+      "start_line": 4,
+      "end_line": 8
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine",
+      "type": "Module",
+      "label": "ErEngine",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "lines": 479,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.getErPresets",
+      "type": "Function",
+      "label": "getErPresets",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine",
+      "start_line": 28,
+      "end_line": 30
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "type": "Class",
+      "label": "ErEngine",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine",
+      "start_line": 381,
+      "end_line": 478
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.ErEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "start_line": 397,
+      "end_line": 399
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.ErEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "start_line": 401,
+      "end_line": 437
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.ErEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "start_line": 439,
+      "end_line": 461
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.ErEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "start_line": 463,
+      "end_line": 465
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.ErEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "start_line": 467,
+      "end_line": 469
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.ErEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "start_line": 471,
+      "end_line": 473
+    },
+    {
+      "id": "structvis.src.lib.engines.db.ErEngine.ErEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/db/ErEngine.ts",
+      "parent": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "start_line": 475,
+      "end_line": 477
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/db/IndexEngine.spec.ts",
+      "lines": 86,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.spec.run",
+      "type": "Function",
+      "label": "run",
+      "path": "structvis/src/lib/engines/db/IndexEngine.spec.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine.spec",
+      "start_line": 4,
+      "end_line": 8
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine",
+      "type": "Module",
+      "label": "IndexEngine",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "lines": 370,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.getIndexPresets",
+      "type": "Function",
+      "label": "getIndexPresets",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine",
+      "start_line": 47,
+      "end_line": 49
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "type": "Class",
+      "label": "IndexEngine",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine",
+      "start_line": 281,
+      "end_line": 369
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "start_line": 297,
+      "end_line": 299
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "start_line": 301,
+      "end_line": 331
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.IndexEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "start_line": 333,
+      "end_line": 352
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "start_line": 354,
+      "end_line": 356
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "start_line": 358,
+      "end_line": 360
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "start_line": 362,
+      "end_line": 364
+    },
+    {
+      "id": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/db/IndexEngine.ts",
+      "parent": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "start_line": 366,
+      "end_line": 368
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.spec.ts",
+      "lines": 65,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.spec.run",
+      "type": "Function",
+      "label": "run",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.spec.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine.spec",
+      "start_line": 4,
+      "end_line": 8
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine",
+      "type": "Module",
+      "label": "NormalizeEngine",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "lines": 534,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.getNormalizePresets",
+      "type": "Function",
+      "label": "getNormalizePresets",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine",
+      "start_line": 29,
+      "end_line": 31
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "type": "Class",
+      "label": "NormalizeEngine",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine",
+      "start_line": 445,
+      "end_line": 533
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "start_line": 461,
+      "end_line": 463
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "start_line": 465,
+      "end_line": 492
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "start_line": 494,
+      "end_line": 516
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "start_line": 518,
+      "end_line": 520
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "start_line": 522,
+      "end_line": 524
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "start_line": 526,
+      "end_line": 528
+    },
+    {
+      "id": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/db/NormalizeEngine.ts",
+      "parent": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "start_line": 530,
+      "end_line": 532
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.create-table.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/sql/create-table.spec.ts",
+      "lines": 61,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.create-table",
+      "type": "Module",
+      "label": "create-table",
+      "path": "structvis/src/lib/engines/sql/create-table.ts",
+      "lines": 153,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.create-table.parseCreateTable",
+      "type": "Function",
+      "label": "parseCreateTable",
+      "path": "structvis/src/lib/engines/sql/create-table.ts",
+      "parent": "structvis.src.lib.engines.sql.create-table",
+      "start_line": 51,
+      "end_line": 125
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.create-table.stripQuotes",
+      "type": "Function",
+      "label": "stripQuotes",
+      "path": "structvis/src/lib/engines/sql/create-table.ts",
+      "parent": "structvis.src.lib.engines.sql.create-table",
+      "start_line": 127,
+      "end_line": 129
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.create-table.err",
+      "type": "Function",
+      "label": "err",
+      "path": "structvis/src/lib/engines/sql/create-table.ts",
+      "parent": "structvis.src.lib.engines.sql.create-table",
+      "start_line": 131,
+      "end_line": 133
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.create-table.splitTopLevel",
+      "type": "Function",
+      "label": "splitTopLevel",
+      "path": "structvis/src/lib/engines/sql/create-table.ts",
+      "parent": "structvis.src.lib.engines.sql.create-table",
+      "start_line": 136,
+      "end_line": 152
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.spec.ts",
+      "lines": 74,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.spec.run",
+      "type": "Function",
+      "label": "run",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.spec.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.spec",
+      "start_line": 13,
+      "end_line": 17
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine",
+      "type": "Module",
+      "label": "DmlEngine",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "lines": 372,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "type": "Class",
+      "label": "DmlEngine",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine",
+      "start_line": 89,
+      "end_line": 371
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 118,
+      "end_line": 121
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 123,
+      "end_line": 127
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 129,
+      "end_line": 244
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine._coerce",
+      "type": "Function",
+      "label": "_coerce",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 246,
+      "end_line": 252
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine._parse",
+      "type": "Function",
+      "label": "_parse",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 256,
+      "end_line": 332
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 334,
+      "end_line": 354
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 356,
+      "end_line": 358
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 360,
+      "end_line": 362
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 364,
+      "end_line": 366
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/sql/DmlEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "start_line": 368,
+      "end_line": 370
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.spec.ts",
+      "lines": 225,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.spec.run",
+      "type": "Function",
+      "label": "run",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.spec.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.spec",
+      "start_line": 38,
+      "end_line": 42
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine",
+      "type": "Module",
+      "label": "SelectEngine",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "lines": 746,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "type": "Class",
+      "label": "SelectEngine",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine",
+      "start_line": 142,
+      "end_line": 745
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.applyPreset",
+      "type": "Function",
+      "label": "applyPreset",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 194,
+      "end_line": 197
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.applyCustom",
+      "type": "Function",
+      "label": "applyCustom",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 199,
+      "end_line": 203
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.init",
+      "type": "Function",
+      "label": "init",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 205,
+      "end_line": 494
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._expandSubqueries",
+      "type": "Function",
+      "label": "_expandSubqueries",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 498,
+      "end_line": 514
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._parse",
+      "type": "Function",
+      "label": "_parse",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 518,
+      "end_line": 609
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._aggValue",
+      "type": "Function",
+      "label": "_aggValue",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 613,
+      "end_line": 631
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._aggregate",
+      "type": "Function",
+      "label": "_aggregate",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 633,
+      "end_line": 649
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._group",
+      "type": "Function",
+      "label": "_group",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 651,
+      "end_line": 679
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._project",
+      "type": "Function",
+      "label": "_project",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 681,
+      "end_line": 690
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._sort",
+      "type": "Function",
+      "label": "_sort",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 692,
+      "end_line": 702
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._emit",
+      "type": "Function",
+      "label": "_emit",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 706,
+      "end_line": 728
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.getCurrentStep",
+      "type": "Function",
+      "label": "getCurrentStep",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 730,
+      "end_line": 732
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.getProgress",
+      "type": "Function",
+      "label": "getProgress",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 734,
+      "end_line": 736
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.setProgress",
+      "type": "Function",
+      "label": "setProgress",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 738,
+      "end_line": 740
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.reset",
+      "type": "Function",
+      "label": "reset",
+      "path": "structvis/src/lib/engines/sql/SelectEngine.ts",
+      "parent": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "start_line": 742,
+      "end_line": 744
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.sql-utils",
+      "type": "Module",
+      "label": "sql-utils",
+      "path": "structvis/src/lib/engines/sql/sql-utils.ts",
+      "lines": 92,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.sql-utils.evalSqlWhere",
+      "type": "Function",
+      "label": "evalSqlWhere",
+      "path": "structvis/src/lib/engines/sql/sql-utils.ts",
+      "parent": "structvis.src.lib.engines.sql.sql-utils",
+      "start_line": 9,
+      "end_line": 18
+    },
+    {
+      "id": "structvis.src.lib.engines.sql.sql-utils.evalSqlCond",
+      "type": "Function",
+      "label": "evalSqlCond",
+      "path": "structvis/src/lib/engines/sql/sql-utils.ts",
+      "parent": "structvis.src.lib.engines.sql.sql-utils",
+      "start_line": 20,
+      "end_line": 91
+    },
+    {
+      "id": "structvis.src.lib.index",
+      "type": "Module",
+      "label": "index",
+      "path": "structvis/src/lib/index.ts",
+      "lines": 2,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.stores.persistent",
+      "type": "Module",
+      "label": "persistent",
+      "path": "structvis/src/lib/stores/persistent.ts",
+      "lines": 36,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.stores.persistent.persistentStore",
+      "type": "Function",
+      "label": "persistentStore",
+      "path": "structvis/src/lib/stores/persistent.ts",
+      "parent": "structvis.src.lib.stores.persistent",
+      "start_line": 8,
+      "end_line": 35
+    },
+    {
+      "id": "structvis.src.lib.stores.progress",
+      "type": "Module",
+      "label": "progress",
+      "path": "structvis/src/lib/stores/progress.ts",
+      "lines": 109,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.stores.progress.updateTopicMastery",
+      "type": "Function",
+      "label": "updateTopicMastery",
+      "path": "structvis/src/lib/stores/progress.ts",
+      "parent": "structvis.src.lib.stores.progress",
+      "start_line": 45,
+      "end_line": 64
+    },
+    {
+      "id": "structvis.src.lib.stores.progress.addMistake",
+      "type": "Function",
+      "label": "addMistake",
+      "path": "structvis/src/lib/stores/progress.ts",
+      "parent": "structvis.src.lib.stores.progress",
+      "start_line": 69,
+      "end_line": 80
+    },
+    {
+      "id": "structvis.src.lib.stores.progress.updateStreak",
+      "type": "Function",
+      "label": "updateStreak",
+      "path": "structvis/src/lib/stores/progress.ts",
+      "parent": "structvis.src.lib.stores.progress",
+      "start_line": 85,
+      "end_line": 108
+    },
+    {
+      "id": "structvis.src.lib.stores.settings",
+      "type": "Module",
+      "label": "settings",
+      "path": "structvis/src/lib/stores/settings.ts",
+      "lines": 22,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.stores.settings.toggleTheme",
+      "type": "Function",
+      "label": "toggleTheme",
+      "path": "structvis/src/lib/stores/settings.ts",
+      "parent": "structvis.src.lib.stores.settings",
+      "start_line": 19,
+      "end_line": 21
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils",
+      "type": "Module",
+      "label": "array-render-utils",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "lines": 248,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.precomputeBarIdentities",
+      "type": "Function",
+      "label": "precomputeBarIdentities",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 48,
+      "end_line": 125
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.getBarColors",
+      "type": "Function",
+      "label": "getBarColors",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 130,
+      "end_line": 139
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.getBarColorAtPosition",
+      "type": "Function",
+      "label": "getBarColorAtPosition",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 145,
+      "end_line": 168
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.interpolateColor",
+      "type": "Function",
+      "label": "interpolateColor",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 176,
+      "end_line": 193
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.resolveColor",
+      "type": "Function",
+      "label": "resolveColor",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 195,
+      "end_line": 209
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.parseColor",
+      "type": "Function",
+      "label": "parseColor",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 211,
+      "end_line": 233
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.lerp",
+      "type": "Function",
+      "label": "lerp",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 238,
+      "end_line": 240
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.array-render-utils.easeOutCubic",
+      "type": "Function",
+      "label": "easeOutCubic",
+      "path": "structvis/src/lib/visualization/array/array-render-utils.ts",
+      "parent": "structvis.src.lib.visualization.array.array-render-utils",
+      "start_line": 245,
+      "end_line": 247
+    },
+    {
+      "id": "structvis.src.lib.visualization.array.ArrayRenderer",
+      "type": "Module",
+      "label": "ArrayRenderer",
+      "path": "structvis/src/lib/visualization/array/ArrayRenderer.svelte",
+      "lines": 432,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.visualization.btree.BPlusTreeRenderer",
+      "type": "Module",
+      "label": "BPlusTreeRenderer",
+      "path": "structvis/src/lib/visualization/btree/BPlusTreeRenderer.svelte",
+      "lines": 249,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.visualization.er.ErRenderer",
+      "type": "Module",
+      "label": "ErRenderer",
+      "path": "structvis/src/lib/visualization/er/ErRenderer.svelte",
+      "lines": 291,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.visualization.linkedlist.LinkedRenderer",
+      "type": "Module",
+      "label": "LinkedRenderer",
+      "path": "structvis/src/lib/visualization/linkedlist/LinkedRenderer.svelte",
+      "lines": 293,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.visualization.sqltable.SqlTableRenderer",
+      "type": "Module",
+      "label": "SqlTableRenderer",
+      "path": "structvis/src/lib/visualization/sqltable/SqlTableRenderer.svelte",
+      "lines": 222,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.visualization.stack.StackRenderer",
+      "type": "Module",
+      "label": "StackRenderer",
+      "path": "structvis/src/lib/visualization/stack/StackRenderer.svelte",
+      "lines": 346,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.visualization.tree.TreeRenderer",
+      "type": "Module",
+      "label": "TreeRenderer",
+      "path": "structvis/src/lib/visualization/tree/TreeRenderer.svelte",
+      "lines": 247,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.lib.visualization.visualization-utils",
+      "type": "Module",
+      "label": "visualization-utils",
+      "path": "structvis/src/lib/visualization/visualization-utils.ts",
+      "lines": 22,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.visualization.visualization-utils.resolveCSSVar",
+      "type": "Function",
+      "label": "resolveCSSVar",
+      "path": "structvis/src/lib/visualization/visualization-utils.ts",
+      "parent": "structvis.src.lib.visualization.visualization-utils",
+      "start_line": 6,
+      "end_line": 9
+    },
+    {
+      "id": "structvis.src.lib.visualization.visualization-utils.watchThemeChange",
+      "type": "Function",
+      "label": "watchThemeChange",
+      "path": "structvis/src/lib/visualization/visualization-utils.ts",
+      "parent": "structvis.src.lib.visualization.visualization-utils",
+      "start_line": 15,
+      "end_line": 21
+    },
+    {
+      "id": "structvis.src.lib.vitest-examples.greet.spec",
+      "type": "Module",
+      "label": "spec",
+      "path": "structvis/src/lib/vitest-examples/greet.spec.ts",
+      "lines": 9,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.vitest-examples.greet",
+      "type": "Module",
+      "label": "greet",
+      "path": "structvis/src/lib/vitest-examples/greet.ts",
+      "lines": 4,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.lib.vitest-examples.greet.greet",
+      "type": "Function",
+      "label": "greet",
+      "path": "structvis/src/lib/vitest-examples/greet.ts",
+      "parent": "structvis.src.lib.vitest-examples.greet",
+      "start_line": 1,
+      "end_line": 3
+    },
+    {
+      "id": "structvis.src.routes.+layout",
+      "type": "Module",
+      "label": "+layout",
+      "path": "structvis/src/routes/+layout.svelte",
+      "lines": 27,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.+layout",
+      "type": "Module",
+      "label": "+layout",
+      "path": "structvis/src/routes/+layout.ts",
+      "lines": 4,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.routes.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/+page.svelte",
+      "lines": 60,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/+page.svelte",
+      "lines": 18,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.er.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/er/+page.svelte",
+      "lines": 100,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.index.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/index/+page.svelte",
+      "lines": 101,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.normalize.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/normalize/+page.svelte",
+      "lines": 101,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.sql.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/sql/+page.svelte",
+      "lines": 133,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.tables.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/tables/+page.svelte",
+      "lines": 565,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.db.update.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/db/update/+page.svelte",
+      "lines": 119,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/+page.svelte",
+      "lines": 18,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.binary-tree.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/binary-tree/+page.svelte",
+      "lines": 101,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.bubble-sort.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/bubble-sort/+page.svelte",
+      "lines": 104,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.insertion-sort.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/insertion-sort/+page.svelte",
+      "lines": 99,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.linear-list.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/linear-list/+page.svelte",
+      "lines": 107,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.merge-sort.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/merge-sort/+page.svelte",
+      "lines": 98,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.quick-sort.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/quick-sort/+page.svelte",
+      "lines": 107,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.quick-sort.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/quick-sort/+page.ts",
+      "lines": 1,
+      "lang": "typescript"
+    },
+    {
+      "id": "structvis.src.routes.ds.selection-sort.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/selection-sort/+page.svelte",
+      "lines": 98,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.ds.stack-queue.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/ds/stack-queue/+page.svelte",
+      "lines": 103,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.src.routes.progress.+page",
+      "type": "Module",
+      "label": "+page",
+      "path": "structvis/src/routes/progress/+page.svelte",
+      "lines": 378,
+      "lang": "svelte"
+    },
+    {
+      "id": "structvis.svelte.config",
+      "type": "Module",
+      "label": "config",
+      "path": "structvis/svelte.config.js",
+      "lines": 19,
+      "lang": "javascript"
+    },
+    {
+      "id": "structvis.vite.config",
+      "type": "Module",
+      "label": "config",
+      "path": "structvis/vite.config.ts",
+      "lines": 25,
+      "lang": "typescript"
+    }
+  ],
+  "edges": [
+    {
+      "source": "structvis.eslint.config",
+      "target": "eslint-config-prettier",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "node:path",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "@eslint/js",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "eslint-plugin-svelte",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "eslint/config",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "globals",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.eslint.config",
+      "target": "typescript-eslint",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.spec",
+      "target": "./BubbleSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine._range",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine.BubbleSortEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.BubbleSortEngine",
+      "target": "../parseInput",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.spec",
+      "target": "./InsertionSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine._range",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine.InsertionSortEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.InsertionSortEngine",
+      "target": "../parseInput",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.spec",
+      "target": "./MergeSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine._merge",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine._range",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine.MergeSortEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.MergeSortEngine",
+      "target": "../parseInput",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.spec",
+      "target": "./SelectionSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine._range",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine.SelectionSortEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.basicsort.SelectionSortEngine",
+      "target": "../parseInput",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.spec",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.spec.collectSeq",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.spec",
+      "target": "../binarytree/BinaryTreeEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._modeLabel",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._leftOf",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._rightOf",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._visit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._genRecursive",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._genLevelorder",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine",
+      "target": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine.BinaryTreeEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.binarytree.BinaryTreeEngine",
+      "target": "../parseInput",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "structvis.src.lib.engines.algorithm.demoScript.spec.collectEmittedTypes",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "./types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "./quicksort/QuickSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "./basicsort/BubbleSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "./basicsort/InsertionSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "./basicsort/SelectionSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "./basicsort/MergeSortEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "./binarytree/BinaryTreeEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.demoScript.spec",
+      "target": "../sql/SelectEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.spec",
+      "target": "./SinglyLinkedListEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine._genInsert",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine._genDelete",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine",
+      "target": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine.SinglyLinkedListEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.linkedlist.SinglyLinkedListEngine",
+      "target": "../parseInput",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.parseInput",
+      "target": "structvis.src.lib.engines.algorithm.parseInput.parseNumberList",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._quickSort",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._partition",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._addStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine",
+      "target": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine.QuickSortEngine._range",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.quicksort.QuickSortEngine",
+      "target": "../parseInput",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.spec",
+      "target": "./StackQueueEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine._genInsert",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine._genRemove",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine",
+      "target": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine.StackQueueEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine",
+      "target": "../types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.algorithm.stackqueue.StackQueueEngine",
+      "target": "../parseInput",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.spec",
+      "target": "structvis.src.lib.engines.db.ErEngine.spec.run",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.spec",
+      "target": "./ErEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.getErPresets",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.ErEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.ErEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.ErEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.ErEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.ErEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.ErEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine.ErEngine",
+      "target": "structvis.src.lib.engines.db.ErEngine.ErEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.ErEngine",
+      "target": "../algorithm/types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.spec",
+      "target": "structvis.src.lib.engines.db.IndexEngine.spec.run",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.spec",
+      "target": "./IndexEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.getIndexPresets",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.IndexEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine.IndexEngine",
+      "target": "structvis.src.lib.engines.db.IndexEngine.IndexEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.IndexEngine",
+      "target": "../algorithm/types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.spec",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.spec.run",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.spec",
+      "target": "./NormalizeEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.getNormalizePresets",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine",
+      "target": "structvis.src.lib.engines.db.NormalizeEngine.NormalizeEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.db.NormalizeEngine",
+      "target": "../algorithm/types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.create-table.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.create-table.spec",
+      "target": "./create-table",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.create-table",
+      "target": "structvis.src.lib.engines.sql.create-table.parseCreateTable",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.create-table",
+      "target": "structvis.src.lib.engines.sql.create-table.stripQuotes",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.create-table",
+      "target": "structvis.src.lib.engines.sql.create-table.err",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.create-table",
+      "target": "structvis.src.lib.engines.sql.create-table.splitTopLevel",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.spec",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.spec.run",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.spec",
+      "target": "./DmlEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine._coerce",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine._parse",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine",
+      "target": "structvis.src.lib.engines.sql.DmlEngine.DmlEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine",
+      "target": "../algorithm/types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.DmlEngine",
+      "target": "./sql-utils",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.spec",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.spec.run",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.spec",
+      "target": "./SelectEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.applyPreset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.applyCustom",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.init",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._expandSubqueries",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._parse",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._aggValue",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._aggregate",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._group",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._project",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._sort",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine._emit",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.getCurrentStep",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.getProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.setProgress",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine",
+      "target": "structvis.src.lib.engines.sql.SelectEngine.SelectEngine.reset",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine",
+      "target": "../algorithm/types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.SelectEngine",
+      "target": "./sql-utils",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.sql-utils",
+      "target": "structvis.src.lib.engines.sql.sql-utils.evalSqlWhere",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.sql-utils",
+      "target": "structvis.src.lib.engines.sql.sql-utils.evalSqlCond",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.engines.sql.sql-utils",
+      "target": "./SelectEngine",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.stores.persistent",
+      "target": "structvis.src.lib.stores.persistent.persistentStore",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.persistent",
+      "target": "$app/environment",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.stores.persistent",
+      "target": "svelte/store",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.stores.progress",
+      "target": "structvis.src.lib.stores.progress.updateTopicMastery",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.progress",
+      "target": "structvis.src.lib.stores.progress.addMistake",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.progress",
+      "target": "structvis.src.lib.stores.progress.updateStreak",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.progress",
+      "target": "./persistent",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.stores.settings",
+      "target": "structvis.src.lib.stores.settings.toggleTheme",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.stores.settings",
+      "target": "./persistent",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.precomputeBarIdentities",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.getBarColors",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.getBarColorAtPosition",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.interpolateColor",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.resolveColor",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.parseColor",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.lerp",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "structvis.src.lib.visualization.array.array-render-utils.easeOutCubic",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.array.array-render-utils",
+      "target": "$lib/engines/algorithm/types",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.visualization.visualization-utils",
+      "target": "structvis.src.lib.visualization.visualization-utils.resolveCSSVar",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.visualization-utils",
+      "target": "structvis.src.lib.visualization.visualization-utils.watchThemeChange",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.src.lib.visualization.visualization-utils",
+      "target": "$app/environment",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.vitest-examples.greet.spec",
+      "target": "vitest",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.vitest-examples.greet.spec",
+      "target": "./greet",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.src.lib.vitest-examples.greet",
+      "target": "structvis.src.lib.vitest-examples.greet.greet",
+      "type": "contains"
+    },
+    {
+      "source": "structvis.svelte.config",
+      "target": "@sveltejs/adapter-static",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.vite.config",
+      "target": "@tailwindcss/vite",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.vite.config",
+      "target": "vitest/config",
+      "type": "imports"
+    },
+    {
+      "source": "structvis.vite.config",
+      "target": "@sveltejs/kit/vite",
+      "type": "imports"
+    }
+  ],
+  "warnings": [
+    "custom exclude dirs applied: .svelte-kit, docs, node_modules",
+    "gitignore rules applied from: .gitignore",
+    "some languages were parsed with module-only coverage because no structural query template is bundled: svelte (35 files)"
+  ]
+}

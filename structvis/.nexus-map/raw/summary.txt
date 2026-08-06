@@ -1,0 +1,9 @@
+=== Directory Summary ===
+
+structvis/ (3 modules, 0 classes, 0 functions, 87 lines)
+  Key imports from: (none / external only)
+
+structvis/src/ (31 modules, 1 classes, 22 functions, 3186 lines)
+  Key classes: QuickSortEngine
+  Key imports from: (none / external only)
+

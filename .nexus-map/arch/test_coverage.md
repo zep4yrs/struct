@@ -2,14 +2,14 @@
 
 > generated_by: nexus-mapper v2
 > verified_at: 2026-08-05
-> provenance: 文件系统扫描 + vitest 配置阅读 + 实际运行（299/299 通过）；渲染器测试批已运行 `npm run test`
+> provenance: 文件系统扫描 + vitest 配置阅读 + 实际运行（316/316 通过）；播放器测试批已运行 `npm run test`
 
 ## 测试配置
 
 - 运行器：Vitest v4（`test:unit` 脚本），`requireAssertions: true`（强制每条测试必须有断言）
 - 双项目：`server`（node 环境，引擎/存储层）+ `client`（jsdom 环境，`.svelte.spec.ts` 组件/渲染器测试，setup `src/test-setup.ts`：matchMedia / getBoundingClientRect / element.animate stub + 记录式 canvas 2D 上下文 + 内联设计 token 供 resolveCSSVar）
 - 命令：`npm run test`（CI 一键）、`npm run test:unit`（watch）
-- 引擎 spec 与引擎源码同目录（`*.spec.ts`），共 **31 个 spec 文件 / 299 个测试**
+- 引擎 spec 与引擎源码同目录（`*.spec.ts`），共 **32 个 spec 文件 / 316 个测试**
 
 ## 覆盖矩阵（当前实测）
 
@@ -37,6 +37,7 @@
 | `stores/stores.spec.ts` | 9 | **progress/settings 存储（技术债批新增）** | persistentStore SSR 双环境（vi.doMock('$app/environment')）、toggleTheme、updateTopicMastery 0-100 夹取与 80 完成、addMistake 字段、updateStreak 首日/连续/同日/重置 |
 | `components/player/ControlBar.svelte.spec.ts` | 9 | **ControlBar（组件测试批）** | 步数/进度条宽度/速度高亮渲染、按钮回调、进度条比例 onJump 夹取、键盘 Space/←/→/Home/End、disabled 全失效 |
 | `components/player/PracticePanel.svelte.spec.ts` | 11 | **PracticePanel（组件测试批）** | 题目/选项/键渲染、提交判题正确/错误回调与反馈、提交后禁用+✓/✗+继续、数字键+Enter、H 键与按钮提示切换、无提示不渲染 |
+| `components/player/AlgoPlayer.svelte.spec.ts` | 17 | **AlgoPlayer（播放器测试批）** | 渲染/两位补零、练习弹题/答对 mastery/答错 addMistake/演示不弹题、播放暂停、键盘步进、Home/End、演示数据预设重建、modal-close/遮罩关闭、自定义合法重建/非法报错、投影模式进出/旁白/强制演示、投影内播放 |
 | `visualization/array/ArrayRenderer.svelte.spec.ts` | 11 | **ArrayRenderer（渲染器测试批）** | 数值/索引绘制、compare/sorted/pivot/swap/pointer 颜色映射（记录式 canvas 断言 fillStyle）、i/j/基准标签颜色、partition 虚线矩形、空 steps 防御 |
 | `visualization/renderers.svelte.spec.ts` | 28 | **全渲染器冒烟（渲染器测试批）** | 11 渲染器 14 场景：关键文本绘制（栈/队/树/链表/KMP 两阶段与 found/B+ 树/E-R/哈希两种模式/图/SQL 表）、中间播放位置健壮性 |
 | `engines/db/ErEngine.spec.ts` | 9 | ErEngine | E-R 图实体/联系/关系模式生成 |
@@ -50,5 +51,5 @@
 ## 证据缺口
 
 - **Canvas 像素级无验证**：记录式 stub 断言绘制调用与颜色，不验证像素/布局视觉结果（缺 visual regression 基建，属计划外）
-- **AlgoPlayer 无组件测试**：三模式/键盘/全屏/投影交互依赖 GSAP 时间线，测试成本高，尚未覆盖
-- **实际运行验证**：`npm run check`（svelte-check 0 errors）、`npm run test`（299/299，双项目）、`npm run build`（adapter-static 全量预渲染到根 `docs/`）本轮均通过；`prettier --check` 全量已清零
+- **实际运行验证**：`npm run check`（svelte-check 0 errors）、`npm run test`（316/316，双项目）、`npm run build`（adapter-static 全量预渲染到根 `docs/`）本轮均通过；`prettier --check` 全量已清零
+- **测试基建坑位备忘**：① Svelte 5 transition 依赖 WAAPI，`element.animate` stub 必须在微任务中触发 `onfinish`，否则弹窗 outro 永不完成、节点不移除；② GSAP timeline 被 mock 后 `playbackPos` 不随动画推进，练习流测试需通过捕获 `tl.to` 的 renderProxy/onUpdate 手动 `advanceTo(n)` 模拟推进；③ 弹窗关闭断言需 `waitFor`（outro 跨多轮微任务）；④ AlgoPlayer 的 status 文本由 `$derived(currentStep)` 驱动，重建引擎后须先离开第 0 步再应用预设，`currentStepIdx` 发生真实变化才能重算

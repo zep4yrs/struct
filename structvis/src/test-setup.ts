@@ -38,12 +38,21 @@ Object.defineProperty(window, 'matchMedia', {
 	}))
 });
 
-// Svelte 5 transition 依赖 Web Animations API（jsdom 未实现）
+// Svelte 5 transition 依赖 Web Animations API（jsdom 未实现）。
+// Svelte 在 animate() 返回后赋值 animation.onfinish，并在 onfinish 触发时推进
+// 过渡（intro 应用关键帧 / outro 完成移除节点）；不触发则弹窗 outro 永不结束。
 Element.prototype.animate = vi.fn(
-	(): Animation =>
-		({
+	(
+		_keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+		options?: KeyframeAnimationOptions
+	): Animation => {
+		let onfinish: ((this: Animation, ev: AnimationPlaybackEvent) => void) | null = null;
+		let cancelled = false;
+		const anim = {
 			finished: Promise.resolve(),
-			cancel: vi.fn(),
+			cancel: vi.fn(() => {
+				cancelled = true;
+			}),
 			play: vi.fn(),
 			pause: vi.fn(),
 			commitStyles: vi.fn(),
@@ -51,11 +60,26 @@ Element.prototype.animate = vi.fn(
 			reverse: vi.fn(),
 			onfinish: null,
 			oncancel: null,
-			currentTime: 0,
-			playState: 'finished',
+			currentTime: 0 as number,
+			playState: 'finished' as string,
+			effect: null,
 			addEventListener: vi.fn(),
 			removeEventListener: vi.fn()
-		}) as unknown as Animation
+		};
+		Object.defineProperty(anim, 'onfinish', {
+			get: () => onfinish,
+			set: (fn: ((this: Animation, ev: AnimationPlaybackEvent) => void) | null) => {
+				onfinish = fn;
+			}
+		});
+		queueMicrotask(() => {
+			if (cancelled) return;
+			anim.currentTime = Number(options?.duration ?? 0);
+			anim.playState = 'finished';
+			onfinish?.call(anim as unknown as Animation, null as unknown as AnimationPlaybackEvent);
+		});
+		return anim as unknown as Animation;
+	}
 );
 
 // 布局相关 API 兜底（进度条点击测试依赖 getBoundingClientRect）

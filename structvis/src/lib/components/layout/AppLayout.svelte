@@ -39,6 +39,7 @@
 		if (path.startsWith('/db')) return '数据库';
 		if (path.startsWith('/progress')) return '[current]学习进度[/current]';
 		if (path.startsWith('/settings')) return '设置';
+		if (path.startsWith('/about')) return '[current]关于[/current]';
 		return '';
 	}
 

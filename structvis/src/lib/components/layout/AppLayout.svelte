@@ -26,6 +26,7 @@
 		if (path.startsWith('/db/sql')) return '数据库 / MySQL / [current]数据查询[/current]';
 		if (path.startsWith('/db/update')) return '数据库 / MySQL / [current]数据更新[/current]';
 		if (path.startsWith('/db/index')) return '数据库 / [current]索引原理[/current]';
+		if (path.startsWith('/db/view')) return '数据库 / [current]视图[/current]';
 		if (path.startsWith('/db/er')) return '数据库 / [current]E-R 模型[/current]';
 		if (path.startsWith('/db/normalize')) return '数据库 / [current]关系规范化[/current]';
 		if (path.startsWith('/db/tables')) return '数据库 / [current]建表练习[/current]';

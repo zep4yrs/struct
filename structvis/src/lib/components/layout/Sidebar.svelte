@@ -82,7 +82,7 @@
 			title: '进阶',
 			items: [
 				{ title: '索引原理', href: '/db/index' },
-				{ title: '视图', href: '#', planned: true }
+				{ title: '视图', href: '/db/view' }
 			]
 		},
 		{

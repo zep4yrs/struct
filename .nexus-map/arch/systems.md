@@ -33,6 +33,7 @@
 | 哈希表 | `algorithm/hash/HashTableEngine.ts` | 线性探测构造/查找/链地址法三模式，除留余数法 + ASL(成功) 统计，renderType 'hashtable'，含 `demoScript` |
 | SQL 查询 | `sql/SelectEngine.ts` | FROM→WHERE→GROUP BY→SELECT→ORDER BY→LIMIT；关键阶段携带 `presenterNote`；含 `demoScript` |
 | DML | `sql/DmlEngine.ts` | INSERT/UPDATE/DELETE 分步 |
+| 视图 | `sql/ViewEngine.ts`（v0.4 新增） | CREATE VIEW 解析→底层 SELECT 复用→视图完成→查询视图→基表更新后视图自动刷新（动态性演示） |
 | 建表 | `sql/create-table.ts`（函数非类） | `parseCreateTable` 解析 CREATE TABLE |
 | 数据库 | `db/ErEngine.ts` / `IndexEngine.ts`（B+ 树）/ `NormalizeEngine.ts` | E-R/索引/范式（renderType: er/btree/…） |
 

@@ -238,10 +238,11 @@
 	}
 
 	// tweenTo() 生成的控制 tween 只向前播放；若不清除，seek 后退后它仍会把
-	// 播放头拉回原位（Home/End/进度条跳动后步骤继续漂移的根因）
+	// 播放头拉回原位（Home/End/进度条跳动后步骤继续漂移的根因）。
+	// getTweensOf(tl) 可能漏掉控制 tween，用 killTweensOf 一并清除。
 	function killControlTweens() {
 		if (!tl) return;
-		tl.getTweensOf(tl).forEach((t) => t.kill());
+		gsap.killTweensOf(tl);
 	}
 
 	function reset() {
@@ -283,6 +284,7 @@
 				// 初始挂载（revision 0）时 tl 已由 onMount 创建，不可销毁
 				if (engineRevision > 0 && tl) {
 					tl.pause();
+					gsap.killTweensOf(tl);
 					tl.kill();
 					tl = null;
 				}

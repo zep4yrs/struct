@@ -2,6 +2,7 @@
 	import Logo from '$lib/components/ui/Logo.svelte';
 	import { settings, toggleTheme } from '$lib/stores/settings';
 	import { resolve } from '$app/paths';
+	import SearchDialog from './SearchDialog.svelte';
 
 	interface Props {
 		crumb?: string;
@@ -13,6 +14,22 @@
 	let { crumb, showSidebarBtn = false, sidebarOpen = false, onToggleSidebar }: Props = $props();
 
 	const isDark = $derived($settings.theme === 'dark');
+
+	let searchOpen = $state(false);
+
+	// 快捷键：/ 或 Ctrl+K 打开搜索（输入框/文本域中不响应）
+	$effect(() => {
+		function onKeydown(e: KeyboardEvent) {
+			const target = e.target as HTMLElement;
+			if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+			if (e.key === '/' || (e.key === 'k' && (e.ctrlKey || e.metaKey))) {
+				e.preventDefault();
+				searchOpen = true;
+			}
+		}
+		window.addEventListener('keydown', onKeydown);
+		return () => window.removeEventListener('keydown', onKeydown);
+	});
 </script>
 
 <header
@@ -81,8 +98,13 @@
 	</div>
 
 	<div class="flex items-center gap-3">
-		<!-- 搜索入口（占位，v0.2 做） -->
-		<button class="btn btn-ghost btn-icon" aria-label="搜索">
+		<!-- 全站搜索 -->
+		<button
+			class="btn btn-ghost btn-icon"
+			aria-label="搜索课程"
+			title="搜索课程 (/)"
+			onclick={() => (searchOpen = true)}
+		>
 			<svg
 				viewBox="0 0 24 24"
 				fill="none"
@@ -135,3 +157,5 @@
 		</button>
 	</div>
 </header>
+
+<SearchDialog open={searchOpen} onClose={() => (searchOpen = false)} />

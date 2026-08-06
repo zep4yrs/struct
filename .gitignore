@@ -26,5 +26,5 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# Build output (adapter-static)
-/docs
+# Build output (adapter-static) — committed to repo for GitHub Pages
+# /docs

@@ -19,6 +19,8 @@
 
 	function getCrumb(path: string): string {
 		if (path === '/' || path === '') return '';
+		if (path.startsWith('/ds/graph-storage')) return '数据结构 / 图 / [current]图的存储[/current]';
+		if (path.startsWith('/ds/graph-traversal')) return '数据结构 / 图 / [current]图的遍历[/current]';
 		if (path.startsWith('/ds/quick-sort')) return '数据结构 / 排序 / [current]快速排序[/current]';
 		if (path.startsWith('/ds/binary-tree')) return '数据结构 / 树 / [current]二叉树遍历[/current]';
 		if (path.startsWith('/ds/linear-list')) return '数据结构 / 线性表 / [current]单链表[/current]';

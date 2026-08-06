@@ -72,6 +72,13 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式'
 	},
 	{
+		title: '图的存储',
+		description: '邻接矩阵 · 邻接表 · 空间对比',
+		href: '/ds/graph-storage',
+		topicId: 'graph-storage',
+		badge: '交互式'
+	},
+	{
 		title: '图的遍历',
 		description: 'BFS 队列扩散 · DFS 递归深入',
 		href: '/ds/graph-traversal',

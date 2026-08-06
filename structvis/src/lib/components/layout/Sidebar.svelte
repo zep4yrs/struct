@@ -41,6 +41,7 @@
 		{
 			title: '图结构',
 			items: [
+				{ title: '图的存储', href: '/ds/graph-storage' },
 				{ title: '图的遍历', href: '/ds/graph-traversal' },
 				{ title: '最短路径', href: '/ds/shortest-path' },
 				{ title: '最小生成树', href: '/ds/mst' },

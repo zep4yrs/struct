@@ -36,7 +36,7 @@
 | 建表 | `sql/create-table.ts`（函数非类） | `parseCreateTable` 解析 CREATE TABLE |
 | 数据库 | `db/ErEngine.ts` / `IndexEngine.ts`（B+ 树）/ `NormalizeEngine.ts` | E-R/索引/范式（renderType: er/btree/…） |
 
-测试：每个引擎族带 `.spec.ts`（共 215 测试，见 test_coverage.md）。
+测试：每个引擎族带 `.spec.ts`（引擎 240 + 组件/stores 20，共 260 测试，见 test_coverage.md）。
 
 ## 2. Canvas 渲染器层 — `structvis/src/lib/visualization/`
 

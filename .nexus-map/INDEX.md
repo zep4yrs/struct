@@ -23,7 +23,7 @@
 - **图专题（v1.0 已完成）**：`AlgorithmStep.graph?: GraphData`（nodes/edges + `nodeState`/`edgeState`/`nodeNote` 逐帧快照）；`GraphRenderer.svelte` 环形自动布局、节点五态（unvisited/frontier/visited/current/done）与边五态（normal/tried/candidate/selected/current）配色、边权标签、有向箭头、节点下方标注、主题联动；**已上线五引擎**：`GraphTraversalEngine`（BFS/DFS）、`MstEngine`（Prim/Kruskal）、`DijkstraEngine`（dist 松弛 + nodeNote）、`TopoSortEngine`（Kahn 入度法 + 环检测）、`CriticalPathEngine`（AOE 拓扑→ve/vl→关键活动）；新增步骤类型 edge-candidate/edge-select/edge-reject（STEP_DURATIONS 已配时长）
 - **契约字段**：仅 `engine.demoScript` 为可选（不破坏既有引擎）；17 引擎配齐讲解（quicksort 全分区阶段 + 四排序 + 二叉树 + SQL + 图遍历 + MST + 最短路 + 拓扑 + 关键路径 + 二分查找 + KMP + BST + 哈夫曼 + 哈希表，SQL 关键步骤用 presenterNote）
 - **查找与树专题补齐（v1.0 三批，已上线）**：`AlgorithmStep.kmp?/huffman?/hash?` 专用快照 + renderType `kmp/huffman/hashtable`；KmpRenderer 文本/模式/next 三行布局（buildNext 阶段）与 HuffmanRenderer 森林多根布局、HashtableRenderer 槽位+探测序列（线性）与链式布局；AlgoPlayer 两个分发点均已接入；二分查找复用 array 渲染器（partition+pivot+双指针高亮）；BST 复用 tree 渲染器（查找/插入/删除三模式，层序快照）
-- **测试**：215 个测试 / 25 spec 文件（`npm run test`），`requireAssertions` 强制断言；`npm run check`（svelte-check 0 errors）、`npm run build` 自建 + 部署产物进仓库根 `docs/` 已验证
+- **测试**：260 个测试 / 29 spec 文件（`npm run test`，server node + client jsdom 双项目，组件测试用 @testing-library/svelte），`requireAssertions` 强制断言；`npm run check`（svelte-check 0 errors）、`npm run build` 自建 + 部署产物进仓库根 `docs/` 已验证
 - **部署**：git remote `git@github.com:zep4yrs/struct.git`（master，18 commits 全部已推送）；**v1.0 全部专题已上线** `https://zep4yrs.github.io/struct/`（Pages 源=master 根 `/docs`，`svelte.config.js` adapter 输出 `../docs`，`.nojekyll` 防 Pages 丢弃 `_app`）；`/ds/quick-sort` 为 `ssr=false` 客户端渲染页（空壳正常）
 
 ## 技术栈

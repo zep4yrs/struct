@@ -246,6 +246,134 @@ test.describe('搜索', () => {
 	});
 });
 
+test.describe('数据库 · 概述', () => {
+	test('概述页：概念区块渲染、练习作答即时反馈', async ({ page }) => {
+		await page.goto('/struct/db/overview');
+		await expect(page.getByRole('heading', { name: '数据库系统概述' })).toBeVisible();
+		await waitForHydratedGlobal(page);
+		await expect(page.getByText('数据模型', { exact: true })).toBeVisible();
+		await expect(page.getByText('三级模式结构', { exact: true })).toBeVisible();
+		await expect(page.getByText('数据库管理系统（DBMS）', { exact: true })).toBeVisible();
+
+		await page.locator('.quiz-item').first().getByRole('button', { name: /元组/ }).click();
+		await expect(
+			page.locator('.quiz-item').first().getByText('正确', { exact: true })
+		).toBeVisible();
+		await expect(page.locator('.quiz-explanation').first()).toBeVisible();
+
+		const wrong = page
+			.locator('.quiz-item')
+			.nth(1)
+			.getByRole('button', { name: /物理文件/ });
+		await wrong.click();
+		await expect(
+			page.locator('.quiz-item').nth(1).getByText('错误', { exact: true })
+		).toBeVisible();
+	});
+});
+
+test.describe('数据库 · 高级查询', () => {
+	test('高级查询页：播放器渲染、演示数据切换四种子句、搜索可定位', async ({ page }) => {
+		await page.goto('/struct/db/advanced-query');
+		await expect(page.getByRole('heading', { name: '高级查询' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await expect(page.locator('.canvas-title')).toHaveText('高级查询');
+		await expect(page.locator('.pseudocode .line')).toHaveCount(5);
+		await waitForHydrated(page);
+
+		await page.locator('.title-btn', { hasText: '演示数据' }).click();
+		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeVisible();
+		await page.locator('.preset-item', { hasText: '左连接保留全部学生' }).click();
+		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeHidden();
+		await expect(page.locator('.title-btn', { hasText: '左连接保留全部学生' })).toContainText(
+			'左连接保留全部学生'
+		);
+	});
+
+	test('高级查询页：HAVING 预设逐步执行至完成', async ({ page }) => {
+		await page.goto('/struct/db/advanced-query');
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await page.keyboard.press('Home');
+		await expect(page.locator('.current-num')).toHaveText('01');
+
+		await page.getByTitle('下一步 (→)').click();
+		await expect(page.locator('.current-num')).toHaveText('02');
+		for (let i = 0; i < 40; i++) {
+			const status = await page.locator('.status-text').textContent();
+			if (status?.includes('查询完成')) break;
+			await page.getByTitle('下一步 (→)').click();
+			await page.waitForTimeout(250);
+		}
+		await expect(page.locator('.status-text')).toContainText('查询完成');
+	});
+
+	test('高级查询页：练习模式弹题', async ({ page }) => {
+		await page.goto('/struct/db/advanced-query');
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await page.keyboard.press('Home');
+		await expect(page.locator('.current-num')).toHaveText('01');
+
+		await page.getByRole('tab', { name: '练习' }).click();
+		await page.getByTitle('下一步 (→)').click();
+		await expect(page.locator('.current-num')).toHaveText('02');
+
+		const dialog = page.getByRole('dialog', { name: '练习题目' });
+		await expect(dialog).toBeVisible();
+		await expect(dialog.locator('.question-title')).toContainText('WHERE 与 HAVING 的过滤时机');
+		await dialog.locator('.option', { hasText: 'WHERE 筛行，HAVING 筛分组' }).click();
+		await dialog.getByRole('button', { name: '提交答案' }).click();
+		await expect(dialog.locator('.feedback')).toContainText('回答正确');
+	});
+});
+
+test.describe('数据库 · 事务与权限', () => {
+	test('事务页：播放器渲染、演示数据切换、逐步到回滚结论', async ({ page }) => {
+		await page.goto('/struct/db/transaction');
+		await expect(page.getByRole('heading', { name: '事务与并发控制' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await expect(page.locator('.canvas-title')).toHaveText('事务与并发控制');
+		await waitForHydrated(page);
+
+		await page.locator('.title-btn', { hasText: '演示数据' }).click();
+		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeVisible();
+		await page.locator('.preset-item', { hasText: '转账失败回滚' }).click();
+		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeHidden();
+		await expect(page.locator('.title-btn', { hasText: '转账失败回滚' })).toContainText(
+			'转账失败回滚'
+		);
+
+		await page.keyboard.press('Home');
+		await expect(page.locator('.current-num')).toHaveText('01');
+		for (let i = 0; i < 40; i++) {
+			const status = await page.locator('.status-text').textContent();
+			if (status?.includes('回滚完成')) break;
+			await page.getByTitle('下一步 (→)').click();
+			await page.waitForTimeout(250);
+		}
+		await expect(page.locator('.status-text')).toContainText('回滚完成');
+	});
+
+	test('用户权限页：概念区块渲染、练习作答即时反馈', async ({ page }) => {
+		await page.goto('/struct/db/users');
+		await expect(page.getByRole('heading', { name: '用户与权限管理' })).toBeVisible();
+		await waitForHydratedGlobal(page);
+		await expect(page.locator('.concept-card h2', { hasText: '用户管理' })).toBeVisible();
+		await expect(page.getByText('权限管理 GRANT / REVOKE', { exact: true })).toBeVisible();
+
+		await page
+			.locator('.quiz-item')
+			.first()
+			.getByRole('button', { name: /GRANT SELECT/ })
+			.click();
+		await expect(
+			page.locator('.quiz-item').first().getByText('正确', { exact: true })
+		).toBeVisible();
+		await expect(page.locator('.quiz-explanation').first()).toBeVisible();
+	});
+});
+
 test.describe('数据库 · 视图', () => {
 	test('视图页：播放器渲染、演示数据切换、搜索可定位', async ({ page }) => {
 		await page.goto('/struct/db/view');
@@ -253,6 +381,7 @@ test.describe('数据库 · 视图', () => {
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await expect(page.locator('.canvas-title')).toHaveText('视图创建与使用');
 		await expect(page.locator('.pseudocode .line')).toHaveCount(5);
+		await waitForHydrated(page);
 
 		await page.locator('.title-btn', { hasText: '演示数据' }).click();
 		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeVisible();
@@ -275,7 +404,9 @@ test.describe('数据库 · 视图', () => {
 
 		const dialog = page.getByRole('dialog', { name: '练习题目' });
 		await expect(dialog).toBeVisible();
-		await expect(dialog.locator('.question-title')).toContainText('视图（VIEW）在数据库中保存的是什么');
+		await expect(dialog.locator('.question-title')).toContainText(
+			'视图（VIEW）在数据库中保存的是什么'
+		);
 		await dialog.locator('.option', { hasText: '一条 SELECT 查询定义' }).click();
 		await dialog.getByRole('button', { name: '提交答案' }).click();
 		await expect(dialog.locator('.feedback')).toContainText('回答正确');

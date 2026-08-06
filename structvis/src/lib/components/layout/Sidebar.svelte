@@ -71,10 +71,10 @@
 		{
 			title: '基础',
 			items: [
-				{ title: '数据库系统概述', href: '#', planned: true },
+				{ title: '数据库系统概述', href: '/db/overview' },
 				{ title: '数据库和表', href: '/db/tables' },
 				{ title: '数据查询', href: '/db/sql' },
-				{ title: '高级查询', href: '#', planned: true },
+				{ title: '高级查询', href: '/db/advanced-query' },
 				{ title: '数据更新', href: '/db/update' }
 			]
 		},
@@ -95,8 +95,8 @@
 		{
 			title: '运维',
 			items: [
-				{ title: '事务与并发控制', href: '#', planned: true },
-				{ title: '用户与权限管理', href: '#', planned: true }
+				{ title: '事务与并发控制', href: '/db/transaction' },
+				{ title: '用户与权限管理', href: '/db/users' }
 			]
 		}
 	];

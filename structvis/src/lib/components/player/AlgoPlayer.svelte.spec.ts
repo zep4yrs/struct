@@ -9,12 +9,16 @@ import { updateTopicMastery, addMistake } from '$lib/stores/progress';
 // 以便测试通过 advanceTo(n) 模拟 timeline 推进（真实环境下 playbackPos 由动画驱动）。
 const gsapState = vi.hoisted(() => {
 	const pendingTos: { opts: Record<string, unknown> }[] = [];
-	const tlTos: { target: Record<string, number>; onUpdate?: () => void }[] = [];
+	const tlTos: { target: Record<string, number>; onUpdate?: () => void; duration?: number }[] = [];
 	const tl = {
 		kill: vi.fn(),
 		paused: true,
 		to: vi.fn((target: Record<string, number>, cfg: Record<string, unknown>) => {
-			tlTos.push({ target, onUpdate: cfg.onUpdate as (() => void) | undefined });
+			tlTos.push({
+				target,
+				onUpdate: cfg.onUpdate as (() => void) | undefined,
+				duration: cfg.duration as number
+			});
 			return { kill: vi.fn() };
 		}),
 		eventCallback: vi.fn(),
@@ -57,6 +61,11 @@ function advanceTo(n: number): void {
 		t.target.pos = n;
 		t.onUpdate?.();
 	}
+}
+
+// 播放头到达 pos=idx 的秒数（与组件 stepEndSeconds 同口径）
+function stepEnd(idx: number): number {
+	return gsapState.tlTos.slice(0, idx).reduce((s, t) => s + (t.duration ?? 0), 0);
 }
 
 function createEngine(): BubbleSortEngine {
@@ -196,14 +205,14 @@ describe('AlgoPlayer 播放控制', () => {
 		expect(container.querySelector('[title="播放 (Space)"]')).not.toBeNull();
 	});
 
-	it('键盘 ←/→ 步进：tweenTo 目标与步骤编号更新', async () => {
+	it('键盘 ←/→ 步进：tweenTo 目标（秒数）与步骤编号更新', async () => {
 		const { container } = await mountPlayer();
 		await fireEvent.keyDown(window, { key: 'ArrowRight' });
-		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(1);
+		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(stepEnd(1));
 		expect(container.querySelector('.current-num')?.textContent).toBe('02');
 
 		await fireEvent.keyDown(window, { key: 'ArrowLeft' });
-		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(0);
+		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(stepEnd(0));
 		expect(container.querySelector('.current-num')?.textContent).toBe('01');
 	});
 
@@ -215,7 +224,7 @@ describe('AlgoPlayer 播放控制', () => {
 		expect(engine.playbackPos).toBe(0);
 
 		await fireEvent.keyDown(window, { key: 'End' });
-		expect(gsapState.tl.seek).toHaveBeenCalledWith(engine.totalSteps - 1);
+		expect(gsapState.tl.seek).toHaveBeenCalledWith(stepEnd(engine.totalSteps - 1));
 		expect(container.querySelector('.current-num')?.textContent).toBe(
 			String(engine.totalSteps).padStart(2, '0')
 		);

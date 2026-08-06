@@ -147,9 +147,9 @@ export const dbTopics: TopicCard[] = [
 	{
 		title: '数据库系统概述',
 		description: '数据模型 · 三级模式结构',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		href: '/db/overview',
+		topicId: 'overview',
+		badge: '交互式'
 	},
 	{
 		title: 'MySQL 数据查询',
@@ -161,9 +161,9 @@ export const dbTopics: TopicCard[] = [
 	{
 		title: '高级查询',
 		description: 'HAVING · 外连接 · UNION · EXISTS',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		href: '/db/advanced-query',
+		topicId: 'sql-advanced',
+		badge: '分步执行'
 	},
 	{
 		title: '建表练习',
@@ -210,15 +210,15 @@ export const dbTopics: TopicCard[] = [
 	{
 		title: '事务与并发控制',
 		description: 'ACID · 隔离级别',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		href: '/db/transaction',
+		topicId: 'transaction',
+		badge: '分步执行'
 	},
 	{
 		title: '用户与权限管理',
 		description: '用户 · GRANT · 备份恢复',
-		href: '#',
-		badge: '规划中',
-		planned: true
+		href: '/db/users',
+		topicId: 'users',
+		badge: '交互式'
 	}
 ];

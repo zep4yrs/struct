@@ -314,7 +314,12 @@
 		}
 	});
 
-	let currentStep = $derived(engine.steps[Math.min(currentStepIdx, engine.steps.length - 1)]);
+	// 依赖 engineRevision：重建引擎后 steps 引用变化，即使 currentStepIdx 数值不变，
+	// 也必须重新求值（否则状态栏/旁白滞留旧引擎的文案）
+	let currentStep = $derived.by(() => {
+		engineRevision;
+		return engine.steps[Math.min(currentStepIdx, engine.steps.length - 1)];
+	});
 
 	// === 讲授旁白：优先步骤级 presenterNote，回落到 demoScript 按步骤类型匹配 ===
 	let projectorNarration = $derived.by(() => {

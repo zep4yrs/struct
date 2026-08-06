@@ -240,7 +240,8 @@ export type RenderType =
 	| 'hashtable'
 	| 'sql-table'
 	| 'er'
-	| 'btree';
+	| 'btree'
+	| 'pseudocode';
 
 /**
  * 练习题类型

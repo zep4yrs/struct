@@ -81,7 +81,13 @@
 	});
 </script>
 
-<div class="practice-overlay" transition:fade={{ duration: 240 }}>
+<div
+	class="practice-overlay"
+	role="dialog"
+	aria-modal="true"
+	aria-label="练习题目"
+	transition:fade={{ duration: 240 }}
+>
 	<div
 		class="practice-card"
 		transition:fly={{
@@ -125,7 +131,7 @@
 		{/if}
 
 		{#if submitted}
-			<div class="feedback" class:feedback-no={!isCorrect}>
+			<div class="feedback" class:feedback-no={!isCorrect} aria-live="polite">
 				<div class="feedback-head">
 					<span class="tag {isCorrect ? 'tag-success' : 'tag-danger'}">
 						{isCorrect ? '回答正确' : '回答错误'}
@@ -187,6 +193,7 @@
 		max-width: 520px;
 		max-height: 100%;
 		overflow-y: auto;
+		overscroll-behavior: contain;
 		background: var(--color-surface);
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-lg);
@@ -252,7 +259,11 @@
 		font-size: 14px;
 		color: var(--color-ink-2);
 		cursor: pointer;
-		transition: all var(--dur-fast) var(--ease-out);
+		transition:
+			border-color var(--dur-fast) var(--ease-out),
+			border-left-color var(--dur-fast) var(--ease-out),
+			color var(--dur-fast) var(--ease-out),
+			background-color var(--dur-fast) var(--ease-out);
 	}
 
 	.option:hover:not(:disabled) {

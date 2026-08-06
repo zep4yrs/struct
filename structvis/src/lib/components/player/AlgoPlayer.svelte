@@ -546,7 +546,12 @@
 						<label class="custom-field">
 							<span class="custom-label">{f.label}</span>
 							{#if f.type === 'select'}
-								<select bind:value={customValues[f.key]} class="custom-control">
+								<select
+									bind:value={customValues[f.key]}
+									name={f.key}
+									autocomplete="off"
+									class="custom-control"
+								>
 									{#each f.options as o (o.value)}
 										<option value={o.value}>{o.label}</option>
 									{/each}
@@ -554,12 +559,16 @@
 							{:else if f.type === 'textarea'}
 								<textarea
 									bind:value={customValues[f.key]}
+									name={f.key}
+									autocomplete="off"
 									class="custom-control"
 									placeholder={f.placeholder}
 									rows="3"></textarea>
 							{:else}
 								<input
 									bind:value={customValues[f.key]}
+									name={f.key}
+									autocomplete="off"
 									type="text"
 									class="custom-control"
 									placeholder={f.placeholder}
@@ -569,7 +578,7 @@
 					{/each}
 				</div>
 				{#if customError}
-					<div class="custom-error">{customError}</div>
+					<div class="custom-error" aria-live="polite">{customError}</div>
 				{/if}
 				<div class="modal-actions">
 					<button class="btn btn-ghost" onclick={() => (showCustomModal = false)}>取消</button>
@@ -633,18 +642,28 @@
 			<footer class="projector-footer">
 				<div class="pj-narration">{projectorNarration || currentStep?.description || 'Ready'}</div>
 				<div class="pj-actions">
-					<button class="pj-ctrl" onclick={reset} title="重置 (Home)">⏮</button>
-					<button class="pj-ctrl" onclick={prev} title="上一步 (←)">◀</button>
+					<button class="pj-ctrl" onclick={reset} title="重置 (Home)" aria-label="重置 (Home)"
+						>⏮</button
+					>
+					<button class="pj-ctrl" onclick={prev} title="上一步 (←)" aria-label="上一步 (←)"
+						>◀</button
+					>
 					<button
 						class="pj-ctrl pj-play"
 						onclick={isPlaying ? pause : play}
 						title="播放 / 暂停 (Space)"
+						aria-label={isPlaying ? '暂停 (Space)' : '播放 (Space)'}
 					>
 						{#if isPlaying}⏸{:else}▶{/if}
 					</button>
-					<button class="pj-ctrl" onclick={next} title="下一步 (→)">▶</button>
-					<button class="pj-ctrl" onclick={() => jumpTo(engine.totalSteps - 1)} title="到最后 (End)"
-						>⏭</button
+					<button class="pj-ctrl" onclick={next} title="下一步 (→)" aria-label="下一步 (→)"
+						>▶</button
+					>
+					<button
+						class="pj-ctrl"
+						onclick={() => jumpTo(engine.totalSteps - 1)}
+						title="到最后 (End)"
+						aria-label="到最后 (End)">⏭</button
 					>
 				</div>
 				<div class="pj-hints">Esc 退出 · 空格 播放 / 暂停 · ← → 步进</div>
@@ -761,7 +780,10 @@
 		border: 1px solid var(--color-line-regular);
 		border-radius: 6px;
 		cursor: pointer;
-		transition: all 120ms var(--ease-out);
+		transition:
+			border-color 120ms var(--ease-out),
+			color 120ms var(--ease-out),
+			background-color 120ms var(--ease-out);
 	}
 
 	.title-btn:hover {
@@ -792,7 +814,9 @@
 		border: 1px solid var(--color-accent);
 		border-radius: 6px;
 		cursor: pointer;
-		transition: all 120ms var(--ease-out);
+		transition:
+			background-color 120ms var(--ease-out),
+			color 120ms var(--ease-out);
 	}
 
 	.pj-entry:hover {
@@ -946,6 +970,7 @@
 		max-width: 520px;
 		max-height: min(560px, calc(100vh - 96px));
 		overflow-y: auto;
+		overscroll-behavior: contain;
 		background: var(--color-surface);
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-lg);
@@ -1006,7 +1031,10 @@
 		border-radius: var(--radius-sm);
 		border-left: 3px solid var(--color-line-regular);
 		cursor: pointer;
-		transition: all 120ms var(--ease-out);
+		transition:
+			border-color 120ms var(--ease-out),
+			border-left-color 120ms var(--ease-out),
+			background-color 120ms var(--ease-out);
 	}
 
 	.preset-item:hover {
@@ -1147,7 +1175,9 @@
 		border: 1px solid var(--color-line-regular);
 		border-radius: 6px;
 		cursor: pointer;
-		transition: all 120ms var(--ease-out);
+		transition:
+			border-color 120ms var(--ease-out),
+			color 120ms var(--ease-out);
 	}
 
 	.pj-btn:hover {
@@ -1213,7 +1243,9 @@
 		color: var(--color-ink);
 		font-size: 16px;
 		cursor: pointer;
-		transition: all 120ms var(--ease-out);
+		transition:
+			border-color 120ms var(--ease-out),
+			transform 120ms var(--ease-out);
 	}
 
 	.pj-ctrl:hover {

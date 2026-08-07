@@ -222,7 +222,7 @@ test.describe('主题与导航', () => {
 	});
 
 	test('侧边栏导航与跳转链接', async ({ page }) => {
-		await page.goto('/');
+		await page.goto('/struct/ds/binary-tree');
 		await waitForHydratedGlobal(page);
 		await page.getByRole('button', { name: '显示导航' }).click();
 		const nav = page.getByRole('navigation', { name: '课程目录' });
@@ -230,11 +230,38 @@ test.describe('主题与导航', () => {
 		await expect(page.getByRole('heading', { name: '快速排序' })).toBeVisible();
 		await expect(page.locator('.canvas-title')).toHaveText('快速排序');
 
-		await page.goto('/');
+		await page.goto('/struct/ds/binary-tree');
 		await waitForHydratedGlobal(page);
 		await page.getByRole('button', { name: '显示导航' }).click();
 		await page.getByRole('navigation', { name: '课程目录' }).getByText('图的遍历').click();
 		await expect(page.getByRole('heading', { name: '图的遍历' })).toBeVisible();
+	});
+
+	test('侧边栏分组跟随页面：数据库页显示数据库分组而非数据结构', async ({ page }) => {
+		await page.goto('/struct/db/sql');
+		await waitForHydratedGlobal(page);
+		await page.getByRole('button', { name: '显示导航' }).click();
+		const nav = page.getByRole('navigation', { name: '课程目录' });
+
+		// 应显示数据库分组（基础/进阶/设计/运维）
+		await expect(nav.getByText('基础')).toBeVisible();
+		await expect(nav.getByText('数据查询')).toBeVisible();
+		await expect(nav.getByText('进阶')).toBeVisible();
+		// 不应显示数据结构分组
+		await expect(nav.getByText('线性结构')).toBeHidden();
+		await expect(nav.getByText('排序算法')).toBeHidden();
+
+		// 当前项高亮（数据查询所在链接带 accent 左边框）
+		const activeLink = nav.locator('a', { hasText: '数据查询' });
+		await expect(activeLink).toHaveCSS('border-left-color', 'rgb(217, 119, 6)');
+
+		// 回到数据结构页应恢复数据结构分组
+		await page.goto('/struct/ds/quick-sort');
+		await waitForHydratedGlobal(page);
+		await page.getByRole('button', { name: '显示导航' }).click();
+		const nav2 = page.getByRole('navigation', { name: '课程目录' });
+		await expect(nav2.getByText('排序算法')).toBeVisible();
+		await expect(nav2.getByText('基础')).toBeHidden();
 	});
 
 	test('进度页：空状态与学习记录入口', async ({ page }) => {

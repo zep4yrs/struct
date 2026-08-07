@@ -2,6 +2,7 @@
 	import TopBar from '$lib/components/layout/TopBar.svelte';
 	import Sidebar from '$lib/components/layout/Sidebar.svelte';
 	import { page } from '$app/stores';
+	import { base } from '$app/paths';
 
 	interface Props {
 		children: import('svelte').Snippet;
@@ -10,6 +11,13 @@
 	let { children }: Props = $props();
 
 	let sidebarOpen = $state(false);
+
+	// $page.url.pathname 含 base 前缀（如 /struct/db/view），先剥离 base 再匹配
+	function stripBase(path: string): string {
+		if (!base || base === '/') return path;
+		if (!path.startsWith(base)) return path;
+		return path.slice(base.length) || '/';
+	}
 
 	function getActiveSection(path: string): 'ds' | 'db' | 'progress' {
 		if (path.startsWith('/db')) return 'db';
@@ -38,6 +46,8 @@
 		if (path.startsWith('/db/transaction')) return '数据库 / [current]事务与并发控制[/current]';
 		if (path.startsWith('/db/users')) return '数据库 / [current]用户与权限管理[/current]';
 		if (path.startsWith('/db/tables')) return '数据库 / [current]建表练习[/current]';
+		if (path.startsWith('/db/triggers')) return '数据库 / [current]触发器[/current]';
+		if (path.startsWith('/db/procedures')) return '数据库 / [current]存储过程[/current]';
 		if (path.startsWith('/db')) return '数据库';
 		if (path.startsWith('/progress')) return '[current]学习进度[/current]';
 		if (path.startsWith('/settings')) return '设置';
@@ -45,9 +55,9 @@
 		return '';
 	}
 
-	const activeSection = $derived(getActiveSection($page.url.pathname));
-	const crumb = $derived(getCrumb($page.url.pathname));
-	const isHome = $derived($page.url.pathname === '/');
+	const activeSection = $derived(getActiveSection(stripBase($page.url.pathname)));
+	const crumb = $derived(getCrumb(stripBase($page.url.pathname)));
+	const isHome = $derived(stripBase($page.url.pathname) === '/');
 </script>
 
 <div class="flex min-h-screen flex-col" style="background: var(--color-paper);">

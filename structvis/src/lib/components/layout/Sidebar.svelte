@@ -106,8 +106,15 @@
 		activeSection === 'ds' ? dsGroups : activeSection === 'db' ? dbGroups : []
 	);
 
+	// $page.url.pathname 含 base 前缀，剥离后再匹配高亮
+	function strippedPath(): string {
+		const p = $page.url.pathname;
+		if (!base || base === '/') return p;
+		return p.startsWith(base) ? p.slice(base.length) || '/' : p;
+	}
+
 	function isActive(href: string): boolean {
-		return $page.url.pathname.startsWith(href);
+		return strippedPath().startsWith(href);
 	}
 </script>
 

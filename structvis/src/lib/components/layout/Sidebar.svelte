@@ -17,9 +17,10 @@
 	interface Props {
 		activeSection: 'ds' | 'db' | 'progress';
 		open: boolean;
+		onClose?: () => void;
 	}
 
-	let { activeSection, open }: Props = $props();
+	let { activeSection, open, onClose = () => {} }: Props = $props();
 
 	const dsGroups: NavGroup[] = [
 		{
@@ -116,11 +117,30 @@
 	function isActive(href: string): boolean {
 		return strippedPath().startsWith(href);
 	}
+
+	// Esc 关闭抽屉
+	$effect(() => {
+		if (!open) return;
+		function onKeydown(e: KeyboardEvent) {
+			if (e.key === 'Escape') onClose();
+		}
+		window.addEventListener('keydown', onKeydown);
+		return () => window.removeEventListener('keydown', onKeydown);
+	});
 </script>
+
+<!-- 移动端遮罩 -->
+{#if open}
+	<button
+		class="drawer-backdrop"
+		aria-label="关闭导航"
+		onclick={onClose}
+	></button>
+{/if}
 
 <nav
 	aria-label="课程目录"
-	class="hidden h-full flex-shrink-0 overflow-hidden border-r transition-[width,color] duration-300 md:block"
+	class="drawer {open ? 'open' : ''} h-full flex-shrink-0 overflow-hidden border-r transition-[width,color] duration-300 md:block"
 	style="
 		border-color: {open ? 'var(--color-line-hair)' : 'transparent'};
 		background: var(--color-paper);
@@ -128,6 +148,28 @@
 	"
 >
 	<div class="h-full w-56 overflow-y-auto py-4">
+		<!-- 移动端关闭按钮 -->
+		<div class="mb-2 px-2 md:hidden">
+			<button
+				class="btn btn-ghost btn-icon-lg ml-auto flex"
+				style="color: var(--color-ink-2);"
+				aria-label="关闭导航"
+				title="关闭导航"
+				onclick={onClose}
+			>
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path d="M18 6 6 18M6 6l12 12" />
+				</svg>
+			</button>
+		</div>
 		<!-- 课程目录入口 -->
 		<div class="mb-4 px-4">
 			<a
@@ -285,3 +327,48 @@
 		</div>
 	</div>
 </nav>
+
+<style>
+	/* 移动端：侧栏作为覆盖式抽屉（fixed + 遮罩），桌面端保持内联宽度切换 */
+	.drawer-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 60;
+		background: rgba(20, 20, 20, 0.35);
+		border: none;
+		padding: 0;
+		cursor: default;
+	}
+
+	.drawer {
+		z-index: 61;
+	}
+
+	@media (max-width: 767px) {
+		.drawer {
+			position: fixed;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			height: 100dvh;
+			width: 224px !important;
+			visibility: hidden;
+			transform: translateX(-100%);
+			transition:
+				transform var(--dur-base) var(--ease-out),
+				visibility 0s linear var(--dur-base),
+				border-color var(--dur-fast) var(--ease-out);
+			box-shadow: none;
+		}
+
+		.drawer.open {
+			visibility: visible;
+			transform: translateX(0);
+			transition:
+				transform var(--dur-base) var(--ease-out),
+				visibility 0s linear 0s,
+				border-color var(--dur-fast) var(--ease-out);
+			box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+		}
+	}
+</style>

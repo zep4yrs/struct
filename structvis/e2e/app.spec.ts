@@ -276,6 +276,30 @@ test.describe('主题与导航', () => {
 		await expect(nav2.getByText('基础')).toBeHidden();
 	});
 
+	test('移动端：侧栏以抽屉呈现，遮罩可关闭', async ({ page }) => {
+		await page.setViewportSize({ width: 390, height: 844 });
+		await page.goto('/struct/ds/bubble-sort');
+		await waitForHydratedGlobal(page);
+		const nav = page.getByRole('navigation', { name: '课程目录' });
+		await expect(nav).toBeHidden();
+
+		await page.getByRole('button', { name: '显示导航' }).click();
+		await expect(nav).toBeVisible();
+		await expect(page.locator('.drawer-backdrop')).toBeVisible();
+		await expect(
+			nav.getByRole('button', { name: '关闭导航' })
+		).toBeVisible();
+
+		await nav.getByRole('button', { name: '关闭导航' }).click();
+		await expect(nav).toBeHidden();
+
+		// 重新打开后通过遮罩关闭
+		await page.getByRole('button', { name: '显示导航' }).click();
+		await expect(nav).toBeVisible();
+		await page.locator('.drawer-backdrop').click({ position: { x: 340, y: 400 } });
+		await expect(nav).toBeHidden();
+	});
+
 	test('进度页：空状态与学习记录入口', async ({ page }) => {
 		await page.goto('/struct/progress');
 		await waitForHydratedGlobal(page);

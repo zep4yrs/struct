@@ -4,7 +4,7 @@
 	import { expoOut } from 'svelte/easing';
 	import gsap from 'gsap';
 	import type { AlgorithmEngine, StepType, PracticeQuestion } from '$lib/engines/algorithm/types';
-	import { addMistake, updateTopicMastery } from '$lib/stores/progress';
+	import { addMistake, recordExercise } from '$lib/stores/progress';
 	import ArrayRenderer from '$lib/visualization/array/ArrayRenderer.svelte';
 	import TreeRenderer from '$lib/visualization/tree/TreeRenderer.svelte';
 	import LinkedRenderer from '$lib/visualization/linkedlist/LinkedRenderer.svelte';
@@ -190,12 +190,14 @@
 		answeredStepIds.push(stepId);
 
 		if (result.correct) {
-			updateTopicMastery(topicId, 10);
+			recordExercise(topicId, true);
 		} else {
+			recordExercise(topicId, false);
 			addMistake({
 				topic: topicName,
-				type: 'algorithm',
+				type: engine.renderType === 'sql-table' ? 'sql' : 'algorithm',
 				question: activeQuestion.prompt,
+				options: activeQuestion.options,
 				wrongAnswer: result.answer,
 				correctAnswer: String(activeQuestion.correctAnswer),
 				explanation: activeQuestion.explanation

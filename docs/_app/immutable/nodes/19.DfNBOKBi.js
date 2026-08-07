@@ -1,0 +1,6 @@
+<<<<<<<< HEAD:docs/_app/immutable/nodes/19.COXtLlaq.js
+import{C as e,T as t,V as n,nt as r,z as i}from"../chunks/CKVVjNg5.js";import"../chunks/xihTtKlq.js";import{n as a}from"../chunks/C_9B8z-C.js";import{t as o}from"../chunks/BLkOrnoM.js";var s=t(`<div class="mx-auto max-w-7xl px-8 py-16"><div class="section-label mb-4">数据结构</div> <h1 class="font-display mb-2 text-3xl font-medium" style="letter-spacing: -0.02em;">数据结构与算法</h1> <p class="mb-10" style="color: var(--color-ink-2); max-width: 560px;">李春葆《数据结构教程》第5版配套自学练习。每个知识点都有步进可视化 + 交互式练习，
+========
+import{C as e,T as t,V as n,nt as r,z as i}from"../chunks/CKVVjNg5.js";import"../chunks/xihTtKlq.js";import{n as a}from"../chunks/C_9B8z-C.js";import{t as o}from"../chunks/CEFLsjnU.js";var s=t(`<div class="mx-auto max-w-7xl px-8 py-16"><div class="section-label mb-4">数据结构</div> <h1 class="font-display mb-2 text-3xl font-medium" style="letter-spacing: -0.02em;">数据结构与算法</h1> <p class="mb-10" style="color: var(--color-ink-2); max-width: 560px;">李春葆《数据结构教程》第5版配套自学练习。每个知识点都有步进可视化 + 交互式练习，
+>>>>>>>> origin/master:docs/_app/immutable/nodes/19.DfNBOKBi.js
+		卡片底部的进度条反映你的掌握度。</p> <!></div>`);function c(t){var c=s(),l=n(i(c),6);o(l,{get topics(){return a}}),r(c),e(t,c)}export{c as component};

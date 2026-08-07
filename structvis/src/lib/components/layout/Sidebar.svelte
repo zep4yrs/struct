@@ -128,6 +128,37 @@
 	"
 >
 	<div class="h-full w-56 overflow-y-auto py-4">
+		<!-- 课程目录入口 -->
+		<div class="mb-4 px-4">
+			<a
+				href={base + '/catalog'}
+				class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
+				style="
+				border-color: transparent;
+				color: {isActive('/catalog') ? 'var(--color-ink)' : 'var(--color-ink-2)'};
+				background: {isActive('/catalog') ? 'rgba(217, 119, 6, 0.06)' : 'transparent'};
+				border-left-color: {isActive('/catalog') ? 'var(--color-accent)' : 'transparent'};
+				font-weight: {isActive('/catalog') ? '500' : '400'};
+			"
+			>
+				<svg
+					width="14"
+					height="14"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path d="M3 3v18h18" />
+					<path d="M7 8h3M7 12h8M7 16h5" />
+				</svg>
+				<span>课程目录</span>
+			</a>
+		</div>
+
 		{#each groups as group (group.title)}
 			<div class="mb-6">
 				<div

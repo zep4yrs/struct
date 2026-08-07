@@ -15,7 +15,7 @@
 - `lib/components/player/` — **播放器**：AlgoPlayer（GSAP timeline、演示/练习/**投影**三模式）+ ControlBar + PseudocodePanel + PracticePanel **已实现**
 - `lib/components/layout/` + `ui/` + `stores/` + `styles/` — AppLayout/TopBar/Sidebar、Logo/TopicGrid、progress/settings/persistent stores、亮暗 token **已实现**
 - `lib/content/topics.ts` — **课程目录数据层**（dsTopics×18 全部已实现 + dbTopics×11，TopicCard）已实现；`lib/data/` 仍为空（规划中）
-- `routes/` — **30 个功能页面，无占位页**：`/`、`/ds`、`/db`、ds 全 19 页（5 排序+树+链表+栈队列+图遍历+最小生成树+最短路径+拓扑排序+关键路径+二分查找+KMP+二叉搜索树+哈夫曼树+哈希表+图的存储）、db 九页（er/index/normalize/sql/tables/update/advanced-query + overview/transaction/users/triggers/procedures 概念/演示页）、`/progress`、`/settings`（设置）、`/about`；`+layout.ts` prerender=true、trailingSlash='always'
+- `routes/` — **31 个功能页面，无占位页**：`/`（landing）、`/catalog`（课程目录）、`/ds`、`/db`、ds 全 19 页（5 排序+树+链表+栈队列+图遍历+最小生成树+最短路径+拓扑排序+关键路径+二分查找+KMP+二叉搜索树+哈夫曼树+哈希表+图的存储）、db 九页（er/index/normalize/sql/tables/update/advanced-query + overview/transaction/users/triggers/procedures 概念/演示页）、`/progress`、`/settings`（设置）、`/about`；`+layout.ts` prerender=true、trailingSlash='always'
 
 ## 关键事实
 

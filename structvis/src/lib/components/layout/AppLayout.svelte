@@ -27,6 +27,7 @@
 
 	function getCrumb(path: string): string {
 		if (path === '/' || path === '') return '';
+		if (path.startsWith('/catalog')) return '[current]课程目录[/current]';
 		if (path.startsWith('/ds/graph-storage')) return '数据结构 / 图 / [current]图的存储[/current]';
 		if (path.startsWith('/ds/graph-traversal'))
 			return '数据结构 / 图 / [current]图的遍历[/current]';

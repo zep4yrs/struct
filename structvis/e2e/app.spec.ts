@@ -43,13 +43,25 @@ async function clickNext(page: Page) {
 }
 
 test.describe('页面加载', () => {
-	test('首页：标题、口号与两门课程区块', async ({ page }) => {
+	test('首页：标题、口号与课程入口', async ({ page }) => {
 		await page.goto('/');
 		await waitForHydratedGlobal(page);
 		await expect(page.getByRole('heading', { name: /StructVis/ })).toBeVisible();
 		await expect(page.getByText('看见数据结构与数据库的每一步跳动')).toBeVisible();
+		await expect(page.getByText('进入课程目录')).toBeVisible();
+		await expect(page.getByText('数据结构与算法', { exact: true })).toBeVisible();
+		await expect(page.getByText('MySQL 数据库', { exact: true })).toBeVisible();
+	});
+
+	test('课程目录页：两门课程区块', async ({ page }) => {
+		await page.goto('/struct/catalog');
+		await waitForHydratedGlobal(page);
+		await expect(page.getByRole('heading', { name: /课程目录/ })).toBeVisible();
 		await expect(page.getByRole('heading', { name: '数据结构与算法' })).toBeVisible();
 		await expect(page.getByRole('heading', { name: 'MySQL 数据库' })).toBeVisible();
+		const main = page.locator('main');
+		await expect(main.getByRole('link', { name: /快速排序/ })).toBeVisible();
+		await expect(main.getByRole('link', { name: /数据查询/ })).toBeVisible();
 	});
 
 	test('冒泡排序页：播放器渲染引擎名/总步数/伪代码', async ({ page }) => {

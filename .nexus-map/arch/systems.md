@@ -68,7 +68,7 @@
 
 ## 5. 页面层 — `structvis/src/routes/`
 
-- 目录页：`/` 首页（卡片导航）、`/ds`、`/db`
+- 目录页：`/catalog` 课程目录（卡片导航，内容由 topics 驱动）、`/ds`、`/db`
 - ds 播放器页：quick-sort、bubble-sort、insertion-sort、merge-sort、selection-sort、binary-tree、linear-list、stack-queue、graph-traversal、mst、shortest-path、topo-sort、critical-path、binary-search、kmp、bst、huffman、hash-table（共 18，全部已实现）
 - db 播放器页：er、index（索引原理）、normalize、sql、tables（建表解析）、update、advanced-query（高级查询）、overview（数据库系统概述概念页+练习）、transaction（事务与并发控制）、users（用户与权限管理概念页+练习）—— **全实现，无占位**（杨宏霞《数据库技术及应用》v0.2 范围已全部覆盖）
 - ds 播放器页：quick-sort、bubble-sort、insertion-sort、merge-sort、selection-sort、binary-tree、linear-list、stack-queue、graph-traversal、mst、shortest-path、topo-sort、critical-path、binary-search、kmp、bst、huffman、hash-table、graph-storage（图的存储，v0.6 新增）—— **共 19，全部已实现**

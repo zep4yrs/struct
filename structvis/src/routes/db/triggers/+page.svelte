@@ -26,7 +26,11 @@ END`,
 		dmlSql: "INSERT INTO 选课 VALUES (20101, 'CS101', 95)"
 	};
 
-	function createEngine(preset: { name: string; triggerSql: string; dmlSql: string }): TriggerEngine {
+	function createEngine(preset: {
+		name: string;
+		triggerSql: string;
+		dmlSql: string;
+	}): TriggerEngine {
 		const e = new TriggerEngine();
 		const input: TriggerEngineInput = {
 			triggerSql: preset.triggerSql,

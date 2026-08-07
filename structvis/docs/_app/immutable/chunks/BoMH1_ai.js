@@ -1,1 +1,0 @@
-import{X as e}from"./CKVVjNg5.js";import"./C1i6GVr9.js";function t(t,n){let r=e(n);{let e=localStorage.getItem(t);if(e!==null)try{r.set(JSON.parse(e))}catch{r.set(n)}r.subscribe(e=>{try{localStorage.setItem(t,JSON.stringify(e))}catch{}})}return r}export{t};

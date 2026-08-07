@@ -64,7 +64,7 @@ BEGIN
     SET NEW.成绩 = OLD.成绩;
   END IF;
 END`,
-		dmlSql: "UPDATE 学生 SET 成绩 = 150 WHERE 学号 = 20103"
+		dmlSql: 'UPDATE 学生 SET 成绩 = 150 WHERE 学号 = 20103'
 	},
 	{
 		name: 'AFTER DELETE 级联清理',
@@ -75,7 +75,7 @@ FOR EACH ROW
 BEGIN
   DELETE FROM 选课 WHERE 学号 = OLD.学号;
 END`,
-		dmlSql: "DELETE FROM 学生 WHERE 学号 = 20106"
+		dmlSql: 'DELETE FROM 学生 WHERE 学号 = 20106'
 	}
 ];
 
@@ -96,7 +96,8 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 		options: ['插入前的旧行', '即将插入的新行', '触发器名称', '表名'],
 		correctAnswer: '即将插入的新行',
 		hint: 'INSERT 事件中，NEW 指向正在被插入的行数据。',
-		explanation: 'INSERT 触发器中 NEW 代表即将插入的新行；UPDATE 中 NEW 是修改后的行，OLD 是修改前的行；DELETE 中 OLD 是被删除的旧行。'
+		explanation:
+			'INSERT 触发器中 NEW 代表即将插入的新行；UPDATE 中 NEW 是修改后的行，OLD 是修改前的行；DELETE 中 OLD 是被删除的旧行。'
 	}
 ];
 
@@ -109,11 +110,13 @@ export class TriggerEngine implements AlgorithmEngine<TriggerEngineInput> {
 	readonly demoScript: DemoScriptItem[] = [
 		{
 			type: 'init',
-			narration: '触发器（Trigger）是数据库自动执行的存储程序，当 DML 事件（INSERT/UPDATE/DELETE）发生时自动调用。'
+			narration:
+				'触发器（Trigger）是数据库自动执行的存储程序，当 DML 事件（INSERT/UPDATE/DELETE）发生时自动调用。'
 		},
 		{
 			type: 'compare',
-			narration: '触发器分 BEFORE 和 AFTER 两种：BEFORE 在 DML 执行前触发（可修改数据），AFTER 在 DML 执行后触发（常用于日志）。'
+			narration:
+				'触发器分 BEFORE 和 AFTER 两种：BEFORE 在 DML 执行前触发（可修改数据），AFTER 在 DML 执行后触发（常用于日志）。'
 		},
 		{
 			type: 'complete',
@@ -189,7 +192,10 @@ export class TriggerEngine implements AlgorithmEngine<TriggerEngineInput> {
 			timing: m[2]!.toUpperCase() as 'BEFORE' | 'AFTER',
 			event: m[3]!.toUpperCase() as 'INSERT' | 'UPDATE' | 'DELETE',
 			tableName: m[5]!.replace(/`|"|'/g, ''),
-			body: sql.replace(/^.*BEGIN\s*/i, '').replace(/\s*END\s*$/i, '').trim()
+			body: sql
+				.replace(/^.*BEGIN\s*/i, '')
+				.replace(/\s*END\s*$/i, '')
+				.trim()
 		};
 	}
 
@@ -275,7 +281,12 @@ export class TriggerEngine implements AlgorithmEngine<TriggerEngineInput> {
 				`AFTER 触发器 ${trigger.name} 执行完毕：${this._describeTriggerAction(trigger.body)}。`,
 				mkTable(afterTriggerRows),
 				[],
-				[{ type: 'current', indices: afterTriggerRows.length > 0 ? [afterTriggerRows.length - 1] : [] }],
+				[
+					{
+						type: 'current',
+						indices: afterTriggerRows.length > 0 ? [afterTriggerRows.length - 1] : []
+					}
+				],
 				4
 			);
 			rows = afterTriggerRows;
@@ -322,12 +333,10 @@ export class TriggerEngine implements AlgorithmEngine<TriggerEngineInput> {
 		if (kind === 'update') {
 			const m = clean.match(/UPDATE\s+[^\s]+\s+SET\s+(.+?)(?:\s+WHERE\s+(.+))?\s*;?\s*$/i);
 			if (!m) return rows;
-			const setPairs = m[1]!
-				.split(',')
-				.map((p) => {
-					const [col, val] = p.split('=').map((s) => s.trim());
-					return { col: col.replace(/`|"|'/g, ''), value: val.replace(/^'|'$/g, '') };
-				});
+			const setPairs = m[1]!.split(',').map((p) => {
+				const [col, val] = p.split('=').map((s) => s.trim());
+				return { col: col.replace(/`|"|'/g, ''), value: val.replace(/^'|'$/g, '') };
+			});
 			const where = m[2]?.trim();
 			if (!apply) return rows;
 			return rows.map((r) => {
@@ -358,8 +367,7 @@ export class TriggerEngine implements AlgorithmEngine<TriggerEngineInput> {
 	private _describeTriggerAction(body: string): string {
 		const trimmed = body.replace(/\s+/g, ' ').trim();
 		if (trimmed.startsWith('INSERT INTO')) return '自动插入日志记录';
-		if (trimmed.startsWith('IF') || trimmed.includes('SET NEW'))
-			return '校验数据有效性并修正';
+		if (trimmed.startsWith('IF') || trimmed.includes('SET NEW')) return '校验数据有效性并修正';
 		if (trimmed.startsWith('DELETE FROM')) return '级联清理关联数据';
 		return '执行触发逻辑';
 	}

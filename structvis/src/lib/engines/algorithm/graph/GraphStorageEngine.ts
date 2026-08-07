@@ -148,10 +148,7 @@ export class GraphStorageEngine implements AlgorithmEngine<GraphStorageInput> {
 	}
 
 	getCurrentStep(): AlgorithmStep {
-		const idx = Math.min(
-			this._steps.length - 1,
-			Math.max(0, Math.floor(this.playbackPos))
-		);
+		const idx = Math.min(this._steps.length - 1, Math.max(0, Math.floor(this.playbackPos)));
 		return this._steps[idx] ?? this._steps[0];
 	}
 
@@ -214,7 +211,10 @@ export class GraphStorageEngine implements AlgorithmEngine<GraphStorageInput> {
 
 		const steps: AlgorithmStep[] = [];
 
-		const mkEdgeState = (activeIdx: number, mode: 'init' | 'step' | 'done'): Record<number, GraphEdgeState> => {
+		const mkEdgeState = (
+			activeIdx: number,
+			mode: 'init' | 'step' | 'done'
+		): Record<number, GraphEdgeState> => {
 			const state: Record<number, GraphEdgeState> = {};
 			edges.forEach((_, i) => {
 				if (mode === 'init') state[i] = 'normal';
@@ -228,9 +228,10 @@ export class GraphStorageEngine implements AlgorithmEngine<GraphStorageInput> {
 		steps.push({
 			id: 0,
 			type: 'init',
-			description: input.mode === 'adjacency-matrix'
-				? `初始化 ${n}×${n} 零矩阵：所有单元为 0（表示无边）。`
-				: `初始化 ${n} 个空邻接表头：Adj[0..${n - 1}] = ∅。`,
+			description:
+				input.mode === 'adjacency-matrix'
+					? `初始化 ${n}×${n} 零矩阵：所有单元为 0（表示无边）。`
+					: `初始化 ${n} 个空邻接表头：Adj[0..${n - 1}] = ∅。`,
 			data: [],
 			highlights: [],
 			pseudocodeLine: 1,
@@ -267,9 +268,10 @@ export class GraphStorageEngine implements AlgorithmEngine<GraphStorageInput> {
 		steps.push({
 			id: edges.length + 1,
 			type: 'complete',
-			description: input.mode === 'adjacency-matrix'
-				? `矩阵构建完成。无向图对称：M[i][j]=M[j][i]，空间 ${n}×${n}=${n * n} 单元。`
-				: `邻接表构建完成。共 ${edges.length} 条边，节点指针共 ${edges.length * 2} 个，空间 O(V+E)=O(${n}+${edges.length})。`,
+			description:
+				input.mode === 'adjacency-matrix'
+					? `矩阵构建完成。无向图对称：M[i][j]=M[j][i]，空间 ${n}×${n}=${n * n} 单元。`
+					: `邻接表构建完成。共 ${edges.length} 条边，节点指针共 ${edges.length * 2} 个，空间 O(V+E)=O(${n}+${edges.length})。`,
 			data: [],
 			highlights: edges.map((_, i) => ({ type: 'current', indices: [i] })),
 			pseudocodeLine: input.mode === 'adjacency-matrix' ? 6 : 5,

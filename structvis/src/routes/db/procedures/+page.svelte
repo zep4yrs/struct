@@ -16,7 +16,11 @@ SELECT 平均工资 AS 结果;`,
 		callArgs: [] as (string | number)[]
 	};
 
-	function createEngine(preset: { name: string; body: string; callArgs: (string | number)[] }): ProcedureEngine {
+	function createEngine(preset: {
+		name: string;
+		body: string;
+		callArgs: (string | number)[];
+	}): ProcedureEngine {
 		const e = new ProcedureEngine();
 		const input: ProcedureInput = {
 			name: preset.name,
@@ -39,7 +43,8 @@ SELECT 平均工资 AS 结果;`,
 		</div>
 		<h1 class="page-title">存储过程</h1>
 		<p class="page-desc">
-			存储过程（Stored Procedure）是预编译在数据库端的<b>SQL 语句集</b>，支持参数、局部变量、条件分支与循环。调用时减少网络往返，适合封装高频业务逻辑。逐步播放，观察
+			存储过程（Stored Procedure）是预编译在数据库端的<b>SQL 语句集</b
+			>，支持参数、局部变量、条件分支与循环。调用时减少网络往返，适合封装高频业务逻辑。逐步播放，观察
 			<span class="mono">DECLARE / SET / IF / WHILE / CALL</span> 的执行顺序与变量状态变化。
 		</p>
 	</div>

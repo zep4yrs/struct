@@ -47,7 +47,12 @@ interface ProcedureFrame {
 	callStackText: string;
 }
 
-const PRESETS: { name: string; description: string; body: string; callArgs: (string | number)[] }[] = [
+const PRESETS: {
+	name: string;
+	description: string;
+	body: string;
+	callArgs: (string | number)[];
+}[] = [
 	{
 		name: '计算员工平均工资',
 		description: 'DECLARE + SET + SELECT INTO + 简单算术',
@@ -119,7 +124,8 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 		options: ['声明局部变量', '给变量赋值', '调用存储过程', '定义游标'],
 		correctAnswer: '声明局部变量',
 		hint: 'DECLARE 在存储过程体内声明局部变量并可选指定默认值。',
-		explanation: 'DECLARE 用于在存储过程体内声明局部变量，必须放在过程体的开头（任何其他语句之前）。'
+		explanation:
+			'DECLARE 用于在存储过程体内声明局部变量，必须放在过程体的开头（任何其他语句之前）。'
 	},
 	{
 		type: 'choose-next',
@@ -128,12 +134,24 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 		options: ['条件为 TRUE', '条件为 FALSE', '循环次数固定', '直到 BREAK'],
 		correctAnswer: '条件为 TRUE',
 		hint: 'WHILE 先判断条件，为真时执行循环体。',
-		explanation: 'WHILE 循环在执行前先评估条件，只有条件为 TRUE 时才进入循环体；条件为 FALSE 时退出循环。'
+		explanation:
+			'WHILE 循环在执行前先评估条件，只有条件为 TRUE 时才进入循环体；条件为 FALSE 时退出循环。'
 	}
 ];
 
 interface Stmt {
-	type: 'declare' | 'set' | 'selectInto' | 'if' | 'elseif' | 'else' | 'endif' | 'while' | 'endwhile' | 'call' | 'select';
+	type:
+		| 'declare'
+		| 'set'
+		| 'selectInto'
+		| 'if'
+		| 'elseif'
+		| 'else'
+		| 'endif'
+		| 'while'
+		| 'endwhile'
+		| 'call'
+		| 'select';
 	text: string;
 	indent: number;
 	branches?: string[][];
@@ -149,11 +167,13 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 	readonly demoScript: DemoScriptItem[] = [
 		{
 			type: 'init',
-			narration: '存储过程（Stored Procedure）是预编译的 SQL 语句集，带参数、变量、控制流，可重复调用。'
+			narration:
+				'存储过程（Stored Procedure）是预编译的 SQL 语句集，带参数、变量、控制流，可重复调用。'
 		},
 		{
 			type: 'compare',
-			narration: '调用存储过程时，数据库执行过程体：先声明变量，再逐语句执行，分支和循环改变执行顺序。'
+			narration:
+				'调用存储过程时，数据库执行过程体：先声明变量，再逐语句执行，分支和循环改变执行顺序。'
 		},
 		{
 			type: 'complete',
@@ -243,14 +263,7 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 		for (let i = 0; i < parsed.length; i++) {
 			const stmt = parsed[i]!;
 			const desc = this._executeStmt(frame, stmt, mkSnapshot);
-			this._emit(
-				'compare',
-				desc,
-				[],
-				[],
-				[{ type: 'current', indices: [i] }],
-				i + 1
-			);
+			this._emit('compare', desc, [], [], [{ type: 'current', indices: [i] }], i + 1);
 		}
 
 		this._emit(
@@ -273,7 +286,9 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 			const indent = raw.length - raw.trimStart().length;
 			const upper = text.toUpperCase();
 			if (upper.startsWith('DECLARE')) {
-				const m = text.match(/DECLARE\s+([^\s]+)\s+(INT|DECIMAL|VARCHAR\([^)]+\)|DATE)\s*(?:DEFAULT\s+(.+))?/i);
+				const m = text.match(
+					/DECLARE\s+([^\s]+)\s+(INT|DECIMAL|VARCHAR\([^)]+\)|DATE)\s*(?:DEFAULT\s+(.+))?/i
+				);
 				stmts.push({
 					type: 'declare',
 					text,
@@ -284,7 +299,9 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 				const expr = text.replace(/^SET\s+/i, '').trim();
 				stmts.push({ type: 'set', text, indent, branches: [[expr]] });
 			} else if (upper.startsWith('SELECT') && upper.includes('INTO')) {
-				const m = text.match(/SELECT\s+(.+?)\s+INTO\s+([^\s]+)\s+FROM\s+([^\s]+)(?:\s+WHERE\s+(.+))?/i);
+				const m = text.match(
+					/SELECT\s+(.+?)\s+INTO\s+([^\s]+)\s+FROM\s+([^\s]+)(?:\s+WHERE\s+(.+))?/i
+				);
 				stmts.push({
 					type: 'selectInto',
 					text,
@@ -292,17 +309,26 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 					branches: m ? [[m[1]!, m[2]!, m[3]!, m[4] ?? '']] : []
 				});
 			} else if (upper.startsWith('IF')) {
-				const cond = text.replace(/^IF\s+/i, '').replace(/\s+THEN\s*$/i, '').trim();
+				const cond = text
+					.replace(/^IF\s+/i, '')
+					.replace(/\s+THEN\s*$/i, '')
+					.trim();
 				stmts.push({ type: 'if', text, indent, condition: cond, branches: [[cond]] });
 			} else if (upper.startsWith('ELSEIF')) {
-				const cond = text.replace(/^ELSEIF\s+/i, '').replace(/\s+THEN\s*$/i, '').trim();
+				const cond = text
+					.replace(/^ELSEIF\s+/i, '')
+					.replace(/\s+THEN\s*$/i, '')
+					.trim();
 				stmts.push({ type: 'elseif', text, indent, condition: cond, branches: [[cond]] });
 			} else if (upper === 'ELSE') {
 				stmts.push({ type: 'else', text, indent, branches: [[]] });
 			} else if (upper === 'END IF') {
 				stmts.push({ type: 'endif', text, indent, branches: [[]] });
 			} else if (upper.startsWith('WHILE')) {
-				const cond = text.replace(/^WHILE\s+/i, '').replace(/\s+DO\s*$/i, '').trim();
+				const cond = text
+					.replace(/^WHILE\s+/i, '')
+					.replace(/\s+DO\s*$/i, '')
+					.trim();
 				stmts.push({ type: 'while', text, indent, condition: cond, branches: [[cond]] });
 			} else if (upper === 'END WHILE') {
 				stmts.push({ type: 'endwhile', text, indent, branches: [[]] });
@@ -328,7 +354,9 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 			case 'declare': {
 				const parts = stmt.branches?.[0] ?? [];
 				const [name, , defaultVal] = parts;
-				const rawDefault = String(defaultVal ?? '').trim().replace(/;+$/, '');
+				const rawDefault = String(defaultVal ?? '')
+					.trim()
+					.replace(/;+$/, '');
 				const cleanDefault = rawDefault.replace(/^['"]|['"]$/g, '');
 				const n = parseFloat(cleanDefault);
 				frame.vars[name!] = {
@@ -405,7 +433,12 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 		}
 		const n = parseFloat(trimmed);
 		if (!isNaN(n) && /^-?\d+(\.\d+)?$/.test(trimmed)) return n;
-		if (trimmed.includes('+') || trimmed.includes('-') || trimmed.includes('*') || trimmed.includes('/')) {
+		if (
+			trimmed.includes('+') ||
+			trimmed.includes('-') ||
+			trimmed.includes('*') ||
+			trimmed.includes('/')
+		) {
 			try {
 				const replaced = trimmed.replace(/([a-zA-Z_]\w*)/g, (_, name) => {
 					const v = frame.vars[name];

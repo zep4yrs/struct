@@ -5,5 +5,10 @@ yarn.lock
 bun.lock
 bun.lockb
 
+# Build / generated
+/.svelte-kit/
+/test-results/
+/playwright-report/
+
 # Miscellaneous
 /static/

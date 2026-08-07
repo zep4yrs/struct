@@ -24,9 +24,7 @@
 			<span class="section-name">偏好</span>
 		</div>
 		<h1 class="page-title">设置</h1>
-		<p class="page-desc">
-			调整播放器行为与界面偏好，所有设置自动保存到浏览器本地存储。
-		</p>
+		<p class="page-desc">调整播放器行为与界面偏好，所有设置自动保存到浏览器本地存储。</p>
 	</div>
 
 	<div class="settings-list">
@@ -36,14 +34,7 @@
 				<div class="setting-desc">播放器步进动画的播放速率（0.5× ~ 2×）</div>
 			</div>
 			<div class="setting-control">
-				<input
-					type="range"
-					min="0.5"
-					max="2"
-					step="0.25"
-					bind:value={speed}
-					class="speed-range"
-				/>
+				<input type="range" min="0.5" max="2" step="0.25" bind:value={speed} class="speed-range" />
 				<span class="speed-value">{speed}×</span>
 			</div>
 		</div>
@@ -235,7 +226,9 @@
 		font-weight: 500;
 		cursor: pointer;
 		border: none;
-		transition: background 0.15s, color 0.15s;
+		transition:
+			background 0.15s,
+			color 0.15s;
 	}
 
 	.btn-primary {

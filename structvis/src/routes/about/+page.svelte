@@ -26,7 +26,8 @@
 			自学数据结构和数据库时，最痛苦的不是语法记不住，而是脑子里想象不出过程。看书上的静态图示，看完好像懂了，一做题就错；跟着视频学，看起来很顺，自己写就卡壳。
 		</p>
 		<p class="mb-4 max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
-			StructVis 的存在就是为了解决这个问题——把抽象的算法过程变成可交互、可步进、可自己动手试的可视化练习，让自学者不靠老师也能把每个步骤搞明白。
+			StructVis
+			的存在就是为了解决这个问题——把抽象的算法过程变成可交互、可步进、可自己动手试的可视化练习，让自学者不靠老师也能把每个步骤搞明白。
 		</p>
 	</section>
 
@@ -43,9 +44,7 @@
 	</section>
 
 	<section class="mb-16">
-		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">
-			是什么
-		</h2>
+		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">是什么</h2>
 		<ul class="max-w-3xl list-disc space-y-2 pl-6 text-base" style="color: var(--color-ink-2);">
 			<li>教材对齐的自学辅助工具 — 跟着《数据结构教程》和《数据库技术及应用（MySQL）》的章节走</li>
 			<li>交互式步进可视化 — 不是看动画，是每一步都可以暂停、可以自己操作、可以试错</li>
@@ -55,9 +54,7 @@
 	</section>
 
 	<section class="mb-16">
-		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">
-			技术栈
-		</h2>
+		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">技术栈</h2>
 		<ul class="max-w-3xl list-disc space-y-2 pl-6 text-base" style="color: var(--color-ink-2);">
 			<li>Svelte 5 + SvelteKit</li>
 			<li>Tailwind v4</li>
@@ -72,7 +69,10 @@
 			当前状态
 		</h2>
 		<p class="max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
-			v0.1 开发中。已实现数据结构：快速排序、二叉树遍历、线性表、图存储、KMP、哈夫曼、BST、最短路径、最小生成树、拓扑排序、关键路径、哈希表。已实现数据库模块：SELECT 查询、高级查询、数据更新、视图、触发器、存储过程、事务与并发、E-R 模型、关系规范化、用户权限管理。
+			v0.1
+			开发中。已实现数据结构：快速排序、二叉树遍历、线性表、图存储、KMP、哈夫曼、BST、最短路径、最小生成树、拓扑排序、关键路径、哈希表。已实现数据库模块：SELECT
+			查询、高级查询、数据更新、视图、触发器、存储过程、事务与并发、E-R
+			模型、关系规范化、用户权限管理。
 		</p>
 	</section>
 
@@ -81,7 +81,7 @@
 			开源协议
 		</h2>
 		<p class="max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
-			 proprietary。保留所有权利。未经版权持有者书面许可，不得以任何形式或任何方式（电子、机械、影印、录制或其他方式）复制、分发或修改本项目的任何部分。
+			proprietary。保留所有权利。未经版权持有者书面许可，不得以任何形式或任何方式（电子、机械、影印、录制或其他方式）复制、分发或修改本项目的任何部分。
 		</p>
 	</section>
 

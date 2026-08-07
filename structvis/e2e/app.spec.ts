@@ -422,7 +422,10 @@ test.describe('设置', () => {
 		await expect(page.locator('.setting-label', { hasText: '主题' })).toBeVisible();
 
 		const before = await page.locator('html').getAttribute('class');
-		await page.locator('.page').getByRole('button', { name: /切换到.*主题/ }).click();
+		await page
+			.locator('.page')
+			.getByRole('button', { name: /切换到.*主题/ })
+			.click();
 		await expect(page.locator('html').getAttribute('class')).not.toBe(before);
 	});
 });

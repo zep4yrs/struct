@@ -1,6 +1,9 @@
 <script lang="ts">
 	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
-	import { GraphStorageEngine, type StorageMode } from '$lib/engines/algorithm/graph/GraphStorageEngine';
+	import {
+		GraphStorageEngine,
+		type StorageMode
+	} from '$lib/engines/algorithm/graph/GraphStorageEngine';
 
 	const PRESETS = [
 		{ name: '无向图 5 顶点（邻接矩阵）', mode: 'adjacency-matrix' as StorageMode },

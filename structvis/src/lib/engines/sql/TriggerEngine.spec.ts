@@ -33,7 +33,7 @@ describe('TriggerEngine', () => {
 	it('BEFORE UPDATE 触发器：校验成绩范围', () => {
 		const e = createEngine(
 			`CREATE TRIGGER 校验成绩 BEFORE UPDATE OF 成绩 ON 学生 FOR EACH ROW BEGIN IF NEW.成绩 < 0 OR NEW.成绩 > 100 THEN SET NEW.成绩 = OLD.成绩; END IF; END`,
-			"UPDATE 学生 SET 成绩 = 150 WHERE 学号 = 20103"
+			'UPDATE 学生 SET 成绩 = 150 WHERE 学号 = 20103'
 		);
 		expect(e.totalSteps).toBeGreaterThanOrEqual(4);
 		const step1 = e.steps[1];
@@ -43,7 +43,7 @@ describe('TriggerEngine', () => {
 	it('AFTER DELETE 触发器：级联清理', () => {
 		const e = createEngine(
 			`CREATE TRIGGER 删除学生后清理选课 AFTER DELETE ON 学生 FOR EACH ROW BEGIN DELETE FROM 选课 WHERE 学号 = OLD.学号; END`,
-			"DELETE FROM 学生 WHERE 学号 = 20106"
+			'DELETE FROM 学生 WHERE 学号 = 20106'
 		);
 		expect(e.totalSteps).toBeGreaterThanOrEqual(4);
 	});

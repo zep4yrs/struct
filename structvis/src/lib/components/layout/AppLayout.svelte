@@ -20,14 +20,16 @@
 	function getCrumb(path: string): string {
 		if (path === '/' || path === '') return '';
 		if (path.startsWith('/ds/graph-storage')) return '数据结构 / 图 / [current]图的存储[/current]';
-		if (path.startsWith('/ds/graph-traversal')) return '数据结构 / 图 / [current]图的遍历[/current]';
+		if (path.startsWith('/ds/graph-traversal'))
+			return '数据结构 / 图 / [current]图的遍历[/current]';
 		if (path.startsWith('/ds/quick-sort')) return '数据结构 / 排序 / [current]快速排序[/current]';
 		if (path.startsWith('/ds/binary-tree')) return '数据结构 / 树 / [current]二叉树遍历[/current]';
 		if (path.startsWith('/ds/linear-list')) return '数据结构 / 线性表 / [current]单链表[/current]';
 		if (path.startsWith('/ds')) return '数据结构';
 		if (path.startsWith('/db/overview')) return '数据库 / [current]数据库系统概述[/current]';
 		if (path.startsWith('/db/sql')) return '数据库 / MySQL / [current]数据查询[/current]';
-		if (path.startsWith('/db/advanced-query')) return '数据库 / MySQL / [current]高级查询[/current]';
+		if (path.startsWith('/db/advanced-query'))
+			return '数据库 / MySQL / [current]高级查询[/current]';
 		if (path.startsWith('/db/update')) return '数据库 / MySQL / [current]数据更新[/current]';
 		if (path.startsWith('/db/index')) return '数据库 / [current]索引原理[/current]';
 		if (path.startsWith('/db/view')) return '数据库 / [current]视图[/current]';

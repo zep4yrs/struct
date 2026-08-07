@@ -1,13 +1,27 @@
 <script lang="ts">
-	import { progress } from '$lib/stores/progress';
+	import {
+		progress,
+		reviewMistake,
+		markMistakeMastered,
+		removeMistake
+	} from '$lib/stores/progress';
 	import { resolve } from '$app/paths';
+	import { dsTopics, dbTopics } from '$lib/content/topics';
+	import type { MistakeRecord } from '$lib/stores/progress';
+	import PracticePanel from '$lib/components/player/PracticePanel.svelte';
+	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
 
-	const TOPIC_NAMES: Record<string, string> = {
-		'quick-sort': '快速排序'
+	const EXTRA_TOPICS: Record<string, string> = {
+		triggers: '触发器',
+		procedures: '存储过程'
 	};
 
+	const TOPIC_NAMES: Record<string, string> = Object.fromEntries(
+		[...dsTopics, ...dbTopics].filter((t) => t.topicId).map((t) => [t.topicId as string, t.title])
+	);
+
 	function topicName(id: string): string {
-		return TOPIC_NAMES[id] ?? id;
+		return TOPIC_NAMES[id] ?? EXTRA_TOPICS[id] ?? id;
 	}
 
 	function formatDate(ts: number): string {
@@ -23,12 +37,51 @@
 	const masteredCount = $derived(topicEntries.filter(([, t]) => t.completed).length);
 	const totalMistakes = $derived($progress.mistakes.length);
 	const pendingMistakes = $derived($progress.mistakes.filter((m) => !m.mastered).length);
+	const totalExercises = $derived(topicEntries.reduce((acc, [, t]) => acc + t.totalExercises, 0));
+	const correctExercises = $derived(
+		topicEntries.reduce((acc, [, t]) => acc + t.correctExercises, 0)
+	);
 	const avgMastery = $derived(
 		topicEntries.length > 0
 			? Math.round(topicEntries.reduce((acc, [, t]) => acc + t.mastery, 0) / topicEntries.length)
 			: 0
 	);
 	const hasData = $derived(topicEntries.length > 0 || totalMistakes > 0);
+
+	// === 错题复习 ===
+	let reviewQuestion = $state<PracticeQuestion | null>(null);
+	let reviewingMistake = $state<MistakeRecord | null>(null);
+	let reviewAnswered = $state<boolean | null>(null);
+
+	function startReview(m: MistakeRecord) {
+		reviewingMistake = m;
+		reviewAnswered = null;
+		reviewQuestion = {
+			type: 'choose-next',
+			stepIndex: 0,
+			prompt: m.question,
+			options: m.options,
+			correctAnswer: m.correctAnswer,
+			hint: '',
+			explanation: m.explanation
+		};
+	}
+
+	function handleReviewAnswered(result: { correct: boolean }) {
+		if (reviewingMistake === null) return;
+		reviewAnswered = result.correct;
+		reviewMistake(reviewingMistake.id);
+	}
+
+	function handleReviewContinue() {
+		if (reviewingMistake === null) return;
+		if (reviewAnswered) {
+			markMistakeMastered(reviewingMistake.id);
+		}
+		reviewQuestion = null;
+		reviewingMistake = null;
+		reviewAnswered = null;
+	}
 </script>
 
 <div class="mx-auto max-w-4xl p-8">
@@ -82,6 +135,23 @@
 						class="h-full rounded-full transition-all"
 						style="width: {avgMastery}%; background: var(--color-success);"
 					></div>
+				</div>
+			</div>
+
+			<div class="card">
+				<div class="card-title" style="font-size: 15px;">练习答题</div>
+				<div class="stat-row">
+					<span class="stat-num">{correctExercises}</span>
+					<span class="stat-unit">/{totalExercises} 题</span>
+				</div>
+				<div class="stat-meta">
+					{#if totalExercises > 0}
+						<span class="stat-count"
+							>正确率 {Math.round((correctExercises / totalExercises) * 100)}%</span
+						>
+					{:else}
+						<span class="stat-count">完成练习后显示正确率</span>
+					{/if}
 				</div>
 			</div>
 
@@ -169,14 +239,38 @@
 								<p class="mistake-explanation">{mistake.explanation}</p>
 							{/if}
 							<div class="mistake-meta">
-								<span>{mistake.topic}</span>
+								<span>{topicName(mistake.topic)}</span>
 								<span>{formatDate(mistake.timestamp)}</span>
+							</div>
+							<div class="mistake-actions">
+								{#if !mistake.mastered}
+									<button class="btn btn-ghost btn-sm" onclick={() => startReview(mistake)}>
+										重新作答
+									</button>
+									<button
+										class="btn btn-ghost btn-sm"
+										onclick={() => markMistakeMastered(mistake.id)}
+									>
+										标记已掌握
+									</button>
+								{/if}
+								<button class="btn btn-ghost btn-sm" onclick={() => removeMistake(mistake.id)}>
+									移除
+								</button>
 							</div>
 						</div>
 					{/each}
 				</div>
 			</section>
 		{/if}
+	{/if}
+
+	{#if reviewQuestion !== null}
+		<PracticePanel
+			question={reviewQuestion}
+			onAnswered={handleReviewAnswered}
+			onContinue={handleReviewContinue}
+		/>
 	{/if}
 </div>
 
@@ -373,5 +467,23 @@
 		color: var(--color-ink-3);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+	}
+
+	.mistake-actions {
+		display: flex;
+		gap: 8px;
+		margin-top: 10px;
+	}
+
+	.btn-sm {
+		font-size: 12px;
+		padding: 4px 10px;
+		border-radius: var(--radius-sm);
+	}
+
+	.tag-blue {
+		background: #e8f0fe;
+		border-color: #c5d5f5;
+		color: #1a3a8f;
 	}
 </style>

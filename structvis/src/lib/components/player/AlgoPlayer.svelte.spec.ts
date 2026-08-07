@@ -3,7 +3,7 @@ import { render, fireEvent, cleanup, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import AlgoPlayer from './AlgoPlayer.svelte';
 import { BubbleSortEngine } from '$lib/engines/algorithm/basicsort/BubbleSortEngine';
-import { updateTopicMastery, addMistake } from '$lib/stores/progress';
+import { recordExercise, addMistake } from '$lib/stores/progress';
 
 // GSAP 隔离 mock：timeline() 返回稳定 tl 对象；tl.to 捕获 renderProxy 与 onUpdate，
 // 以便测试通过 advanceTo(n) 模拟 timeline 推进（真实环境下 playbackPos 由动画驱动）。
@@ -50,7 +50,7 @@ const gsapState = vi.hoisted(() => {
 
 vi.mock('gsap', () => ({ default: gsapState }));
 vi.mock('$lib/stores/progress', () => ({
-	updateTopicMastery: vi.fn(),
+	recordExercise: vi.fn(),
 	addMistake: vi.fn()
 }));
 
@@ -141,7 +141,7 @@ describe('AlgoPlayer 模式与练习流程', () => {
 		expect(title?.textContent).toBe('冒泡排序每一轮结束后，最大的元素会出现在哪里？');
 	});
 
-	it('答对：回调 updateTopicMastery(topicId, 10) 并可继续', async () => {
+	it('答对：回调 recordExercise(topicId, true) 并可继续', async () => {
 		const { container } = await mountPlayer();
 		await reachQuestion(container);
 
@@ -151,7 +151,7 @@ describe('AlgoPlayer 模式与练习流程', () => {
 			[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!
 		);
 
-		expect(updateTopicMastery).toHaveBeenCalledWith('bubble-sort', 10);
+		expect(recordExercise).toHaveBeenCalledWith('bubble-sort', true);
 		expect(addMistake).not.toHaveBeenCalled();
 
 		await fireEvent.click(
@@ -170,6 +170,7 @@ describe('AlgoPlayer 模式与练习流程', () => {
 			[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!
 		);
 
+		expect(recordExercise).toHaveBeenCalledWith('bubble-sort', false);
 		expect(addMistake).toHaveBeenCalledWith(
 			expect.objectContaining({
 				topic: '冒泡排序',
@@ -178,7 +179,6 @@ describe('AlgoPlayer 模式与练习流程', () => {
 				correctAnswer: '数组末尾'
 			})
 		);
-		expect(updateTopicMastery).not.toHaveBeenCalled();
 	});
 
 	it('演示模式不弹题', async () => {

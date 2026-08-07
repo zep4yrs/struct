@@ -41,7 +41,7 @@
 | 建表       | `sql/create-table.ts`（函数非类）                                                                        | `parseCreateTable` 解析 CREATE TABLE                                                                                                                                                                                        |
 | 数据库     | `db/ErEngine.ts` / `IndexEngine.ts`（B+ 树）/ `NormalizeEngine.ts` / `TransactionEngine.ts`（v0.5 新增） | E-R/索引/范式/事务（renderType: er/btree/…/sql-table）；TransactionEngine 三模式（commit/rollback/lost-update），undo 日志回滚演示，A/B 账户 Σ 守恒                                                                         |
 
-测试：每个引擎族带 `.spec.ts`（引擎 + 组件/stores 共 387 测试，见 test_coverage.md）。
+测试：每个引擎族带 `.spec.ts`（引擎 + 组件/stores 共 392 测试，见 test_coverage.md）。
 
 ## 2. Canvas 渲染器层 — `structvis/src/lib/visualization/`
 
@@ -65,7 +65,7 @@
 
 - `AppLayout.svelte`（顶栏+侧栏，sidebarOpen 非持久）、`Sidebar.svelte`（224↔0 过渡）、`TopBar.svelte`（侧栏切换+主题切换）
 - `ui/Logo.svelte`、`ui/TopicGrid.svelte`（消费 content 卡片，首页强制收起场景）
-- `stores/progress.ts`（topic 掌握度+错题+streak）、`settings.ts`（theme/sqlEngine/animationSpeed/showHints）、`persistent.ts`（localStorage 包装）
+- `stores/progress.ts`（topic 掌握度+答题计数+错题本+复习流+streak）、`settings.ts`（theme/sqlEngine/animationSpeed/showHints）、`persistent.ts`（localStorage 包装）
 - `styles/app.css`（`:root`/`.dark` 两套 token）；`content/topics.ts`（`dsTopics`×18、`dbTopics`×13、`TopicCard`）
 
 ## 5. 页面层 — `structvis/src/routes/`

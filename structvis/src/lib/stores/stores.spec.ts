@@ -102,6 +102,32 @@ describe('progress store', () => {
 		return await import('./progress');
 	}
 
+	it('recordExercise：答对累计正确数与题数、加掌握度，答错扣掌握度', async () => {
+		const { progress, recordExercise } = await loadProgress();
+		let state: import('./progress').ProgressData | undefined;
+		progress.subscribe((p) => (state = p));
+
+		recordExercise('quick-sort', true);
+		recordExercise('quick-sort', true);
+		recordExercise('quick-sort', false);
+
+		const t = state!.topics['quick-sort'];
+		expect(t.totalExercises).toBe(3);
+		expect(t.correctExercises).toBe(2);
+		expect(t.mastery).toBe(10);
+		expect(t.completed).toBe(false);
+	});
+
+	it('recordExercise：掌握度达到 80 标记 completed', async () => {
+		const { progress, recordExercise } = await loadProgress();
+		let state: import('./progress').ProgressData | undefined;
+		progress.subscribe((p) => (state = p));
+
+		for (let i = 0; i < 8; i++) recordExercise('bst', true);
+		expect(state!.topics['bst'].completed).toBe(true);
+		expect(state!.topics['bst'].mastery).toBe(80);
+	});
+
 	it('updateTopicMastery：首次更新创建记录，掌握度累加并夹在 0~100', async () => {
 		const { progress, updateTopicMastery } = await loadProgress();
 		let state: import('./progress').ProgressData | undefined;
@@ -157,6 +183,73 @@ describe('progress store', () => {
 		expect(m.mastered).toBe(false);
 		expect(m.timestamp).toBeGreaterThan(0);
 		expect(state!.mistakes[1].type).toBe('sql');
+	});
+
+	it('reviewMistake：累计复习次数并记录最近复习时间', async () => {
+		const { progress, addMistake, reviewMistake } = await loadProgress();
+		let state: import('./progress').ProgressData | undefined;
+		progress.subscribe((p) => (state = p));
+
+		addMistake({
+			topic: 'kmp',
+			type: 'algorithm',
+			question: 'Q?',
+			wrongAnswer: 'A',
+			correctAnswer: 'B',
+			explanation: 'E'
+		});
+		const id = state!.mistakes[0]!.id;
+		reviewMistake(id);
+		reviewMistake(id);
+
+		expect(state!.mistakes[0]!.reviewCount).toBe(2);
+		expect(state!.mistakes[0]!.lastReviewed).toBeGreaterThan(0);
+	});
+
+	it('markMistakeMastered：标记错题为已掌握', async () => {
+		const { progress, addMistake, markMistakeMastered } = await loadProgress();
+		let state: import('./progress').ProgressData | undefined;
+		progress.subscribe((p) => (state = p));
+
+		addMistake({
+			topic: 'sql',
+			type: 'sql',
+			question: 'Q?',
+			wrongAnswer: 'X',
+			correctAnswer: 'Y',
+			explanation: 'Z'
+		});
+		markMistakeMastered(state!.mistakes[0]!.id);
+
+		expect(state!.mistakes[0]!.mastered).toBe(true);
+	});
+
+	it('removeMistake：按 id 移除错题记录', async () => {
+		const { progress, addMistake, removeMistake } = await loadProgress();
+		let state: import('./progress').ProgressData | undefined;
+		progress.subscribe((p) => (state = p));
+
+		addMistake({
+			topic: 'kmp',
+			type: 'algorithm',
+			question: 'Q?',
+			wrongAnswer: 'A',
+			correctAnswer: 'B',
+			explanation: 'E'
+		});
+		addMistake({
+			topic: 'sql',
+			type: 'sql',
+			question: 'Q2?',
+			wrongAnswer: 'X',
+			correctAnswer: 'Y',
+			explanation: 'Z'
+		});
+		const first = state!.mistakes[0]!.id;
+		removeMistake(first);
+
+		expect(state!.mistakes).toHaveLength(1);
+		expect(state!.mistakes[0]!.id).not.toBe(first);
 	});
 
 	it('updateStreak：首日设为 1，连续日 +1，同日不重复计，断档重置为 1', async () => {

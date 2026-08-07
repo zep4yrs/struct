@@ -155,6 +155,41 @@ test.describe('练习模式', () => {
 		await expect(dialog.locator('.feedback')).toContainText('回答错误');
 		await expect(dialog.locator('.correct-answer')).toContainText('数组末尾');
 	});
+
+	test('答错后进度页出现错题，可重新作答并标记已掌握', async ({ page }) => {
+		await openBubbleSort(page);
+		await page.getByRole('tab', { name: '练习' }).click();
+
+		await clickNext(page);
+		await expect(page.locator('.current-num')).toHaveText('02');
+		await settleTween(page);
+		await clickNext(page);
+
+		const dialog = page.getByRole('dialog', { name: '练习题目' });
+		await expect(dialog).toBeVisible();
+		await dialog.locator('.option', { hasText: '数组开头' }).click();
+		await dialog.getByRole('button', { name: '提交答案' }).click();
+		await expect(dialog.locator('.feedback')).toContainText('回答错误');
+		await dialog.getByRole('button', { name: '继续下一步' }).click();
+
+		// 进度页：错题记录 + 待复习标记
+		await page.goto('/struct/progress');
+		await waitForHydratedGlobal(page);
+		const mistakeRow = page.locator('.mistake-row').first();
+		await expect(mistakeRow).toContainText('冒泡排序');
+		await expect(mistakeRow).toContainText('待复习');
+
+		// 重新作答：再次答错，复习次数累计；答对则标记已掌握
+		await mistakeRow.getByRole('button', { name: '重新作答' }).click();
+		const reviewDialog = page.getByRole('dialog', { name: '练习题目' });
+		await expect(reviewDialog).toBeVisible();
+		await reviewDialog.locator('.option', { hasText: '数组末尾' }).click();
+		await reviewDialog.getByRole('button', { name: '提交答案' }).click();
+		await expect(reviewDialog.locator('.feedback')).toContainText('回答正确');
+		await reviewDialog.getByRole('button', { name: '继续下一步' }).click();
+		await expect(reviewDialog).toBeHidden();
+		await expect(mistakeRow).toContainText('已掌握');
+	});
 });
 
 test.describe('投影模式', () => {

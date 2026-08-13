@@ -1408,14 +1408,58 @@
 			height: auto;
 		}
 
+		/* 竖屏：画布优先（62vh），伪代码 38vh 可横滚 */
 		.canvas-area {
 			border-right: none;
 			border-bottom: 1px solid var(--color-line-hair);
-			height: 460px;
+			height: min(62vh, 480px);
 		}
 
 		.right-panel {
-			height: 320px;
+			height: min(38vh, 340px);
+		}
+
+		.panel-body {
+			align-items: flex-start;
+			justify-content: flex-start;
+			overflow-x: auto;
+			padding: 12px 0;
+		}
+	}
+
+	/* 投影模式：窄屏紧凑布局（移动端降级：无全屏 API 时覆盖层即全屏） */
+	@media (max-width: 900px) {
+		.projector-header {
+			padding: 10px 16px;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.projector-title {
+			font-size: 18px;
+		}
+
+		.projector-step {
+			font-size: 12px;
+		}
+
+		.projector-btns {
+			gap: 4px;
+		}
+
+		.projector-body {
+			padding: 8px;
+		}
+
+		.pj-narration {
+			font-size: 16px;
+			line-height: 1.55;
+			padding: 0 8px;
+		}
+
+		.projector-footer {
+			padding: 12px 16px;
+			gap: 10px;
 		}
 	}
 </style>

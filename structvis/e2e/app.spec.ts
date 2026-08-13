@@ -771,6 +771,28 @@ test.describe('v2.0 讲授剧本', () => {
 		await expect(page.locator('.pj-narration')).not.toContainText('自定义开场白');
 	});
 });
+test.describe('v2.0 移动端体验', () => {
+	test.use({ viewport: { width: 390, height: 844 } });
 
+	test('竖屏：画布区在伪代码区上方且均可见', async ({ page }) => {
+		await page.goto('/struct/ds/quick-sort');
+		await expect(page.getByRole('heading', { name: '快速排序' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
 
-
+		const canvasBox = await page.locator('.canvas-area').boundingBox();
+		const panelBox = await page.locator('.right-panel').boundingBox();
+		expect(canvasBox).not.toBeNull();
+		expect(panelBox).not.toBeNull();
+		// 画布在上、伪代码在下（竖屏单列）
+		expect(canvasBox!.y).toBeLessThan(panelBox!.y);
+		// 画布高度占优
+		expect(canvasBox!.height).toBeGreaterThan(panelBox!.height);
+		// 投影模式在窄屏可进入（覆盖层即全屏）
+		await page.getByRole('button', { name: '投影', exact: true }).click();
+		await expect(page.locator('.projector')).toBeVisible();
+		await expect(page.locator('.pj-narration')).toBeVisible();
+		await page.keyboard.press('Escape');
+		await expect(page.locator('.projector')).toBeHidden();
+	});
+});

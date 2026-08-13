@@ -35,6 +35,7 @@
 		line-height: 0;
 		tab-size: 2;
 		flex: 1;
+		overflow-x: auto; /* 窄屏长行可横向滚动 */
 	}
 
 	code {

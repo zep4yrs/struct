@@ -90,7 +90,7 @@
   - 修复：CI 加 e2e job；优先补 tables/sql/graph-storage 三条用例；sleep 改 `expect.poll`。
 - [x] **M11 文档漂移（README / 长期文档 / 过时设计稿）**
   - 位置：`structvis/README.md`（sv 模板未替换）；根 `README.md:47,57`；`about/+page.svelte:72`（9 vs 11 课）；`StructVis-长期开发文档.md`（v0.1 状态、时长表不符、:322 tweenTo 建议会复现已修 bug、部署段落写 build/+main）；`N08-UI-Design.md`（无过时标注）
-  - 修复：删除/替换子目录 README；同步计数；长期文档加"以代码为准"声明与修订日期；N08 加"已过时"标注。
+  - 修复：删除/替换子目录 README；同步计数；长期文档加"以代码为准"声明与修订日期；N08 设计稿已随 2026-08 文档清理删除。
 - [x] **M12 localStorage 反序列化无 schema 校验与版本迁移**
   - 位置：`src/lib/stores/persistent.ts:24`
   - 修复：加 `STORAGE_VERSION` 与按版本 migrate 函数。

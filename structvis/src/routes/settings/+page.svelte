@@ -109,11 +109,9 @@
 	}
 
 	.page-title {
-		font-family: var(--font-display);
-		font-size: 48px;
-		font-weight: 500;
-		line-height: 1.1;
-		letter-spacing: -0.03em;
+		font-size: 32px;
+		font-weight: 700;
+		letter-spacing: -0.02em;
 		margin: 0 0 12px;
 	}
 

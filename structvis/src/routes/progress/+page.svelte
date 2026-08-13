@@ -143,8 +143,8 @@
 <div class="mx-auto max-w-4xl p-8">
 	<div class="section-label mb-4" use:reveal>学习进度</div>
 	<h1
-		class="mb-2 font-display text-5xl font-medium"
-		style="letter-spacing: -0.03em;"
+		class="mb-2 font-display text-3xl font-medium"
+		style="letter-spacing: -0.02em;"
 		use:reveal={{ delay: 90 }}
 	>
 		你的学习进度

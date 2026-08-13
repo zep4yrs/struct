@@ -1,8 +1,20 @@
 <script lang="ts">
 	import Logo from '$lib/components/ui/Logo.svelte';
 	import { settings, toggleTheme } from '$lib/stores/settings';
-	import { resolve } from '$app/paths';
+	import { page } from '$app/stores';
+	import { base, resolve } from '$app/paths';
 	import SearchDialog from './SearchDialog.svelte';
+
+	function stripBase(path: string): string {
+		if (!base || base === '/') return path;
+		return path.startsWith(base) ? path.slice(base.length) || '/' : path;
+	}
+
+	const currentPath = $derived(stripBase($page.url.pathname));
+
+	function isActive(href: string): boolean {
+		return currentPath === href;
+	}
 
 	interface Props {
 		crumb?: string;
@@ -95,6 +107,17 @@
 				{/each}
 			</nav>
 		{/if}
+
+		<!-- 页面跳转标题导航 -->
+		<nav class="hidden items-center gap-1 md:flex" aria-label="页面导航">
+			<a href={resolve('/catalog')} class="topnav-link" class:active={isActive('/catalog')}
+				>课程目录</a
+			>
+			<a href={resolve('/progress')} class="topnav-link" class:active={isActive('/progress')}
+				>学习进度</a
+			>
+			<a href={resolve('/about')} class="topnav-link" class:active={isActive('/about')}>关于</a>
+		</nav>
 	</div>
 
 	<div class="flex items-center gap-3">
@@ -177,3 +200,28 @@
 </header>
 
 <SearchDialog open={searchOpen} onClose={() => (searchOpen = false)} />
+
+<style>
+	/* 顶部导航跳转标题 */
+	.topnav-link {
+		font-size: 13px;
+		padding: 4px 10px;
+		border-radius: var(--radius-sm);
+		color: var(--color-ink-2);
+		text-decoration: none;
+		white-space: nowrap;
+		transition:
+			color 0.15s var(--ease-out),
+			background-color 0.15s var(--ease-out);
+	}
+
+	.topnav-link:hover {
+		color: var(--color-ink);
+		background: var(--color-subtle);
+	}
+
+	.topnav-link.active {
+		color: var(--color-accent);
+		font-weight: 500;
+	}
+</style>

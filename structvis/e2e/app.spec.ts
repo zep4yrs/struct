@@ -691,7 +691,7 @@ test.describe('覆盖补充：DB 播放器页', () => {
 		});
 		await expect(page.getByText('导入成功，学习进度已恢复。')).toBeVisible();
 		// 掌握度卡片反映导入数据
-		await expect(page.getByText('1 / 1 个主题已掌握')).toBeVisible();
+		await expect(page.getByText(/1 \/ \d+ 个主题已掌握/)).toBeVisible();
 	});
 });
 

@@ -9,7 +9,7 @@
 	} from '$lib/stores/progress';
 	import { resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
-	import type { MistakeRecord } from '$lib/stores/progress';
+	import type { MistakeRecord, TopicProgress } from '$lib/stores/progress';
 	import PracticePanel from '$lib/components/player/PracticePanel.svelte';
 	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
 	import { onMount } from 'svelte';
@@ -30,8 +30,21 @@
 		return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 	}
 
+	// 全部主题（数据结构 + 数据库），未学过的显示为 0% 空进度
+	const EMPTY_TOPIC: TopicProgress = {
+		mastery: 0,
+		totalExercises: 0,
+		correctExercises: 0,
+		lastVisited: 0,
+		completed: false
+	};
+	const allTopicIds = $derived(
+		[...dsTopics, ...dbTopics].filter((t) => t.topicId).map((t) => t.topicId as string)
+	);
 	const topicEntries = $derived(
-		Object.entries($progress.topics).sort((a, b) => b[1].mastery - a[1].mastery)
+		allTopicIds
+			.map((id) => [id, $progress.topics[id] ?? EMPTY_TOPIC] as const)
+			.sort((a, b) => b[1].mastery - a[1].mastery || b[1].totalExercises - a[1].totalExercises)
 	);
 
 	const masteredCount = $derived(topicEntries.filter(([, t]) => t.completed).length);
@@ -42,11 +55,14 @@
 		topicEntries.reduce((acc, [, t]) => acc + t.correctExercises, 0)
 	);
 	const avgMastery = $derived(
-		topicEntries.length > 0
-			? Math.round(topicEntries.reduce((acc, [, t]) => acc + t.mastery, 0) / topicEntries.length)
+		allTopicIds.length > 0
+			? Math.round(
+					allTopicIds.reduce((acc, id) => acc + ($progress.topics[id]?.mastery ?? 0), 0) /
+						allTopicIds.length
+				)
 			: 0
 	);
-	const hasData = $derived(topicEntries.length > 0 || totalMistakes > 0);
+	const hasData = $derived(Object.keys($progress.topics).length > 0 || totalMistakes > 0);
 
 	onMount(() => {
 		if (prefersReducedMotion()) return;

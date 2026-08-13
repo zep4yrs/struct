@@ -771,6 +771,7 @@ test.describe('v2.0 讲授剧本', () => {
 		await expect(page.locator('.pj-narration')).not.toContainText('自定义开场白');
 	});
 });
+
 test.describe('v2.0 移动端体验', () => {
 	test.use({ viewport: { width: 390, height: 844 } });
 
@@ -794,5 +795,35 @@ test.describe('v2.0 移动端体验', () => {
 		await expect(page.locator('.pj-narration')).toBeVisible();
 		await page.keyboard.press('Escape');
 		await expect(page.locator('.projector')).toBeHidden();
+	});
+});
+
+test.describe('v2.0 SQL 扩展', () => {
+	test('窗口函数页：渲染、预设切换、逐步执行', async ({ page }) => {
+		await page.goto('/struct/db/window-function');
+		await expect(page.getByRole('heading', { name: '窗口函数' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await page.locator('.title-btn', { hasText: '演示数据' }).click();
+		await page.locator('.preset-item', { hasText: '并列名次（RANK）' }).click();
+		await expect(page.locator('.title-btn', { hasText: '并列名次' })).toContainText('RANK');
+		// 预设重建含 fade，End 在重建完成前无效——轮询重试
+		await expect(async () => {
+			await page.keyboard.press('End');
+			await expect(page.locator('.status-text')).toContainText('计算完成', { timeout: 1000 });
+		}).toPass({ timeout: 10000 });
+	});
+
+	test('执行计划页：渲染、索引胜出预设、结论可见', async ({ page }) => {
+		await page.goto('/struct/db/explain-plan');
+		await expect(page.getByRole('heading', { name: '执行计划与索引选择' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await page.locator('.title-btn', { hasText: '演示数据' }).click();
+		await page.locator('.preset-item', { hasText: '范围查询' }).click();
+		await expect(async () => {
+			await page.keyboard.press('End');
+			await expect(page.locator('.status-text')).toContainText('索引查找', { timeout: 1000 });
+		}).toPass({ timeout: 10000 });
 	});
 });

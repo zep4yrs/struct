@@ -228,6 +228,24 @@ export const dbTopics: TopicCard[] = [
 		crumb: '数据库 / [current]高级查询[/current]'
 	},
 	{
+		title: '窗口函数',
+		description: 'ROW_NUMBER / RANK / SUM OVER',
+		href: '/db/window-function',
+		topicId: 'window-function',
+		badge: '分步执行',
+		group: '进阶',
+		crumb: '数据库 / [current]窗口函数[/current]'
+	},
+	{
+		title: '执行计划与索引选择',
+		description: '全表扫描 vs 索引查找',
+		href: '/db/explain-plan',
+		topicId: 'explain-plan',
+		badge: '分步执行',
+		group: '进阶',
+		crumb: '数据库 / [current]执行计划与索引选择[/current]'
+	},
+	{
 		title: '建表练习',
 		description: 'CREATE TABLE / 数据类型',
 		href: '/db/tables',

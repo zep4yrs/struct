@@ -18,6 +18,14 @@
 - [x] **B CanvasHost 组件化**：src/lib/visualization/CanvasHost.svelte（resize/ResizeObserver/主题监听/DPR 统一管理，回调注入模式）；11 个渲染器样板收敛，每个渲染器约 -45 行
 - [x] **A AlgoPlayer 拆分**：TimelineController.ts（GSAP timeline/步骤→秒数换算/tweenTo 语义/busy 信号）与 PracticeController.ts（出题判题/错题落库）独立成可单测模块；AlgoPlayer 约 -120 行，SSR 卸载守卫修复
 
+## v2.0（2026-08，全部完成 ✅）
+
+- [x] **P1 练习题型升级**：PracticePanel 支持 fill-array（填空）/drag-pointer（数组格子）/fill-code（代码行）三类新题型；冒泡/快排/二叉树/二分 4 主题接入；单测 4 条
+- [x] **P2 讲授剧本外部化**：script-manager（JSON 解析校验/按引擎持久化/导出导入重置）+ 播放器剧本菜单；单测 5 条 + e2e 全链路
+- [x] **P3 移动端体验**：竖屏 62vh 画布 + 伪代码横滚；投影窄屏降级；e2e 视口测试
+- [x] **P4 SQL 扩展**：WindowFunctionEngine（ROW_NUMBER/RANK/SUM OVER）+ ExplainEngine（全表扫描 vs 索引查找）；2 页 + 目录 + 单测 8 条 + e2e 2 条
+- [x] **P5 工程化**：版本 2.0.0、CHANGELOG、CI 加 lint、README/about 同步
+
 ## 进度统计
 
 - [x] **高优先级（P0）**：6 / 6 完成 ✅（2026-08 修复轮）

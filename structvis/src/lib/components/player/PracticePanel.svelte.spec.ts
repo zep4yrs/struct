@@ -194,7 +194,7 @@ describe('PracticePanel v2.0 新题型', () => {
 		await tick();
 		[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!.click();
 		await tick();
-		expect(result?.correct).toBe(false);
+		expect((result as { correct: boolean } | null)?.correct).toBe(false);
 		expect(container.querySelector('.correct-answer')?.textContent).toContain('2,5,1,8,9');
 	});
 

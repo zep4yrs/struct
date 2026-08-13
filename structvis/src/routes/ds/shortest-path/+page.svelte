@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
-import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
+	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import { DijkstraEngine } from '$lib/engines/algorithm/graph/DijkstraEngine';
 
 	const DEFAULT_LABELS = ['0', '1', '2', '3', '4'];
@@ -29,7 +29,7 @@ import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 <AlgoPage sectionNum="§06" sectionName="图状结构" title="最短路径">
 	{#snippet desc()}
 		Dijkstra 算法求解单源最短路径：每轮确定一个距离已最小（dist）的顶点，再用它松弛全部
-			出边，不断修正其余顶点的 dist。顶点下方的数字实时显示当前 dist，深色边构成最短路径树。
+		出边，不断修正其余顶点的 dist。顶点下方的数字实时显示当前 dist，深色边构成最短路径树。
 	{/snippet}
 	<AlgoPlayer {engine} topicId="shortest-path" topicName="最短路径" />
 </AlgoPage>

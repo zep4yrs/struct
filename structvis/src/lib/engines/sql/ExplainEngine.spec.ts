@@ -36,7 +36,11 @@ describe('ExplainEngine 执行计划与索引选择', () => {
 
 	it('无索引列：全表扫描，结果正确', () => {
 		const e = new ExplainEngine();
-		e.init({ sql: "SELECT * FROM 学生 WHERE 专业 = '计算机'", table: STUDENT, indexedCols: ['学号'] });
+		e.init({
+			sql: "SELECT * FROM 学生 WHERE 专业 = '计算机'",
+			table: STUDENT,
+			indexedCols: ['学号']
+		});
 		const last = lastStep(e);
 		expect(last.description).toContain('全表扫描');
 		expect(last.table!.rows).toHaveLength(2);
@@ -44,7 +48,15 @@ describe('ExplainEngine 执行计划与索引选择', () => {
 
 	it('非法 SQL 抛错：无 WHERE / 列不存在', () => {
 		const e = new ExplainEngine();
-		expect(() => e.init({ sql: 'SELECT * FROM 学生', table: STUDENT, indexedCols: ['学号'] })).toThrow('WHERE');
-		expect(() => e.init({ sql: 'SELECT * FROM 学生 WHERE 不存在列 = 1', table: STUDENT, indexedCols: ['学号'] })).toThrow('不存在');
+		expect(() =>
+			e.init({ sql: 'SELECT * FROM 学生', table: STUDENT, indexedCols: ['学号'] })
+		).toThrow('WHERE');
+		expect(() =>
+			e.init({
+				sql: 'SELECT * FROM 学生 WHERE 不存在列 = 1',
+				table: STUDENT,
+				indexedCols: ['学号']
+			})
+		).toThrow('不存在');
 	});
 });

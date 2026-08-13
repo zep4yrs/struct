@@ -10,7 +10,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -477,5 +476,4 @@ export class HashTableEngine extends EngineBase<HashInput> {
 			hash: this._snapshot()
 		});
 	}
-
 }

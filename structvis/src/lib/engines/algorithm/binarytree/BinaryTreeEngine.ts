@@ -7,7 +7,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -92,7 +91,8 @@ const PRACTICE_BY_MODE: Record<TraversalMode, PracticeQuestion[]> = {
 			prompt: '写出这棵树的完整前序遍历序列（节点值用逗号分隔）：',
 			correctAnswer: '10,5,3,7,15,12,20',
 			hint: '前序：根 → 左子树 → 右子树，逐个写出访问顺序',
-			explanation: '前序遍历：10 → 左子树(5 → 3 → 7) → 右子树(15 → 12 → 20)，完整序列 10,5,3,7,15,12,20。'
+			explanation:
+				'前序遍历：10 → 左子树(5 → 3 → 7) → 右子树(15 → 12 → 20)，完整序列 10,5,3,7,15,12,20。'
 		}
 	],
 	inorder: [
@@ -111,7 +111,8 @@ const PRACTICE_BY_MODE: Record<TraversalMode, PracticeQuestion[]> = {
 			prompt: '写出这棵树的完整中序遍历序列（节点值用逗号分隔）：',
 			correctAnswer: '3,5,7,10,12,15,20',
 			hint: '中序：左子树 → 根 → 右子树',
-			explanation: '中序遍历：左子树(3,5,7) → 根 10 → 右子树(12,15,20)，完整序列 3,5,7,10,12,15,20（恰好有序）。'
+			explanation:
+				'中序遍历：左子树(3,5,7) → 根 10 → 右子树(12,15,20)，完整序列 3,5,7,10,12,15,20（恰好有序）。'
 		}
 	],
 	postorder: [
@@ -130,7 +131,8 @@ const PRACTICE_BY_MODE: Record<TraversalMode, PracticeQuestion[]> = {
 			prompt: '写出这棵树的完整后序遍历序列（节点值用逗号分隔）：',
 			correctAnswer: '3,7,5,12,20,15,10',
 			hint: '后序：左子树 → 右子树 → 根',
-			explanation: '后序遍历：左子树(3,7,5) → 右子树(12,20,15) → 根 10，完整序列 3,7,5,12,20,15,10。'
+			explanation:
+				'后序遍历：左子树(3,7,5) → 右子树(12,20,15) → 根 10，完整序列 3,7,5,12,20,15,10。'
 		}
 	],
 	levelorder: [
@@ -149,7 +151,8 @@ const PRACTICE_BY_MODE: Record<TraversalMode, PracticeQuestion[]> = {
 			prompt: '写出这棵树的完整层序遍历序列（节点值用逗号分隔）：',
 			correctAnswer: '10,5,15,3,7,12,20',
 			hint: '层序：从上到下、从左到右逐层输出',
-			explanation: '层序遍历：第 1 层 10 → 第 2 层 5,15 → 第 3 层 3,7,12,20，完整序列 10,5,15,3,7,12,20。'
+			explanation:
+				'层序遍历：第 1 层 10 → 第 2 层 5,15 → 第 3 层 3,7,12,20，完整序列 10,5,15,3,7,12,20。'
 		}
 	]
 };
@@ -388,5 +391,4 @@ export class BinaryTreeEngine extends EngineBase<TreeEngineInput> {
 			pseudocodeLine
 		});
 	}
-
 }

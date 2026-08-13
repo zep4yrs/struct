@@ -45,7 +45,6 @@
 				'备份把数据复制到安全位置；故障（误删/硬件损坏）时用备份恢复，配合日志可将损失降到最低。'
 		}
 	];
-
 </script>
 
 <div class="page">
@@ -225,5 +224,4 @@
 		font-size: 12px;
 		color: var(--color-academic);
 	}
-
 </style>

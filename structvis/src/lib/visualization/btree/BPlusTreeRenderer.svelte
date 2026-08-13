@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, BPlusNode } from '$lib/engines/algorithm/types';
 	import { resolveCSSVar } from '../visualization-utils';
-import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -22,7 +22,6 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		height: 280
 	});
 	let ctx = $derived(host.ctx);
-	let dpr = $derived(host.dpr);
 	let canvasWidth = $derived(host.width);
 	let canvasHeight = $derived(host.height);
 
@@ -34,7 +33,6 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 	const NODE_H = 44;
 
 	/** 最小缩放：容器再小也不低于此值，超出部分靠画布区滚动 */
-	const MIN_SCALE = 0.85;
 
 	let colors = $state({
 		inkInverse: '#FAF9F6',
@@ -51,7 +49,7 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
-		inkInverse: resolveCSSVar('--color-ink-inverse'),
+			inkInverse: resolveCSSVar('--color-ink-inverse'),
 			surface: resolveCSSVar('--color-surface'),
 			border: resolveCSSVar('--color-line-regular'),
 			ink: resolveCSSVar('--color-ink'),
@@ -185,15 +183,12 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		ctx.restore();
 	}
 
-		$effect(() => {
+	$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
-
-	;
-
 </script>
 
 <!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->

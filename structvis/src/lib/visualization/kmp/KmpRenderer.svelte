@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, KmpData } from '$lib/engines/algorithm/types';
 	import { resolveCSSVar } from '../visualization-utils';
-import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -22,13 +22,11 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		height: 280
 	});
 	let ctx = $derived(host.ctx);
-	let dpr = $derived(host.dpr);
 	let canvasWidth = $derived(host.width);
 	let canvasHeight = $derived(host.height);
 
 	const LOGICAL_W = 1000;
 	const LOGICAL_H = 560;
-	const MIN_SCALE = 0.8;
 
 	/** 字符格宽 */
 	const CHAR_W = 30;
@@ -176,15 +174,12 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		ctx.restore();
 	}
 
-		$effect(() => {
+	$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
-
-	;
-
 </script>
 
 <!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->

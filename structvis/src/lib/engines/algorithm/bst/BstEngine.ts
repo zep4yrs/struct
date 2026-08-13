@@ -10,7 +10,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -496,5 +495,4 @@ export class BstEngine extends EngineBase<BstInput> {
 		visit(this._root);
 		return out.join(' ');
 	}
-
 }

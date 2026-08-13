@@ -13,7 +13,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -326,5 +325,4 @@ export class ViewEngine extends EngineBase<ViewEngineInput> {
 			}
 		});
 	}
-
 }

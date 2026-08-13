@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HuffmanData, HuffmanNode } from '$lib/engines/algorithm/types';
 	import { resolveCSSVar } from '../visualization-utils';
-import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -22,13 +22,11 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		height: 280
 	});
 	let ctx = $derived(host.ctx);
-	let dpr = $derived(host.dpr);
 	let canvasWidth = $derived(host.width);
 	let canvasHeight = $derived(host.height);
 
 	const LOGICAL_W = 1000;
 	const LOGICAL_H = 540;
-	const MIN_SCALE = 0.8;
 	const NODE_R = 24;
 	const LEVEL_H = 74;
 	const PAD_TOP = 70;
@@ -50,7 +48,7 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
-		inkInverse: resolveCSSVar('--color-ink-inverse'),
+			inkInverse: resolveCSSVar('--color-ink-inverse'),
 			node: resolveCSSVar('--color-surface'),
 			border: resolveCSSVar('--color-line-regular'),
 			edge: resolveCSSVar('--color-line-regular'),
@@ -126,8 +124,7 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 				16,
 				(LOGICAL_W - PAD_SIDE * 2 - totalUnits * 26) / Math.max(1, trees.length + 1)
 			);
-			const unit =
-				(LOGICAL_W - PAD_SIDE * 2 - gap * (trees.length + 1)) / Math.max(1, totalUnits);
+			const unit = (LOGICAL_W - PAD_SIDE * 2 - gap * (trees.length + 1)) / Math.max(1, totalUnits);
 
 			let xCursor = PAD_SIDE + gap;
 			const positions = new Map<number, Pos>();
@@ -250,15 +247,12 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		return max;
 	}
 
-		$effect(() => {
+	$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
-
-	;
-
 </script>
 
 <!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->

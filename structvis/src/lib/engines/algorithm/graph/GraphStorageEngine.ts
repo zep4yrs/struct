@@ -9,14 +9,10 @@ import type {
 	AlgorithmStep,
 	DemoScriptItem,
 	EnginePreset,
-	GraphData,
 	GraphEdge,
 	GraphEdgeState,
 	GraphNode,
-	GraphNodeState,
-	Highlight,
-	PracticeQuestion,
-	StepType
+	PracticeQuestion
 } from '../types';
 import { EngineBase } from '../EngineBase';
 

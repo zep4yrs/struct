@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
-import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
+	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import {
 		BinaryTreeEngine,
 		type TraversalMode
@@ -18,7 +18,7 @@ import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 <AlgoPage sectionNum="§05" sectionName="树形结构" title="二叉树遍历">
 	{#snippet desc()}
 		遍历是二叉树最重要的基本操作：按某种顺序不重复地访问每个节点。前序、中序、后序为
-			深度优先（递归），层序为广度优先（队列）。对如下二叉树，尝试推演四种遍历的访问序列。
+		深度优先（递归），层序为广度优先（队列）。对如下二叉树，尝试推演四种遍历的访问序列。
 	{/snippet}
 	<AlgoPlayer {engine} topicId="binary-tree" topicName="二叉树遍历" />
 </AlgoPage>

@@ -120,7 +120,7 @@
 
 <div class="mx-auto max-w-4xl p-8">
 	<div class="section-label mb-4">学习进度</div>
-	<h1 class="font-display mb-2 text-3xl font-medium" style="letter-spacing: -0.02em;">
+	<h1 class="mb-2 font-display text-3xl font-medium" style="letter-spacing: -0.02em;">
 		你的学习进度
 	</h1>
 	<p class="mb-8" style="color: var(--color-ink-2); max-width: 500px;">
@@ -132,7 +132,7 @@
 			class="rounded-lg border p-8 text-center"
 			style="border-color: var(--color-line-hair); background: var(--color-surface);"
 		>
-			<div class="font-display mb-2 text-5xl font-medium" style="color: var(--color-ink);">0%</div>
+			<div class="mb-2 font-display text-5xl font-medium" style="color: var(--color-ink);">0%</div>
 			<p style="color: var(--color-ink-3); font-size: 14px;">
 				还没有学习记录，开始你的第一个练习吧 → <a href={resolve('/ds/quick-sort')}>快速排序</a>
 			</p>

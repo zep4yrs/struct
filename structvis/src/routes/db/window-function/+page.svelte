@@ -33,9 +33,10 @@
 <AlgoPage sectionNum="§12" sectionName="高级查询" title="窗口函数">
 	{#snippet desc()}
 		<span>
-			窗口函数（<span class="mono">ROW_NUMBER / RANK / SUM ... OVER</span>）在<b>不折叠行数</b>的前提下，
-			按分区逐行计算：<span class="mono">PARTITION BY</span> 分组、<span class="mono">ORDER BY</span> 组内排序。
-			它是排名、累计、移动平均等"每行带上下文"查询的核心工具。
+			窗口函数（<span class="mono">ROW_NUMBER / RANK / SUM ... OVER</span>）在<b>不折叠行数</b
+			>的前提下， 按分区逐行计算：<span class="mono">PARTITION BY</span> 分组、<span class="mono"
+				>ORDER BY</span
+			> 组内排序。 它是排名、累计、移动平均等"每行带上下文"查询的核心工具。
 		</span>
 	{/snippet}
 	<AlgoPlayer {engine} topicId="window-function" topicName="窗口函数" />

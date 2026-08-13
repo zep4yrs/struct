@@ -10,7 +10,7 @@
 		GraphNodeState
 	} from '$lib/engines/algorithm/types';
 	import { resolveCSSVar } from '../visualization-utils';
-import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -29,14 +29,12 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		height: 280
 	});
 	let ctx = $derived(host.ctx);
-	let dpr = $derived(host.dpr);
 	let canvasWidth = $derived(host.width);
 	let canvasHeight = $derived(host.height);
 
 	/** 逻辑空间（环形布局的坐标空间） */
 	const LOGICAL_W = 800;
 	const LOGICAL_H = 520;
-	const MIN_SCALE = 0.85;
 
 	const NODE_FONT = '600 15px ui-monospace, SFMono-Regular, Menlo, monospace';
 	const WEIGHT_FONT = '500 13px ui-monospace, SFMono-Regular, Menlo, monospace';
@@ -58,7 +56,7 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
-		inkInverse: resolveCSSVar('--color-ink-inverse'),
+			inkInverse: resolveCSSVar('--color-ink-inverse'),
 			surface: resolveCSSVar('--color-surface'),
 			border: resolveCSSVar('--color-line-regular'),
 			ink: resolveCSSVar('--color-ink'),
@@ -227,15 +225,12 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		ctx.restore();
 	}
 
-		$effect(() => {
+	$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
-
-	;
-
 </script>
 
 <!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->

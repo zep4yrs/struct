@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -150,7 +149,7 @@ export class DijkstraEngine extends EngineBase<DijkstraInput> {
 		]
 	};
 
-	applyPreset(name: string): void {
+	applyPreset(_name: string): void {
 		this.init({
 			labels: ['0', '1', '2', '3', '4'],
 			edges: DEFAULT_EDGES,
@@ -338,5 +337,4 @@ export class DijkstraEngine extends EngineBase<DijkstraInput> {
 			graph: this._graph(dist, nodeState, edgeState)
 		});
 	}
-
 }

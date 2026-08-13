@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EnginePreset,
 	Highlight,
@@ -26,14 +25,6 @@ export interface TriggerEngineInput {
 }
 
 interface TriggerDef {
-	name: string;
-	timing: 'BEFORE' | 'AFTER';
-	event: 'INSERT' | 'UPDATE' | 'DELETE';
-	tableName: string;
-	body: string;
-}
-
-interface ParsedTrigger {
 	name: string;
 	timing: 'BEFORE' | 'AFTER';
 	event: 'INSERT' | 'UPDATE' | 'DELETE';
@@ -210,7 +201,7 @@ export class TriggerEngine extends EngineBase<TriggerEngineInput> {
 			0
 		);
 
-		const beforeRows = this._applyDmlPreview(rows, this._dmlSql, this._dmlKind, false);
+		this._applyDmlPreview(rows, this._dmlSql, this._dmlKind, false);
 		this._emit(
 			'compare',
 			`准备执行 DML：${this._dmlSql}。当前表状态：${rows.length} 行。`,
@@ -335,9 +326,9 @@ export class TriggerEngine extends EngineBase<TriggerEngineInput> {
 
 	private _applyTriggerBody(
 		rows: (string | number)[][],
-		body: string,
-		event: 'INSERT' | 'UPDATE' | 'DELETE',
-		timing: 'BEFORE' | 'AFTER'
+		_body: string,
+		_event: 'INSERT' | 'UPDATE' | 'DELETE',
+		_timing: 'BEFORE' | 'AFTER'
 	): (string | number)[][] {
 		return rows;
 	}

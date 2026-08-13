@@ -5,7 +5,7 @@
 
 <div class="mx-auto max-w-7xl px-8 py-16">
 	<div class="section-label mb-4">数据结构</div>
-	<h1 class="font-display mb-2 text-3xl font-medium" style="letter-spacing: -0.02em;">
+	<h1 class="mb-2 font-display text-3xl font-medium" style="letter-spacing: -0.02em;">
 		数据结构与算法
 	</h1>
 	<p class="mb-10" style="color: var(--color-ink-2); max-width: 560px;">

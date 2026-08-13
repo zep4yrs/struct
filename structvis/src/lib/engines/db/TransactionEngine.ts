@@ -11,7 +11,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -416,5 +415,4 @@ export class TransactionEngine extends EngineBase<TransactionInput> {
 			}
 		});
 	}
-
 }

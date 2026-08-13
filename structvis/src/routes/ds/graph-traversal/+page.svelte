@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
-import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
+	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import {
 		GraphTraversalEngine,
 		type GraphTraversalMode
@@ -30,8 +30,8 @@ import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 <AlgoPage sectionNum="§06" sectionName="图状结构" title="图的遍历">
 	{#snippet desc()}
 		图的遍历是图算法的基础：从某顶点出发，沿边不重复地访问所有可达顶点。广度优先
-			（BFS）用队列逐层扩散，深度优先（DFS）用递归一路深入。观察顶点颜色变化，推演两种
-			遍历的访问顺序。
+		（BFS）用队列逐层扩散，深度优先（DFS）用递归一路深入。观察顶点颜色变化，推演两种
+		遍历的访问顺序。
 	{/snippet}
 	<AlgoPlayer {engine} topicId="graph-traversal" topicName="图的遍历" />
 </AlgoPage>

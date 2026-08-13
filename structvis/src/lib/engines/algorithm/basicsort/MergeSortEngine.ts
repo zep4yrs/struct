@@ -8,7 +8,6 @@
 
 import type {
 	DemoScriptItem,
-	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
 	Highlight,
@@ -219,5 +218,4 @@ export class MergeSortEngine extends EngineBase<number[]> {
 			pseudocodeLine
 		});
 	}
-
 }

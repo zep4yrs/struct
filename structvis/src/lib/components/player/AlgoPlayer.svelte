@@ -301,12 +301,13 @@
 	// 依赖 engineRevision：重建引擎后 steps 引用变化，即使 currentStepIdx 数值不变，
 	// 也必须重新求值（否则状态栏/旁白滞留旧引擎的文案）
 	let currentStep = $derived.by(() => {
-		engineRevision;
+		void engineRevision;
 		return engine.steps[Math.min(currentStepIdx, engine.steps.length - 1)];
 	});
 
 	// === 讲授旁白：优先步骤级 presenterNote，回落到「剧本」按步骤类型匹配 ===
 	// 剧本 = 外部导入的覆盖（localStorage 按引擎名持久化）或引擎默认 demoScript
+	// eslint-disable-next-line svelte/prefer-writable-derived -- 剧本状态同时被导入/重置事件写入，不能是纯 derived
 	let scriptOverride = $state<DemoScriptItem[] | null>(null);
 	let scriptMsg = $state('');
 	let scriptError = $state('');
@@ -445,7 +446,8 @@
 							{#if showScriptMenu}
 								<div class="script-menu" role="menu" aria-label="讲授剧本">
 									<button role="menuitem" onclick={exportScript}>导出当前剧本</button>
-									<button role="menuitem" onclick={() => scriptFileInput?.click()}>导入剧本…</button>
+									<button role="menuitem" onclick={() => scriptFileInput?.click()}>导入剧本…</button
+									>
 									{#if scriptOverride}
 										<button role="menuitem" onclick={resetScript}>恢复默认剧本</button>
 									{/if}

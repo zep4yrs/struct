@@ -7,7 +7,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
 	Highlight,
@@ -248,5 +247,4 @@ export class SinglyLinkedListEngine extends EngineBase<ListEngineInput> {
 			pseudocodeLine
 		});
 	}
-
 }

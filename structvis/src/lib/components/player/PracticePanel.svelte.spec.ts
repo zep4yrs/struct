@@ -161,7 +161,11 @@ describe('PracticePanel v2.0 新题型', () => {
 		let result: { correct: boolean; answer: string } | null = null;
 		const { container } = render(PracticePanel, {
 			props: {
-				question: makeQuestion({ type: 'fill-array', correctAnswer: '2,5,1,8,9', options: undefined }),
+				question: makeQuestion({
+					type: 'fill-array',
+					correctAnswer: '2,5,1,8,9',
+					options: undefined
+				}),
 				onAnswered: (r: { correct: boolean; answer: string }) => (result = r)
 			}
 		});
@@ -185,14 +189,20 @@ describe('PracticePanel v2.0 新题型', () => {
 		let result: { correct: boolean; answer: string } | null = null;
 		const { container } = render(PracticePanel, {
 			props: {
-				question: makeQuestion({ type: 'fill-array', correctAnswer: '2,5,1,8,9', options: undefined }),
+				question: makeQuestion({
+					type: 'fill-array',
+					correctAnswer: '2,5,1,8,9',
+					options: undefined
+				}),
 				onAnswered: (r: { correct: boolean; answer: string }) => (result = r)
 			}
 		});
 		const input = container.querySelector('.fill-input') as HTMLInputElement;
 		fireEvent.input(input, { target: { value: '5,2,1,8,9' } });
 		await tick();
-		[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!.click();
+		[...container.querySelectorAll('button')]
+			.find((b) => b.textContent?.includes('提交答案'))!
+			.click();
 		await tick();
 		expect((result as { correct: boolean } | null)?.correct).toBe(false);
 		expect(container.querySelector('.correct-answer')?.textContent).toContain('2,5,1,8,9');
@@ -215,7 +225,9 @@ describe('PracticePanel v2.0 新题型', () => {
 		expect(slots[0]?.querySelector('.slot-val')?.textContent).toBe('2');
 		fireEvent.click(slots[4]!); // '9'
 		await tick();
-		[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!.click();
+		[...container.querySelectorAll('button')]
+			.find((b) => b.textContent?.includes('提交答案'))!
+			.click();
 		expect(result).toEqual({ correct: true, answer: '9' });
 	});
 
@@ -236,8 +248,9 @@ describe('PracticePanel v2.0 新题型', () => {
 		expect(opts[0]?.querySelector('.code-line')?.textContent).toBe('low = mid + 1');
 		fireEvent.click(opts[0]!);
 		await tick();
-		[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!.click();
+		[...container.querySelectorAll('button')]
+			.find((b) => b.textContent?.includes('提交答案'))!
+			.click();
 		expect(result).toEqual({ correct: true, answer: 'low = mid + 1' });
 	});
 });
-

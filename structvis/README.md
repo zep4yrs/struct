@@ -13,14 +13,14 @@ npm run dev
 
 ## 常用命令
 
-| 命令 | 说明 |
-| --- | --- |
-| `npm run dev` | 启动开发服务器（http://localhost:5173） |
-| `npm run check` | svelte-check 类型检查 |
-| `npm run test` | 单元测试（Vitest，server + client 双项目） |
-| `npm run test:e2e` | 端到端测试（Playwright，自动起 dev server） |
-| `npm run build` | 生产构建（adapter-static 输出到仓库根 `docs/`） |
-| `npm run lint` | Prettier + ESLint |
+| 命令               | 说明                                            |
+| ------------------ | ----------------------------------------------- |
+| `npm run dev`      | 启动开发服务器（http://localhost:5173）         |
+| `npm run check`    | svelte-check 类型检查                           |
+| `npm run test`     | 单元测试（Vitest，server + client 双项目）      |
+| `npm run test:e2e` | 端到端测试（Playwright，自动起 dev server）     |
+| `npm run build`    | 生产构建（adapter-static 输出到仓库根 `docs/`） |
+| `npm run lint`     | Prettier + ESLint                               |
 
 ## 目录速览
 

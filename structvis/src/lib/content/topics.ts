@@ -196,7 +196,7 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '查找',
 		crumb: '数据结构 / 查找 / [current]哈希表[/current]'
-	},
+	}
 ];
 
 export const dbTopics: TopicCard[] = [
@@ -334,5 +334,5 @@ export const dbTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '运维',
 		crumb: '数据库 / [current]用户与权限管理[/current]'
-	},
+	}
 ];

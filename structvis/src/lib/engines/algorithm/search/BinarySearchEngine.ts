@@ -6,7 +6,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -58,12 +57,7 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 		type: 'fill-code',
 		stepIndex: 4,
 		prompt: '二分查找循环体中，当 arr[mid] < target 时需要调整区间。补全这一行：',
-		options: [
-			'low = mid + 1',
-			'low = mid',
-			'high = mid - 1',
-			'high = mid + 1'
-		],
+		options: ['low = mid + 1', 'low = mid', 'high = mid - 1', 'high = mid + 1'],
 		correctAnswer: 'low = mid + 1',
 		hint: 'mid 已经比较过不等于 target，可以安全排除',
 		explanation:
@@ -253,5 +247,4 @@ export class BinarySearchEngine extends EngineBase<{ data: number[]; target: num
 			pseudocodeLine
 		});
 	}
-
 }

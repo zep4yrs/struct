@@ -7,7 +7,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
 	Highlight,
@@ -329,5 +328,4 @@ export class StackQueueEngine extends EngineBase<StackQueueEngineInput> {
 			pseudocodeLine
 		});
 	}
-
 }

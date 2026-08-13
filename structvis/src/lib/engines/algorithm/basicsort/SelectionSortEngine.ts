@@ -7,7 +7,6 @@
 
 import type {
 	DemoScriptItem,
-	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
 	Highlight,
@@ -243,5 +242,4 @@ export class SelectionSortEngine extends EngineBase<number[]> {
 			pseudocodeLine
 		});
 	}
-
 }

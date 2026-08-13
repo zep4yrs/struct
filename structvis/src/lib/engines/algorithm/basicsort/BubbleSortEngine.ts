@@ -7,7 +7,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -44,7 +43,8 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	{
 		type: 'drag-pointer',
 		stepIndex: 3,
-		prompt: '对数组 [5, 2, 8, 1, 9] 完成第一轮冒泡后，数字 9 被"冒泡"到了末尾。请点击 9 现在所在的格子：',
+		prompt:
+			'对数组 [5, 2, 8, 1, 9] 完成第一轮冒泡后，数字 9 被"冒泡"到了末尾。请点击 9 现在所在的格子：',
 		options: ['2', '5', '1', '8', '9'],
 		correctAnswer: '9',
 		hint: '第一轮中 9 与每个后继比较都更大，一路交换到最后',
@@ -54,7 +54,8 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	{
 		type: 'fill-array',
 		stepIndex: 5,
-		prompt: '对数组 [5, 2, 8, 1, 9] 完成第一轮冒泡后，数组变成什么样了？输入完整数组（元素用逗号分隔）：',
+		prompt:
+			'对数组 [5, 2, 8, 1, 9] 完成第一轮冒泡后，数组变成什么样了？输入完整数组（元素用逗号分隔）：',
 		correctAnswer: '2,5,1,8,9',
 		hint: '相邻比较，大的向后交换；9 最大会到末尾',
 		explanation:
@@ -230,5 +231,4 @@ export class BubbleSortEngine extends EngineBase<number[]> {
 			pseudocodeLine
 		});
 	}
-
 }

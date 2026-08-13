@@ -289,9 +289,7 @@ test.describe('主题与导航', () => {
 		await page.getByRole('button', { name: '显示导航' }).click();
 		await expect(nav).toBeVisible();
 		await expect(page.locator('.drawer-backdrop')).toBeVisible();
-		await expect(
-			nav.getByRole('button', { name: '关闭导航' })
-		).toBeVisible();
+		await expect(nav.getByRole('button', { name: '关闭导航' })).toBeVisible();
 
 		await nav.getByRole('button', { name: '关闭导航' }).click();
 		await expect(nav).toBeHidden();
@@ -540,9 +538,9 @@ test.describe('回归与覆盖补充', () => {
 
 		// 切到自定义视图，输入合法建表语句并解析
 		await page.locator('.op-btn', { hasText: '自定义' }).click();
-		await page.locator('textarea.custom-input').fill(
-			'CREATE TABLE 测试 (id INT PRIMARY KEY, name VARCHAR(20))'
-		);
+		await page
+			.locator('textarea.custom-input')
+			.fill('CREATE TABLE 测试 (id INT PRIMARY KEY, name VARCHAR(20))');
 		await page.locator('.apply-btn', { hasText: '解析' }).click();
 		await expect(page.locator('.schema-table')).toBeVisible();
 		await expect(page.locator('.schema-name')).toContainText('测试');
@@ -672,7 +670,13 @@ test.describe('覆盖补充：DB 播放器页', () => {
 			__sv: 1,
 			data: {
 				topics: {
-					'quick-sort': { mastery: 88, totalExercises: 9, correctExercises: 8, lastVisited: Date.now(), completed: true }
+					'quick-sort': {
+						mastery: 88,
+						totalExercises: 9,
+						correctExercises: 8,
+						lastVisited: Date.now(),
+						completed: true
+					}
 				},
 				mistakes: [],
 				totalStudyTime: 0,
@@ -691,7 +695,10 @@ test.describe('覆盖补充：DB 播放器页', () => {
 	});
 });
 
+// 截图基线在本地 Windows 生成（文件名带 -win32 后缀），CI（Linux）无对应基线且字体渲染差异大，故跳过。
+// 如需 CI 截图回归：在 Linux 环境生成基线（npx playwright test -g "视觉回归" --update-snapshots）后移除本跳过。
 test.describe('视觉回归（渲染器截图基线）', () => {
+	test.skip(process.env.CI, '截图基线仅本地 Windows 生成（-win32 后缀），CI Linux 无匹配基线');
 	// 截图基线生成：npx playwright test -g "视觉回归" --update-snapshots
 	// 跨平台字体差异通过 maxDiffPixelRatio 容差吸收
 	test('快速排序页画布截图基线', async ({ page }) => {

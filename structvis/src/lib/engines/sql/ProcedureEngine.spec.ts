@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { ProcedureEngine } from './ProcedureEngine';
 
 function createEngine(body: string, callArgs: (string | number)[] = []): ProcedureEngine {

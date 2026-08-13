@@ -30,6 +30,7 @@ function step(overrides: Partial<AlgorithmStep>): AlgorithmStep {
 interface Case {
 	name: string;
 	renderType: RenderType;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 各渲染器 props 类型不同，测试统一放宽
 	component: Component<any>;
 	steps: AlgorithmStep[];
 	/** 至少应出现在绘制文本中的字符串 */

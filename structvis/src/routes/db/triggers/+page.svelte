@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
-import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
+	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import { TriggerEngine } from '$lib/engines/sql/TriggerEngine';
 	import type { TriggerEngineInput } from '$lib/engines/sql/TriggerEngine';
 
@@ -48,8 +48,8 @@ END`,
 <AlgoPage sectionNum="§10" sectionName="数据库对象" title="触发器">
 	{#snippet desc()}
 		触发器（Trigger）是绑定在表上的<b>自动执行程序</b>，当 DML 事件（<span class="mono"
-				>INSERT / UPDATE / DELETE</span
-			>）发生时自动调用。<b>BEFORE</b> 在语句执行前触发（可修改 NEW 值），<b>AFTER</b> 在语句执行后触发（常用于日志）。逐步播放，观察触发器如何响应数据变更。
+			>INSERT / UPDATE / DELETE</span
+		>）发生时自动调用。<b>BEFORE</b> 在语句执行前触发（可修改 NEW 值），<b>AFTER</b> 在语句执行后触发（常用于日志）。逐步播放，观察触发器如何响应数据变更。
 	{/snippet}
 	<AlgoPlayer {engine} topicId="triggers" topicName="触发器" />
 </AlgoPage>

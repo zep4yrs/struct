@@ -1,9 +1,4 @@
-import type {
-	AlgorithmEngine,
-	AlgorithmStep,
-	PracticeQuestion,
-	RenderType
-} from './types';
+import type { AlgorithmEngine, AlgorithmStep, PracticeQuestion, RenderType } from './types';
 
 /**
  * 引擎基类 — 收敛各引擎重复的状态样板（steps/playbackPos/totalSteps/_stepId

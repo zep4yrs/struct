@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	ErDiagramData,
 	ErEdge,
 	ErNode,
@@ -452,5 +451,4 @@ export class ErEngine extends EngineBase<ErEngineInput> {
 			}
 		});
 	}
-
 }

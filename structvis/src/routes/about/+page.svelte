@@ -13,7 +13,7 @@
 				关于 StructVis
 			</h1>
 		</div>
-		<p class="font-display max-w-2xl text-2xl font-normal" style="color: var(--color-ink-2);">
+		<p class="max-w-2xl font-display text-2xl font-normal" style="color: var(--color-ink-2);">
 			「看见数据结构与数据库的每一步跳动。」
 		</p>
 		<p class="mt-4 max-w-2xl text-base leading-relaxed" style="color: var(--color-ink-3);">
@@ -22,7 +22,7 @@
 	</section>
 
 	<section class="mb-16">
-		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">
+		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 			为什么做这个
 		</h2>
 		<p class="mb-4 max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
@@ -35,7 +35,7 @@
 	</section>
 
 	<section class="mb-16">
-		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">
+		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 			不是什么
 		</h2>
 		<ul class="max-w-3xl list-disc space-y-2 pl-6 text-base" style="color: var(--color-ink-2);">
@@ -47,7 +47,7 @@
 	</section>
 
 	<section class="mb-16">
-		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">是什么</h2>
+		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">是什么</h2>
 		<ul class="max-w-3xl list-disc space-y-2 pl-6 text-base" style="color: var(--color-ink-2);">
 			<li>教材对齐的自学辅助工具 — 跟着《数据结构教程》和《数据库技术及应用（MySQL）》的章节走</li>
 			<li>交互式步进可视化 — 不是看动画，是每一步都可以暂停、可以自己操作、可以试错</li>
@@ -57,7 +57,7 @@
 	</section>
 
 	<section class="mb-16">
-		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">技术栈</h2>
+		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">技术栈</h2>
 		<ul class="max-w-3xl list-disc space-y-2 pl-6 text-base" style="color: var(--color-ink-2);">
 			<li>Svelte 5 + SvelteKit</li>
 			<li>Tailwind v4</li>
@@ -68,21 +68,27 @@
 	</section>
 
 	<section class="mb-16">
-		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">
+		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 			当前状态
 		</h2>
 		<p class="max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
-			v2.0 正式版。已实现数据结构 19 课：排序（快速/冒泡/插入/选择/归并）、树（二叉树遍历/二叉搜索树/哈夫曼）、图（存储/遍历/最短路径/最小生成树/拓扑排序/关键路径）、线性表、栈和队列、KMP、二分查找、哈希表。已实现数据库 15 课：数据库系统概述、SELECT 查询、高级查询、窗口函数、执行计划与索引选择、建表练习、数据更新、视图、索引、触发器、存储过程、E-R 模型、关系规范化、事务与并发、用户与权限管理。全部支持步进可视化、即时练习反馈、错题本与掌握度追踪；v2.0 新增三类交互题型、可导入导出的讲授剧本与移动端优化。
+			v2.0 正式版。已实现数据结构 19
+			课：排序（快速/冒泡/插入/选择/归并）、树（二叉树遍历/二叉搜索树/哈夫曼）、图（存储/遍历/最短路径/最小生成树/拓扑排序/关键路径）、线性表、栈和队列、KMP、二分查找、哈希表。已实现数据库
+			15 课：数据库系统概述、SELECT
+			查询、高级查询、窗口函数、执行计划与索引选择、建表练习、数据更新、视图、索引、触发器、存储过程、E-R
+			模型、关系规范化、事务与并发、用户与权限管理。全部支持步进可视化、即时练习反馈、错题本与掌握度追踪；v2.0
+			新增三类交互题型、可导入导出的讲授剧本与移动端优化。
 		</p>
 	</section>
 
 	<section class="mb-16">
-		<h2 class="font-display mb-6 text-2xl font-medium" style="letter-spacing: -0.01em;">
+		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 			开源协议
 		</h2>
 		<p class="max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
 			本项目以 GPL-3.0（GNU General Public License v3.0）开源，Copyright (c) 2026 枫桥 (zep4yrs)。
-			你可以自由使用、修改、分发本项目，但基于本项目的衍生作品必须同样以 GPL-3.0 开源——防止有人拿去闭源商用。完整许可文本见仓库 LICENSE 文件。
+			你可以自由使用、修改、分发本项目，但基于本项目的衍生作品必须同样以 GPL-3.0
+			开源——防止有人拿去闭源商用。完整许可文本见仓库 LICENSE 文件。
 		</p>
 	</section>
 

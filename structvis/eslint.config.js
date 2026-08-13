@@ -20,7 +20,11 @@ export default defineConfig(
 		rules: {
 			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
 			// see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
-			'no-undef': 'off'
+			'no-undef': 'off',
+			// 渲染器内的 Map/Set 是绘制期非响应式缓存（每次重绘直接读写），SvelteMap 无收益且引入无谓追踪
+			'svelte/prefer-svelte-reactivity': 'off',
+			// 接口方法中未使用的具名参数（applyPreset/_applyTriggerBody 等）用 _ 前缀声明意图
+			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
 		}
 	},
 	{

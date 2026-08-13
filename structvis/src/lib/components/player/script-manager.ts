@@ -18,9 +18,19 @@ export interface ScriptFile {
 }
 
 const VALID_TYPES = new Set([
-	'init', 'compare', 'swap', 'pivot-select', 'partition-start', 'partition-end',
-	'recurse-enter', 'recurse-exit', 'edge-candidate', 'edge-select', 'edge-reject',
-	'complete', 'default'
+	'init',
+	'compare',
+	'swap',
+	'pivot-select',
+	'partition-start',
+	'partition-end',
+	'recurse-enter',
+	'recurse-exit',
+	'edge-candidate',
+	'edge-select',
+	'edge-reject',
+	'complete',
+	'default'
 ]);
 
 /** localStorage key：按引擎名隔离（引擎名在播放器生命周期内稳定） */
@@ -43,10 +53,15 @@ export function parseScript(json: string): ScriptFile {
 		if (it === null || typeof it !== 'object') throw new Error('剧本条目格式不正确');
 		const t = (it as Record<string, unknown>).type;
 		const n = (it as Record<string, unknown>).narration;
-		if (typeof t !== 'string' || !VALID_TYPES.has(t)) throw new Error(`未知的步骤类型：${String(t)}`);
+		if (typeof t !== 'string' || !VALID_TYPES.has(t))
+			throw new Error(`未知的步骤类型：${String(t)}`);
 		if (typeof n !== 'string' || n.trim().length === 0) throw new Error('旁白文本不能为空');
 	}
-	return { version: 1, name: typeof obj.name === 'string' ? obj.name : undefined, items: items as DemoScriptItem[] };
+	return {
+		version: 1,
+		name: typeof obj.name === 'string' ? obj.name : undefined,
+		items: items as DemoScriptItem[]
+	};
 }
 
 /** 序列化为下载用的 JSON 文本 */

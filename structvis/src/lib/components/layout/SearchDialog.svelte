@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { base } from '$app/paths';
+	import { resolve } from '$app/paths';
+	import type { RouteId } from '../../../routes/$types';
 	import { dsTopics, dbTopics, type TopicCard } from '$lib/content/topics';
 
 	interface Props {
@@ -55,7 +56,7 @@
 		if (item.planned) return;
 		reset();
 		onClose();
-		void goto(base + item.href);
+		void goto(resolve(item.href as RouteId));
 	}
 
 	function move(delta: number) {
@@ -68,7 +69,9 @@
 	function trapFocus(e: KeyboardEvent) {
 		if (e.key !== 'Tab' || !cardRef) return;
 		const focusables = Array.from(
-			cardRef.querySelectorAll<HTMLElement>('button, input, [href], [tabindex]:not([tabindex="-1"])')
+			cardRef.querySelectorAll<HTMLElement>(
+				'button, input, [href], [tabindex]:not([tabindex="-1"])'
+			)
 		).filter((el) => !el.hasAttribute('disabled'));
 		if (focusables.length === 0) return;
 		const first = focusables[0];
@@ -123,7 +126,13 @@
 {#if open}
 	<div class="search-root">
 		<button class="search-overlay" aria-label="关闭搜索" onclick={close}></button>
-		<div class="search-card" role="dialog" aria-modal="true" aria-label="搜索课程" bind:this={cardRef}>
+		<div
+			class="search-card"
+			role="dialog"
+			aria-modal="true"
+			aria-label="搜索课程"
+			bind:this={cardRef}
+		>
 			<div class="search-head">
 				<svg
 					class="search-icon"

@@ -23,7 +23,6 @@
 		height: 280
 	});
 	let ctx = $derived(host.ctx);
-	let dpr = $derived(host.dpr);
 	let canvasWidth = $derived(host.width);
 	let canvasHeight = $derived(host.height);
 

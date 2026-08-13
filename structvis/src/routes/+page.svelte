@@ -18,7 +18,7 @@
 		</div>
 
 		<p
-			class="font-display max-w-2xl text-3xl font-normal"
+			class="max-w-2xl font-display text-3xl font-normal"
 			style="line-height: 1.3; color: var(--color-ink);"
 		>
 			看见数据结构与数据库的每一步跳动。
@@ -143,7 +143,7 @@
 				class="card block no-underline"
 				style="border-color: var(--color-line-hair);"
 			>
-				<h2 class="font-display mb-2 text-2xl font-medium" style="letter-spacing: -0.01em;">
+				<h2 class="mb-2 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 					数据结构与算法
 				</h2>
 				<p class="mb-4 text-sm" style="color: var(--color-ink-2);">
@@ -157,7 +157,7 @@
 				class="card block no-underline"
 				style="border-color: var(--color-line-hair);"
 			>
-				<h2 class="font-display mb-2 text-2xl font-medium" style="letter-spacing: -0.01em;">
+				<h2 class="mb-2 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 					MySQL 数据库
 				</h2>
 				<p class="mb-4 text-sm" style="color: var(--color-ink-2);">

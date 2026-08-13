@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -323,7 +322,6 @@ export class MstEngine extends EngineBase<MstInput> {
 	}
 
 	private _genKruskal(selected: number[]): void {
-		const n = this._labels.length;
 		const sorted = this._edges
 			.map((_, ei) => ei)
 			.sort((x, y) => this._edges[x][2] - this._edges[y][2]);
@@ -423,5 +421,4 @@ export class MstEngine extends EngineBase<MstInput> {
 			graph: this._graph(selected, nodeState, edgeState)
 		});
 	}
-
 }

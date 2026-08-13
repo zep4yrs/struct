@@ -9,7 +9,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	ErDiagramData,
 	ErEdge,
 	ErNode,
@@ -507,5 +506,4 @@ export class NormalizeEngine extends EngineBase<NormalizeEngineInput> {
 			}
 		});
 	}
-
 }

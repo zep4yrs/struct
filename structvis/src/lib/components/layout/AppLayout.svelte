@@ -58,11 +58,7 @@
 	/>
 
 	<div class="flex min-h-0 flex-1">
-		<Sidebar
-			{activeSection}
-			open={!isHome && sidebarOpen}
-			onClose={() => (sidebarOpen = false)}
-		/>
+		<Sidebar {activeSection} open={!isHome && sidebarOpen} onClose={() => (sidebarOpen = false)} />
 
 		<main id="main-content" tabindex="-1" class="flex-1 overflow-y-auto">
 			{@render children()}

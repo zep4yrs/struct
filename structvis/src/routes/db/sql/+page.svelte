@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
-import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
+	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import { SelectEngine, SELECT_PRESETS, type SqlTable } from '$lib/engines/sql/SelectEngine';
 
 	// 学生表（教材风格示例数据）
@@ -42,9 +42,9 @@ import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 <AlgoPage sectionNum="§04" sectionName="数据查询" title="MySQL 数据查询">
 	{#snippet desc()}
 		SELECT 语句按固定的<b>逻辑执行顺序</b>处理：<span class="mono"
-				>FROM → JOIN → WHERE → GROUP BY → SELECT → ORDER BY → LIMIT</span
-			>。 先选表、连接、再筛行、再分组、再投影列、最后排序与截断。多表查询用
-			<span class="mono">表名.列名</span> 限定列。逐步播放，观察每一子句对结果集的影响。
+			>FROM → JOIN → WHERE → GROUP BY → SELECT → ORDER BY → LIMIT</span
+		>。 先选表、连接、再筛行、再分组、再投影列、最后排序与截断。多表查询用
+		<span class="mono">表名.列名</span> 限定列。逐步播放，观察每一子句对结果集的影响。
 	{/snippet}
 	<AlgoPlayer {engine} topicId="sql" topicName="MySQL 数据查询" />
 </AlgoPage>

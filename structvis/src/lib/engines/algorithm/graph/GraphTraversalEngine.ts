@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -342,5 +341,4 @@ export class GraphTraversalEngine extends EngineBase<GraphTraversalInput> {
 			graph: this._graph(visitedSeq, frontier, current ?? [])
 		});
 	}
-
 }

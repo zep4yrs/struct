@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
-import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
+	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import { ProcedureEngine } from '$lib/engines/sql/ProcedureEngine';
 	import type { ProcedureInput } from '$lib/engines/sql/ProcedureEngine';
 
@@ -39,8 +39,8 @@ SELECT 平均工资 AS 结果;`,
 <AlgoPage sectionNum="§11" sectionName="数据库对象" title="存储过程">
 	{#snippet desc()}
 		存储过程（Stored Procedure）是预编译在数据库端的<b>SQL 语句集</b
-			>，支持参数、局部变量、条件分支与循环。调用时减少网络往返，适合封装高频业务逻辑。逐步播放，观察
-			<span class="mono">DECLARE / SET / IF / WHILE / CALL</span> 的执行顺序与变量状态变化。
+		>，支持参数、局部变量、条件分支与循环。调用时减少网络往返，适合封装高频业务逻辑。逐步播放，观察
+		<span class="mono">DECLARE / SET / IF / WHILE / CALL</span> 的执行顺序与变量状态变化。
 	{/snippet}
 	<AlgoPlayer {engine} topicId="procedures" topicName="存储过程" />
 </AlgoPage>

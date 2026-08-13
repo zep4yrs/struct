@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WindowFunctionEngine, type WindowFunctionInput } from './WindowFunctionEngine';
+import { WindowFunctionEngine } from './WindowFunctionEngine';
 import type { SqlTableData } from '../algorithm/types';
 
 const STUDENT: SqlTableData = {
@@ -12,13 +12,6 @@ const STUDENT: SqlTableData = {
 		[20105, '软件工程', 63]
 	]
 };
-
-function run(sql: string): ReturnType<WindowFunctionEngine['getCurrentStep']> & { steps: number; last: ReturnType<WindowFunctionEngine['getCurrentStep']> } {
-	const e = new WindowFunctionEngine();
-	e.init({ sql, table: STUDENT });
-	const last = e.steps[e.steps.length - 1];
-	return { steps: e.totalSteps, last } as never;
-}
 
 describe('WindowFunctionEngine', () => {
 	it('ROW_NUMBER：按专业分区、组内按成绩降序编号', () => {
@@ -41,7 +34,14 @@ describe('WindowFunctionEngine', () => {
 	});
 
 	it('RANK：并列同名次且名次跳跃', () => {
-		const table: SqlTableData = { columns: ['学号', '成绩'], rows: [[1, 90], [2, 90], [3, 80]] };
+		const table: SqlTableData = {
+			columns: ['学号', '成绩'],
+			rows: [
+				[1, 90],
+				[2, 90],
+				[3, 80]
+			]
+		};
 		const e = new WindowFunctionEngine();
 		e.init({ sql: 'SELECT 学号, 成绩, RANK() OVER (ORDER BY 成绩 DESC) AS rk FROM t', table });
 		const last = e.steps[e.steps.length - 1]!;
@@ -53,7 +53,17 @@ describe('WindowFunctionEngine', () => {
 
 	it('SUM：组内累计', () => {
 		const e = new WindowFunctionEngine();
-		e.init({ sql: 'SELECT 学号, 成绩, SUM(成绩) OVER (ORDER BY 学号) AS acc FROM t', table: { columns: ['学号', '成绩'], rows: [[1, 10], [2, 20], [3, 30]] } });
+		e.init({
+			sql: 'SELECT 学号, 成绩, SUM(成绩) OVER (ORDER BY 学号) AS acc FROM t',
+			table: {
+				columns: ['学号', '成绩'],
+				rows: [
+					[1, 10],
+					[2, 20],
+					[3, 30]
+				]
+			}
+		});
 		const last = e.steps[e.steps.length - 1]!;
 		const acc = last.table!.rows.map((r) => r[2]);
 		expect(acc).toEqual([10, 30, 60]);

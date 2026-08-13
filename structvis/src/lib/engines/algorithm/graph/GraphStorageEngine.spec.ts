@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { GraphStorageEngine, type GraphStorageInput, type StorageMode } from './GraphStorageEngine';
+import { describe, it, expect } from 'vitest';
+import { GraphStorageEngine, type GraphStorageInput } from './GraphStorageEngine';
 
 function run(input: Partial<GraphStorageInput> = {}): GraphStorageEngine {
 	const e = new GraphStorageEngine();

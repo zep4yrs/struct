@@ -17,7 +17,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EnginePreset,
 	Highlight,

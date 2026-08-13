@@ -11,7 +11,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -398,8 +397,6 @@ export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 			...left.columns.map((c) => `${leftName}.${c}`),
 			...right.columns.map((c) => `${rightName}.${c}`)
 		];
-		const leftColRefs = left.columns.map((c) => `${leftName}.${c}`);
-		const rightColRefs = right.columns.map((c) => `${rightName}.${c}`);
 
 		// 1. FROM 左表
 		this._emit(
@@ -767,7 +764,7 @@ export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 		}
 		const indices: number[] = [];
 		for (const c of cols) {
-			let col: string | null = AGG_RE.test(c)
+			const col: string | null = AGG_RE.test(c)
 				? c
 				: table.columns.includes(c)
 					? c
@@ -808,5 +805,4 @@ export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 			}
 		});
 	}
-
 }

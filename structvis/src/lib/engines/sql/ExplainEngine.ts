@@ -1,5 +1,4 @@
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -20,13 +19,6 @@ export interface ExplainInput {
 	table: SqlTableData;
 	/** 已建索引的列名（学号等） */
 	indexedCols: string[];
-}
-
-interface Plan {
-	name: string;
-	rows: number;
-	cost: number;
-	detail: string;
 }
 
 export class ExplainEngine extends EngineBase<ExplainInput> {
@@ -55,10 +47,16 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 			type: 'choose-next',
 			stepIndex: 3,
 			prompt: '等值查询（WHERE 学号 = 20103）走索引的优势是？',
-			options: ['只需沿 B+ 树定位少量行，避免全表扫描', '索引可以修改数据', '索引不需要存储空间', '等值查询不能走索引'],
+			options: [
+				'只需沿 B+ 树定位少量行，避免全表扫描',
+				'索引可以修改数据',
+				'索引不需要存储空间',
+				'等值查询不能走索引'
+			],
 			correctAnswer: '只需沿 B+ 树定位少量行，避免全表扫描',
 			hint: 'B+ 树查找是 O(log n)',
-			explanation: 'B+ 树索引把查找从"扫描全部行"变成"沿树定位"，命中行数极少时代价远低于全表扫描；但选择性差（如性别列）时索引反而低效。'
+			explanation:
+				'B+ 树索引把查找从"扫描全部行"变成"沿树定位"，命中行数极少时代价远低于全表扫描；但选择性差（如性别列）时索引反而低效。'
 		}
 	];
 
@@ -66,7 +64,10 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 		{ type: 'init', narration: '优化器根据统计信息为查询生成候选执行计划，并选择代价最小的一个。' },
 		{ type: 'compare', narration: '估算候选计划：读取的行数与代价。' },
 		{ type: 'recurse-enter', narration: '对比各计划代价，选择最优执行方案。' },
-		{ type: 'complete', narration: '执行选中的计划并返回结果。索引不是越多越好——写多读少的表要考虑维护成本。' }
+		{
+			type: 'complete',
+			narration: '执行选中的计划并返回结果。索引不是越多越好——写多读少的表要考虑维护成本。'
+		}
 	];
 
 	presets: EnginePreset[] = [
@@ -113,7 +114,13 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 		const matches = rows.filter((r) => this._evalCond(r[ci], op, val));
 		const hitRows = matches.length;
 
-		this._emit('init', '查询：SELECT * FROM 学生 WHERE ' + col + ' ' + op + ' ' + val, { columns: [...cols], rows: rows.map((r) => [...r]) }, [], []);
+		this._emit(
+			'init',
+			'查询：SELECT * FROM 学生 WHERE ' + col + ' ' + op + ' ' + val,
+			{ columns: [...cols], rows: rows.map((r) => [...r]) },
+			[],
+			[]
+		);
 
 		const indexed = this._indexedCols.includes(col);
 		const n = rows.length;
@@ -123,7 +130,10 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 		this._emit(
 			'compare',
 			'候选计划 A：全表扫描 —— 顺序读取全部 ' + n + ' 行，逐行判断条件。',
-			{ columns: ['计划', '读取行数', '估算代价', '说明'], rows: [['全表扫描', scanRows, scanRows, '代价 = 读取行数']] },
+			{
+				columns: ['计划', '读取行数', '估算代价', '说明'],
+				rows: [['全表扫描', scanRows, scanRows, '代价 = 读取行数']]
+			},
 			[],
 			[]
 		);
@@ -135,7 +145,10 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 			this._emit(
 				'recurse-enter',
 				'候选计划 B：索引查找 —— B+ 树定位（代价 3）+ 读取命中行 ' + indexRows + ' 行。',
-				{ columns: ['计划', '读取行数', '估算代价', '说明'], rows: [['索引查找(' + col + ')', indexRows, indexCost, 'B+ 树定位 + 命中行']] },
+				{
+					columns: ['计划', '读取行数', '估算代价', '说明'],
+					rows: [['索引查找(' + col + ')', indexRows, indexCost, 'B+ 树定位 + 命中行']]
+				},
 				[],
 				[]
 			);
@@ -143,14 +156,29 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 			const better = indexCost < scanRows;
 			this._emit(
 				'compare',
-				'对比代价：全表扫描 ' + scanRows + ' vs 索引查找 ' + indexCost + ' —— ' + (better ? '索引查找胜出' : '全表扫描胜出（行数少时索引优势小）'),
-				{ columns: ['计划', '读取行数', '估算代价', '结论'], rows: [['全表扫描', scanRows, scanRows, better ? '放弃' : '✓ 选中'], ['索引查找(' + col + ')', indexRows, indexCost, better ? '✓ 选中' : '放弃']] },
+				'对比代价：全表扫描 ' +
+					scanRows +
+					' vs 索引查找 ' +
+					indexCost +
+					' —— ' +
+					(better ? '索引查找胜出' : '全表扫描胜出（行数少时索引优势小）'),
+				{
+					columns: ['计划', '读取行数', '估算代价', '结论'],
+					rows: [
+						['全表扫描', scanRows, scanRows, better ? '放弃' : '✓ 选中'],
+						['索引查找(' + col + ')', indexRows, indexCost, better ? '✓ 选中' : '放弃']
+					]
+				},
 				[],
 				[]
 			);
 			this._emit(
 				'complete',
-				'优化器选择：' + (better ? '索引查找' : '全表扫描') + '。实际命中 ' + hitRows + ' 行，结果如下。',
+				'优化器选择：' +
+					(better ? '索引查找' : '全表扫描') +
+					'。实际命中 ' +
+					hitRows +
+					' 行，结果如下。',
 				{ columns: [...cols], rows: matches.map((r) => [...r]) },
 				[],
 				[{ type: 'compare', indices: matches.map((_, i) => i) }]
@@ -159,7 +187,10 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 			this._emit(
 				'compare',
 				'列「' + col + '」没有索引 —— 只有全表扫描一种候选计划。',
-				{ columns: ['计划', '读取行数', '估算代价', '结论'], rows: [['全表扫描', scanRows, scanRows, '✓ 选中']] },
+				{
+					columns: ['计划', '读取行数', '估算代价', '结论'],
+					rows: [['全表扫描', scanRows, scanRows, '✓ 选中']]
+				},
 				[],
 				[]
 			);
@@ -175,7 +206,9 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 	}
 
 	private _parseWhere(sql: string): { col: string; op: string; val: string } | null {
-		const m = sql.match(/WHERE\s+([\u4e00-\u9fa5\w]+)\s*(>=|<=|<>|!=|=|>|<)\s*['"]?([\u4e00-\u9fa5\w.]+)['"]?/i);
+		const m = sql.match(
+			/WHERE\s+([\u4e00-\u9fa5\w]+)\s*(>=|<=|<>|!=|=|>|<)\s*['"]?([\u4e00-\u9fa5\w.]+)['"]?/i
+		);
 		if (!m) return null;
 		return { col: m[1], op: m[2], val: m[3] };
 	}
@@ -185,19 +218,30 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 		const b = parseFloat(val);
 		if (!isNaN(a) && !isNaN(b)) {
 			switch (op) {
-				case '=': return a === b;
-				case '>=': return a >= b;
-				case '<=': return a <= b;
-				case '>': return a > b;
-				case '<': return a < b;
-				case '<>': case '!=': return a !== b;
+				case '=':
+					return a === b;
+				case '>=':
+					return a >= b;
+				case '<=':
+					return a <= b;
+				case '>':
+					return a > b;
+				case '<':
+					return a < b;
+				case '<>':
+				case '!=':
+					return a !== b;
 			}
 		}
 		const sa = String(cell);
 		switch (op) {
-			case '=': return sa === val;
-			case '<>': case '!=': return sa !== val;
-			default: return false;
+			case '=':
+				return sa === val;
+			case '<>':
+			case '!=':
+				return sa !== val;
+			default:
+				return false;
 		}
 	}
 

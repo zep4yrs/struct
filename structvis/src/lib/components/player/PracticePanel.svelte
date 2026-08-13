@@ -22,7 +22,10 @@
 
 	/** 填空归一化：去所有空白与分隔符差异，比较内容是否一致 */
 	function normalizeFill(s: string): string {
-		return s.replace(/\s+/g, '').replace(/[,，;；]+$/, '').replace(/[,，;；]/g, ',');
+		return s
+			.replace(/\s+/g, '')
+			.replace(/[,，;；]+$/, '')
+			.replace(/[,，;；]/g, ',');
 	}
 
 	/** 选项类题型的选中文本 */

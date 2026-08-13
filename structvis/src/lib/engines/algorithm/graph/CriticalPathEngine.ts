@@ -9,7 +9,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -134,7 +133,7 @@ export class CriticalPathEngine extends EngineBase<CriticalPathInput> {
 		]
 	};
 
-	applyPreset(name: string): void {
+	applyPreset(_name: string): void {
 		this.init({ labels: ['0', '1', '2', '3', '4', '5'], edges: DEFAULT_EDGES });
 	}
 
@@ -392,5 +391,4 @@ export class CriticalPathEngine extends EngineBase<CriticalPathInput> {
 			graph: this._graph(critical, nodeState, edgeState, nodeNote)
 		});
 	}
-
 }

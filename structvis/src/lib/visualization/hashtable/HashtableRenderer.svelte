@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HashData } from '$lib/engines/algorithm/types';
 	import { resolveCSSVar } from '../visualization-utils';
-import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -22,13 +22,11 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		height: 280
 	});
 	let ctx = $derived(host.ctx);
-	let dpr = $derived(host.dpr);
 	let canvasWidth = $derived(host.width);
 	let canvasHeight = $derived(host.height);
 
 	const LOGICAL_W = 1000;
 	const LOGICAL_H = 560;
-	const MIN_SCALE = 0.8;
 	const SLOT_W = 76;
 	const SLOT_H = 76;
 	const SLOT_GAP = 10;
@@ -56,7 +54,7 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
-		inkInverse: resolveCSSVar('--color-ink-inverse'),
+			inkInverse: resolveCSSVar('--color-ink-inverse'),
 			node: resolveCSSVar('--color-surface'),
 			border: resolveCSSVar('--color-line-regular'),
 			edge: resolveCSSVar('--color-line-regular'),

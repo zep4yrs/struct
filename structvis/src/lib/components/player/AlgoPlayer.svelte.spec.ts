@@ -209,11 +209,17 @@ describe('AlgoPlayer 播放控制', () => {
 		const { container } = await mountPlayer();
 		await fireEvent.keyDown(window, { key: 'ArrowRight' });
 		// 第二个参数为 { onComplete } 控制 tween 忙闲信号回调
-		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(stepEnd(1), expect.objectContaining({ onComplete: expect.any(Function) }));
+		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(
+			stepEnd(1),
+			expect.objectContaining({ onComplete: expect.any(Function) })
+		);
 		expect(container.querySelector('.current-num')?.textContent).toBe('02');
 
 		await fireEvent.keyDown(window, { key: 'ArrowLeft' });
-		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(stepEnd(0), expect.objectContaining({ onComplete: expect.any(Function) }));
+		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(
+			stepEnd(0),
+			expect.objectContaining({ onComplete: expect.any(Function) })
+		);
 		expect(container.querySelector('.current-num')?.textContent).toBe('01');
 	});
 

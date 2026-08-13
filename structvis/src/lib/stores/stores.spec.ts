@@ -76,7 +76,10 @@ describe('persistentStore', () => {
 
 	it('浏览器环境：读取 v1 信封格式数据', async () => {
 		const { persistentStore } = await loadPersistent(true);
-		(localStorage as unknown as MockStorage).setItem('k5', JSON.stringify({ __sv: 1, data: { n: 7 } }));
+		(localStorage as unknown as MockStorage).setItem(
+			'k5',
+			JSON.stringify({ __sv: 1, data: { n: 7 } })
+		);
 		const s = persistentStore<{ n: number }>('k5', { n: 42 });
 		let value: { n: number } | undefined;
 		s.subscribe((v) => (value = v));
@@ -85,7 +88,10 @@ describe('persistentStore', () => {
 
 	it('浏览器环境：信封版本非法或未知时回落默认值', async () => {
 		const { persistentStore } = await loadPersistent(true);
-		(localStorage as unknown as MockStorage).setItem('k6', JSON.stringify({ __sv: 'x', data: { n: 7 } }));
+		(localStorage as unknown as MockStorage).setItem(
+			'k6',
+			JSON.stringify({ __sv: 'x', data: { n: 7 } })
+		);
 		const s = persistentStore<{ n: number }>('k6', { n: 42 });
 		let value: { n: number } | undefined;
 		s.subscribe((v) => (value = v));
@@ -285,7 +291,11 @@ describe('progress store', () => {
 
 		// 模拟连续：把 lastActiveDate 拨到昨天再调用（必须用本地日期，与实现一致）
 		const localDateStr = (d: Date) =>
-			d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+			d.getFullYear() +
+			'-' +
+			String(d.getMonth() + 1).padStart(2, '0') +
+			'-' +
+			String(d.getDate()).padStart(2, '0');
 		const yesterday = new Date();
 		yesterday.setDate(yesterday.getDate() - 1);
 		progress.update((p) => ({ ...p, lastActiveDate: localDateStr(yesterday) }));
@@ -309,7 +319,7 @@ describe('progress 数据备份（导出/导入）', () => {
 	}
 
 	it('exportProgress 输出含版本信封的 JSON，可回读完整数据', async () => {
-		const { progress, recordExercise, addMistake, exportProgress } = await loadProgressModule();
+		const { recordExercise, addMistake, exportProgress } = await loadProgressModule();
 		recordExercise('quick-sort', true);
 		recordExercise('kmp', false);
 		addMistake({
@@ -330,12 +340,20 @@ describe('progress 数据备份（导出/导入）', () => {
 	});
 
 	it('importProgress 导入有效数据并覆盖当前进度', async () => {
-		const { progress, importProgress, exportProgress } = await loadProgressModule();
+		const { importProgress, exportProgress } = await loadProgressModule();
 		// 先导入一份数据
 		const seed = JSON.stringify({
 			__sv: 1,
 			data: {
-				topics: { bst: { mastery: 60, totalExercises: 6, correctExercises: 5, lastVisited: 1, completed: false } },
+				topics: {
+					bst: {
+						mastery: 60,
+						totalExercises: 6,
+						correctExercises: 5,
+						lastVisited: 1,
+						completed: false
+					}
+				},
 				mistakes: [],
 				totalStudyTime: 120,
 				streakDays: 3,
@@ -355,7 +373,15 @@ describe('progress 数据备份（导出/导入）', () => {
 	it('importProgress 兼容旧版裸数据格式（无版本信封）', async () => {
 		const { importProgress, exportProgress } = await loadProgressModule();
 		const legacy = JSON.stringify({
-			topics: { 'hash-table': { mastery: 30, totalExercises: 3, correctExercises: 1, lastVisited: 9, completed: false } },
+			topics: {
+				'hash-table': {
+					mastery: 30,
+					totalExercises: 3,
+					correctExercises: 1,
+					lastVisited: 9,
+					completed: false
+				}
+			},
 			mistakes: [],
 			totalStudyTime: 0,
 			streakDays: 0,
@@ -380,4 +406,3 @@ describe('progress 数据备份（导出/导入）', () => {
 		expect(parsed.data.topics['quick-sort']?.mastery).toBe(10);
 	});
 });
-

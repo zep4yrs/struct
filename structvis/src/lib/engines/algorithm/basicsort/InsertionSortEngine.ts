@@ -7,7 +7,6 @@
 
 import type {
 	DemoScriptItem,
-	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
 	Highlight,
@@ -195,5 +194,4 @@ export class InsertionSortEngine extends EngineBase<number[]> {
 			pseudocodeLine
 		});
 	}
-
 }

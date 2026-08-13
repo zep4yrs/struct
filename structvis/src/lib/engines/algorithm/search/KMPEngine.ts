@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -350,5 +349,4 @@ export class KMPEngine extends EngineBase<KmpInput> {
 			}
 		});
 	}
-
 }

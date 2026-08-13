@@ -8,11 +8,9 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
-	HuffmanData,
 	HuffmanNode,
 	Highlight,
 	PracticeQuestion,
@@ -260,5 +258,4 @@ export class HuffmanEngine extends EngineBase<HuffmanInput> {
 			}
 		});
 	}
-
 }

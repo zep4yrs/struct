@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -125,7 +124,7 @@ export class TopoSortEngine extends EngineBase<TopoSortInput> {
 		]
 	};
 
-	applyPreset(name: string): void {
+	applyPreset(_name: string): void {
 		this.init({ labels: ['0', '1', '2', '3', '4', '5'], edges: DEFAULT_EDGES });
 	}
 
@@ -274,5 +273,4 @@ export class TopoSortEngine extends EngineBase<TopoSortInput> {
 			graph: this._graph(seq, indegree, frontier, current ?? [])
 		});
 	}
-
 }

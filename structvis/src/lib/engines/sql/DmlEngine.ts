@@ -11,7 +11,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
 	Highlight,
@@ -346,5 +345,4 @@ export class DmlEngine extends EngineBase<DmlEngineInput> {
 			}
 		});
 	}
-
 }

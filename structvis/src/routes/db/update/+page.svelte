@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
-import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
+	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import { DmlEngine, DML_PRESETS } from '$lib/engines/sql/DmlEngine';
 	import type { SqlTableData } from '$lib/engines/algorithm/types';
 
@@ -29,8 +29,8 @@ import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 <AlgoPage sectionNum="§04" sectionName="数据查询" title="数据更新">
 	{#snippet desc()}
 		<b>INSERT / UPDATE / DELETE</b> 三类数据更新语句会<b>改变表中的数据</b>。与 SELECT 一样，WHERE
-			子句限定受影响的行集；<span class="mono">UPDATE 与 DELETE 省略 WHERE 将作用于全部行</span>。
-			逐步播放，观察每次更新对表的改变。
+		子句限定受影响的行集；<span class="mono">UPDATE 与 DELETE 省略 WHERE 将作用于全部行</span>。
+		逐步播放，观察每次更新对表的改变。
 	{/snippet}
 	<AlgoPlayer {engine} topicId="dml" topicName="数据更新" />
 </AlgoPage>

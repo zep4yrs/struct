@@ -42,7 +42,7 @@
 	let result = $state<CreateTableResult | null>(presetResults[0]);
 
 	// selectedPreset 可为 -1（自定义解析成功后），切回示例视图时由按钮重置为 0；此处再加守卫双保险
-	const displaySql = $derived(showCustom ? customSql : PRESETS[selectedPreset]?.sql ?? customSql);
+	const displaySql = $derived(showCustom ? customSql : (PRESETS[selectedPreset]?.sql ?? customSql));
 
 	function loadPreset(index: number) {
 		selectedPreset = index;

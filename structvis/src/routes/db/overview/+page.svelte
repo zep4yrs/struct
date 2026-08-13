@@ -36,7 +36,6 @@
 				'DBS = DB + DBMS + 应用程序 + 用户（DBA/终端用户）+ 支撑平台；编译器不是数据库系统组件。'
 		}
 	];
-
 </script>
 
 <div class="page">
@@ -99,7 +98,6 @@
 	</section>
 	<ConceptQuiz items={QUIZ} />
 </div>
-
 
 <style>
 	.page {
@@ -265,5 +263,4 @@
 		line-height: 1.6;
 		color: var(--color-ink-2);
 	}
-
 </style>

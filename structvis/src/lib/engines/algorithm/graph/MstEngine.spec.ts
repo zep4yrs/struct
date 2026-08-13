@@ -1,17 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MstEngine } from '../graph/MstEngine';
 
-const PRESET_LABELS = ['0', '1', '2', '3', '4'];
-const PRESET_EDGES: [number, number, number][] = [
-	[0, 1, 2],
-	[0, 3, 6],
-	[1, 2, 3],
-	[1, 3, 8],
-	[1, 4, 5],
-	[2, 4, 7],
-	[3, 4, 9]
-];
-
 function selectedTotal(engine: MstEngine): number {
 	const last = engine.steps[engine.steps.length - 1];
 	const weightMap = engine.steps[0].graph?.edges ?? [];

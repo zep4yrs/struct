@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
 	import { resolveCSSVar } from '../visualization-utils';
-import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -22,7 +22,6 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		height: 280
 	});
 	let ctx = $derived(host.ctx);
-	let dpr = $derived(host.dpr);
 	let canvasWidth = $derived(host.width);
 	let canvasHeight = $derived(host.height);
 
@@ -48,7 +47,7 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
-		inkInverse: resolveCSSVar('--color-ink-inverse'),
+			inkInverse: resolveCSSVar('--color-ink-inverse'),
 			node: resolveCSSVar('--color-surface'),
 			nodeBorder: resolveCSSVar('--color-line-regular'),
 			ink: resolveCSSVar('--color-ink'),
@@ -233,15 +232,12 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		ctx.fillText('NULL', nullX + NULL_W / 2, cy + 1);
 	}
 
-		$effect(() => {
+	$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
-
-	;
-
 </script>
 
 <!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->

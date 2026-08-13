@@ -1,6 +1,4 @@
 import type {
-	AlgorithmEngine,
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -49,24 +47,38 @@ export class WindowFunctionEngine extends EngineBase<WindowFunctionInput> {
 			options: ['分组：每个分组独立计算窗口', '对整表排序', '过滤行', '去重'],
 			correctAnswer: '分组：每个分组独立计算窗口',
 			hint: 'PARTITION 即"分区"',
-			explanation: 'PARTITION BY 把表按列分成多个分区（组），窗口函数在每个分区内独立计算；没有 PARTITION BY 时整个结果集是一个分区。'
+			explanation:
+				'PARTITION BY 把表按列分成多个分区（组），窗口函数在每个分区内独立计算；没有 PARTITION BY 时整个结果集是一个分区。'
 		},
 		{
 			type: 'choose-next',
 			stepIndex: 3,
 			prompt: 'ROW_NUMBER() 与 RANK() 的主要区别是？',
-			options: ['RANK 并列时跳过名次，ROW_NUMBER 不跳过', '两者完全相同', 'ROW_NUMBER 可以求和', 'RANK 只能用于整数列'],
+			options: [
+				'RANK 并列时跳过名次，ROW_NUMBER 不跳过',
+				'两者完全相同',
+				'ROW_NUMBER 可以求和',
+				'RANK 只能用于整数列'
+			],
 			correctAnswer: 'RANK 并列时跳过名次，ROW_NUMBER 不跳过',
 			hint: '并列分数是常见考点',
-			explanation: 'ROW_NUMBER 给每行一个唯一递增序号（并列也分先后）；RANK 对并列值给相同名次，但下一个名次会跳过（如 1,1,3）。'
+			explanation:
+				'ROW_NUMBER 给每行一个唯一递增序号（并列也分先后）；RANK 对并列值给相同名次，但下一个名次会跳过（如 1,1,3）。'
 		}
 	];
 
 	readonly demoScript: DemoScriptItem[] = [
-		{ type: 'init', narration: '窗口函数在"分组 + 组内排序"的基础上逐行计算，是 SQL 高级查询的核心工具。' },
+		{
+			type: 'init',
+			narration: '窗口函数在"分组 + 组内排序"的基础上逐行计算，是 SQL 高级查询的核心工具。'
+		},
 		{ type: 'compare', narration: '按 PARTITION BY 列把行分组：每个分组拥有独立的计算窗口。' },
 		{ type: 'recurse-enter', narration: '组内按 ORDER BY 排序，随后逐行计算窗口函数值。' },
-		{ type: 'complete', narration: '窗口函数计算完成：每行得到组内序号/排名/累计值，且不折叠行数（与 GROUP BY 不同）。' }
+		{
+			type: 'complete',
+			narration:
+				'窗口函数计算完成：每行得到组内序号/排名/累计值，且不折叠行数（与 GROUP BY 不同）。'
+		}
 	];
 
 	presets: EnginePreset[] = [
@@ -82,8 +94,10 @@ export class WindowFunctionEngine extends EngineBase<WindowFunctionInput> {
 				key: 'sql',
 				label: 'SQL 语句',
 				type: 'textarea',
-				placeholder: 'SELECT 学号, 专业, 成绩, ROW_NUMBER() OVER (PARTITION BY 专业 ORDER BY 成绩 DESC) AS 排名 FROM 学生',
-				default: 'SELECT 学号, 专业, 成绩, ROW_NUMBER() OVER (PARTITION BY 专业 ORDER BY 成绩 DESC) AS 排名 FROM 学生'
+				placeholder:
+					'SELECT 学号, 专业, 成绩, ROW_NUMBER() OVER (PARTITION BY 专业 ORDER BY 成绩 DESC) AS 排名 FROM 学生',
+				default:
+					'SELECT 学号, 专业, 成绩, ROW_NUMBER() OVER (PARTITION BY 专业 ORDER BY 成绩 DESC) AS 排名 FROM 学生'
 			}
 		]
 	};
@@ -101,11 +115,17 @@ export class WindowFunctionEngine extends EngineBase<WindowFunctionInput> {
 		const cols = this._table.columns;
 		const rows = this._table.rows;
 
-		this._emit('init', '读取表数据，准备执行窗口函数查询', { columns: [...cols], rows: rows.map((r) => [...r]) }, [], []);
+		this._emit(
+			'init',
+			'读取表数据，准备执行窗口函数查询',
+			{ columns: [...cols], rows: rows.map((r) => [...r]) },
+			[],
+			[]
+		);
 
 		// 分组
 		let partitionIdx: number[] = rows.map(() => 0);
-		let groupNames: string[] = [];
+		let groupNames: string[];
 		if (parsed.partitionCol) {
 			const ci = cols.indexOf(parsed.partitionCol);
 			if (ci < 0) throw new Error('分组列 ' + parsed.partitionCol + ' 不存在');
@@ -117,7 +137,9 @@ export class WindowFunctionEngine extends EngineBase<WindowFunctionInput> {
 			});
 			groupNames = [...groups.keys()];
 			for (const g of groupNames) {
-				const members = rows.map((r, i) => ({ r, i })).filter((x) => partitionIdx[x.i] === groups.get(g));
+				const members = rows
+					.map((r, i) => ({ r, i }))
+					.filter((x) => partitionIdx[x.i] === groups.get(g));
 				this._emit(
 					'compare',
 					'分区「' + g + '」：' + members.length + ' 行进入同一计算窗口。',
@@ -127,7 +149,13 @@ export class WindowFunctionEngine extends EngineBase<WindowFunctionInput> {
 				);
 			}
 		} else {
-			this._emit('compare', '未指定 PARTITION BY：整个结果集作为单一分区。', { columns: [...cols], rows: rows.map((r) => [...r]) }, [], []);
+			this._emit(
+				'compare',
+				'未指定 PARTITION BY：整个结果集作为单一分区。',
+				{ columns: [...cols], rows: rows.map((r) => [...r]) },
+				[],
+				[]
+			);
 		}
 
 		// 组内排序 + 计算
@@ -138,7 +166,7 @@ export class WindowFunctionEngine extends EngineBase<WindowFunctionInput> {
 		const sumCi = sumMatch ? cols.indexOf(sumMatch) : orderCi;
 		if (sumCi < 0) throw new Error('累加列不存在');
 
-		const outRows = rows.map((r, i) => [...r]);
+		const outRows = rows.map((r) => [...r]);
 		const outCols = [...cols, parsed.alias || parsed.func.toLowerCase()];
 		const groupIds = [...new Set(partitionIdx)];
 		for (const g of groupIds) {
@@ -195,9 +223,10 @@ export class WindowFunctionEngine extends EngineBase<WindowFunctionInput> {
 		const fnMatch = sql.match(/\b(ROW_NUMBER|RANK|SUM)\s*\(/i);
 		if (!fnMatch) throw new Error('仅支持 ROW_NUMBER / RANK / SUM 窗口函数');
 		const func = fnMatch[1].toUpperCase() as Parsed['func'];
-		const overMatch = sql.match(/OVER\s*\(\s*(?:PARTITION\s+BY\s+([\u4e00-\u9fa5\w]+))?\s*(?:ORDER\s+BY\s+([\u4e00-\u9fa5\w]+)\s*(DESC|ASC)?)?\s*\)/i);
+		const overMatch = sql.match(
+			/OVER\s*\(\s*(?:PARTITION\s+BY\s+([\u4e00-\u9fa5\w]+))?\s*(?:ORDER\s+BY\s+([\u4e00-\u9fa5\w]+)\s*(DESC|ASC)?)?\s*\)/i
+		);
 		// SUM(col) 的累加列（与 ORDER BY 列可不同）
-		const sumMatch = sql.match(/SUM\s*\(\s*([\u4e00-\u9fa5\w*]+)\s*\)/i);
 		const aliasMatch = sql.match(/AS\s+([\u4e00-\u9fa5\w]+)\s+FROM/i);
 		const selectMatch = sql.match(/SELECT\s+(.+?)\s+FROM\s+([\u4e00-\u9fa5\w]+)\s*$/i);
 		if (!selectMatch) throw new Error('仅支持 SELECT ... FROM 表 查询');

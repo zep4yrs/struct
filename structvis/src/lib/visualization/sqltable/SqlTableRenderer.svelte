@@ -2,8 +2,8 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, watchThemeChange, watchCanvasSize, hexToRgba } from '../visualization-utils';
-import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import { resolveCSSVar, hexToRgba } from '../visualization-utils';
+	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -22,7 +22,6 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		height: 280
 	});
 	let ctx = $derived(host.ctx);
-	let dpr = $derived(host.dpr);
 	let canvasWidth = $derived(host.width);
 	let canvasHeight = $derived(host.height);
 
@@ -163,15 +162,12 @@ import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 		}
 	}
 
-		$effect(() => {
+	$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
-
-	;
-
 </script>
 
 <!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->

@@ -1,7 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { base } from '$app/paths';
-	import { dsTopics, dbTopics, DS_GROUP_ORDER, DB_GROUP_ORDER, type TopicCard } from '$lib/content/topics';
+	import { base, resolve } from '$app/paths';
+	import type { RouteId } from '../../../routes/$types';
+	import {
+		dsTopics,
+		dbTopics,
+		DS_GROUP_ORDER,
+		DB_GROUP_ORDER,
+		type TopicCard
+	} from '$lib/content/topics';
 
 	interface NavItem {
 		title: string;
@@ -67,16 +74,14 @@
 
 <!-- 移动端遮罩 -->
 {#if open}
-	<button
-		class="drawer-backdrop"
-		aria-label="关闭导航"
-		onclick={onClose}
-	></button>
+	<button class="drawer-backdrop" aria-label="关闭导航" onclick={onClose}></button>
 {/if}
 
 <nav
 	aria-label="课程目录"
-	class="drawer {open ? 'open' : ''} h-full flex-shrink-0 overflow-hidden border-r transition-[width,color] duration-300 md:block"
+	class="drawer {open
+		? 'open'
+		: ''} h-full flex-shrink-0 overflow-hidden border-r transition-[width,color] duration-300 md:block"
 	style="
 		border-color: {open ? 'var(--color-line-hair)' : 'transparent'};
 		background: var(--color-paper);
@@ -109,7 +114,7 @@
 		<!-- 课程目录入口 -->
 		<div class="mb-4 px-4">
 			<a
-				href={base + '/catalog'}
+				href={resolve('/catalog')}
 				class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 				style="
 				border-color: transparent;
@@ -147,7 +152,7 @@
 				</div>
 				{#each group.items as item (item.title)}
 					<a
-						href={item.planned ? undefined : base + item.href}
+						href={item.planned ? undefined : resolve(item.href as RouteId)}
 						class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 						style="
 						border-color: transparent;
@@ -179,7 +184,7 @@
 		{#if activeSection !== 'progress'}
 			<div class="mt-4 border-t pt-4" style="border-color: var(--color-line-hair);">
 				<a
-					href={base + '/progress'}
+					href={resolve('/progress')}
 					class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 					style="
 					border-color: transparent;
@@ -207,7 +212,7 @@
 		<!-- 关于入口（在侧栏底部） -->
 		<div class="mt-2 border-t pt-3" style="border-color: var(--color-line-hair);">
 			<a
-				href={base + '/about'}
+				href={resolve('/about')}
 				class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 				style="
 				border-color: transparent;
@@ -235,7 +240,7 @@
 		<!-- 设置入口（在侧栏底部） -->
 		<div class="mt-2 border-t pt-3" style="border-color: var(--color-line-hair);">
 			<a
-				href={base + '/settings'}
+				href={resolve('/settings')}
 				class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 				style="
 				border-color: transparent;

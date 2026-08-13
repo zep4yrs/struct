@@ -9,7 +9,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	BPlusTreeData,
 	BPlusNode,
 	EnginePreset,
@@ -343,5 +342,4 @@ export class IndexEngine extends EngineBase<IndexEngineInput> {
 			}
 		});
 	}
-
 }

@@ -9,7 +9,6 @@
  */
 
 import type {
-	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
@@ -720,5 +719,4 @@ export class SelectEngine extends EngineBase<SelectEngineInput> {
 			}
 		});
 	}
-
 }

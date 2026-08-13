@@ -706,6 +706,9 @@ test.describe('视觉回归（渲染器截图基线）', () => {
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await waitForHydrated(page);
 		await expect(page.locator('.canvas-body canvas')).toBeVisible();
+		// 等待页面入场动画完成（anime.js 驱动，animations: disabled 不覆盖）
+		await expect(page.locator('.section-header')).toHaveCSS('opacity', '1');
+		await expect(page.locator('.player-wrap')).toHaveCSS('opacity', '1');
 		// 等待首帧绘制与字体稳定
 		await expect(page.locator('.status-text')).toContainText('初始数组');
 		await expect(page.locator('.algo-player')).toHaveScreenshot('quick-sort-player.png', {
@@ -719,6 +722,9 @@ test.describe('视觉回归（渲染器截图基线）', () => {
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await waitForHydrated(page);
 		await expect(page.locator('.canvas-body canvas')).toBeVisible();
+		// 等待页面入场动画完成
+		await expect(page.locator('.section-header')).toHaveCSS('opacity', '1');
+		await expect(page.locator('.player-wrap')).toHaveCSS('opacity', '1');
 		await expect(page.locator('.algo-player')).toHaveScreenshot('graph-traversal-player.png', {
 			animations: 'disabled',
 			maxDiffPixelRatio: 0.05
@@ -730,6 +736,9 @@ test.describe('视觉回归（渲染器截图基线）', () => {
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await waitForHydrated(page);
 		await expect(page.locator('.canvas-body canvas')).toBeVisible();
+		// 等待页面入场动画完成
+		await expect(page.locator('.section-header')).toHaveCSS('opacity', '1');
+		await expect(page.locator('.player-wrap')).toHaveCSS('opacity', '1');
 		await expect(page.locator('.algo-player')).toHaveScreenshot('binary-tree-player.png', {
 			animations: 'disabled',
 			maxDiffPixelRatio: 0.05

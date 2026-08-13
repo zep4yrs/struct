@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { reveal } from '$lib/utils/motion';
 
 	interface Props {
 		sectionNum: string;
@@ -18,16 +19,16 @@
 
 <div class="page">
 	<div class="section-header">
-		<div class="section-label">
+		<div class="section-label" use:reveal>
 			<span class="section-num" class:badge={variant === 'badge'}>{sectionNum}</span>
 			<span class="section-name">{sectionName}</span>
 		</div>
-		<h1 class="page-title">{title}</h1>
+		<h1 class="page-title" use:reveal={{ delay: 90 }}>{title}</h1>
 		<!-- 包装在组件内声明，.page-desc 作用域才有效（snippet 内容属于父组件作用域） -->
-		<p class="page-desc">{@render desc()}</p>
+		<p class="page-desc" use:reveal={{ delay: 180 }}>{@render desc()}</p>
 	</div>
 
-	<div class="player-wrap">
+	<div class="player-wrap" use:reveal={{ delay: 270 }}>
 		{@render children()}
 	</div>
 </div>

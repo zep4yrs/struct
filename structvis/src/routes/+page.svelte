@@ -1,45 +1,84 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { animate, stagger } from 'animejs';
 	import Logo from '$lib/components/ui/Logo.svelte';
+	import Scene3D from '$lib/components/ui/Scene3D.svelte';
 	import { resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
+	import { reveal, prefersReducedMotion } from '$lib/utils/motion';
+
+	const TITLE_LETTERS = ['S', 't', 'r', 'u', 'c', 't', 'V', 'i', 's', '/'];
+
+	let titleEl: HTMLHeadingElement | undefined = $state();
+
+	onMount(() => {
+		if (prefersReducedMotion()) return;
+		const letters = titleEl?.querySelectorAll('.letter');
+		if (letters?.length) {
+			animate(letters, {
+				opacity: [0, 1],
+				translateY: [22, 0],
+				rotateX: [45, 0],
+				duration: 750,
+				delay: stagger(45),
+				easing: 'easeOutExpo'
+			});
+		}
+	});
 </script>
 
 <div class="mx-auto max-w-7xl px-8 py-16">
 	<!-- Hero -->
-	<section class="mb-20 border-b pb-16" style="border-color: var(--color-line-hair);">
-		<div class="mb-10 flex items-end gap-6">
-			<Logo size={56} />
-			<h1
-				class="font-display text-5xl leading-none font-medium"
-				style="letter-spacing: -0.03em; color: var(--color-ink);"
+	<section class="relative mb-20 border-b pb-16" style="border-color: var(--color-line-hair);">
+		<Scene3D />
+		<div class="relative" style="z-index: 1;">
+			<div class="mb-10 flex items-end gap-6" use:reveal>
+				<Logo size={56} />
+				<h1
+					bind:this={titleEl}
+					aria-label="StructVis"
+					class="font-display text-5xl leading-none font-medium"
+					style="letter-spacing: -0.03em; color: var(--color-ink);"
+				>
+					{#each TITLE_LETTERS as letter, i (i)}
+						<span class="letter" style="display: inline-block;">{letter}</span>
+					{/each}
+				</h1>
+			</div>
+
+			<p
+				class="max-w-2xl font-display text-3xl font-normal"
+				style="line-height: 1.3; color: var(--color-ink);"
+				use:reveal={{ delay: 260 }}
 			>
-				StructVis<span style="color: var(--color-accent); font-weight: 400;">/</span>
-			</h1>
-		</div>
+				看见数据结构与数据库的每一步跳动。
+			</p>
+			<p
+				class="mt-4 max-w-xl text-lg"
+				style="color: var(--color-ink-2); line-height: 1.7;"
+				use:reveal={{ delay: 380 }}
+			>
+				StructVis 把抽象算法变成可步进、可交互、可试错的实时可视化练习，
+				让自学者不靠老师也能把每个步骤搞明白。
+			</p>
 
-		<p
-			class="max-w-2xl font-display text-3xl font-normal"
-			style="line-height: 1.3; color: var(--color-ink);"
-		>
-			看见数据结构与数据库的每一步跳动。
-		</p>
-		<p class="mt-4 max-w-xl text-lg" style="color: var(--color-ink-2); line-height: 1.7;">
-			StructVis 把抽象算法变成可步进、可交互、可试错的实时可视化练习，
-			让自学者不靠老师也能把每个步骤搞明白。
-		</p>
-
-		<div class="mt-10 flex flex-wrap gap-3">
-			<a href={resolve('/catalog')} class="btn btn-accent">进入课程目录</a>
-			<a href={resolve('/progress')} class="btn btn-primary">查看学习进度</a>
-			<a href={resolve('/about')} class="btn btn-ghost">了解项目</a>
+			<div class="mt-10 flex flex-wrap gap-3">
+				<a href={resolve('/catalog')} class="btn btn-accent" use:reveal={{ delay: 500 }}
+					>进入课程目录</a
+				>
+				<a href={resolve('/progress')} class="btn btn-primary" use:reveal={{ delay: 580 }}
+					>查看学习进度</a
+				>
+				<a href={resolve('/about')} class="btn btn-ghost" use:reveal={{ delay: 660 }}>了解项目</a>
+			</div>
 		</div>
 	</section>
 
 	<!-- 核心功能 -->
 	<section class="mb-20">
-		<div class="section-label mb-6">Core Features</div>
+		<div class="section-label mb-6" use:reveal>Core Features</div>
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-			<div class="card">
+			<div class="card" use:reveal={{ delay: 100 }}>
 				<div class="mb-3 flex items-center gap-2">
 					<svg
 						width="16"
@@ -62,7 +101,7 @@
 				</p>
 			</div>
 
-			<div class="card">
+			<div class="card" use:reveal={{ delay: 200 }}>
 				<div class="mb-3 flex items-center gap-2">
 					<svg
 						width="16"
@@ -85,7 +124,7 @@
 				</p>
 			</div>
 
-			<div class="card">
+			<div class="card" use:reveal={{ delay: 300 }}>
 				<div class="mb-3 flex items-center gap-2">
 					<svg
 						width="16"
@@ -109,7 +148,7 @@
 				</p>
 			</div>
 
-			<div class="card">
+			<div class="card" use:reveal={{ delay: 400 }}>
 				<div class="mb-3 flex items-center gap-2">
 					<svg
 						width="16"
@@ -136,12 +175,13 @@
 
 	<!-- 两门课程 -->
 	<section class="mb-20">
-		<div class="section-label mb-6">Courses</div>
+		<div class="section-label mb-6" use:reveal={{ delay: 100 }}>Courses</div>
 		<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
 			<a
 				href={resolve('/catalog')}
 				class="card block no-underline"
 				style="border-color: var(--color-line-hair);"
+				use:reveal={{ delay: 200 }}
 			>
 				<h2 class="mb-2 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 					数据结构与算法
@@ -156,6 +196,7 @@
 				href={resolve('/catalog')}
 				class="card block no-underline"
 				style="border-color: var(--color-line-hair);"
+				use:reveal={{ delay: 300 }}
 			>
 				<h2 class="mb-2 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 					MySQL 数据库

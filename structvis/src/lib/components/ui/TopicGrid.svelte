@@ -3,6 +3,7 @@
 	import type { RouteId } from '../../../routes/$types';
 	import { progress } from '$lib/stores/progress';
 	import type { TopicCard } from '$lib/content/topics';
+	import { reveal } from '$lib/utils/motion';
 
 	interface Props {
 		topics: TopicCard[];
@@ -16,8 +17,9 @@
 </script>
 
 <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-	{#each topics as topic (topic.title)}
+	{#each topics as topic, i (topic.title)}
 		<a
+			use:reveal={{ delay: (i % 8) * 55 }}
 			href={topic.planned ? undefined : resolve(topic.href as RouteId)}
 			class="topic-card block rounded-md border p-4 no-underline transition-all"
 			class:planned={topic.planned}
@@ -64,8 +66,21 @@
 		cursor: not-allowed;
 	}
 
+	.topic-card {
+		transition:
+			transform 0.22s var(--ease-out),
+			box-shadow 0.22s var(--ease-out),
+			border-color 0.22s var(--ease-out);
+	}
+
 	.topic-card:not(.planned):hover {
 		border-color: var(--color-ink) !important;
-		transform: translateY(-2px);
+		transform: translateY(-4px);
+		box-shadow: 0 12px 30px -14px rgb(0 0 0 / 0.22);
+	}
+
+	.topic-card:not(.planned):active {
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.18);
 	}
 </style>

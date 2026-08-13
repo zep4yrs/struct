@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { settings, toggleTheme } from '$lib/stores/settings';
+	import { reveal } from '$lib/utils/motion';
 
 	let speed = $state($settings.animationSpeed);
 	let showHints = $state($settings.showHints);
@@ -18,7 +19,7 @@
 </script>
 
 <div class="page">
-	<div class="section-header">
+	<div class="section-header" use:reveal>
 		<div class="section-label">
 			<span class="section-num">⚙</span>
 			<span class="section-name">偏好</span>

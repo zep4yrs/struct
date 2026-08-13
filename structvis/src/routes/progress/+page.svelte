@@ -12,6 +12,9 @@
 	import type { MistakeRecord } from '$lib/stores/progress';
 	import PracticePanel from '$lib/components/player/PracticePanel.svelte';
 	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
+	import { onMount } from 'svelte';
+	import { animate } from 'animejs';
+	import { reveal, prefersReducedMotion } from '$lib/utils/motion';
 
 	const TOPIC_NAMES: Record<string, string> = Object.fromEntries(
 		[...dsTopics, ...dbTopics].filter((t) => t.topicId).map((t) => [t.topicId as string, t.title])
@@ -44,6 +47,25 @@
 			: 0
 	);
 	const hasData = $derived(topicEntries.length > 0 || totalMistakes > 0);
+
+	onMount(() => {
+		if (prefersReducedMotion()) return;
+		// 统计数字从 0 滚动到实际值
+		document.querySelectorAll('.stat-num').forEach((el) => {
+			const target = parseInt(el.textContent ?? '0', 10) || 0;
+			const state = { v: 0 };
+			el.textContent = '0';
+			animate(state, {
+				v: target,
+				duration: 1000,
+				delay: 350,
+				easing: 'easeOutCubic',
+				update: () => {
+					el.textContent = String(Math.round(state.v));
+				}
+			});
+		});
+	});
 
 	// === 错题复习 ===
 	let reviewQuestion = $state<PracticeQuestion | null>(null);
@@ -119,8 +141,12 @@
 </script>
 
 <div class="mx-auto max-w-4xl p-8">
-	<div class="section-label mb-4">学习进度</div>
-	<h1 class="mb-2 font-display text-3xl font-medium" style="letter-spacing: -0.02em;">
+	<div class="section-label mb-4" use:reveal>学习进度</div>
+	<h1
+		class="mb-2 font-display text-3xl font-medium"
+		style="letter-spacing: -0.02em;"
+		use:reveal={{ delay: 90 }}
+	>
 		你的学习进度
 	</h1>
 	<p class="mb-8" style="color: var(--color-ink-2); max-width: 500px;">
@@ -140,7 +166,7 @@
 	{:else}
 		<!-- 统计行 -->
 		<div class="mb-8 grid grid-cols-1 gap-3 md:grid-cols-3">
-			<div class="card">
+			<div class="card" use:reveal={{ delay: 200 }}>
 				<div class="card-title" style="font-size: 15px;">连续学习</div>
 				<div class="stat-row">
 					<span class="stat-num">{$progress.streakDays}</span>
@@ -155,7 +181,7 @@
 				</div>
 			</div>
 
-			<div class="card">
+			<div class="card" use:reveal={{ delay: 290 }}>
 				<div class="card-title" style="font-size: 15px;">平均掌握度</div>
 				<div class="stat-row">
 					<span class="stat-num">{avgMastery}</span>
@@ -172,7 +198,7 @@
 				</div>
 			</div>
 
-			<div class="card">
+			<div class="card" use:reveal={{ delay: 380 }}>
 				<div class="card-title" style="font-size: 15px;">练习答题</div>
 				<div class="stat-row">
 					<span class="stat-num">{correctExercises}</span>

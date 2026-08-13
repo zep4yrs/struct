@@ -1,10 +1,11 @@
 <script lang="ts">
 	import Logo from '$lib/components/ui/Logo.svelte';
+	import { reveal } from '$lib/utils/motion';
 </script>
 
 <div class="mx-auto max-w-7xl px-8 py-16">
 	<section class="mb-16 border-b pb-12" style="border-color: var(--color-line-hair);">
-		<div class="mb-8 flex items-end gap-6">
+		<div class="mb-8 flex items-end gap-6" use:reveal>
 			<Logo size={56} />
 			<h1
 				class="font-display text-5xl leading-none font-medium"
@@ -13,10 +14,18 @@
 				关于 StructVis
 			</h1>
 		</div>
-		<p class="max-w-2xl font-display text-2xl font-normal" style="color: var(--color-ink-2);">
+		<p
+			class="max-w-2xl font-display text-2xl font-normal"
+			style="color: var(--color-ink-2);"
+			use:reveal={{ delay: 150 }}
+		>
 			「看见数据结构与数据库的每一步跳动。」
 		</p>
-		<p class="mt-4 max-w-2xl text-base leading-relaxed" style="color: var(--color-ink-3);">
+		<p
+			class="mt-4 max-w-2xl text-base leading-relaxed"
+			style="color: var(--color-ink-3);"
+			use:reveal={{ delay: 260 }}
+		>
 			StructVis 是一款面向自学者的数据结构与数据库可视化学习工具。
 		</p>
 	</section>

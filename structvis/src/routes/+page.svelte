@@ -185,7 +185,7 @@
 </section>
 
 <!-- ══════════ 02 · 学什么 ══════════ -->
-<section class="home-section home-section--band">
+<section class="home-section">
 	<div class="home-chapter">
 		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll>02</span>
 		<div>
@@ -330,20 +330,6 @@
 		max-width: 1080px;
 		margin: 0 auto;
 		padding: 96px 24px 24px;
-	}
-
-	.home-section--band {
-		max-width: none;
-		padding: 96px 24px;
-		background: var(--color-subtle);
-		border-top: 1px solid var(--color-line-hair);
-		border-bottom: 1px solid var(--color-line-hair);
-	}
-
-	.home-section--band > :global(*) {
-		max-width: 1080px;
-		margin-left: auto;
-		margin-right: auto;
 	}
 
 	/* 章节式页眉：大编号 + 标题组 */

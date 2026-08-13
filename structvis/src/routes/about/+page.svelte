@@ -13,7 +13,10 @@
 				关于 StructVis
 			</h1>
 		</div>
-		<p class="font-display max-w-2xl text-xl font-normal" style="color: var(--color-ink-2);">
+		<p class="font-display max-w-2xl text-2xl font-normal" style="color: var(--color-ink-2);">
+			「看见数据结构与数据库的每一步跳动。」
+		</p>
+		<p class="mt-4 max-w-2xl text-base leading-relaxed" style="color: var(--color-ink-3);">
 			StructVis 是一款面向自学者的数据结构与数据库可视化学习工具。
 		</p>
 	</section>
@@ -78,7 +81,8 @@
 			开源协议
 		</h2>
 		<p class="max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
-			proprietary。保留所有权利。未经版权持有者书面许可，不得以任何形式或任何方式（电子、机械、影印、录制或其他方式）复制、分发或修改本项目的任何部分。
+			本项目以 GPL-3.0（GNU General Public License v3.0）开源，Copyright (c) 2026 枫桥 (zep4yrs)。
+			你可以自由使用、修改、分发本项目，但基于本项目的衍生作品必须同样以 GPL-3.0 开源——防止有人拿去闭源商用。完整许可文本见仓库 LICENSE 文件。
 		</p>
 	</section>
 
@@ -87,6 +91,6 @@
 		style="border-color: var(--color-line-hair); color: var(--color-ink-3); letter-spacing: 0.08em;"
 	>
 		<span>StructVis</span>
-		<span>© 2026 zep4yrs</span>
+		<span>© 2026 枫桥 (zep4yrs)</span>
 	</footer>
 </div>

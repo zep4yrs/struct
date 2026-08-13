@@ -7,6 +7,13 @@
 	import { settings } from '$lib/stores/settings';
 	import { TimelineController } from './TimelineController';
 	import { PracticeController } from './PracticeController';
+	import {
+		parseScript,
+		serializeScript,
+		loadScriptOverride,
+		saveScriptOverride
+	} from './script-manager';
+	import type { DemoScriptItem } from '$lib/engines/algorithm/types';
 	import RendererSwitch from './RendererSwitch.svelte';
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
@@ -50,6 +57,7 @@
 		pause();
 		mode = 'demo';
 		projector = true;
+		showScriptMenu = false; // 投影时收起剧本菜单，避免退出后状态错位
 	}
 
 	function exitProjector() {
@@ -297,13 +305,67 @@
 		return engine.steps[Math.min(currentStepIdx, engine.steps.length - 1)];
 	});
 
-	// === 讲授旁白：优先步骤级 presenterNote，回落到 demoScript 按步骤类型匹配 ===
+	// === 讲授旁白：优先步骤级 presenterNote，回落到「剧本」按步骤类型匹配 ===
+	// 剧本 = 外部导入的覆盖（localStorage 按引擎名持久化）或引擎默认 demoScript
+	let scriptOverride = $state<DemoScriptItem[] | null>(null);
+	let scriptMsg = $state('');
+	let scriptError = $state('');
+	let scriptFileInput: HTMLInputElement | undefined = $state();
+	let showScriptMenu = $state(false);
+
+	$effect(() => {
+		scriptOverride = loadScriptOverride(engine.name);
+	});
+
+	const effectiveScript = $derived(scriptOverride ?? engine.demoScript);
+
 	let projectorNarration = $derived.by(() => {
 		const s = currentStep;
 		if (!s) return '';
 		if (s.presenterNote) return s.presenterNote;
-		return engine.demoScript?.find((m) => m.type === s.type)?.narration ?? '';
+		return effectiveScript?.find((m) => m.type === s.type)?.narration ?? '';
 	});
+
+	function exportScript() {
+		const items = effectiveScript ?? [];
+		const json = serializeScript(items, engine.name);
+		const blob = new Blob([json], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `structvis-script-${engine.name}.json`;
+		a.click();
+		URL.revokeObjectURL(url);
+		scriptMsg = `已导出 ${items.length} 条旁白（当前生效剧本）。`;
+		scriptError = '';
+	}
+
+	function importScriptFile(e: Event) {
+		const file = (e.target as HTMLInputElement).files?.[0];
+		if (!file) return;
+		const reader = new FileReader();
+		reader.onload = () => {
+			try {
+				const parsed = parseScript(String(reader.result ?? ''));
+				saveScriptOverride(engine.name, parsed.items);
+				scriptOverride = parsed.items;
+				scriptMsg = `剧本导入成功（${parsed.items.length} 条旁白${parsed.name ? '：「' + parsed.name + '」' : ''}）。`;
+				scriptError = '';
+			} catch (err) {
+				scriptError = (err as Error).message;
+				scriptMsg = '';
+			}
+		};
+		reader.readAsText(file);
+		if (scriptFileInput) scriptFileInput.value = '';
+	}
+
+	function resetScript() {
+		saveScriptOverride(engine.name, null);
+		scriptOverride = null;
+		scriptMsg = '已恢复引擎默认剧本。';
+		scriptError = '';
+	}
 
 	// 投影模式进出全屏
 	$effect(() => {
@@ -368,10 +430,41 @@
 					{/if}
 				</div>
 				<div class="header-right">
-					{#if engine.demoScript}
+					{#if effectiveScript?.length}
 						<button class="pj-entry" onclick={enterProjector} title="演示投影模式（全屏讲授）"
 							>投影</button
 						>
+						<div class="script-menu-wrap">
+							<button
+								class="pj-entry {scriptOverride ? 'active' : ''}"
+								onclick={() => (showScriptMenu = !showScriptMenu)}
+								title="讲授剧本：导入 / 导出 / 重置"
+							>
+								剧本
+							</button>
+							{#if showScriptMenu}
+								<div class="script-menu" role="menu" aria-label="讲授剧本">
+									<button role="menuitem" onclick={exportScript}>导出当前剧本</button>
+									<button role="menuitem" onclick={() => scriptFileInput?.click()}>导入剧本…</button>
+									{#if scriptOverride}
+										<button role="menuitem" onclick={resetScript}>恢复默认剧本</button>
+									{/if}
+									<input
+										bind:this={scriptFileInput}
+										type="file"
+										accept="application/json,.json"
+										class="hidden-file"
+										onchange={importScriptFile}
+									/>
+									{#if scriptMsg}
+										<div class="script-msg" aria-live="polite">{scriptMsg}</div>
+									{/if}
+									{#if scriptError}
+										<div class="script-err" role="alert">{scriptError}</div>
+									{/if}
+								</div>
+							{/if}
+						</div>
 					{/if}
 					<div class="mode-switch" role="tablist" aria-label="播放模式">
 						<button
@@ -791,6 +884,66 @@
 	.pj-entry:hover {
 		background: var(--color-accent);
 		color: var(--color-paper);
+	}
+
+	.pj-entry.active {
+		background: var(--color-accent);
+		color: var(--color-paper);
+	}
+
+	.script-menu-wrap {
+		position: relative;
+	}
+
+	.script-menu {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 6px);
+		z-index: 40;
+		min-width: 200px;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		padding: 6px;
+		background: var(--color-surface);
+		border: 1px solid var(--color-line-regular);
+		border-radius: var(--radius-md);
+		box-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.04),
+			0 8px 32px rgba(0, 0, 0, 0.08);
+	}
+
+	.script-menu button {
+		text-align: left;
+		padding: 8px 10px;
+		font-size: 13px;
+		color: var(--color-ink-2);
+		background: transparent;
+		border: none;
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		transition: background 120ms var(--ease-out);
+	}
+
+	.script-menu button:hover {
+		background: var(--color-subtle);
+		color: var(--color-ink);
+	}
+
+	.script-menu .hidden-file {
+		display: none;
+	}
+
+	.script-msg {
+		padding: 6px 10px;
+		font-size: 12px;
+		color: var(--color-success);
+	}
+
+	.script-err {
+		padding: 6px 10px;
+		font-size: 12px;
+		color: var(--color-danger);
 	}
 
 	.header-right {

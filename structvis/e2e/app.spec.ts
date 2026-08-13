@@ -730,4 +730,47 @@ test.describe('视觉回归（渲染器截图基线）', () => {
 	});
 });
 
+test.describe('v2.0 讲授剧本', () => {
+	test('导入自定义剧本后投影旁白生效，可恢复默认', async ({ page }) => {
+		await openBubbleSort(page);
+
+		// 打开剧本菜单并导入自定义 JSON
+		await page.getByRole('button', { name: '剧本', exact: true }).click();
+		const custom = JSON.stringify({
+			version: 1,
+			name: '自定义测试讲法',
+			items: [
+				{ type: 'init', narration: '自定义开场白：这是冒泡排序的输入数组。' },
+				{ type: 'compare', narration: '自定义比较旁白。' },
+				{ type: 'swap', narration: '自定义交换旁白。' },
+				{ type: 'complete', narration: '自定义完成旁白。' }
+			]
+		});
+		await page.locator('.script-menu input[type="file"]').setInputFiles({
+			name: 'script.json',
+			mimeType: 'application/json',
+			buffer: Buffer.from(custom, 'utf-8')
+		});
+		await expect(page.locator('.script-msg')).toContainText('剧本导入成功');
+
+		// 进入投影，第 1 步（init）应显示自定义开场白
+		await page.getByRole('button', { name: '投影', exact: true }).click();
+		await expect(page.locator('.pj-narration')).toContainText('自定义开场白');
+		// 未在剧本中覆盖的步骤类型（recurse-enter）回落到步骤描述（fallback 正常）
+		await page.keyboard.press('ArrowRight');
+		await expect(page.locator('.pj-narration')).toContainText('第 1 轮');
+		// Esc 退出投影（fullscreenchange 同步）
+		await page.keyboard.press('Escape');
+
+		// 恢复默认剧本
+		await page.getByRole('button', { name: '剧本', exact: true }).click();
+		await page.getByRole('menuitem', { name: '恢复默认剧本' }).click();
+		await expect(page.locator('.script-msg')).toContainText('已恢复引擎默认剧本');
+		await page.getByRole('button', { name: '投影', exact: true }).click();
+		// 恢复后不再显示自定义旁白（回落到引擎默认剧本）
+		await expect(page.locator('.pj-narration')).not.toContainText('自定义开场白');
+	});
+});
+
+
 

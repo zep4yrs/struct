@@ -1,7 +1,3 @@
-# 第三方参考包（非项目代码）
-gsap_skilled_extracted/
-.trae-html-share-packages/
-
 node_modules
 
 # Output

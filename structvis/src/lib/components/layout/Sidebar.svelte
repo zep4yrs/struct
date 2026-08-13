@@ -115,7 +115,7 @@
 		<div class="mb-4 px-4">
 			<a
 				href={resolve('/catalog')}
-				class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
+				class="sidebar-link flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 				style="
 				border-color: transparent;
 				color: {isActive('/catalog') ? 'var(--color-ink)' : 'var(--color-ink-2)'};
@@ -153,7 +153,7 @@
 				{#each group.items as item (item.title)}
 					<a
 						href={item.planned ? undefined : resolve(item.href as RouteId)}
-						class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
+						class="sidebar-link flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 						style="
 						border-color: transparent;
 						color: {isActive(item.href) ? 'var(--color-ink)' : 'var(--color-ink-2)'};
@@ -185,7 +185,7 @@
 			<div class="mt-4 border-t pt-4" style="border-color: var(--color-line-hair);">
 				<a
 					href={resolve('/progress')}
-					class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
+					class="sidebar-link flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 					style="
 					border-color: transparent;
 					color: var(--color-ink-2);
@@ -213,7 +213,7 @@
 		<div class="mt-2 border-t pt-3" style="border-color: var(--color-line-hair);">
 			<a
 				href={resolve('/about')}
-				class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
+				class="sidebar-link flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 				style="
 				border-color: transparent;
 				color: var(--color-ink-2);
@@ -241,7 +241,7 @@
 		<div class="mt-2 border-t pt-3" style="border-color: var(--color-line-hair);">
 			<a
 				href={resolve('/settings')}
-				class="flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
+				class="sidebar-link flex items-center gap-3 border-l-2 px-4 py-1.5 text-sm no-underline transition-all"
 				style="
 				border-color: transparent;
 				color: var(--color-ink-2);
@@ -283,6 +283,19 @@
 
 	.drawer {
 		z-index: 61;
+	}
+
+	/* 链接 hover：背景微色 + 左侧高亮条滑入（box-shadow 不受内联边框影响） */
+	.sidebar-link {
+		transition:
+			background-color 0.18s var(--ease-out),
+			box-shadow 0.18s var(--ease-out),
+			color 0.18s var(--ease-out);
+	}
+
+	.sidebar-link:hover {
+		background: var(--color-subtle);
+		box-shadow: inset 3px 0 0 var(--color-accent);
 	}
 
 	@media (max-width: 767px) {

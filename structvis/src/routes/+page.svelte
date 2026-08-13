@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { animate, stagger } from 'animejs';
+	import { animate, stagger, spring } from 'animejs';
 	import Scene3D from '$lib/components/ui/Scene3D.svelte';
 	import { resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
-	import { reveal, prefersReducedMotion } from '$lib/utils/motion';
-
-	const TOTAL_TOPICS = dsTopics.length + dbTopics.length;
+	import { reveal, revealOnScroll, prefersReducedMotion } from '$lib/utils/motion';
 
 	let titleLine1: HTMLSpanElement | undefined = $state();
 	let titleLine2: HTMLSpanElement | undefined = $state();
@@ -14,34 +12,28 @@
 
 	onMount(() => {
 		if (prefersReducedMotion()) return;
-		// 主标题两行依次浮现
-		animate(titleLine1!, {
-			opacity: [0, 1],
-			translateY: [30, 0],
-			duration: 850,
-			easing: 'easeOutExpo'
-		});
+		const s = spring({ stiffness: 170, damping: 19 });
+		// hero 时间线编排：两行标题依次浮现（弹簧），CTA 交错弹入，滚动提示最后
+		animate(titleLine1!, { opacity: [0, 1], translateY: [34, 0], duration: 900, ease: s });
 		animate(titleLine2!, {
 			opacity: [0, 1],
-			translateY: [30, 0],
-			duration: 850,
-			delay: 160,
-			easing: 'easeOutExpo'
+			translateY: [34, 0],
+			duration: 900,
+			delay: 170,
+			ease: s
 		});
-		// CTA 按钮交错弹入
 		const btns = document.querySelectorAll('.hero-cta');
 		if (btns.length) {
 			animate(btns, {
 				opacity: [0, 1],
-				translateY: [18, 0],
-				duration: 620,
-				delay: stagger(110, { start: 520 }),
-				easing: 'easeOutCubic'
+				translateY: [20, 0],
+				duration: 700,
+				delay: stagger(120, { start: 540 }),
+				ease: s
 			});
 		}
-		// 滚动提示浮现
 		if (scrollHint) {
-			animate(scrollHint, { opacity: [0, 1], delay: 1300, duration: 600, easing: 'easeOutCubic' });
+			animate(scrollHint, { opacity: [0, 1], delay: 1250, duration: 500, ease: 'easeOutQuad' });
 		}
 	});
 </script>
@@ -60,7 +52,7 @@
 			>
 		</h1>
 
-		<p class="hero-sub" use:reveal={{ delay: 340 }}>
+		<p class="hero-sub" use:reveal={{ delay: 380 }}>
 			把抽象的算法过程变成可步进、可交互、可试错的实时可视化练习——不靠老师，也能把每一步搞明白。
 		</p>
 
@@ -90,20 +82,23 @@
 
 <!-- ══════════ 01 · 为什么它不一样 ══════════ -->
 <section class="home-section">
-	<div class="home-chapter" use:reveal>
-		<span class="home-chapter-num" aria-hidden="true">01</span>
+	<div class="home-chapter">
+		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll>01</span>
 		<div>
-			<span class="section-label">为什么它不一样</span>
-			<h2 class="home-h2">把「看懂」变成「做对」</h2>
+			<span class="section-label" use:revealOnScroll={{ delay: 40 }}>为什么它不一样</span>
+			<h2 class="home-h2" use:revealOnScroll={{ delay: 80, split: true }}>
+				把「看懂」变成「做对」
+			</h2>
 		</div>
 	</div>
 
-	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-		<div class="card home-card" use:reveal={{ delay: 100 }}>
-			<div class="mb-3 flex items-center gap-2">
+	<div class="home-features">
+		<div class="home-feature" use:revealOnScroll={{ delay: 120 }}>
+			<span class="home-feature-num">01</span>
+			<div class="home-feature-head">
 				<svg
-					width="16"
-					height="16"
+					width="22"
+					height="22"
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
@@ -115,18 +110,17 @@
 				>
 					<polygon points="5 3 19 12 5 21 5 3" />
 				</svg>
-				<h3 class="text-base font-medium" style="color: var(--color-ink);">步进可视化</h3>
+				<h3 class="home-feature-title">步进可视化</h3>
 			</div>
-			<p class="text-xs" style="color: var(--color-ink-2); line-height: 1.7;">
-				排序、树、图、SQL 每一步都能暂停、前进、后退，动画与伪代码同步高亮。
-			</p>
+			<p>排序、树、图、SQL 每一步都能暂停、前进、后退，动画与伪代码同步高亮。</p>
 		</div>
 
-		<div class="card home-card" use:reveal={{ delay: 190 }}>
-			<div class="mb-3 flex items-center gap-2">
+		<div class="home-feature" use:revealOnScroll={{ delay: 210 }}>
+			<span class="home-feature-num">02</span>
+			<div class="home-feature-head">
 				<svg
-					width="16"
-					height="16"
+					width="22"
+					height="22"
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
@@ -138,18 +132,17 @@
 				>
 					<path d="M20 6 9 17l-5-5" />
 				</svg>
-				<h3 class="text-base font-medium" style="color: var(--color-ink);">即时练习反馈</h3>
+				<h3 class="home-feature-title">即时练习反馈</h3>
 			</div>
-			<p class="text-xs" style="color: var(--color-ink-2); line-height: 1.7;">
-				边看边答，做错了立刻看到正确答案与解析，而不是只给一个分数。
-			</p>
+			<p>边看边答，做错了立刻看到正确答案与解析，而不是只给一个分数。</p>
 		</div>
 
-		<div class="card home-card" use:reveal={{ delay: 280 }}>
-			<div class="mb-3 flex items-center gap-2">
+		<div class="home-feature" use:revealOnScroll={{ delay: 300 }}>
+			<span class="home-feature-num">03</span>
+			<div class="home-feature-head">
 				<svg
-					width="16"
-					height="16"
+					width="22"
+					height="22"
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
@@ -162,18 +155,17 @@
 					<path d="M12 9v4M12 17h.01" />
 					<circle cx="12" cy="12" r="9" />
 				</svg>
-				<h3 class="text-base font-medium" style="color: var(--color-ink);">错题本</h3>
+				<h3 class="home-feature-title">错题本</h3>
 			</div>
-			<p class="text-xs" style="color: var(--color-ink-2); line-height: 1.7;">
-				答错的题自动进错题本，可重新作答、标记已掌握，复习不遗忘。
-			</p>
+			<p>答错的题自动进错题本，可重新作答、标记已掌握，复习不遗忘。</p>
 		</div>
 
-		<div class="card home-card" use:reveal={{ delay: 370 }}>
-			<div class="mb-3 flex items-center gap-2">
+		<div class="home-feature" use:revealOnScroll={{ delay: 390 }}>
+			<span class="home-feature-num">04</span>
+			<div class="home-feature-head">
 				<svg
-					width="16"
-					height="16"
+					width="22"
+					height="22"
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
@@ -185,77 +177,47 @@
 				>
 					<path d="M12 20v-6M6 20V10M18 20V4" />
 				</svg>
-				<h3 class="text-base font-medium" style="color: var(--color-ink);">本地进度</h3>
+				<h3 class="home-feature-title">本地进度</h3>
 			</div>
-			<p class="text-xs" style="color: var(--color-ink-2); line-height: 1.7;">
-				掌握度、正确率、连续学习天数全部保存在本地浏览器，不上传任何服务器。
-			</p>
+			<p>掌握度、正确率、连续学习天数全部保存在本地浏览器，不上传任何服务器。</p>
 		</div>
 	</div>
 </section>
 
 <!-- ══════════ 02 · 学什么 ══════════ -->
 <section class="home-section home-section--band">
-	<div class="home-chapter" use:reveal>
-		<span class="home-chapter-num" aria-hidden="true">02</span>
+	<div class="home-chapter">
+		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll>02</span>
 		<div>
-			<span class="section-label">学什么</span>
-			<h2 class="home-h2">两门课，{TOTAL_TOPICS} 个知识点</h2>
+			<span class="section-label" use:revealOnScroll={{ delay: 40 }}>学什么</span>
+			<h2 class="home-h2" use:revealOnScroll={{ delay: 80, split: true }}>
+				两门课，{dsTopics.length + dbTopics.length} 个知识点
+			</h2>
 		</div>
 	</div>
 
-	<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-		<a href={resolve('/catalog')} class="card home-course no-underline" use:reveal={{ delay: 160 }}>
+	<div class="home-courses">
+		<a
+			href={resolve('/catalog')}
+			class="home-course no-underline"
+			use:revealOnScroll={{ delay: 160 }}
+		>
 			<div class="home-course-tag tag tag-blue">数据结构</div>
-			<h3 class="mb-2 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
-				数据结构与算法
-			</h3>
-			<p class="mb-4 text-sm" style="color: var(--color-ink-2);">
-				李春葆《数据结构教程》第5版配套 · {dsTopics.length} 个知识点
-			</p>
+			<h3 class="home-course-title">数据结构与算法</h3>
+			<p>李春葆《数据结构教程》第5版配套 · {dsTopics.length} 个知识点</p>
 			<span class="home-course-meta">排序 · 树 · 图 · 查找</span>
 		</a>
 
-		<a href={resolve('/catalog')} class="card home-course no-underline" use:reveal={{ delay: 260 }}>
+		<a
+			href={resolve('/catalog')}
+			class="home-course no-underline"
+			use:revealOnScroll={{ delay: 260 }}
+		>
 			<div class="home-course-tag tag tag-blue">MySQL</div>
-			<h3 class="mb-2 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
-				MySQL 数据库
-			</h3>
-			<p class="mb-4 text-sm" style="color: var(--color-ink-2);">
-				杨宏霞《数据库技术及应用（MySQL）》配套 · {dbTopics.length} 个知识点
-			</p>
+			<h3 class="home-course-title">MySQL 数据库</h3>
+			<p>杨宏霞《数据库技术及应用（MySQL）》配套 · {dbTopics.length} 个知识点</p>
 			<span class="home-course-meta">查询 · 索引 · 事务 · 范式</span>
 		</a>
-	</div>
-</section>
-
-<!-- ══════════ 03 · 数据背后 ══════════ -->
-<section class="home-section">
-	<div class="home-chapter" use:reveal>
-		<span class="home-chapter-num" aria-hidden="true">03</span>
-		<div>
-			<span class="section-label">数据背后</span>
-			<h2 class="home-h2">每一帧都是可验证的</h2>
-		</div>
-	</div>
-
-	<div class="home-stats">
-		<div class="home-stat" use:reveal={{ delay: 120 }}>
-			<div class="home-stat-num">{TOTAL_TOPICS}</div>
-			<div class="home-stat-label">门课程</div>
-		</div>
-		<div class="home-stat" use:reveal={{ delay: 200 }}>
-			<div class="home-stat-num">12</div>
-			<div class="home-stat-label">类可视化渲染器</div>
-		</div>
-		<div class="home-stat" use:reveal={{ delay: 280 }}>
-			<div class="home-stat-num">419</div>
-			<div class="home-stat-label">项自动化测试</div>
-		</div>
-		<div class="home-stat" use:reveal={{ delay: 360 }}>
-			<div class="home-stat-num">0</div>
-			<div class="home-stat-label">台后端服务器</div>
-		</div>
 	</div>
 </section>
 
@@ -414,36 +376,91 @@
 		color: var(--color-ink);
 	}
 
-	/* 卡片 hover 反馈 */
-	.home-card,
+	/* === 碑式特性（无框，列分隔线） === */
+	.home-features {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.home-feature {
+		padding: 8px 28px;
+	}
+
+	.home-feature + .home-feature {
+		border-left: 1px solid var(--color-line-hair);
+	}
+
+	.home-feature-num {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.2em;
+		color: var(--color-ink-3);
+		margin-bottom: 18px;
+	}
+
+	.home-feature-head {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 10px;
+	}
+
+	.home-feature-title {
+		font-family: var(--font-display);
+		font-size: 19px;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		margin: 0;
+		color: var(--color-ink);
+	}
+
+	.home-feature p {
+		font-size: 13px;
+		line-height: 1.8;
+		color: var(--color-ink-2);
+	}
+
+	/* === 碑式课程（无框，列分隔线） === */
+	.home-courses {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+	}
+
 	.home-course {
-		transition:
-			transform 0.22s var(--ease-out),
-			box-shadow 0.22s var(--ease-out),
-			border-color 0.22s var(--ease-out);
+		display: block;
+		padding: 12px 36px 12px 0;
 	}
 
-	.home-card:hover,
-	.home-course:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 12px 30px -14px rgb(0 0 0 / 0.22);
-		border-color: var(--color-ink);
+	.home-course + .home-course {
+		border-left: 1px solid var(--color-line-hair);
+		padding-left: 36px;
 	}
 
-	.home-card:active,
-	.home-course:active {
-		transform: translateY(-1px);
-		box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.18);
+	.home-course-title {
+		font-family: var(--font-display);
+		font-size: 30px;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		margin: 0 0 12px;
+		color: var(--color-ink);
+		transition: color 0.2s var(--ease-out);
 	}
 
-	.home-course {
-		position: relative;
-		padding: 28px;
+	.home-course p {
+		font-size: 14px;
+		line-height: 1.7;
+		color: var(--color-ink-2);
+		margin: 0 0 14px;
 	}
 
 	.home-course-tag {
 		display: inline-block;
-		margin-bottom: 14px;
+		margin-bottom: 16px;
+	}
+
+	.home-course:hover .home-course-title {
+		color: var(--color-accent);
 	}
 
 	.home-course-meta {
@@ -453,50 +470,19 @@
 		color: var(--color-ink-3);
 	}
 
-	/* === 统计（数据碑） === */
-	.home-stats {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-	}
-
-	.home-stat {
-		text-align: center;
-		padding: 12px 24px;
-	}
-
-	.home-stat + .home-stat {
-		border-left: 1px solid var(--color-line-hair);
-	}
-
-	.home-stat-num {
-		font-family: var(--font-display);
-		font-size: 60px;
-		font-weight: 500;
-		line-height: 1;
-		letter-spacing: -0.03em;
-		color: var(--color-ink);
-		background: linear-gradient(180deg, var(--color-ink), var(--color-ink-3));
-		-webkit-background-clip: text;
-		background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-
-	.home-stat-label {
-		margin-top: 12px;
-		font-family: var(--font-mono);
-		font-size: 11px;
-		letter-spacing: 0.16em;
-		color: var(--color-ink-3);
-	}
-
 	@media (max-width: 760px) {
-		.home-stats {
-			grid-template-columns: repeat(2, 1fr);
-			row-gap: 36px;
+		.home-features,
+		.home-courses {
+			grid-template-columns: 1fr;
+			gap: 36px;
 		}
 
-		.home-stat + .home-stat {
+		.home-feature + .home-feature,
+		.home-course + .home-course {
 			border-left: none;
+			border-top: 1px solid var(--color-line-hair);
+			padding-top: 28px;
+			padding-left: 0;
 		}
 
 		.home-chapter-num {

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { WebGLRenderer, Scene as ThreeScene, BufferGeometry, Mesh } from 'three';
 
-	/** three.js 首页 3D 背景：粒子场 + 线框几何体，随鼠标视差缓慢旋转。
+	/** three.js 全页 3D 背景：粒子场 + 线框几何体，随鼠标视差缓慢旋转，固定于视口。
 	 *  - 懒加载：仅当组件挂载才动态 import three（约 150KB，只出现在首页）
 	 *  - 降级：WebGL 不可用 / 系统减弱动效 → 静默不渲染（页面功能不受影响）
 	 *  - 主题联动：切换亮/暗主题时粒子与线框颜色跟随 token
@@ -40,13 +40,13 @@
 					return v ? parseInt(v.replace('#', ''), 16) : 0x1a1a1a;
 				};
 
-				// === 粒子场（墨色主体 + 琥珀点缀） ===
-				const COUNT = 1100;
+				// === 粒子场（墨色主体 + 琥珀点缀，覆盖整页视口） ===
+				const COUNT = 1400;
 				const positions = new Float32Array(COUNT * 3);
 				const colors = new Float32Array(COUNT * 3);
 				for (let i = 0; i < COUNT; i++) {
-					positions[i * 3] = (Math.random() - 0.5) * 42;
-					positions[i * 3 + 1] = (Math.random() - 0.5) * 28;
+					positions[i * 3] = (Math.random() - 0.5) * 46;
+					positions[i * 3 + 1] = (Math.random() - 0.5) * 34;
 					positions[i * 3 + 2] = (Math.random() - 0.5) * 18;
 				}
 				const paintColors = () => {
@@ -184,7 +184,7 @@
 
 <style>
 	.scene3d {
-		position: absolute;
+		position: fixed;
 		inset: 0;
 		overflow: hidden;
 		pointer-events: none;

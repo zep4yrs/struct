@@ -46,10 +46,10 @@
 	});
 </script>
 
+<Scene3D />
+
 <!-- ══════════ 首屏 Hero：整屏电影海报 ══════════ -->
 <section class="hero">
-	<Scene3D />
-
 	<div class="hero-inner">
 		<div class="hero-eyebrow" use:reveal>STRUCTVIS · 数据结构与数据库可视化学习工具</div>
 
@@ -262,7 +262,7 @@
 <!-- Footer -->
 <footer
 	class="mt-12 flex items-center justify-between border-t pt-8 font-mono text-[11px] tracking-wider uppercase"
-	style="border-color: var(--color-line-hair); color: var(--color-ink-3); letter-spacing: 0.08em;"
+	style="border-color: var(--color-line-hair); color: var(--color-ink-3); letter-spacing: 0.08em; position: relative; z-index: 1;"
 >
 	<span>StructVis</span>
 	<span>© 2026 zep4yrs</span>
@@ -272,6 +272,7 @@
 	/* === Hero === */
 	.hero {
 		position: relative;
+		z-index: 1;
 		min-height: calc(100vh - 48px);
 		display: flex;
 		flex-direction: column;
@@ -280,7 +281,6 @@
 		text-align: center;
 		padding: 72px 24px 64px;
 		border-bottom: 1px solid var(--color-line-hair);
-		overflow: hidden;
 	}
 
 	.hero-inner {
@@ -363,6 +363,8 @@
 
 	/* === 内容分区 === */
 	.home-section {
+		position: relative;
+		z-index: 1;
 		max-width: 1080px;
 		margin: 0 auto;
 		padding: 96px 24px 24px;

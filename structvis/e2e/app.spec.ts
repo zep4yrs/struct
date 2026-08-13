@@ -268,7 +268,7 @@ test.describe('主题与导航', () => {
 
 		// 当前项高亮（数据查询所在链接带 accent 左边框）
 		const activeLink = nav.locator('a', { hasText: '数据查询' });
-		await expect(activeLink).toHaveCSS('border-left-color', 'rgb(217, 119, 6)');
+		await expect(activeLink).toHaveCSS('border-left-color', 'rgb(201, 119, 26)');
 
 		// 回到数据结构页应恢复数据结构分组
 		await page.goto('/struct/ds/quick-sort');

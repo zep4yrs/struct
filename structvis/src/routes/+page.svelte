@@ -5,30 +5,32 @@
 </script>
 
 <div class="mx-auto max-w-7xl px-8 py-16">
-	<!-- Hero -->
-	<section class="mb-20 border-b pb-16" style="border-color: var(--color-line-hair);">
-		<div class="mb-10 flex items-end gap-6">
-			<Logo size={56} />
+	<!-- Hero：教科书扉页 -->
+	<section class="mb-20 border-b pb-16 page-rise" style="border-color: var(--color-line-hair);">
+		<div class="mb-8 flex items-end gap-6">
+			<Logo size={60} />
 			<h1
-				class="font-display text-5xl leading-none font-medium"
-				style="letter-spacing: -0.03em; color: var(--color-ink);"
+				class="font-display text-6xl leading-none font-semibold"
+				style="letter-spacing: -0.02em; color: var(--color-ink);"
 			>
 				StructVis<span style="color: var(--color-accent); font-weight: 400;">/</span>
 			</h1>
 		</div>
 
 		<p
-			class="font-display max-w-2xl text-3xl font-normal"
-			style="line-height: 1.3; color: var(--color-ink);"
+			class="font-display max-w-2xl text-3xl font-medium"
+			style="line-height: 1.35; color: var(--color-ink);"
 		>
 			看见数据结构与数据库的每一步跳动。
 		</p>
-		<p class="mt-4 max-w-xl text-lg" style="color: var(--color-ink-2); line-height: 1.7;">
+		<p class="mt-4 max-w-xl text-base" style="color: var(--color-ink-2); line-height: 1.8;">
 			StructVis 把抽象算法变成可步进、可交互、可试错的实时可视化练习，
 			让自学者不靠老师也能把每个步骤搞明白。
 		</p>
 
-		<div class="mt-10 flex flex-wrap gap-3">
+		<hr class="section-rule" style="max-width: 420px;" />
+
+		<div class="mt-6 flex flex-wrap gap-3">
 			<a href={resolve('/catalog')} class="btn btn-accent">进入课程目录</a>
 			<a href={resolve('/progress')} class="btn btn-primary">查看学习进度</a>
 			<a href={resolve('/about')} class="btn btn-ghost">了解项目</a>
@@ -39,7 +41,7 @@
 	<section class="mb-20">
 		<div class="section-label mb-6">Core Features</div>
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-			<div class="card">
+			<div class="card card-note page-rise" style="animation-delay: 100ms;">
 				<div class="mb-3 flex items-center gap-2">
 					<svg
 						width="16"
@@ -62,7 +64,7 @@
 				</p>
 			</div>
 
-			<div class="card">
+			<div class="card card-note page-rise" style="animation-delay: 200ms;">
 				<div class="mb-3 flex items-center gap-2">
 					<svg
 						width="16"
@@ -85,7 +87,7 @@
 				</p>
 			</div>
 
-			<div class="card">
+			<div class="card card-note page-rise" style="animation-delay: 300ms;">
 				<div class="mb-3 flex items-center gap-2">
 					<svg
 						width="16"
@@ -140,8 +142,8 @@
 		<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
 			<a
 				href={resolve('/catalog')}
-				class="card block no-underline"
-				style="border-color: var(--color-line-hair);"
+				class="card card-note page-rise block no-underline"
+				style="border-color: var(--color-line-hair); animation-delay: 400ms;"
 			>
 				<h2 class="font-display mb-2 text-2xl font-medium" style="letter-spacing: -0.01em;">
 					数据结构与算法
@@ -154,8 +156,8 @@
 
 			<a
 				href={resolve('/catalog')}
-				class="card block no-underline"
-				style="border-color: var(--color-line-hair);"
+				class="card card-note page-rise block no-underline"
+				style="border-color: var(--color-line-hair); animation-delay: 480ms;"
 			>
 				<h2 class="font-display mb-2 text-2xl font-medium" style="letter-spacing: -0.01em;">
 					MySQL 数据库

@@ -509,8 +509,8 @@
 				</div>
 			{/key}
 
-			<!-- 底部状态栏（字幕式步骤说明） -->
-			<div class="status-bar">
+			<!-- 底部状态栏（教科书批注条：琥珀侧线 + 米色底） -->
+			<div class="status-bar annotation" role="status">
 				<span class="status-text">{currentStep?.description || 'Ready'}</span>
 			</div>
 		</div>
@@ -1015,10 +1015,10 @@
 
 	/* 底部状态栏 — 字幕式 */
 	.status-bar {
-		padding: 10px 24px;
+		padding: 12px 24px 12px 26px;
 		border-top: 1px solid var(--color-line-hair);
-		background: var(--color-paper);
 		flex-shrink: 0;
+		border-radius: 0;
 	}
 
 	.status-text {
@@ -1045,9 +1045,14 @@
 	}
 
 	.panel-header {
-		padding: 14px 20px;
+		padding: 12px 20px;
 		border-bottom: 1px solid var(--color-line-hair);
 		flex-shrink: 0;
+		background: var(--color-code-bg);
+	}
+
+	.panel-title {
+		color: var(--color-chalk);
 	}
 
 	.panel-title {

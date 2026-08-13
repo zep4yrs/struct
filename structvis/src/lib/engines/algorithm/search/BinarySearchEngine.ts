@@ -53,6 +53,21 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 		correctAnswer: '3 次',
 		hint: '每次比较都会把查找区间缩小一半',
 		explanation: '56 → 19 → 21 共 3 次比较。折半查找最多比较 ⌈log₂(n+1)⌉ 次，11 个元素至多 4 次。'
+	},
+	{
+		type: 'fill-code',
+		stepIndex: 4,
+		prompt: '二分查找循环体中，当 arr[mid] < target 时需要调整区间。补全这一行：',
+		options: [
+			'low = mid + 1',
+			'low = mid',
+			'high = mid - 1',
+			'high = mid + 1'
+		],
+		correctAnswer: 'low = mid + 1',
+		hint: 'mid 已经比较过不等于 target，可以安全排除',
+		explanation:
+			'arr[mid] < target 说明目标在右半区，且 mid 本身已排除，所以 low = mid + 1；同理 arr[mid] > target 时 high = mid - 1。'
 	}
 ];
 

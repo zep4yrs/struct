@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, fireEvent, cleanup } from '@testing-library/svelte';
+import { tick } from 'svelte';
 import PracticePanel from './PracticePanel.svelte';
 import type { PracticeQuestion } from '$lib/engines/algorithm/types';
 
@@ -154,3 +155,89 @@ describe('PracticePanel 键盘交互', () => {
 		expect(hintBtn).toBeUndefined();
 	});
 });
+
+describe('PracticePanel v2.0 新题型', () => {
+	it('fill-array：输入答案并判题（容忍空白与分隔符差异）', async () => {
+		let result: { correct: boolean; answer: string } | null = null;
+		const { container } = render(PracticePanel, {
+			props: {
+				question: makeQuestion({ type: 'fill-array', correctAnswer: '2,5,1,8,9', options: undefined }),
+				onAnswered: (r: { correct: boolean; answer: string }) => (result = r)
+			}
+		});
+		// 未输入时提交禁用
+		const submitBtn = [...container.querySelectorAll('button')].find((b) =>
+			b.textContent?.includes('提交答案')
+		)!;
+		expect((submitBtn as HTMLButtonElement).disabled).toBe(true);
+
+		const input = container.querySelector('.fill-input') as HTMLInputElement;
+		fireEvent.input(input, { target: { value: '2, 5, 1, 8, 9' } });
+		await tick();
+		expect((submitBtn as HTMLButtonElement).disabled).toBe(false);
+		fireEvent.click(submitBtn);
+		await tick();
+		expect(result).toEqual({ correct: true, answer: '2, 5, 1, 8, 9' });
+		expect(container.querySelector('.feedback')?.textContent).toContain('回答正确');
+	});
+
+	it('fill-array：错误答案显示正确答案', async () => {
+		let result: { correct: boolean; answer: string } | null = null;
+		const { container } = render(PracticePanel, {
+			props: {
+				question: makeQuestion({ type: 'fill-array', correctAnswer: '2,5,1,8,9', options: undefined }),
+				onAnswered: (r: { correct: boolean; answer: string }) => (result = r)
+			}
+		});
+		const input = container.querySelector('.fill-input') as HTMLInputElement;
+		fireEvent.input(input, { target: { value: '5,2,1,8,9' } });
+		await tick();
+		[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!.click();
+		await tick();
+		expect(result?.correct).toBe(false);
+		expect(container.querySelector('.correct-answer')?.textContent).toContain('2,5,1,8,9');
+	});
+
+	it('drag-pointer：options 渲染为数组格子，点击格子提交', async () => {
+		let result: { correct: boolean; answer: string } | null = null;
+		const { container } = render(PracticePanel, {
+			props: {
+				question: makeQuestion({
+					type: 'drag-pointer',
+					options: ['2', '5', '1', '8', '9'],
+					correctAnswer: '9'
+				}),
+				onAnswered: (r: { correct: boolean; answer: string }) => (result = r)
+			}
+		});
+		const slots = [...container.querySelectorAll('.slot')];
+		expect(slots).toHaveLength(5);
+		expect(slots[0]?.querySelector('.slot-val')?.textContent).toBe('2');
+		fireEvent.click(slots[4]!); // '9'
+		await tick();
+		[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!.click();
+		expect(result).toEqual({ correct: true, answer: '9' });
+	});
+
+	it('fill-code：options 渲染为代码行并判题', async () => {
+		let result: { correct: boolean; answer: string } | null = null;
+		const { container } = render(PracticePanel, {
+			props: {
+				question: makeQuestion({
+					type: 'fill-code',
+					options: ['low = mid + 1', 'low = mid', 'high = mid - 1'],
+					correctAnswer: 'low = mid + 1'
+				}),
+				onAnswered: (r: { correct: boolean; answer: string }) => (result = r)
+			}
+		});
+		const opts = [...container.querySelectorAll('.code-opt')];
+		expect(opts).toHaveLength(3);
+		expect(opts[0]?.querySelector('.code-line')?.textContent).toBe('low = mid + 1');
+		fireEvent.click(opts[0]!);
+		await tick();
+		[...container.querySelectorAll('button')].find((b) => b.textContent?.includes('提交答案'))!.click();
+		expect(result).toEqual({ correct: true, answer: 'low = mid + 1' });
+	});
+});
+

@@ -65,6 +65,21 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 		hint: '回想 partition 的逻辑：找到小于等于 pivot 的元素，就把它换到"小于区"里',
 		explanation:
 			'2 小于 7，所以它应该在 pivot 的左边。i 指针右移一位（扩大小于区），然后把 arr[i] 和 arr[j] 交换，把 2 放进小于区。'
+	},
+	{
+		type: 'fill-code',
+		stepIndex: 8,
+		prompt: 'partition 函数遍历结束后，需要把 pivot（arr[high]）放到它正确的位置。补全这一行代码：',
+		options: [
+			'swap arr[i+1] and arr[high]',
+			'swap arr[i] and arr[high]',
+			'swap arr[low] and arr[high]',
+			'swap arr[i+1] and arr[low]'
+		],
+		correctAnswer: 'swap arr[i+1] and arr[high]',
+		hint: 'i 是"小于区"右边界，pivot 应该放在小于区后面第一个位置',
+		explanation:
+			'遍历结束时，下标 0..i 都是 ≤ pivot 的元素，所以 pivot 的正确位置是 i+1：swap(arr[i+1], arr[high]) 把 pivot 换过去，小于区紧随其后，右侧全大于 pivot。'
 	}
 ];
 

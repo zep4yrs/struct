@@ -59,7 +59,7 @@
 				v: target,
 				duration: 1000,
 				delay: 350,
-				easing: 'easeOutCubic',
+				ease: 'easeOutCubic',
 				update: () => {
 					el.textContent = String(Math.round(state.v));
 				}

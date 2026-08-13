@@ -3,7 +3,7 @@
 	import type { RouteId } from '../../../routes/$types';
 	import { progress } from '$lib/stores/progress';
 	import type { TopicCard } from '$lib/content/topics';
-	import { reveal } from '$lib/utils/motion';
+	import { revealOnScroll } from '$lib/utils/motion';
 
 	interface Props {
 		topics: TopicCard[];
@@ -19,7 +19,7 @@
 <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	{#each topics as topic, i (topic.title)}
 		<a
-			use:reveal={{ delay: (i % 8) * 55 }}
+			use:revealOnScroll={{ delay: (i % 8) * 55 }}
 			href={topic.planned ? undefined : resolve(topic.href as RouteId)}
 			class="topic-card block rounded-md border p-4 no-underline transition-all"
 			class:planned={topic.planned}

@@ -1,42 +1,48 @@
-# sv
+# StructVis
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+> 数据结构与数据库可视化学习工具 — 让每个步骤都可见、可交互、可练习。
 
-## Creating a project
+完整说明见仓库根目录 [README.md](../README.md)。
 
-If you're seeing this, you've probably already done this step. Congrats!
+## 快速开始
 
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv@0.16.6 create --template minimal --types ts --add prettier eslint vitest="usages:unit" tailwindcss="plugins:none" sveltekit-adapter="adapter:static" --install npm structvis
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
+```bash
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+## 常用命令
 
-To create a production version of your app:
+| 命令 | 说明 |
+| --- | --- |
+| `npm run dev` | 启动开发服务器（http://localhost:5173） |
+| `npm run check` | svelte-check 类型检查 |
+| `npm run test` | 单元测试（Vitest，server + client 双项目） |
+| `npm run test:e2e` | 端到端测试（Playwright，自动起 dev server） |
+| `npm run build` | 生产构建（adapter-static 输出到仓库根 `docs/`） |
+| `npm run lint` | Prettier + ESLint |
 
-```sh
-npm run build
+## 目录速览
+
+```
+src/
+├── lib/
+│   ├── engines/          # 算法/SQL/数据库引擎（AlgorithmEngine 契约，纯逻辑）
+│   ├── visualization/    # Canvas 渲染器（按 engine.renderType 插件化）
+│   ├── components/       # AlgoPlayer 播放器 / AlgoPage 页面壳 / 布局 / 通用 UI
+│   ├── content/          # 课程目录（topics.ts，导航/面包屑/搜索的唯一数据源）
+│   ├── stores/           # progress / settings（localStorage 持久化，带版本迁移）
+│   └── styles/           # app.css 设计 token（亮/暗双主题）
+├── routes/               # 31 个页面（/、/catalog、ds×19、db×13、/progress、/settings、/about）
+├── test/                 # canvas-mock 记录式 2D 上下文
+└── test-setup.ts         # jsdom 测试基建
+e2e/                      # Playwright 端到端测试
 ```
 
-You can preview the production build with `npm run preview`.
+## 新增一个算法页（贡献指南）
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+1. 在 `src/lib/engines/` 实现引擎（implements AlgorithmEngine），配同名 `.spec.ts`
+2. 在 `src/lib/content/topics.ts` 加一项（title/description/href/topicId/badge/group/crumb）—— 目录卡、侧边栏、面包屑、搜索自动同步
+3. 新建 `src/routes/.../+page.svelte`，用 `AlgoPage` + `<AlgoPlayer {engine} topicId={...} />` 组装
+4. 若渲染器类型是新的，在 `src/lib/components/player/RendererSwitch.svelte` 加分支
+5. 跑 `npm run check && npm run test && npm run test:e2e`

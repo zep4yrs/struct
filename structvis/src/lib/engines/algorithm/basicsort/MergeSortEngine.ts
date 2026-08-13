@@ -7,7 +7,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	DemoScriptItem,
 	AlgorithmStep,
 	EngineCustomConfig,
@@ -16,6 +15,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 const PSEUDO: string[] = [
@@ -45,7 +45,7 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	}
 ];
 
-export class MergeSortEngine implements AlgorithmEngine<number[]> {
+export class MergeSortEngine extends EngineBase<number[]> {
 	readonly name = '归并排序';
 	readonly renderType = 'array' as const;
 
@@ -80,12 +80,6 @@ export class MergeSortEngine implements AlgorithmEngine<number[]> {
 			narration: '排序完成。归并排序稳定，时间复杂度恒为 O(n log n)，但需要 O(n) 的额外空间。'
 		}
 	];
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 
 	presets: EnginePreset[] = [
 		{ name: '示例 A', description: '[5, 2, 8, 1, 9]' },
@@ -226,19 +220,4 @@ export class MergeSortEngine implements AlgorithmEngine<number[]> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

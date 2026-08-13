@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { onMount, onDestroy, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HashData } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
+	import { resolveCSSVar } from '../visualization-utils';
+import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -11,13 +12,19 @@
 
 	let { steps, playbackPos }: Props = $props();
 
-	let canvasEl: HTMLCanvasElement | undefined;
-	let ctx: CanvasRenderingContext2D | null = null;
-	let dpr = 1;
-	let unwatchTheme: (() => void) | undefined;
-
-	let canvasWidth = 640;
-	let canvasHeight = 400;
+	// 画布与尺寸由 CanvasHost 统一管理（resize/ResizeObserver/主题监听）；
+	// CanvasHost 通过 onDraw 回调注入最新状态（$state 响应式）
+	let host: CanvasHostState = $state({
+		canvasEl: undefined,
+		ctx: null,
+		dpr: 1,
+		width: 600,
+		height: 280
+	});
+	let ctx = $derived(host.ctx);
+	let dpr = $derived(host.dpr);
+	let canvasWidth = $derived(host.width);
+	let canvasHeight = $derived(host.height);
 
 	const LOGICAL_W = 1000;
 	const LOGICAL_H = 560;
@@ -34,6 +41,7 @@
 	const CHAIN_X = 110;
 
 	let colors = $state({
+		inkInverse: '#FAF9F6',
 		node: '#FFFFFF',
 		border: '#D4D0C8',
 		edge: '#D4D0C8',
@@ -48,6 +56,7 @@
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
+		inkInverse: resolveCSSVar('--color-ink-inverse'),
 			node: resolveCSSVar('--color-surface'),
 			border: resolveCSSVar('--color-line-regular'),
 			edge: resolveCSSVar('--color-line-regular'),
@@ -136,7 +145,8 @@
 
 		for (let i = 0; i < f.size; i++) {
 			const x = xStart + i * (SLOT_W + SLOT_GAP);
-			const v = f.slots[i];
+			// 防御：slots 短于 size 时按空槽处理（不画出 "undefined"）
+			const v = f.slots[i] === undefined ? null : f.slots[i];
 			let fill = colors.node;
 			let border = colors.border;
 			let textColor = colors.ink;
@@ -145,12 +155,12 @@
 			if (placed === i) {
 				fill = colors.sorted;
 				border = colors.sorted;
-				textColor = '#FAF9F6';
+				textColor = 'colors.inkInverse';
 				lw = 2;
 			} else if (cur === i) {
 				fill = colors.current;
 				border = colors.current;
-				textColor = '#FAF9F6';
+				textColor = 'colors.inkInverse';
 				lw = 2;
 			} else if (probed.has(i)) {
 				border = colors.compare;
@@ -205,7 +215,7 @@
 			ctx.lineWidth = isCur ? 2 : 1.2;
 			ctx.stroke();
 			ctx.font = '600 14px ui-monospace, SFMono-Regular, Menlo, monospace';
-			ctx.fillStyle = isCur ? '#FAF9F6' : colors.ink;
+			ctx.fillStyle = isCur ? 'colors.inkInverse' : colors.ink;
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
 			ctx.fillText(String(row), CHAIN_X + CHAIN_SLOT_W / 2, y + CHAIN_SLOT_H / 2 + 1);
@@ -226,7 +236,7 @@
 				ctx.lineWidth = isHL ? 2 : 1.2;
 				ctx.stroke();
 				ctx.font = '600 13px ui-monospace, SFMono-Regular, Menlo, monospace';
-				ctx.fillStyle = isHL ? '#FAF9F6' : colors.ink;
+				ctx.fillStyle = isHL ? 'colors.inkInverse' : colors.ink;
 				ctx.fillText(String(k), x + CHAIN_NODE_W / 2, y + CHAIN_SLOT_H / 2 + 1);
 
 				// 链指针（结点间连接线 + 尾指针）
@@ -275,68 +285,21 @@
 		ctx.fillText(f.summary ?? '', LOGICAL_W / 2, LOGICAL_H - 24);
 	}
 
-	function resizeCanvas() {
-		if (!browser || !canvasEl) return;
-		const container = canvasEl.parentElement;
-		if (!container) return;
-
-		dpr = window.devicePixelRatio || 1;
-		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(Math.max(320, rect.width - 24), LOGICAL_W * MIN_SCALE);
-		canvasHeight = Math.max(Math.max(240, rect.height - 24), LOGICAL_H * MIN_SCALE);
-
-		canvasEl.width = canvasWidth * dpr;
-		canvasEl.height = canvasHeight * dpr;
-		canvasEl.style.width = `${canvasWidth}px`;
-		canvasEl.style.height = `${canvasHeight}px`;
-
-		ctx = canvasEl.getContext('2d');
-		if (ctx) ctx.scale(dpr, dpr);
-
-		updateColorsFromCSS();
-		draw();
-	}
-
 	$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
-
-	onMount(() => {
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
-		draw();
-		unwatchTheme = watchThemeChange(() => {
-			updateColorsFromCSS();
-			draw();
-		});
-	});
-
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', resizeCanvas);
-		unwatchTheme?.();
-	});
 </script>
 
-<div class="hashtable-canvas-wrap">
-	<canvas bind:this={canvasEl}></canvas>
-</div>
-
-<style>
-	.hashtable-canvas-wrap {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	canvas {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->
+<CanvasHost
+	minW={680}
+	minH={442}
+	onDraw={(h) => {
+		host = h;
+		draw();
+	}}
+	onThemeChange={updateColorsFromCSS}
+/>

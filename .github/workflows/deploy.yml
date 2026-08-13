@@ -35,6 +35,14 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: E2E tests
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+        # 注：视觉回归截图基线带平台后缀（*-chromium-win32.png 等）。
+        # Linux CI 首次运行若因字体差异失败，用 npx playwright test -g 视觉回归 --update-snapshots
+        # 在 Linux 上生成基线后提交（本地基线仅覆盖 win32）。
+
       - name: Build
         run: npm run build
 

@@ -151,9 +151,16 @@ export function removeMistake(id: string): void {
 
 /**
  * 更新连续学习天数（每次打开应用时调用）
+ * 注意：必须用本地日期而非 toISOString()（UTC）——东八区 00:00-08:00 学习会被
+ * toISOString 记成前一天，跨午夜连续学习会被误判为中断。
  */
+function localDateStr(d: Date): string {
+	const pad = (n: number) => String(n).padStart(2, '0');
+	return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+}
+
 export function updateStreak(): void {
-	const today = new Date().toISOString().slice(0, 10);
+	const today = localDateStr(new Date());
 
 	progress.update((p) => {
 		if (p.lastActiveDate === today) {
@@ -162,7 +169,7 @@ export function updateStreak(): void {
 
 		const yesterday = new Date();
 		yesterday.setDate(yesterday.getDate() - 1);
-		const yesterdayStr = yesterday.toISOString().slice(0, 10);
+		const yesterdayStr = localDateStr(yesterday);
 
 		if (p.lastActiveDate === yesterdayStr) {
 			p.streakDays += 1; // 连续
@@ -175,4 +182,68 @@ export function updateStreak(): void {
 		p.lastActiveDate = today;
 		return p;
 	});
+}
+
+// === 学习数据备份（导出/导入） ===
+
+/** 把当前进度导出为 JSON 字符串（含版本信封，与 localStorage 存储格式一致） */
+export function exportProgress(): string {
+	let snapshot: ProgressData | null = null;
+	let unsub: (() => void) | null = null;
+	// 同步读取当前值：订阅后立即回调一次当前快照
+	unsub = progress.subscribe((p) => {
+		snapshot = p;
+		unsub?.();
+		unsub = null;
+	});
+	return JSON.stringify({ __sv: 1, data: snapshot }, null, 2);
+}
+
+export interface ImportProgressResult {
+	ok: boolean;
+	error?: string;
+}
+
+/**
+ * 从 JSON 字符串导入进度。校验结构完整性，字段缺失时以默认值补齐；
+ * 校验失败返回错误信息且不修改任何数据。
+ */
+export function importProgress(json: string): ImportProgressResult {
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(json);
+	} catch {
+		return { ok: false, error: '文件不是有效的 JSON' };
+	}
+
+	// 兼容两种格式：新版 { __sv, data } 信封 与 旧版裸 ProgressData
+	let data = parsed as Partial<ProgressData>;
+	if (
+		parsed !== null &&
+		typeof parsed === 'object' &&
+		'__sv' in (parsed as Record<string, unknown>) &&
+		'data' in (parsed as Record<string, unknown>)
+	) {
+		data = (parsed as { data: Partial<ProgressData> }).data;
+	}
+	if (data === null || typeof data !== 'object') {
+		return { ok: false, error: '文件内容不是学习数据对象' };
+	}
+
+	const topics = data.topics ?? {};
+	const mistakes = data.mistakes ?? [];
+	if (typeof topics !== 'object' || !Array.isArray(mistakes)) {
+		return { ok: false, error: '数据结构不完整（缺少 topics / mistakes）' };
+	}
+
+	const normalized: ProgressData = {
+		topics,
+		mistakes,
+		totalStudyTime: typeof data.totalStudyTime === 'number' ? data.totalStudyTime : 0,
+		streakDays: typeof data.streakDays === 'number' ? data.streakDays : 0,
+		lastActiveDate: typeof data.lastActiveDate === 'string' ? data.lastActiveDate : ''
+	};
+
+	progress.set(normalized);
+	return { ok: true };
 }

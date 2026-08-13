@@ -1,1 +1,1 @@
-export const ssr = false;
+// 与其他页面一致使用默认 SSR（此前 ssr=false 无必要原因，已统一）

@@ -1,6 +1,8 @@
 /**
- * 课程内容目录 — 首页 / /ds /db 目录页共享的数据源。
+ * 课程内容目录 — 首页 / /ds /db 目录页、侧边栏导航、面包屑、全站搜索的唯一数据源。
  * topicId 与 progress store 的 topics key 以及播放器页 AlgoPlayer 的 topicId 保持一致。
+ * group 用于侧边栏分组；crumb 用于 TopBar 面包屑（[current]…[/current] 标记当前页）。
+ * 新增课程 = 在这里加一项 + 建页面 + 建引擎，导航/目录/搜索自动同步。
  */
 
 export interface TopicCard {
@@ -11,8 +13,17 @@ export interface TopicCard {
 	topicId?: string;
 	/** 徽标文案（如 交互式 / 分步执行） */
 	badge: string;
+	/** 侧边栏分组名 */
+	group: string;
+	/** 面包屑文本（含 [current] 标记） */
+	crumb: string;
+	/** 规划中（当前无条目，保留支持） */
 	planned?: boolean;
 }
+
+/** 侧边栏分组顺序（组内按 topics 数组顺序，即课程教学顺序） */
+export const DS_GROUP_ORDER = ['线性结构', '树形结构', '图结构', '排序算法', '查找'] as const;
+export const DB_GROUP_ORDER = ['基础', '进阶', '设计', '运维'] as const;
 
 export const dsTopics: TopicCard[] = [
 	{
@@ -20,134 +31,172 @@ export const dsTopics: TopicCard[] = [
 		description: '分治策略 · 平均 O(n log n)',
 		href: '/ds/quick-sort',
 		topicId: 'quick-sort',
-		badge: '交互式'
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]快速排序[/current]'
 	},
 	{
 		title: '二叉树遍历',
 		description: '前/中/后/层序 · 递归与迭代',
 		href: '/ds/binary-tree',
 		topicId: 'binary-tree',
-		badge: '交互式'
+		badge: '交互式',
+		group: '树形结构',
+		crumb: '数据结构 / 树 / [current]二叉树遍历[/current]'
 	},
 	{
 		title: '单链表',
 		description: '插入/删除 · 指针定位',
 		href: '/ds/linear-list',
 		topicId: 'linear-list',
-		badge: '交互式'
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 线性表 / [current]单链表[/current]'
 	},
 	{
 		title: '栈和队列',
 		description: '后进先出 · 先进先出',
 		href: '/ds/stack-queue',
 		topicId: 'stack-queue',
-		badge: '交互式'
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 线性表 / [current]栈和队列[/current]'
 	},
 	{
 		title: '冒泡排序',
 		description: '相邻交换上浮 · 稳定 · O(n²)',
 		href: '/ds/bubble-sort',
 		topicId: 'bubble-sort',
-		badge: '交互式'
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]冒泡排序[/current]'
 	},
 	{
 		title: '直接插入排序',
 		description: '插入有序前缀 · 稳定 · O(n²)',
 		href: '/ds/insertion-sort',
 		topicId: 'insertion-sort',
-		badge: '交互式'
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]直接插入排序[/current]'
 	},
 	{
 		title: '简单选择排序',
 		description: '选出最小交换 · 不稳定 · O(n²)',
 		href: '/ds/selection-sort',
 		topicId: 'selection-sort',
-		badge: '交互式'
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]简单选择排序[/current]'
 	},
 	{
 		title: '归并排序',
 		description: '两两合并 · 稳定 · O(n log n)',
 		href: '/ds/merge-sort',
 		topicId: 'merge-sort',
-		badge: '交互式'
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]归并排序[/current]'
 	},
 	{
 		title: '图的存储',
 		description: '邻接矩阵 · 邻接表 · 空间对比',
 		href: '/ds/graph-storage',
 		topicId: 'graph-storage',
-		badge: '交互式'
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]图的存储[/current]'
 	},
 	{
 		title: '图的遍历',
 		description: 'BFS 队列扩散 · DFS 递归深入',
 		href: '/ds/graph-traversal',
 		topicId: 'graph-traversal',
-		badge: '交互式'
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]图的遍历[/current]'
 	},
 	{
 		title: '最小生成树',
 		description: 'Prim 扩张树 · Kruskal 避环选边',
 		href: '/ds/mst',
 		topicId: 'mst',
-		badge: '交互式'
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]最小生成树[/current]'
 	},
 	{
 		title: '最短路径',
 		description: 'Dijkstra 贪心 · dist 松弛',
 		href: '/ds/shortest-path',
 		topicId: 'shortest-path',
-		badge: '交互式'
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]最短路径[/current]'
 	},
 	{
 		title: '拓扑排序',
 		description: 'Kahn 入度法 · 环检测',
 		href: '/ds/topo-sort',
 		topicId: 'topo-sort',
-		badge: '交互式'
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]拓扑排序[/current]'
 	},
 	{
 		title: '关键路径',
 		description: 'AOE 网络 · ve/vl 判定',
 		href: '/ds/critical-path',
 		topicId: 'critical-path',
-		badge: '交互式'
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]关键路径[/current]'
 	},
 	{
 		title: '串的模式匹配（KMP）',
 		description: 'next 数组 · i 不回退 · O(n+m)',
 		href: '/ds/kmp',
 		topicId: 'kmp',
-		badge: '交互式'
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 线性表 / [current]串的模式匹配（KMP）[/current]'
 	},
 	{
 		title: '二叉搜索树',
 		description: '查找 · 插入 · 删除',
 		href: '/ds/bst',
 		topicId: 'bst',
-		badge: '交互式'
+		badge: '交互式',
+		group: '树形结构',
+		crumb: '数据结构 / 树 / [current]二叉搜索树[/current]'
 	},
 	{
 		title: '哈夫曼树',
 		description: '带权路径长度 · 编码',
 		href: '/ds/huffman',
 		topicId: 'huffman',
-		badge: '交互式'
+		badge: '交互式',
+		group: '树形结构',
+		crumb: '数据结构 / 树 / [current]哈夫曼树[/current]'
 	},
 	{
 		title: '二分查找',
 		description: '有序表折半 · O(log n)',
 		href: '/ds/binary-search',
 		topicId: 'binary-search',
-		badge: '交互式'
+		badge: '交互式',
+		group: '查找',
+		crumb: '数据结构 / 查找 / [current]二分查找[/current]'
 	},
 	{
 		title: '哈希表',
 		description: '散列函数 · 冲突处理',
 		href: '/ds/hash-table',
 		topicId: 'hash-table',
-		badge: '交互式'
-	}
+		badge: '交互式',
+		group: '查找',
+		crumb: '数据结构 / 查找 / [current]哈希表[/current]'
+	},
 ];
 
 export const dbTopics: TopicCard[] = [
@@ -156,76 +205,116 @@ export const dbTopics: TopicCard[] = [
 		description: '数据模型 · 三级模式结构',
 		href: '/db/overview',
 		topicId: 'overview',
-		badge: '交互式'
+		badge: '交互式',
+		group: '基础',
+		crumb: '数据库 / [current]数据库系统概述[/current]'
 	},
 	{
 		title: 'MySQL 数据查询',
 		description: 'SELECT / WHERE / GROUP BY',
 		href: '/db/sql',
 		topicId: 'sql',
-		badge: '分步执行'
+		badge: '分步执行',
+		group: '基础',
+		crumb: '数据库 / [current]MySQL 数据查询[/current]'
 	},
 	{
 		title: '高级查询',
 		description: 'HAVING · 外连接 · UNION · EXISTS',
 		href: '/db/advanced-query',
 		topicId: 'sql-advanced',
-		badge: '分步执行'
+		badge: '分步执行',
+		group: '基础',
+		crumb: '数据库 / [current]高级查询[/current]'
 	},
 	{
 		title: '建表练习',
 		description: 'CREATE TABLE / 数据类型',
 		href: '/db/tables',
 		topicId: 'tables',
-		badge: '交互式'
+		badge: '交互式',
+		group: '基础',
+		crumb: '数据库 / [current]建表练习[/current]'
 	},
 	{
 		title: '数据更新',
 		description: 'INSERT / UPDATE / DELETE',
 		href: '/db/update',
 		topicId: 'dml',
-		badge: '分步执行'
+		badge: '分步执行',
+		group: '基础',
+		crumb: '数据库 / [current]数据更新[/current]'
 	},
 	{
 		title: '索引原理',
 		description: 'B+ 树 · 查找与分裂',
 		href: '/db/index',
 		topicId: 'index',
-		badge: '分步执行'
+		badge: '分步执行',
+		group: '进阶',
+		crumb: '数据库 / [current]索引原理[/current]'
 	},
 	{
 		title: '视图',
 		description: '创建视图 · 查询与更新',
 		href: '/db/view',
 		topicId: 'view',
-		badge: '分步执行'
+		badge: '分步执行',
+		group: '进阶',
+		crumb: '数据库 / [current]视图[/current]'
+	},
+	{
+		title: '触发器',
+		description: 'BEFORE/AFTER · DML 事件自动执行',
+		href: '/db/triggers',
+		topicId: 'triggers',
+		badge: '分步执行',
+		group: '进阶',
+		crumb: '数据库 / [current]触发器[/current]'
+	},
+	{
+		title: '存储过程',
+		description: '参数 · 变量 · IF/WHILE 流程控制',
+		href: '/db/procedures',
+		topicId: 'procedures',
+		badge: '分步执行',
+		group: '进阶',
+		crumb: '数据库 / [current]存储过程[/current]'
 	},
 	{
 		title: 'E-R 模型',
 		description: '概念模型 · 关系转换',
 		href: '/db/er',
 		topicId: 'er',
-		badge: '分步执行'
+		badge: '分步执行',
+		group: '设计',
+		crumb: '数据库 / [current]E-R 模型[/current]'
 	},
 	{
 		title: '关系规范化',
 		description: '函数依赖 · 范式分解',
 		href: '/db/normalize',
 		topicId: 'normalize',
-		badge: '分步执行'
+		badge: '分步执行',
+		group: '设计',
+		crumb: '数据库 / [current]关系规范化[/current]'
 	},
 	{
 		title: '事务与并发控制',
 		description: 'ACID · 隔离级别',
 		href: '/db/transaction',
 		topicId: 'transaction',
-		badge: '分步执行'
+		badge: '分步执行',
+		group: '运维',
+		crumb: '数据库 / [current]事务与并发控制[/current]'
 	},
 	{
 		title: '用户与权限管理',
 		description: '用户 · GRANT · 备份恢复',
 		href: '/db/users',
 		topicId: 'users',
-		badge: '交互式'
-	}
+		badge: '交互式',
+		group: '运维',
+		crumb: '数据库 / [current]用户与权限管理[/current]'
+	},
 ];

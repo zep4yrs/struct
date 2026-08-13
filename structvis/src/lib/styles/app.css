@@ -20,16 +20,18 @@
 	--color-academic: #1b4965; /* 学术深蓝 — 主色/链接/关键字 */
 	--color-accent: #d97706; /* 琥珀 — 当前步进高亮/强调 */
 	--color-success: #2d6a4f; /* 深绿 — 完成/正确/命中 */
+	--color-success-deep: #1f4d38; /* 深绿加深 — 图/KMP 渲染器 done 态节点 */
 	--color-danger: #9b2226; /* 暗红 — 错误/pivot */
 	--color-warning: #b8860b; /* 赭石 — 警告 */
 
 	--color-line-hair: #e5e2db; /* 0.5px 细线 — 分割线 */
 	--color-line-regular: #d4d0c8; /* 1px 边框 — 卡片/输入框 */
+	--color-scrim: rgba(20, 20, 20, 0.35); /* 弹窗/抽屉遮罩 */
 
-	/* === 字体 === */
-	--font-display: 'Fraunces', 'Noto Serif SC', Georgia, serif;
-	--font-body: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-	--font-mono: 'JetBrains Mono', 'Consolas', monospace;
+	/* === 字体（系统栈，无外部字体依赖：加载快、无隐私外泄、中国大陆可访问） === */
+	--font-display: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+	--font-body: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+	--font-mono: 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SF Mono', monospace;
 
 	/* === 字号阶梯 === */
 	--text-display: 48px;
@@ -88,11 +90,13 @@
 	--color-academic: #6fa8ce; /* 学术蓝提亮 — 链接/关键字 */
 	--color-accent: #f5a623; /* 琥珀提亮 — 当前步进高亮 */
 	--color-success: #5cb088; /* 绿提亮 — 完成/正确 */
+	--color-success-deep: #3e7d5b; /* 深绿提亮 — done 态节点 */
 	--color-danger: #d96a6e; /* 红提亮 — 错误 */
 	--color-warning: #d9a93f; /* 赭石提亮 — 警告 */
 
 	--color-line-hair: #2c2a27; /* 细线 */
 	--color-line-regular: #3e3b36; /* 边框 */
+	--color-scrim: rgba(0, 0, 0, 0.55); /* 暗色遮罩加深 */
 }
 
 .dark body::before {
@@ -148,7 +152,8 @@ body::before {
 	pointer-events: none;
 	opacity: 0.4;
 	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-	z-index: 1000;
+	/* 纸纹置于内容之上、弹窗之下（弹窗 z 60-80），避免盖在模态之上 */
+	z-index: 40;
 }
 
 /* 标题字体 */
@@ -170,6 +175,12 @@ pre,
 .mono {
 	font-family: var(--font-mono);
 	font-size: 0.9em;
+}
+
+/* 页面描述中的行内等宽高亮（AlgoPage desc 内容来自各页面 snippet） */
+.page-desc .mono {
+	font-size: 13px;
+	color: var(--color-academic);
 }
 
 /* 焦点环 — 统一用 2px 墨黑描边 + 2px 偏移 */

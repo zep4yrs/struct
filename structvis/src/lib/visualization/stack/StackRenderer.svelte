@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { onMount, onDestroy, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
+	import { resolveCSSVar } from '../visualization-utils';
+import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -12,13 +13,19 @@
 
 	let { steps, playbackPos, mode }: Props = $props();
 
-	let canvasEl: HTMLCanvasElement | undefined;
-	let ctx: CanvasRenderingContext2D | null = null;
-	let dpr = 1;
-	let unwatchTheme: (() => void) | undefined;
-
-	let canvasWidth = 600;
-	let canvasHeight = 320;
+	// 画布与尺寸由 CanvasHost 统一管理（resize/ResizeObserver/主题监听）；
+	// CanvasHost 通过 onDraw 回调注入最新状态（$state 响应式）
+	let host: CanvasHostState = $state({
+		canvasEl: undefined,
+		ctx: null,
+		dpr: 1,
+		width: 600,
+		height: 280
+	});
+	let ctx = $derived(host.ctx);
+	let dpr = $derived(host.dpr);
+	let canvasWidth = $derived(host.width);
+	let canvasHeight = $derived(host.height);
 
 	const BLOCK_W = 84;
 	const BLOCK_H = 36;
@@ -27,6 +34,7 @@
 	const MAX_VISIBLE = 6;
 
 	let colors = $state({
+		inkInverse: '#FAF9F6',
 		node: '#FFFFFF',
 		nodeBorder: '#D4D0C8',
 		ink: '#1A1A1A',
@@ -40,6 +48,7 @@
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
+		inkInverse: resolveCSSVar('--color-ink-inverse'),
 			node: resolveCSSVar('--color-surface'),
 			nodeBorder: resolveCSSVar('--color-line-regular'),
 			ink: resolveCSSVar('--color-ink'),
@@ -81,7 +90,7 @@
 		ctx.setLineDash([]);
 
 		ctx.fillStyle = state.text;
-		ctx.font = '600 14px var(--font-mono)';
+		ctx.font = "600 14px 'JetBrains Mono', Consolas, monospace";
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 		ctx.fillText(String(value), x + BLOCK_W / 2, y + BLOCK_H / 2 + 1);
@@ -96,7 +105,7 @@
 	) {
 		if (!ctx) return;
 		ctx.fillStyle = color;
-		ctx.font = '600 11px var(--font-mono)';
+		ctx.font = "600 11px 'JetBrains Mono', Consolas, monospace";
 		ctx.textAlign = align;
 		ctx.textBaseline = 'middle';
 		ctx.fillText(text, x, y);
@@ -182,12 +191,12 @@
 			if (isPivot) {
 				fill = colors.pivot;
 				border = colors.pivot;
-				text = '#FAF9F6';
+				text = 'colors.inkInverse';
 				lineWidth = 2;
 			} else if (isCurrent) {
 				fill = colors.current;
 				border = colors.current;
-				text = '#FAF9F6';
+				text = 'colors.inkInverse';
 				lineWidth = 2;
 			} else if (isCompare) {
 				border = colors.compare;
@@ -264,12 +273,12 @@
 			if (isPivot) {
 				fill = colors.pivot;
 				border = colors.pivot;
-				text = '#FAF9F6';
+				text = 'colors.inkInverse';
 				lineWidth = 2;
 			} else if (isCurrent) {
 				fill = colors.current;
 				border = colors.current;
-				text = '#FAF9F6';
+				text = 'colors.inkInverse';
 				lineWidth = 2;
 			} else if (isCompare) {
 				border = colors.compare;
@@ -292,66 +301,25 @@
 		}
 	}
 
-	function resizeCanvas() {
-		if (!browser || !canvasEl) return;
-		const container = canvasEl.parentElement;
-		if (!container) return;
-
-		dpr = window.devicePixelRatio || 1;
-		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(300, rect.width - 24);
-		canvasHeight = Math.max(200, rect.height - 24);
-
-		canvasEl.width = canvasWidth * dpr;
-		canvasEl.height = canvasHeight * dpr;
-		canvasEl.style.width = `${canvasWidth}px`;
-		canvasEl.style.height = `${canvasHeight}px`;
-
-		ctx = canvasEl.getContext('2d');
-		if (ctx) ctx.scale(dpr, dpr);
-
-		updateColorsFromCSS();
-		draw();
-	}
-
-	$effect(() => {
+		$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
+		void mode; // mode 变化（stack/queue 切换）也应触发重绘
 		tick().then(() => draw());
 	});
 
-	onMount(() => {
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
-		draw();
-		unwatchTheme = watchThemeChange(() => {
-			updateColorsFromCSS();
-			draw();
-		});
-	});
+	;
 
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', resizeCanvas);
-		unwatchTheme?.();
-	});
 </script>
 
-<div class="stack-canvas-wrap">
-	<canvas bind:this={canvasEl}></canvas>
-</div>
-
-<style>
-	.stack-canvas-wrap {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	canvas {
-		display: block;
-	}
-</style>
+<!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->
+<CanvasHost
+	minW={420}
+	minH={240}
+	onDraw={(h) => {
+		host = h;
+		draw();
+	}}
+	onThemeChange={updateColorsFromCSS}
+/>

@@ -6,7 +6,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	DemoScriptItem,
 	AlgorithmStep,
 	EngineCustomConfig,
@@ -15,6 +14,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 const PSEUDO: string[] = [
@@ -44,7 +44,7 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	}
 ];
 
-export class InsertionSortEngine implements AlgorithmEngine<number[]> {
+export class InsertionSortEngine extends EngineBase<number[]> {
 	readonly name = '插入排序';
 	readonly renderType = 'array' as const;
 
@@ -76,12 +76,6 @@ export class InsertionSortEngine implements AlgorithmEngine<number[]> {
 			narration: '排序完成。插入排序时间复杂度 O(n²)，但对近乎有序的数据效率很高，适合小规模数据。'
 		}
 	];
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 
 	presets: EnginePreset[] = [
 		{ name: '示例 A', description: '[5, 2, 8, 1, 9]' },
@@ -202,19 +196,4 @@ export class InsertionSortEngine implements AlgorithmEngine<number[]> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

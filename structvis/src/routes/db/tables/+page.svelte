@@ -41,7 +41,8 @@
 	let error = $state('');
 	let result = $state<CreateTableResult | null>(presetResults[0]);
 
-	const displaySql = $derived(showCustom ? customSql : PRESETS[selectedPreset].sql);
+	// selectedPreset 可为 -1（自定义解析成功后），切回示例视图时由按钮重置为 0；此处再加守卫双保险
+	const displaySql = $derived(showCustom ? customSql : PRESETS[selectedPreset]?.sql ?? customSql);
 
 	function loadPreset(index: number) {
 		selectedPreset = index;
@@ -96,18 +97,26 @@
 					</div>
 				</div>
 				<div class="view {showCustom ? '' : 'hide'}">
-					<input
-						type="text"
+					<textarea
 						bind:value={customSql}
 						class="custom-input"
+						rows="4"
 						placeholder="如：CREATE TABLE 学生 (学号 INT PRIMARY KEY, 姓名 VARCHAR(20) NOT NULL)"
-						onkeydown={(e) => e.key === 'Enter' && applyCustom()}
-					/>
+						onkeydown={(e) => e.key === 'Enter' && (e.ctrlKey || e.metaKey) && applyCustom()}
+					></textarea>
 					<button class="apply-btn" onclick={applyCustom}>解析</button>
 				</div>
 			</div>
 			<div class="view-switch">
-				<button class="op-btn {!showCustom ? 'active' : ''}" onclick={() => (showCustom = false)}>
+				<button
+					class="op-btn {!showCustom ? 'active' : ''}"
+					onclick={() => {
+						// 自定义解析成功后 selectedPreset=-1，切回示例时复位到第 0 个并重载解析结果
+						// （否则 PRESETS[-1] 越界崩溃，且 schema 区仍显示自定义表）
+						if (selectedPreset < 0) loadPreset(0);
+						showCustom = false;
+					}}
+				>
 					示例
 				</button>
 				<button class="op-btn {showCustom ? 'active' : ''}" onclick={() => (showCustom = true)}>

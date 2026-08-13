@@ -6,7 +6,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	DemoScriptItem,
 	AlgorithmStep,
 	EngineCustomConfig,
@@ -15,6 +14,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 const PSEUDO: string[] = [
@@ -46,7 +46,7 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	}
 ];
 
-export class SelectionSortEngine implements AlgorithmEngine<number[]> {
+export class SelectionSortEngine extends EngineBase<number[]> {
 	readonly name = '选择排序';
 	readonly renderType = 'array' as const;
 
@@ -85,12 +85,6 @@ export class SelectionSortEngine implements AlgorithmEngine<number[]> {
 				'排序完成。选择排序始终执行 O(n²) 次比较，但交换次数最少（至多 n-1 次），适合交换代价高的场景。'
 		}
 	];
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 
 	presets: EnginePreset[] = [
 		{ name: '示例 A', description: '[5, 2, 8, 1, 9]' },
@@ -250,19 +244,4 @@ export class SelectionSortEngine implements AlgorithmEngine<number[]> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

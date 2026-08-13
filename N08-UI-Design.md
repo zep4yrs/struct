@@ -1,5 +1,9 @@
 # N°08 界面设计方案 — UI Design Spec
 
+> **⚠️ 已过时**：本文档是 React + Radix + framer-motion + sql.js 时代的早期设计稿，
+> 实际实现为 Svelte 5 + 原生组件 + GSAP + 自研 SQL 解析器。
+> 视觉 token 以 `structvis/src/lib/styles/app.css` 为准；组件结构以 `src/lib/components/` 为准。
+
 > 配套文档：立项规划 `N08-DBDS-Platform.md`（尤其 §11 体验改进设计）。
 > 本文档定位：界面/视觉/交互/无障碍设计规范，供后续实现（v0.1 起）直接对照。
 > 设计目标：美观、易用、无障碍（WCAG 2.1 AA）、像素级可控。

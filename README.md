@@ -44,7 +44,7 @@ structvis/
 ├── src/
 │   ├── lib/
 │   │   ├── engines/          # 算法/数据库引擎（AlgorithmEngine / SelectEngine / TriggerEngine / ProcedureEngine）
-│   │   ├── visualization/    # 渲染器（array / tree / linkedlist / sql-table / pseudocode）
+│   │   ├── visualization/    # 渲染器（array / tree / linkedlist / stack / sqltable / graph / kmp / huffman / hashtable / er / btree，按 engine.renderType 插件化）
 │   │   ├── components/       # 播放器、控制栏、侧边栏、弹窗
 │   │   └── content/          # 课程主题配置
 │   └── routes/               # 页面路由
@@ -54,7 +54,7 @@ structvis/
 
 ## 当前状态
 
-v1.0 正式版。已实现数据结构 19 课：排序（快速/冒泡/插入/选择/归并）、树（二叉树遍历/二叉搜索树/哈夫曼）、图（存储/遍历/最短路径/最小生成树/拓扑排序/关键路径）、线性表、栈和队列、KMP、二分查找、哈希表。已实现数据库 9 课：SELECT 查询、高级查询、数据更新、视图、索引、触发器、存储过程、事务与并发、E-R 模型、关系规范化、用户权限管理。全部支持步进可视化、即时练习反馈、错题本与掌握度追踪，桌面与移动端均可用。
+v1.0 正式版。已实现数据结构 19 课：排序（快速/冒泡/插入/选择/归并）、树（二叉树遍历/二叉搜索树/哈夫曼）、图（存储/遍历/最短路径/最小生成树/拓扑排序/关键路径）、线性表、栈和队列、KMP、二分查找、哈希表。已实现数据库 13 课：数据库系统概述、SELECT 查询、高级查询、建表练习、数据更新、视图、索引、触发器、存储过程、E-R 模型、关系规范化、事务与并发、用户与权限管理。全部支持步进可视化、即时练习反馈、错题本与掌握度追踪，桌面与移动端均可用。
 
 ## 许可
 

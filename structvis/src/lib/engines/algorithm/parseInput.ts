@@ -16,9 +16,9 @@ export function parseNumberList(
 		throw new Error(`请输入${label}`);
 	}
 	const nums = parts.map((s) => {
-		const n = parseInt(s, 10);
-		if (isNaN(n)) throw new Error(`"${s}" 不是有效数字`);
-		return n;
+		// 严格整数校验：parseInt 会宽松接受 "12abc"→12、"1.5"→1、"0x1F"→0，静默截断错误输入
+		if (!/^-?\d+$/.test(s)) throw new Error(`"${s}" 不是有效数字`);
+		return parseInt(s, 10);
 	});
 	if (min !== undefined && nums.length < min) {
 		throw new Error(`至少需要 ${min} 个${label === '数据' ? '元素' : '节点'}`);

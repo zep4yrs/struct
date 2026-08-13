@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -18,6 +17,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseEdgeList, parseLabelList } from '../parseInput';
 
 export type GraphTraversalMode = 'bfs' | 'dfs';
@@ -100,12 +100,9 @@ const DEFAULT_EDGES: [number, number][] = [
 	[4, 5]
 ];
 
-export class GraphTraversalEngine implements AlgorithmEngine<GraphTraversalInput> {
+export class GraphTraversalEngine extends EngineBase<GraphTraversalInput> {
 	readonly name = '图的遍历';
 	readonly renderType = 'graph' as const;
-
-	pseudocode: string[] = [];
-	practiceQuestions: PracticeQuestion[] = [];
 
 	readonly demoScript: DemoScriptItem[] = [
 		{
@@ -129,11 +126,6 @@ export class GraphTraversalEngine implements AlgorithmEngine<GraphTraversalInput
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _labels: string[] = [];
 	private _edges: [number, number][] = [];
 	private _adj: number[][] = [];
@@ -351,19 +343,4 @@ export class GraphTraversalEngine implements AlgorithmEngine<GraphTraversalInput
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -17,6 +16,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 
 export interface KmpInput {
 	text: string;
@@ -71,7 +71,7 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	}
 ];
 
-export class KMPEngine implements AlgorithmEngine<KmpInput> {
+export class KMPEngine extends EngineBase<KmpInput> {
 	readonly name = '串的模式匹配';
 	readonly renderType = 'kmp' as const;
 
@@ -103,11 +103,6 @@ export class KMPEngine implements AlgorithmEngine<KmpInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _text = '';
 	private _pattern = '';
 	private _next: number[] = [];
@@ -356,19 +351,4 @@ export class KMPEngine implements AlgorithmEngine<KmpInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

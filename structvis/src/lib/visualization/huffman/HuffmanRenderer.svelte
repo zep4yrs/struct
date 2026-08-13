@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { onMount, onDestroy, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HuffmanData, HuffmanNode } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
+	import { resolveCSSVar } from '../visualization-utils';
+import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -11,13 +12,19 @@
 
 	let { steps, playbackPos }: Props = $props();
 
-	let canvasEl: HTMLCanvasElement | undefined;
-	let ctx: CanvasRenderingContext2D | null = null;
-	let dpr = 1;
-	let unwatchTheme: (() => void) | undefined;
-
-	let canvasWidth = 640;
-	let canvasHeight = 400;
+	// 画布与尺寸由 CanvasHost 统一管理（resize/ResizeObserver/主题监听）；
+	// CanvasHost 通过 onDraw 回调注入最新状态（$state 响应式）
+	let host: CanvasHostState = $state({
+		canvasEl: undefined,
+		ctx: null,
+		dpr: 1,
+		width: 600,
+		height: 280
+	});
+	let ctx = $derived(host.ctx);
+	let dpr = $derived(host.dpr);
+	let canvasWidth = $derived(host.width);
+	let canvasHeight = $derived(host.height);
 
 	const LOGICAL_W = 1000;
 	const LOGICAL_H = 540;
@@ -28,6 +35,7 @@
 	const PAD_SIDE = 40;
 
 	let colors = $state({
+		inkInverse: '#FAF9F6',
 		node: '#FFFFFF',
 		border: '#D4D0C8',
 		edge: '#D4D0C8',
@@ -42,6 +50,7 @@
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
+		inkInverse: resolveCSSVar('--color-ink-inverse'),
 			node: resolveCSSVar('--color-surface'),
 			border: resolveCSSVar('--color-line-regular'),
 			edge: resolveCSSVar('--color-line-regular'),
@@ -89,9 +98,13 @@
 		return pos;
 	}
 
+	// 布局缓存：同一 step 坐标恒定，避免每帧重复递归布局
+	const layoutCache = new Map<number, Map<number, Pos>>();
+
 	function draw() {
 		if (!ctx) return;
 		const f = frame();
+		const stepIdx = Math.floor(playbackPos);
 		ctx.save();
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 		const scale = Math.min(canvasWidth / LOGICAL_W, canvasHeight / LOGICAL_H, 1.35);
@@ -101,37 +114,45 @@
 			return;
 		}
 
-		// 每棵树布局 + 总叶子数分配水平空间
-		const trees = f.roots
-			.map((r) => ({ root: r, width: leafCount(f.nodes, r) }))
-			.filter((t) => t.width > 0);
-		const totalUnits = trees.reduce((a, t) => a + t.width, 0);
-		const gap = Math.max(
-			16,
-			(LOGICAL_W - PAD_SIDE * 2 - totalUnits * 26) / Math.max(1, trees.length + 1)
-		);
-		const unit = (LOGICAL_W - PAD_SIDE * 2 - gap * (trees.length + 1)) / Math.max(1, totalUnits);
+		// 布局缓存：同一 step 的森林结构与坐标恒定，避免每帧重复递归布局
+		const layoutKey = stepIdx;
+		let posFinal = layoutCache.get(layoutKey);
+		if (!posFinal) {
+			const trees = f.roots
+				.map((r) => ({ root: r, width: leafCount(f.nodes, r) }))
+				.filter((t) => t.width > 0);
+			const totalUnits = trees.reduce((a, t) => a + t.width, 0);
+			const gap = Math.max(
+				16,
+				(LOGICAL_W - PAD_SIDE * 2 - totalUnits * 26) / Math.max(1, trees.length + 1)
+			);
+			const unit =
+				(LOGICAL_W - PAD_SIDE * 2 - gap * (trees.length + 1)) / Math.max(1, totalUnits);
 
-		let xCursor = PAD_SIDE + gap;
-		const positions = new Map<number, Pos>();
-		let maxDepth = 0;
-		for (const t of trees) {
-			const pos = placeTree(f.nodes, t.root, PAD_TOP);
-			for (const [id, p] of pos) positions.set(id, { x: xCursor + p.x * unit, y: p.y });
-			xCursor += t.width * unit + gap;
-			const d = depthOf(f.nodes, t.root);
-			if (d > maxDepth) maxDepth = d;
+			let xCursor = PAD_SIDE + gap;
+			const positions = new Map<number, Pos>();
+			let maxDepth = 0;
+			for (const t of trees) {
+				const pos = placeTree(f.nodes, t.root, PAD_TOP);
+				for (const [id, p] of pos) positions.set(id, { x: xCursor + p.x * unit, y: p.y });
+				xCursor += t.width * unit + gap;
+				const d = depthOf(f.nodes, t.root);
+				if (d > maxDepth) maxDepth = d;
+			}
+
+			// 垂直居中
+			const totalH = PAD_TOP + maxDepth * LEVEL_H;
+			const yOff = (LOGICAL_H - totalH) / 2;
+			posFinal = new Map<number, Pos>();
+			for (const [id, p] of positions) posFinal.set(id, { x: p.x, y: p.y + yOff });
+			layoutCache.set(layoutKey, posFinal);
 		}
 
-		// 垂直居中
-		const totalH = PAD_TOP + maxDepth * LEVEL_H;
-		const yOff = (LOGICAL_H - totalH) / 2;
-		const posFinal = new Map<number, Pos>();
-		for (const [id, p] of positions) posFinal.set(id, { x: p.x, y: p.y + yOff });
-
-		const sortedSet = new Set(stepHighlights().sorted);
-		const currentSet = new Set(stepHighlights().current);
-		const compareSet = new Set(stepHighlights().compare);
+		// 高亮集合每帧只算一次
+		const hl = stepHighlights();
+		const sortedSet = new Set(hl.sorted);
+		const currentSet = new Set(hl.current);
+		const compareSet = new Set(hl.compare);
 
 		const nodeById = new Map<number, HuffmanNode>();
 		for (const n of f.nodes) nodeById.set(n.id, n);
@@ -166,12 +187,12 @@
 			if (currentSet.has(n.id)) {
 				fill = colors.current;
 				border = colors.current;
-				textColor = '#FAF9F6';
+				textColor = 'colors.inkInverse';
 				lw = 2;
 			} else if (sortedSet.has(n.id)) {
 				fill = colors.sorted;
 				border = colors.sorted;
-				textColor = '#FAF9F6';
+				textColor = 'colors.inkInverse';
 				lw = 2;
 			} else if (compareSet.has(n.id)) {
 				border = colors.compare;
@@ -229,68 +250,24 @@
 		return max;
 	}
 
-	function resizeCanvas() {
-		if (!browser || !canvasEl) return;
-		const container = canvasEl.parentElement;
-		if (!container) return;
-
-		dpr = window.devicePixelRatio || 1;
-		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(Math.max(320, rect.width - 24), LOGICAL_W * MIN_SCALE);
-		canvasHeight = Math.max(Math.max(240, rect.height - 24), LOGICAL_H * MIN_SCALE);
-
-		canvasEl.width = canvasWidth * dpr;
-		canvasEl.height = canvasHeight * dpr;
-		canvasEl.style.width = `${canvasWidth}px`;
-		canvasEl.style.height = `${canvasHeight}px`;
-
-		ctx = canvasEl.getContext('2d');
-		if (ctx) ctx.scale(dpr, dpr);
-
-		updateColorsFromCSS();
-		draw();
-	}
-
-	$effect(() => {
+		$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
 
-	onMount(() => {
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
-		draw();
-		unwatchTheme = watchThemeChange(() => {
-			updateColorsFromCSS();
-			draw();
-		});
-	});
+	;
 
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', resizeCanvas);
-		unwatchTheme?.();
-	});
 </script>
 
-<div class="huffman-canvas-wrap">
-	<canvas bind:this={canvasEl}></canvas>
-</div>
-
-<style>
-	.huffman-canvas-wrap {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	canvas {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->
+<CanvasHost
+	minW={320}
+	minH={220}
+	onDraw={(h) => {
+		host = h;
+		draw();
+	}}
+	onThemeChange={updateColorsFromCSS}
+/>

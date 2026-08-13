@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, tick } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { expoOut } from 'svelte/easing';
 	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
+	import { settings } from '$lib/stores/settings';
 
 	interface Props {
 		question: PracticeQuestion;
@@ -16,6 +17,7 @@
 	let submitted = $state(false);
 	let isCorrect = $state(false);
 	let showHint = $state(false);
+	let cardRef: HTMLDivElement | undefined = $state();
 
 	const TYPE_LABELS: Record<string, string> = {
 		'choose-next': '选择',
@@ -59,6 +61,11 @@
 			e.preventDefault();
 			showHint = !showHint;
 		}
+
+		if (e.key === 'Escape') {
+			e.preventDefault();
+			onContinue?.();
+		}
 	}
 
 	onMount(() => {
@@ -79,6 +86,11 @@
 		isCorrect = false;
 		showHint = false;
 	});
+
+	// 初始焦点移入对话框（模态 a11y）
+	$effect(() => {
+		tick().then(() => cardRef?.focus());
+	});
 </script>
 
 <div
@@ -90,6 +102,8 @@
 >
 	<div
 		class="practice-card"
+		tabindex="-1"
+		bind:this={cardRef}
 		transition:fly={{
 			y: prefersReducedMotion() ? 0 : 12,
 			duration: prefersReducedMotion() ? 0 : 240,
@@ -157,7 +171,7 @@
 			</button>
 		{:else}
 			<div class="actions">
-				{#if question.hint}
+				{#if question.hint && $settings.showHints}
 					<button class="btn btn-ghost hint-btn" onclick={() => (showHint = !showHint)}>
 						{showHint ? '收起提示' : '提示 (H)'}
 					</button>
@@ -185,7 +199,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 32px;
-		background: rgba(20, 20, 20, 0.35);
+		background: var(--color-scrim);
 	}
 
 	.practice-card {

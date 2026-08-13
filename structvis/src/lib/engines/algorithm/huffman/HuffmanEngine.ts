@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -19,6 +18,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 export interface HuffmanInput {
@@ -66,7 +66,7 @@ interface ForestNode extends HuffmanNode {
 	parent: number;
 }
 
-export class HuffmanEngine implements AlgorithmEngine<HuffmanInput> {
+export class HuffmanEngine extends EngineBase<HuffmanInput> {
 	readonly name = '哈夫曼树';
 	readonly renderType = 'huffman' as const;
 
@@ -98,11 +98,6 @@ export class HuffmanEngine implements AlgorithmEngine<HuffmanInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _nodes: ForestNode[] = [];
 	private _roots: number[] = [];
 	private _wpl = 0;
@@ -266,19 +261,4 @@ export class HuffmanEngine implements AlgorithmEngine<HuffmanInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

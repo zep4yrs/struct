@@ -7,7 +7,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
@@ -16,6 +15,7 @@ import type {
 	RenderType,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 export type StackQueueStructure = 'stack' | 'queue';
@@ -86,18 +86,9 @@ const QUEUE_PRACTICE: PracticeQuestion[] = [
 	}
 ];
 
-export class StackQueueEngine implements AlgorithmEngine<StackQueueEngineInput> {
+export class StackQueueEngine extends EngineBase<StackQueueEngineInput> {
 	readonly name = '栈和队列';
 	renderType: RenderType = 'stack';
-
-	pseudocode: string[] = [];
-	practiceQuestions: PracticeQuestion[] = [];
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 
 	presets: EnginePreset[] = [
 		{ name: '压栈 66', description: '栈 [12, 99, 37, 8] 压入 66' },
@@ -339,19 +330,4 @@ export class StackQueueEngine implements AlgorithmEngine<StackQueueEngineInput> 
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

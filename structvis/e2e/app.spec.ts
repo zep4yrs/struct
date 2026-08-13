@@ -25,10 +25,13 @@ async function waitForHydratedGlobal(page: Page) {
 	await expect(page.locator('html')).not.toHaveClass(/dark/);
 }
 
-// 等待播放器当前步骤的 tween 动画播完（步长 1s），使 playbackPos 与步骤号对齐，
-// 否则连续步进时 floor(playbackPos)+1 仍指向旧步骤。
+// 等待播放器当前步骤的控制 tween 播完（AlgoPlayer 在 canvas-body 上暴露
+// data-tween-busy 信号），使 playbackPos 与步骤号对齐，否则连续步进时
+// floor(playbackPos)+1 仍指向旧步骤。轮询替代固定 sleep，与动画时长解耦。
 async function settleTween(page: Page) {
-	await page.waitForTimeout(1300);
+	await expect(page.locator('.canvas-body')).toHaveAttribute('data-tween-busy', 'false', {
+		timeout: 5000
+	});
 }
 
 async function openBubbleSort(page: Page) {
@@ -319,12 +322,13 @@ test.describe('搜索', () => {
 		const dialog = page.getByRole('dialog', { name: '搜索课程' });
 		await expect(dialog).toBeVisible();
 
-		await dialog.getByRole('textbox', { name: '搜索关键词' }).fill('排序');
+		// 输入框已按 ARIA combobox 模式标记（含 aria-activedescendant/aria-controls）
+		await dialog.getByRole('combobox', { name: '搜索关键词' }).fill('排序');
 		await expect(dialog.getByText('快速排序')).toBeVisible();
 		await expect(dialog.getByText('冒泡排序')).toBeVisible();
 		await expect(dialog.getByText('二叉树遍历')).toBeHidden();
 
-		await dialog.getByRole('textbox', { name: '搜索关键词' }).press('Enter');
+		await dialog.getByRole('combobox', { name: '搜索关键词' }).press('Enter');
 		await expect(page.getByRole('heading', { name: '快速排序' })).toBeVisible();
 	});
 
@@ -336,7 +340,7 @@ test.describe('搜索', () => {
 		const dialog = page.getByRole('dialog', { name: '搜索课程' });
 		await expect(dialog).toBeVisible();
 
-		await dialog.getByRole('textbox', { name: '搜索关键词' }).fill('不存在的课程xyz');
+		await dialog.getByRole('combobox', { name: '搜索关键词' }).fill('不存在的课程xyz');
 		await expect(dialog.getByText(/没有找到/)).toBeVisible();
 
 		await page.keyboard.press('Escape');
@@ -527,3 +531,203 @@ test.describe('设置', () => {
 		await expect(page.locator('html').getAttribute('class')).not.toBe(before);
 	});
 });
+
+test.describe('回归与覆盖补充', () => {
+	test('建表页：自定义解析成功后切回示例不崩溃（H1 回归）', async ({ page }) => {
+		await page.goto('/struct/db/tables');
+		await expect(page.getByRole('heading', { name: '建表练习' })).toBeVisible();
+		await waitForHydratedGlobal(page);
+
+		// 切到自定义视图，输入合法建表语句并解析
+		await page.locator('.op-btn', { hasText: '自定义' }).click();
+		await page.locator('textarea.custom-input').fill(
+			'CREATE TABLE 测试 (id INT PRIMARY KEY, name VARCHAR(20))'
+		);
+		await page.locator('.apply-btn', { hasText: '解析' }).click();
+		await expect(page.locator('.schema-table')).toBeVisible();
+		await expect(page.locator('.schema-name')).toContainText('测试');
+
+		// 切回示例视图：此前 selectedPreset=-1 会导致 PRESETS[-1].sql 越界白屏
+		await page.locator('.op-btn', { hasText: '示例' }).click();
+		await expect(page.locator('.sql-block')).toBeVisible();
+		await expect(page.locator('.schema-name')).toContainText('学生');
+		// 页面未崩溃：标题仍可见
+		await expect(page.getByRole('heading', { name: '建表练习' })).toBeVisible();
+	});
+
+	test('SQL 页：自定义 SQL 重建并逐步执行', async ({ page }) => {
+		await page.goto('/struct/db/sql');
+		await expect(page.getByRole('heading', { name: /数据查询/ })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+
+		await page.locator('.title-btn', { hasText: '自定义' }).click();
+		await page
+			.locator('textarea.custom-control')
+			.fill('SELECT 姓名, 成绩 FROM 学生 WHERE 成绩 >= 90');
+		await page.getByRole('button', { name: '应用' }).click();
+		await expect(page.getByRole('dialog', { name: /自定义/ })).toBeHidden();
+		// 重建后回到第 0 步（FROM 扫描）
+		await expect(page.locator('.status-text')).toContainText('FROM 学生');
+
+		// 下一步 → WHERE 逐行判定（timeline 重建含 fade，用轮询等待可点击）
+		await expect(async () => {
+			await page.getByTitle('下一步 (→)').click();
+			await expect(page.locator('.current-num').first()).toHaveText('02', { timeout: 1000 });
+		}).toPass({ timeout: 10000 });
+		await expect(page.locator('.status-text')).toContainText('WHERE');
+		await page.keyboard.press('End');
+		await expect(page.locator('.status-text')).toContainText('查询完成');
+	});
+
+	test('图的存储页：演示数据预设切换重建', async ({ page }) => {
+		await page.goto('/struct/ds/graph-storage');
+		await expect(page.getByRole('heading', { name: '图的存储' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+
+		// 两个预设同为 5 顶点图、步数相同（8），故断言活动预设名与步数复位而非步数差异
+		await page.locator('.title-btn', { hasText: '演示数据' }).click();
+		await page.locator('.preset-item').nth(1).click();
+		await expect(page.locator('.preset-item').first()).toBeHidden();
+		// 重建后编号复位、活动预设按钮文案更新为所选预设
+		await expect(page.locator('.current-num').first()).toHaveText('01');
+		await expect(page.locator('.title-btn').first()).toContainText('邻接表');
+	});
+});
+
+test.describe('覆盖补充：DB 播放器页', () => {
+	test('数据更新页：渲染、步进、练习弹题（非冒泡页练习链路）', async ({ page }) => {
+		await page.goto('/struct/db/update');
+		await expect(page.getByRole('heading', { name: '数据更新' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+
+		// 练习模式：第 2 步弹题（DmlEngine stepIndex 1）
+		await page.getByRole('tab', { name: '练习' }).click();
+		await clickNext(page);
+		await expect(page.locator('.current-num')).toHaveText('02');
+
+		const dialog = page.getByRole('dialog', { name: '练习题目' });
+		await expect(dialog).toBeVisible();
+		await expect(dialog.locator('.question-title')).toContainText('WHERE');
+		await dialog.locator('.option').first().click();
+		await dialog.getByRole('button', { name: '提交答案' }).click();
+		await expect(dialog.locator('.feedback')).toBeVisible();
+	});
+
+	test('E-R 模型页：渲染与步进', async ({ page }) => {
+		await page.goto('/struct/db/er');
+		await expect(page.getByRole('heading', { name: 'E-R 模型' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await clickNext(page);
+		await expect(page.locator('.current-num')).toHaveText('02');
+		await page.keyboard.press('Home');
+		await expect(page.locator('.current-num')).toHaveText('01');
+	});
+
+	test('索引原理页：渲染与步进', async ({ page }) => {
+		await page.goto('/struct/db/index');
+		await expect(page.getByRole('heading', { name: '索引原理' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await clickNext(page);
+		await expect(page.locator('.current-num')).toHaveText('02');
+		await page.keyboard.press('Home');
+		await expect(page.locator('.current-num')).toHaveText('01');
+	});
+
+	test('关系规范化页：渲染与步进', async ({ page }) => {
+		await page.goto('/struct/db/normalize');
+		await expect(page.getByRole('heading', { name: '关系规范化' })).toBeVisible();
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await clickNext(page);
+		await expect(page.locator('.current-num')).toHaveText('02');
+		await page.keyboard.press('Home');
+		await expect(page.locator('.current-num')).toHaveText('01');
+	});
+
+	test('进度页：导出备份可下载、导入备份可恢复', async ({ page }) => {
+		await page.goto('/struct/progress');
+		await expect(page.getByRole('heading', { name: '你的学习进度' })).toBeVisible();
+		await waitForHydratedGlobal(page);
+
+		// 导出：触发下载并读取文件内容
+		const downloadPromise = page.waitForEvent('download');
+		await page.getByRole('button', { name: '导出备份' }).click();
+		const download = await downloadPromise;
+		expect(download.suggestedFilename()).toMatch(/^structvis-progress-.*.json$/);
+		const stream = await download.createReadStream();
+		const chunks: Buffer[] = [];
+		for await (const c of stream) chunks.push(c as Buffer);
+		const json = Buffer.concat(chunks).toString('utf-8');
+		const parsed = JSON.parse(json) as { __sv: number; data: { topics: Record<string, unknown> } };
+		expect(parsed.__sv).toBe(1);
+		expect(typeof parsed.data.topics).toBe('object');
+
+		// 导入：构造备份文件并上传
+		const seed = JSON.stringify({
+			__sv: 1,
+			data: {
+				topics: {
+					'quick-sort': { mastery: 88, totalExercises: 9, correctExercises: 8, lastVisited: Date.now(), completed: true }
+				},
+				mistakes: [],
+				totalStudyTime: 0,
+				streakDays: 0,
+				lastActiveDate: ''
+			}
+		});
+		await page.locator('input[type="file"]').setInputFiles({
+			name: 'backup.json',
+			mimeType: 'application/json',
+			buffer: Buffer.from(seed, 'utf-8')
+		});
+		await expect(page.getByText('导入成功，学习进度已恢复。')).toBeVisible();
+		// 掌握度卡片反映导入数据
+		await expect(page.getByText('1 / 1 个主题已掌握')).toBeVisible();
+	});
+});
+
+test.describe('视觉回归（渲染器截图基线）', () => {
+	// 截图基线生成：npx playwright test -g "视觉回归" --update-snapshots
+	// 跨平台字体差异通过 maxDiffPixelRatio 容差吸收
+	test('快速排序页画布截图基线', async ({ page }) => {
+		await page.goto('/struct/ds/quick-sort');
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await expect(page.locator('.canvas-body canvas')).toBeVisible();
+		// 等待首帧绘制与字体稳定
+		await expect(page.locator('.status-text')).toContainText('初始数组');
+		await expect(page.locator('.algo-player')).toHaveScreenshot('quick-sort-player.png', {
+			animations: 'disabled',
+			maxDiffPixelRatio: 0.05
+		});
+	});
+
+	test('图的遍历页画布截图基线', async ({ page }) => {
+		await page.goto('/struct/ds/graph-traversal');
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await expect(page.locator('.canvas-body canvas')).toBeVisible();
+		await expect(page.locator('.algo-player')).toHaveScreenshot('graph-traversal-player.png', {
+			animations: 'disabled',
+			maxDiffPixelRatio: 0.05
+		});
+	});
+
+	test('二叉树遍历页画布截图基线', async ({ page }) => {
+		await page.goto('/struct/ds/binary-tree');
+		await expect(page.locator('.algo-player')).toBeVisible();
+		await waitForHydrated(page);
+		await expect(page.locator('.canvas-body canvas')).toBeVisible();
+		await expect(page.locator('.algo-player')).toHaveScreenshot('binary-tree-player.png', {
+			animations: 'disabled',
+			maxDiffPixelRatio: 0.05
+		});
+	});
+});
+
+

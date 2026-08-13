@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { onMount, onDestroy, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
+	import { resolveCSSVar, watchThemeChange, watchCanvasSize, hexToRgba } from '../visualization-utils';
+import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -11,13 +12,19 @@
 
 	let { steps, playbackPos }: Props = $props();
 
-	let canvasEl: HTMLCanvasElement | undefined;
-	let ctx: CanvasRenderingContext2D | null = null;
-	let dpr = 1;
-	let unwatchTheme: (() => void) | undefined;
-
-	let canvasWidth = 600;
-	let canvasHeight = 360;
+	// 画布与尺寸由 CanvasHost 统一管理（resize/ResizeObserver/主题监听）；
+	// CanvasHost 通过 onDraw 回调注入最新状态（$state 响应式）
+	let host: CanvasHostState = $state({
+		canvasEl: undefined,
+		ctx: null,
+		dpr: 1,
+		width: 600,
+		height: 280
+	});
+	let ctx = $derived(host.ctx);
+	let dpr = $derived(host.dpr);
+	let canvasWidth = $derived(host.width);
+	let canvasHeight = $derived(host.height);
 
 	const ROW_H = 34;
 	const HEADER_H = 40;
@@ -32,7 +39,8 @@
 		ink3: '#9A9A9A',
 		current: '#D97706',
 		compare: '#1B4965',
-		rowBg: '#FFFFFF'
+		rowBg: '#FFFFFF',
+		rowHighlight: 'rgba(217, 119, 6, 0.12)'
 	});
 
 	function updateColorsFromCSS() {
@@ -46,7 +54,8 @@
 			ink3: resolveCSSVar('--color-ink-3'),
 			current: resolveCSSVar('--color-accent'),
 			compare: resolveCSSVar('--color-academic'),
-			rowBg: resolveCSSVar('--color-surface')
+			rowBg: resolveCSSVar('--color-surface'),
+			rowHighlight: hexToRgba(resolveCSSVar('--color-accent'), 0.14)
 		};
 	}
 
@@ -56,10 +65,10 @@
 		const pos = Math.max(0, Math.min(steps.length - 1 + 0.999, playbackPos));
 		const step = steps[Math.floor(pos)];
 		const table = step.table;
-		if (!table || table.rows.length === 0) {
+		if (!table || table.rows.length === 0 || table.columns.length === 0) {
 			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 			ctx.fillStyle = colors.ink3;
-			ctx.font = '13px var(--font-mono)';
+			ctx.font = "13px 'JetBrains Mono', Consolas, monospace";
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
 			ctx.fillText('(空结果集)', canvasWidth / 2, canvasHeight / 2);
@@ -87,7 +96,7 @@
 		ctx.fillStyle = colors.headerBg;
 		ctx.fillRect(x0, 0, totalW, HEADER_H);
 		ctx.fillStyle = colors.ink;
-		ctx.font = '600 11px var(--font-mono)';
+		ctx.font = "600 11px 'JetBrains Mono', Consolas, monospace";
 		ctx.textAlign = 'left';
 		ctx.textBaseline = 'middle';
 		table.columns.forEach((c, ci) => {
@@ -109,7 +118,7 @@
 			}
 
 			ctx.fillStyle = colors.ink2;
-			ctx.font = '12px var(--font-mono)';
+			ctx.font = "12px 'JetBrains Mono', Consolas, monospace";
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'middle';
 			row.forEach((cell, ci) => {
@@ -136,14 +145,14 @@
 		for (const idx of currentSet) {
 			if (idx >= visibleRows) continue;
 			const y = HEADER_H + idx * ROW_H;
-			ctx.fillStyle = 'rgba(217, 119, 6, 0.12)';
+			ctx.fillStyle = colors.rowHighlight;
 			ctx.fillRect(x0 + 1, y + 1, totalW - 2, ROW_H - 1);
 		}
 
 		// 行号标注
 		if (visibleRows < table.rows.length) {
 			ctx.fillStyle = colors.ink3;
-			ctx.font = '600 10px var(--font-mono)';
+			ctx.font = "600 10px 'JetBrains Mono', Consolas, monospace";
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'top';
 			ctx.fillText(
@@ -154,68 +163,24 @@
 		}
 	}
 
-	function resizeCanvas() {
-		if (!browser || !canvasEl) return;
-		const container = canvasEl.parentElement;
-		if (!container) return;
-
-		dpr = window.devicePixelRatio || 1;
-		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(420, rect.width - 24);
-		canvasHeight = Math.max(240, rect.height - 24);
-
-		canvasEl.width = canvasWidth * dpr;
-		canvasEl.height = canvasHeight * dpr;
-		canvasEl.style.width = `${canvasWidth}px`;
-		canvasEl.style.height = `${canvasHeight}px`;
-
-		ctx = canvasEl.getContext('2d');
-		if (ctx) ctx.scale(dpr, dpr);
-
-		updateColorsFromCSS();
-		draw();
-	}
-
-	$effect(() => {
+		$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
 
-	onMount(() => {
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
-		draw();
-		unwatchTheme = watchThemeChange(() => {
-			updateColorsFromCSS();
-			draw();
-		});
-	});
+	;
 
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', resizeCanvas);
-		unwatchTheme?.();
-	});
 </script>
 
-<div class="sql-canvas-wrap">
-	<canvas bind:this={canvasEl}></canvas>
-</div>
-
-<style>
-	.sql-canvas-wrap {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	canvas {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->
+<CanvasHost
+	minW={420}
+	minH={240}
+	onDraw={(h) => {
+		host = h;
+		draw();
+	}}
+	onThemeChange={updateColorsFromCSS}
+/>

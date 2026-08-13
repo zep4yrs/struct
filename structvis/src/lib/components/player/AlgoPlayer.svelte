@@ -3,19 +3,11 @@
 	import { fade, fly } from 'svelte/transition';
 	import { expoOut } from 'svelte/easing';
 	import gsap from 'gsap';
-	import type { AlgorithmEngine, StepType, PracticeQuestion } from '$lib/engines/algorithm/types';
-	import { addMistake, recordExercise } from '$lib/stores/progress';
-	import ArrayRenderer from '$lib/visualization/array/ArrayRenderer.svelte';
-	import TreeRenderer from '$lib/visualization/tree/TreeRenderer.svelte';
-	import LinkedRenderer from '$lib/visualization/linkedlist/LinkedRenderer.svelte';
-	import SqlTableRenderer from '$lib/visualization/sqltable/SqlTableRenderer.svelte';
-	import StackRenderer from '$lib/visualization/stack/StackRenderer.svelte';
-	import ErRenderer from '$lib/visualization/er/ErRenderer.svelte';
-	import BPlusTreeRenderer from '$lib/visualization/btree/BPlusTreeRenderer.svelte';
-	import GraphRenderer from '$lib/visualization/graph/GraphRenderer.svelte';
-	import KmpRenderer from '$lib/visualization/kmp/KmpRenderer.svelte';
-	import HuffmanRenderer from '$lib/visualization/huffman/HuffmanRenderer.svelte';
-	import HashtableRenderer from '$lib/visualization/hashtable/HashtableRenderer.svelte';
+	import type { AlgorithmEngine, PracticeQuestion } from '$lib/engines/algorithm/types';
+	import { settings } from '$lib/stores/settings';
+	import { TimelineController } from './TimelineController';
+	import { PracticeController } from './PracticeController';
+	import RendererSwitch from './RendererSwitch.svelte';
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
 	import PracticePanel from './PracticePanel.svelte';
@@ -29,12 +21,15 @@
 	let { engine, topicId = 'unknown', topicName = '未知主题' }: Props = $props();
 
 	let isPlaying = $state(false);
-	let speed = $state(1);
+	// 初始速度取自设置页（0.5~2，任意值均有效）；播放中由 ControlBar 档位按钮调整
+	let speed = $state($settings.animationSpeed);
 	let currentStepIdx = $state(0);
 	let playbackPos = $state(0);
 
 	let activeQuestion = $state<PracticeQuestion | null>(null);
-	let answeredStepIds: number[] = [];
+	// 控制器在 effect 内创建（engine prop 在播放器生命周期内不变，effect 只运行一次）
+	let practice: PracticeController;
+	let timeline: TimelineController;
 
 	// === 演示数据 / 自定义弹窗 ===
 	let showPresetModal = $state(false);
@@ -42,7 +37,10 @@
 	let activePresetName = $state('');
 	let customValues = $state<Record<string, string>>({});
 	let customError = $state('');
+	let engineError = $state('');
 	let engineRevision = $state(0);
+	let presetModalCard = $state<HTMLDivElement | null>(null);
+	let customModalCard = $state<HTMLDivElement | null>(null);
 
 	// === 演示投影模式 ===
 	let projector = $state(false);
@@ -78,13 +76,20 @@
 	function applyPreset(name: string) {
 		activePresetName = name;
 		showPresetModal = false;
-		engine.applyPreset?.(name);
+		try {
+			engine.applyPreset?.(name);
+			engineError = '';
+		} catch (e) {
+			engineError = (e as Error).message;
+			return;
+		}
 		rebuildAfterEngineChange();
 	}
 
 	function applyCustom() {
 		try {
 			engine.applyCustom?.(customValues);
+			engineError = '';
 		} catch (e) {
 			customError = (e as Error).message;
 			return;
@@ -95,76 +100,44 @@
 
 	function rebuildAfterEngineChange() {
 		pause();
-		answeredStepIds = [];
+		practice.reset();
 		activeQuestion = null;
 		engineRevision++;
 	}
 
-	let tl: gsap.core.Timeline | null = null;
-	let renderProxy = { pos: 0 };
 	let canvasBodyRef = $state<HTMLDivElement | null>(null);
-	// 每个步骤（idx）在 timeline 上的结束秒数：tweenTo/seek 的参数必须是时间位置
-	// 而非步骤序数，否则非 1s 步长（swap=1.2、complete=1.5…）会错位（卡步/漂移）
-	let stepEndSeconds: number[] = [];
 
-	const STEP_DURATIONS: Record<StepType, number> = {
-		init: 0.8,
-		compare: 1.0,
-		swap: 1.2,
-		'pivot-select': 1.0,
-		'partition-start': 1.0,
-		'partition-end': 1.2,
-		'recurse-enter': 0.8,
-		'recurse-exit': 0.8,
-		'edge-candidate': 1.1,
-		'edge-select': 1.2,
-		'edge-reject': 0.9,
-		complete: 1.5,
-		default: 1.0
-	};
-
-	function buildTimeline() {
-		if (tl) {
-			tl.kill();
-			tl = null;
-		}
-		if (engine.steps.length < 2) return;
-
-		renderProxy.pos = 0;
-		tl = gsap.timeline({ paused: true });
-		// stepEndSeconds[i] = 播放头到达 pos=i 的秒数（idx 到时间位置的换算表）
-		stepEndSeconds = [];
-		let accSeconds = 0;
-
-		for (let i = 0; i < engine.steps.length - 1; i++) {
-			const nextStep = engine.steps[i + 1];
-			const duration = STEP_DURATIONS[nextStep.type] || STEP_DURATIONS.default;
-
-			stepEndSeconds.push(accSeconds);
-			accSeconds += duration;
-
-			tl.to(renderProxy, {
-				pos: i + 1,
-				duration,
-				ease: 'power2.out',
-				onUpdate: () => {
-					playbackPos = renderProxy.pos;
-					engine.setProgress(renderProxy.pos);
-					if (isPlaying) {
-						checkPracticeAt(Math.floor(renderProxy.pos));
-					}
-				},
-				onComplete: () => {
-					currentStepIdx = i + 1;
-				}
-			});
-		}
-
-		stepEndSeconds.push(accSeconds);
-		tl.eventCallback('onComplete', () => {
-			isPlaying = false;
-		});
+	// 控制 tween（步进/跳转）期间在画布容器上暴露忙闲信号，供 E2E 轮询等待
+	// tween 完成（替代固定 sleep；tween 未完成时 floor(playbackPos) 偏小会导致
+	// 下一步跳到旧位置，是历史 flaky 根因）。
+	function beginControlTween() {
+		if (canvasBodyRef) canvasBodyRef.dataset.tweenBusy = 'true';
 	}
+	function endControlTween() {
+		if (canvasBodyRef) canvasBodyRef.dataset.tweenBusy = 'false';
+	}
+
+	// 控制器创建：engine prop 在播放器生命周期内不变，此 effect 只在挂载时运行一次
+	$effect(() => {
+		practice = new PracticeController(engine);
+		timeline = new TimelineController(engine, {
+			onProgress: (pos) => {
+				playbackPos = pos;
+				engine.setProgress(pos);
+				if (isPlaying) {
+					checkPracticeAt(Math.floor(pos));
+				}
+			},
+			onStep: (idx) => {
+				currentStepIdx = idx;
+			},
+			onFinished: () => {
+				isPlaying = false;
+			},
+			onTweenStart: beginControlTween,
+			onTweenEnd: endControlTween
+		});
+	});
 
 	// === 演示 / 练习模式 ===
 	// demo：纯播放，不弹题；practice：播放到练习步骤暂停出题
@@ -175,9 +148,7 @@
 		if (projector) return;
 		if (mode !== 'practice') return;
 		if (activeQuestion !== null) return;
-		const question = engine.practiceQuestions?.find(
-			(q) => q.stepIndex === stepId && !answeredStepIds.includes(stepId)
-		);
+		const question = practice.findQuestionAt(stepId);
 		if (question) {
 			pause();
 			activeQuestion = question;
@@ -186,23 +157,7 @@
 
 	function handlePracticeAnswered(result: { correct: boolean; answer: string }) {
 		if (activeQuestion === null) return;
-		const stepId = activeQuestion.stepIndex;
-		answeredStepIds.push(stepId);
-
-		if (result.correct) {
-			recordExercise(topicId, true);
-		} else {
-			recordExercise(topicId, false);
-			addMistake({
-				topic: topicName,
-				type: engine.renderType === 'sql-table' ? 'sql' : 'algorithm',
-				question: activeQuestion.prompt,
-				options: activeQuestion.options,
-				wrongAnswer: result.answer,
-				correctAnswer: String(activeQuestion.correctAnswer),
-				explanation: activeQuestion.explanation
-			});
-		}
+		practice.recordAnswer(result, activeQuestion, topicId, topicName);
 	}
 
 	function handlePracticeContinue() {
@@ -210,70 +165,63 @@
 	}
 
 	function play() {
-		if (!tl || engine.steps.length < 2) return;
+		if (!timeline.hasTimeline || engine.steps.length < 2) return;
 		if (activeQuestion !== null) return;
 		if (currentStepIdx >= engine.totalSteps - 1) {
-			tl.seek(0);
+			timeline.seekStart();
 			currentStepIdx = 0;
 			playbackPos = 0;
 		}
-		tl.timeScale(speed);
-		tl.play();
+		timeline.play(speed);
 		isPlaying = true;
 	}
 
 	function pause() {
-		if (!tl) return;
-		tl.pause();
+		if (!timeline.hasTimeline) return;
+		timeline.pause();
 		isPlaying = false;
 	}
 
 	function prev() {
-		if (!tl) return;
+		if (!timeline.hasTimeline) return;
 		if (activeQuestion !== null) return;
 		pause();
-		killControlTweens();
+		timeline.killControlTweens();
 		const target = Math.max(0, Math.floor(playbackPos) - 1);
-		tl.tweenTo(stepEndSeconds[target] ?? 0);
+		timeline.tweenToStep(target);
 		currentStepIdx = target;
 	}
 
 	function next() {
-		if (!tl) return;
+		if (!timeline.hasTimeline) return;
 		if (activeQuestion !== null) return;
 		pause();
-		killControlTweens();
+		timeline.killControlTweens();
 		const target = Math.min(engine.totalSteps - 1, Math.floor(playbackPos) + 1);
-		tl.tweenTo(stepEndSeconds[target] ?? stepEndSeconds[stepEndSeconds.length - 1] ?? 0);
+		timeline.tweenToStep(target);
 		currentStepIdx = target;
 		checkPracticeAt(target);
 	}
 
-	// tweenTo() 生成的控制 tween 只向前播放；若不清除，seek 后退后它仍会把
-	// 播放头拉回原位（Home/End/进度条跳动后步骤继续漂移的根因）。
-	// getTweensOf(tl) 可能漏掉控制 tween，用 killTweensOf 一并清除。
-	function killControlTweens() {
-		if (!tl) return;
-		gsap.killTweensOf(tl);
-	}
-
 	function reset() {
-		if (!tl) return;
+		if (!timeline.hasTimeline) return;
 		if (activeQuestion !== null) return;
 		pause();
-		killControlTweens();
-		tl.seek(0);
+		timeline.killControlTweens();
+		endControlTween(); // kill 不会触发 onComplete，需显式复位忙闲信号
+		timeline.seekStart();
 		currentStepIdx = 0;
 		playbackPos = 0;
 		engine.reset();
 	}
 
 	function jumpTo(step: number) {
-		if (!tl) return;
+		if (!timeline.hasTimeline) return;
 		if (activeQuestion !== null) return;
 		pause();
-		killControlTweens();
-		tl.seek(stepEndSeconds[step] ?? stepEndSeconds[stepEndSeconds.length - 1] ?? 0);
+		timeline.killControlTweens();
+		// seek 瞬时跳转（进度条拖拽/End 键用，无需 busy 信号）
+		timeline.seekToStep(step);
 		currentStepIdx = step;
 		playbackPos = step;
 		checkPracticeAt(step);
@@ -281,27 +229,24 @@
 
 	function changeSpeed(newSpeed: number) {
 		speed = newSpeed;
-		if (tl && isPlaying) {
-			tl.timeScale(speed);
+		if (timeline.hasTimeline && isPlaying) {
+			timeline.play(speed); // 播放中改速：重设 timeScale 并继续播放
 		}
 	}
 
 	$effect(() => {
 		if (engineRevision >= 0 && engine.steps.length > 0) {
-			answeredStepIds = [];
+			practice.reset();
 			activeQuestion = null;
 			tick().then(() => {
 				// 旧 timeline 若带未完成的 tweenTo 控制 tween，重建后其 onComplete 仍会
 				// 触发并改写 currentStepIdx（预设/自定义重建后步骤漂移的根因），必须先销毁；
-				// 初始挂载（revision 0）时 tl 已由 onMount 创建，不可销毁
-				if (engineRevision > 0 && tl) {
-					tl.pause();
-					gsap.killTweensOf(tl);
-					tl.kill();
-					tl = null;
+				// 初始挂载（revision 0）时时间线已由 onMount 创建，不可销毁
+				if (engineRevision > 0 && timeline.hasTimeline) {
+					timeline.destroy();
 				}
 				if (engineRevision === 0 || !canvasBodyRef || prefersReducedMotion()) {
-					buildTimeline();
+					timeline.build();
 					currentStepIdx = 0;
 					playbackPos = 0;
 					return;
@@ -312,7 +257,7 @@
 					duration: 0.12,
 					ease: 'power1.in',
 					onComplete: () => {
-						buildTimeline();
+						timeline.build();
 						currentStepIdx = 0;
 						playbackPos = 0;
 						gsap.to(canvasBodyRef, {
@@ -333,15 +278,13 @@
 
 	onMount(() => {
 		if (engine.steps.length > 0) {
-			buildTimeline();
+			timeline.build();
 		}
 	});
 
 	onDestroy(() => {
-		if (tl) {
-			tl.kill();
-			tl = null;
-		}
+		// SSR 卸载时 $effect 未运行（timeline/practice 未创建），可选链守卫
+		timeline?.destroy();
 		if (canvasBodyRef) {
 			gsap.killTweensOf(canvasBodyRef);
 		}
@@ -371,6 +314,27 @@
 		} else if (document.fullscreenElement) {
 			document.exitFullscreen?.().catch(() => {});
 		}
+	});
+
+	// 弹窗打开时把初始焦点移入卡片（模态 a11y）
+	$effect(() => {
+		if (showPresetModal) {
+			tick().then(() => presetModalCard?.focus());
+		} else if (showCustomModal) {
+			tick().then(() => customModalCard?.focus());
+		}
+	});
+
+	// 浏览器全屏被外部退出（用户按 Esc，事件被浏览器消费、页面收不到 keydown）时
+	// 同步退出投影层——否则需要按两次 Esc 才能退出投影。
+	$effect(() => {
+		function onFullscreenChange() {
+			if (!document.fullscreenElement && projector) {
+				projector = false;
+			}
+		}
+		document.addEventListener('fullscreenchange', onFullscreenChange);
+		return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
 	});
 </script>
 
@@ -439,29 +403,15 @@
 
 			<!-- Canvas 主体 -->
 			{#key engineRevision}
-				<div class="canvas-body" bind:this={canvasBodyRef}>
-					{#if engine.renderType === 'array'}
-						<ArrayRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'tree'}
-						<TreeRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'linkedlist'}
-						<LinkedRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'sql-table'}
-						<SqlTableRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'stack' || engine.renderType === 'queue'}
-						<StackRenderer steps={engine.steps} {playbackPos} mode={engine.renderType} />
-					{:else if engine.renderType === 'er'}
-						<ErRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'btree'}
-						<BPlusTreeRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'graph'}
-						<GraphRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'kmp'}
-						<KmpRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'huffman'}
-						<HuffmanRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'hashtable'}
-						<HashtableRenderer steps={engine.steps} {playbackPos} />
+				<!-- data-tween-busy：控制 tween（步进/跳转）进行中为 true，供 E2E 轮询等待 -->
+				<div class="canvas-body" bind:this={canvasBodyRef} data-tween-busy="false">
+					{#if !projector}
+						{#if engineError}
+							<div class="engine-error" role="alert">{engineError}</div>
+						{:else}
+							<!-- 投影时卸载主区渲染器，避免双实例双份重绘/监听 -->
+							<RendererSwitch {engine} {playbackPos} />
+						{/if}
 					{/if}
 				</div>
 			{/key}
@@ -524,6 +474,8 @@
 				role="dialog"
 				aria-modal="true"
 				aria-label="演示数据"
+				tabindex="-1"
+				bind:this={presetModalCard}
 				transition:fly={{
 					y: prefersReducedMotion() ? 0 : 12,
 					duration: prefersReducedMotion() ? 0 : 240,
@@ -567,6 +519,8 @@
 				role="dialog"
 				aria-modal="true"
 				aria-label={engine.customConfig.title ?? '自定义数据'}
+				tabindex="-1"
+				bind:this={customModalCard}
 				transition:fly={{
 					y: prefersReducedMotion() ? 0 : 12,
 					duration: prefersReducedMotion() ? 0 : 240,
@@ -650,31 +604,8 @@
 			</header>
 
 			<main class="projector-body">
-				{#key engineRevision}
-					{#if engine.renderType === 'array'}
-						<ArrayRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'tree'}
-						<TreeRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'linkedlist'}
-						<LinkedRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'sql-table'}
-						<SqlTableRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'stack' || engine.renderType === 'queue'}
-						<StackRenderer steps={engine.steps} {playbackPos} mode={engine.renderType} />
-					{:else if engine.renderType === 'er'}
-						<ErRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'btree'}
-						<BPlusTreeRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'graph'}
-						<GraphRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'kmp'}
-						<KmpRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'huffman'}
-						<HuffmanRenderer steps={engine.steps} {playbackPos} />
-					{:else if engine.renderType === 'hashtable'}
-						<HashtableRenderer steps={engine.steps} {playbackPos} />
-					{/if}
-				{/key}
+				<!-- steps 引用变化时渲染器由 props 驱动重绘，无需 {#key} 强制重建 -->
+				<RendererSwitch {engine} {playbackPos} />
 			</main>
 
 			<footer class="projector-footer">
@@ -943,6 +874,15 @@
 		line-height: 1.5;
 	}
 
+	.engine-error {
+		padding: 12px 16px;
+		font-size: 13px;
+		color: var(--color-danger);
+		background: rgba(155, 34, 38, 0.06);
+		border: 1px solid rgba(155, 34, 38, 0.25);
+		border-radius: var(--radius-sm);
+	}
+
 	/* 右侧面板 */
 	.right-panel {
 		display: flex;
@@ -997,7 +937,7 @@
 		z-index: 70;
 		border: none;
 		padding: 0;
-		background: rgba(20, 20, 20, 0.35);
+		background: var(--color-scrim);
 		cursor: default;
 	}
 

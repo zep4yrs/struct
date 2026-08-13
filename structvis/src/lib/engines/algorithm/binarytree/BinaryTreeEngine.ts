@@ -7,7 +7,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -16,6 +15,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 export type TraversalMode = 'preorder' | 'inorder' | 'postorder' | 'levelorder';
@@ -122,12 +122,9 @@ const PRACTICE_BY_MODE: Record<TraversalMode, PracticeQuestion[]> = {
 	]
 };
 
-export class BinaryTreeEngine implements AlgorithmEngine<TreeEngineInput> {
+export class BinaryTreeEngine extends EngineBase<TreeEngineInput> {
 	readonly name = '二叉树遍历';
 	readonly renderType = 'tree' as const;
-
-	pseudocode: string[] = [];
-	practiceQuestions: PracticeQuestion[] = [];
 
 	readonly demoScript: DemoScriptItem[] = [
 		{
@@ -155,11 +152,6 @@ export class BinaryTreeEngine implements AlgorithmEngine<TreeEngineInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _tree: number[] = [];
 
 	private static DEFAULT_TREE = [10, 5, 15, 3, 7, 12, 20];
@@ -365,19 +357,4 @@ export class BinaryTreeEngine implements AlgorithmEngine<TreeEngineInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

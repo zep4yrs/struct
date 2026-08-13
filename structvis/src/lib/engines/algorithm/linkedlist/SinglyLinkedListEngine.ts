@@ -7,7 +7,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
@@ -15,6 +14,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 export type ListOperation = 'insert' | 'delete';
@@ -65,18 +65,9 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	}
 ];
 
-export class SinglyLinkedListEngine implements AlgorithmEngine<ListEngineInput> {
+export class SinglyLinkedListEngine extends EngineBase<ListEngineInput> {
 	readonly name = '单链表操作';
 	readonly renderType = 'linkedlist' as const;
-
-	pseudocode: string[] = [];
-	practiceQuestions: PracticeQuestion[] = [];
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 
 	presets: EnginePreset[] = [
 		{ name: '插入 66 到第 3 位', description: '[12, 99, 37, 8] 在第 3 位插入 66' },
@@ -258,19 +249,4 @@ export class SinglyLinkedListEngine implements AlgorithmEngine<ListEngineInput> 
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

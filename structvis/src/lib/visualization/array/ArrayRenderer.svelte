@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { onMount, onDestroy, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HighlightType } from '$lib/engines/algorithm/types';
 	import { precomputeBarIdentities, easeOutCubic } from './array-render-utils';
-	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
+	import { resolveCSSVar, hexToRgba } from '../visualization-utils';
+	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -12,15 +13,21 @@
 
 	let { steps, playbackPos }: Props = $props();
 
-	let canvasEl: HTMLCanvasElement | undefined;
-	let ctx: CanvasRenderingContext2D | null = null;
-	let dpr = 1;
-	let unwatchTheme: (() => void) | undefined;
+	// 画布与尺寸由 CanvasHost 统一管理（resize/ResizeObserver/主题监听）；
+	// CanvasHost 通过 onDraw 回调注入最新状态（$state 响应式）
+	let host: CanvasHostState = $state({
+		canvasEl: undefined,
+		ctx: null,
+		dpr: 1,
+		width: 600,
+		height: 280
+	});
+	let ctx = $derived(host.ctx);
+	let dpr = $derived(host.dpr);
+	let canvasWidth = $derived(host.width);
+	let canvasHeight = $derived(host.height);
 
 	let barIdsAtStep = $derived(precomputeBarIdentities(steps));
-
-	let canvasWidth = 600;
-	let canvasHeight = 280;
 
 	const PADDING_X = 40;
 	const PADDING_TOP = 48;
@@ -40,26 +47,30 @@
 		ink2: '#5A5A5A',
 		ink3: '#9A9A9A',
 		baseline: '#E5E2DB',
-		partitionBg: 'rgba(27, 73, 101, 0.04)',
-		partitionBorder: 'rgba(27, 73, 101, 0.12)'
+		compareFill: 'rgba(27, 73, 101, 0.08)',
+		partitionBg: 'rgba(27, 73, 101, 0.06)',
+		partitionBorder: 'rgba(27, 73, 101, 0.18)'
 	});
 
 	function updateColorsFromCSS() {
 		if (!browser) return;
+		// 半透明色由主题 token 动态生成，暗色主题下保持对比度
+		const academic = resolveCSSVar('--color-academic');
 		colors = {
 			bg: 'transparent',
 			defaultBar: resolveCSSVar('--color-subtle'),
 			defaultBorder: resolveCSSVar('--color-line-hair'),
 			pivot: resolveCSSVar('--color-danger'),
-			compare: resolveCSSVar('--color-academic'),
+			compare: academic,
 			sorted: resolveCSSVar('--color-success'),
 			current: resolveCSSVar('--color-accent'),
 			ink: resolveCSSVar('--color-ink'),
 			ink2: resolveCSSVar('--color-ink-2'),
 			ink3: resolveCSSVar('--color-ink-3'),
 			baseline: resolveCSSVar('--color-line-hair'),
-			partitionBg: 'rgba(27, 73, 101, 0.04)',
-			partitionBorder: 'rgba(27, 73, 101, 0.12)'
+			compareFill: hexToRgba(academic, 0.1),
+			partitionBg: hexToRgba(academic, 0.08),
+			partitionBorder: hexToRgba(academic, 0.22)
 		};
 	}
 
@@ -137,7 +148,7 @@
 
 		if (hasCompare && !hasPivot && !hasSorted) {
 			compareRing = true;
-			fill = '#E8EFF5';
+			fill = colors.compareFill;
 			border = colors.compare;
 			valueColor = colors.compare;
 		}
@@ -158,7 +169,10 @@
 		const toStep = steps[toIdx];
 		const n = fromStep.data.length;
 
-		const maxValue = Math.max(...fromStep.data, ...toStep.data);
+		// 用循环求最大而非 Math.max(...spread)：空数组不产生 -Infinity，大数组无栈溢出风险
+		let maxValue = 1;
+		for (const v of fromStep.data) if (v > maxValue) maxValue = v;
+		for (const v of toStep.data) if (v > maxValue) maxValue = v;
 		const { barWidth, maxHeight } = getBarLayout(n);
 
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -273,7 +287,7 @@
 	function drawBarValue(x: number, y: number, value: number, color: string) {
 		if (!ctx) return;
 		ctx.fillStyle = color;
-		ctx.font = '500 10px var(--font-mono)';
+		ctx.font = "500 10px 'JetBrains Mono', Consolas, monospace";
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 		ctx.fillText(String(value), x + 0.5, y);
@@ -282,7 +296,7 @@
 	function drawBarIndex(x: number, y: number, index: number) {
 		if (!ctx) return;
 		ctx.fillStyle = colors.ink3;
-		ctx.font = '9px var(--font-mono)';
+		ctx.font = "9px 'JetBrains Mono', Consolas, monospace";
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 		ctx.fillText(`[${index}]`, x + 0.5, y);
@@ -353,7 +367,7 @@
 
 			ctx.globalAlpha = alpha;
 			ctx.fillStyle = color;
-			ctx.font = '600 10px var(--font-mono)';
+			ctx.font = "600 10px 'JetBrains Mono', Consolas, monospace";
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'bottom';
 
@@ -363,69 +377,21 @@
 		}
 	}
 
-	function resizeCanvas() {
-		if (!browser || !canvasEl) return;
-		const container = canvasEl.parentElement;
-		if (!container) return;
-
-		dpr = window.devicePixelRatio || 1;
-		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(320, rect.width - 24);
-		canvasHeight = Math.max(220, rect.height - 24);
-
-		canvasEl.width = canvasWidth * dpr;
-		canvasEl.height = canvasHeight * dpr;
-		canvasEl.style.width = `${canvasWidth}px`;
-		canvasEl.style.height = `${canvasHeight}px`;
-
-		ctx = canvasEl.getContext('2d');
-		if (ctx) ctx.scale(dpr, dpr);
-
-		updateColorsFromCSS();
-		draw();
-	}
-
 	$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
-
-	onMount(() => {
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
-		draw();
-		// 暗/亮主题切换时重取色并重绘
-		unwatchTheme = watchThemeChange(() => {
-			updateColorsFromCSS();
-			draw();
-		});
-	});
-
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', resizeCanvas);
-		unwatchTheme?.();
-	});
 </script>
 
-<div class="array-canvas-wrap">
-	<canvas bind:this={canvasEl}></canvas>
-</div>
-
-<style>
-	.array-canvas-wrap {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	canvas {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->
+<CanvasHost
+	minW={320}
+	minH={220}
+	onDraw={(h) => {
+		host = h;
+		draw();
+	}}
+	onThemeChange={updateColorsFromCSS}
+/>

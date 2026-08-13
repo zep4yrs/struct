@@ -119,7 +119,7 @@ describe('ArrayRenderer 指针标签与分区背景', () => {
 		expect(calls.some((c) => c.method === 'setLineDash' && c.args[0] !== undefined)).toBe(true);
 		const fills = calls.filter((c) => c.method === 'fillRect');
 		expect(fills.length).toBeGreaterThan(0);
-		expect(fills[0]?.state.fillStyle).toBe('rgba(27, 73, 101, 0.04)');
+		expect(fills[0]?.state.fillStyle).toBe('rgba(27, 73, 101, 0.08)'); // hexToRgba(--color-academic, 0.08)
 	});
 
 	it('无高亮时不绘制任何指针标签', async () => {
@@ -137,5 +137,43 @@ describe('ArrayRenderer 边界', () => {
 		const methods = canvasCalls().map((c) => c.method);
 		expect(methods).not.toContain('clearRect');
 		expect(methods).not.toContain('fillText');
+	});
+});
+
+describe('ArrayRenderer 布局（M15：位置断言）', () => {
+	// 柱子用 beginPath+fill() 绘制（无 fillRect），柱中心 x 可由数值标签 fillText 的 x 参数取得
+	function valueTextXs(): Map<string, number> {
+		const map = new Map<string, number>();
+		for (const c of canvasCalls()) {
+			if (c.method === 'fillText') {
+				map.set(String(c.args[0]), c.args[1] as number);
+			}
+		}
+		return map;
+	}
+
+	it('柱子中心 x 从左到右单调递增且间距一致（等宽柱）', async () => {
+		await mountAndDraw([makeStep()]); // data [5, 3, 8, 1]
+		const xs = ['5', '3', '8', '1'].map((v) => valueTextXs().get(v)!);
+		expect(xs.length).toBe(4);
+		for (let i = 1; i < xs.length; i++) {
+			expect(xs[i]!).toBeGreaterThan(xs[i - 1]!);
+		}
+		// 等距：相邻间距差值 ≤ 1px（浮点绘制精度）
+		const gaps = xs.slice(1).map((x, i) => x - xs[i]!);
+		for (let i = 1; i < gaps.length; i++) {
+			expect(Math.abs(gaps[i]! - gaps[i - 1]!)).toBeLessThanOrEqual(1);
+		}
+	});
+
+	it('交换帧后数值标签位置按新顺序重排（身份追踪生效）', async () => {
+		const s0 = makeStep(); // [5, 3, 8, 1]
+		const s1 = makeStep({ id: 1, data: [1, 3, 8, 5] }); // 0↔3 交换
+		await mountAndDraw([s0, s1]); // playbackPos=1 → 第二帧
+		const xs = valueTextXs();
+		// 交换后 '1' 在最左、'5' 在最右
+		expect(xs.get('1')!).toBeLessThan(xs.get('3')!);
+		expect(xs.get('3')!).toBeLessThan(xs.get('8')!);
+		expect(xs.get('8')!).toBeLessThan(xs.get('5')!);
 	});
 });

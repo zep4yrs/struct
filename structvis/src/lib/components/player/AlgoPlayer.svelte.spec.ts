@@ -208,11 +208,12 @@ describe('AlgoPlayer 播放控制', () => {
 	it('键盘 ←/→ 步进：tweenTo 目标（秒数）与步骤编号更新', async () => {
 		const { container } = await mountPlayer();
 		await fireEvent.keyDown(window, { key: 'ArrowRight' });
-		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(stepEnd(1));
+		// 第二个参数为 { onComplete } 控制 tween 忙闲信号回调
+		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(stepEnd(1), expect.objectContaining({ onComplete: expect.any(Function) }));
 		expect(container.querySelector('.current-num')?.textContent).toBe('02');
 
 		await fireEvent.keyDown(window, { key: 'ArrowLeft' });
-		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(stepEnd(0));
+		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(stepEnd(0), expect.objectContaining({ onComplete: expect.any(Function) }));
 		expect(container.querySelector('.current-num')?.textContent).toBe('01');
 	});
 

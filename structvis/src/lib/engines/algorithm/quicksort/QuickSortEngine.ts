@@ -6,13 +6,13 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
 	EnginePreset,
 	PracticeQuestion
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 const PSEUDOCODE: string[] = [
@@ -68,7 +68,7 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	}
 ];
 
-export class QuickSortEngine implements AlgorithmEngine<number[]> {
+export class QuickSortEngine extends EngineBase<number[]> {
 	readonly name = '快速排序';
 	readonly renderType = 'array' as const;
 	readonly pseudocode = PSEUDOCODE;
@@ -116,12 +116,6 @@ export class QuickSortEngine implements AlgorithmEngine<number[]> {
 				'排序完成！快速排序平均时间复杂度 O(n log n)，空间复杂度 O(log n)（递归栈）。注意：最坏情况（如已有序数组）会退化到 O(n²)。'
 		}
 	];
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 
 	presets: EnginePreset[] = [
 		{ name: '随机 8 个', description: '[6, 2, 8, 5, 1, 9, 3, 7]' },
@@ -193,23 +187,6 @@ export class QuickSortEngine implements AlgorithmEngine<number[]> {
 		});
 
 		this.totalSteps = this.steps.length;
-	}
-
-	getCurrentStep(): AlgorithmStep {
-		const idx = Math.min(Math.floor(this.playbackPos), this.steps.length - 1);
-		return this.steps[Math.max(0, idx)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = Math.max(0, Math.min(this.totalSteps - 1 + 0.999, pos));
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
 	}
 
 	// === 内部：快速排序递归 ===

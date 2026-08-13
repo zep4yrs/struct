@@ -6,7 +6,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -15,6 +14,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 const PSEUDO: string[] = [
@@ -56,7 +56,7 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	}
 ];
 
-export class BinarySearchEngine implements AlgorithmEngine<{ data: number[]; target: number }> {
+export class BinarySearchEngine extends EngineBase<{ data: number[]; target: number }> {
 	readonly name = '二分查找';
 	readonly renderType = 'array' as const;
 
@@ -88,11 +88,6 @@ export class BinarySearchEngine implements AlgorithmEngine<{ data: number[]; tar
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _arr: number[] = [];
 	private _target = 0;
 
@@ -244,19 +239,4 @@ export class BinarySearchEngine implements AlgorithmEngine<{ data: number[]; tar
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

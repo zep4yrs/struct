@@ -6,7 +6,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EnginePreset,
@@ -19,6 +18,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 
 export type StorageMode = 'adjacency-matrix' | 'adjacency-list';
 
@@ -114,46 +114,18 @@ const DEFAULT_EDGES_DIRECTED: [number, number][] = [
 	[4, 0]
 ];
 
-export class GraphStorageEngine implements AlgorithmEngine<GraphStorageInput> {
+export class GraphStorageEngine extends EngineBase<GraphStorageInput> {
 	readonly name = '图的存储';
 	readonly renderType = 'graph' as const;
 
-	pseudocode: string[] = [];
-	practiceQuestions: PracticeQuestion[] = [];
 	readonly demoScript: DemoScriptItem[] = DEMO_SCRIPT;
 	readonly presets: EnginePreset[] = PRESETS;
 
-	private _steps: AlgorithmStep[] = [];
 	private _input: GraphStorageInput | null = null;
-
-	get steps(): AlgorithmStep[] {
-		return this._steps;
-	}
-	get totalSteps(): number {
-		return this._steps.length;
-	}
-	playbackPos = 0;
 
 	init(input: GraphStorageInput): void {
 		this._input = input;
 		this._rebuild();
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	getCurrentStep(): AlgorithmStep {
-		const idx = Math.min(this._steps.length - 1, Math.max(0, Math.floor(this.playbackPos)));
-		return this._steps[idx] ?? this._steps[0];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
 	}
 
 	applyPreset(name: string): void {
@@ -283,7 +255,8 @@ export class GraphStorageEngine implements AlgorithmEngine<GraphStorageInput> {
 			}
 		});
 
-		this._steps = steps;
+		this.steps = steps;
+		this.totalSteps = steps.length;
 	}
 
 	private _describeAt(input: GraphStorageInput, built: [number, number][], idx: number): string {

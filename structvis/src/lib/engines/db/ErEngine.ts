@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	ErDiagramData,
 	ErEdge,
@@ -19,6 +18,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../algorithm/types';
+import { EngineBase } from '../algorithm/EngineBase';
 
 export interface ErEngineInput {
 	preset: string;
@@ -378,19 +378,12 @@ const PRESETS: ErPreset[] = [
 	}
 ];
 
-export class ErEngine implements AlgorithmEngine<ErEngineInput> {
+export class ErEngine extends EngineBase<ErEngineInput> {
 	readonly name = 'E-R 模型';
 	readonly renderType = 'er' as const;
 	readonly panelTitle = '设计步骤';
 
-	pseudocode: string[] = [];
 	practiceQuestions: PracticeQuestion[] = PRACTICE_QUESTIONS;
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 
 	presets: EnginePreset[] = PRESETS.map((p) => ({ name: p.name, description: p.description }));
 
@@ -460,19 +453,4 @@ export class ErEngine implements AlgorithmEngine<ErEngineInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

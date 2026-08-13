@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
+	import { dsTopics, dbTopics, DS_GROUP_ORDER, DB_GROUP_ORDER, type TopicCard } from '$lib/content/topics';
 
 	interface NavItem {
 		title: string;
@@ -22,89 +23,24 @@
 
 	let { activeSection, open, onClose = () => {} }: Props = $props();
 
-	const dsGroups: NavGroup[] = [
-		{
-			title: '线性结构',
-			items: [
-				{ title: '线性表', href: '/ds/linear-list' },
-				{ title: '栈和队列', href: '/ds/stack-queue' },
-				{ title: '串的模式匹配（KMP）', href: '/ds/kmp' }
-			]
-		},
-		{
-			title: '树形结构',
-			items: [
-				{ title: '二叉树遍历', href: '/ds/binary-tree' },
-				{ title: '二叉搜索树', href: '/ds/bst' },
-				{ title: '哈夫曼树', href: '/ds/huffman' }
-			]
-		},
-		{
-			title: '图结构',
-			items: [
-				{ title: '图的存储', href: '/ds/graph-storage' },
-				{ title: '图的遍历', href: '/ds/graph-traversal' },
-				{ title: '最短路径', href: '/ds/shortest-path' },
-				{ title: '最小生成树', href: '/ds/mst' },
-				{ title: '拓扑排序', href: '/ds/topo-sort' },
-				{ title: '关键路径', href: '/ds/critical-path' }
-			]
-		},
-		{
-			title: '排序算法',
-			items: [
-				{ title: '快速排序', href: '/ds/quick-sort' },
-				{ title: '冒泡排序', href: '/ds/bubble-sort' },
-				{ title: '直接插入排序', href: '/ds/insertion-sort' },
-				{ title: '简单选择排序', href: '/ds/selection-sort' },
-				{ title: '归并排序', href: '/ds/merge-sort' }
-			]
-		},
-		{
-			title: '查找',
-			items: [
-				{ title: '二分查找', href: '/ds/binary-search' },
-				{ title: '哈希表', href: '/ds/hash-table' }
-			]
-		}
-	];
-
-	const dbGroups: NavGroup[] = [
-		{
-			title: '基础',
-			items: [
-				{ title: '数据库系统概述', href: '/db/overview' },
-				{ title: '数据库和表', href: '/db/tables' },
-				{ title: '数据查询', href: '/db/sql' },
-				{ title: '高级查询', href: '/db/advanced-query' },
-				{ title: '数据更新', href: '/db/update' }
-			]
-		},
-		{
-			title: '进阶',
-			items: [
-				{ title: '索引原理', href: '/db/index' },
-				{ title: '视图', href: '/db/view' }
-			]
-		},
-		{
-			title: '设计',
-			items: [
-				{ title: 'E-R 模型', href: '/db/er' },
-				{ title: '关系规范化', href: '/db/normalize' }
-			]
-		},
-		{
-			title: '运维',
-			items: [
-				{ title: '事务与并发控制', href: '/db/transaction' },
-				{ title: '用户与权限管理', href: '/db/users' }
-			]
-		}
-	];
+	// 导航分组由 topics.ts 单源生成（分组名/顺序/条目全部来自目录数据，不再单独维护）
+	function buildGroups(topics: TopicCard[], order: readonly string[]): NavGroup[] {
+		return order
+			.map((g) => ({
+				title: g,
+				items: topics
+					.filter((t) => t.group === g)
+					.map((t) => ({ title: t.title, href: t.href, planned: t.planned }))
+			}))
+			.filter((g) => g.items.length > 0);
+	}
 
 	const groups = $derived(
-		activeSection === 'ds' ? dsGroups : activeSection === 'db' ? dbGroups : []
+		activeSection === 'ds'
+			? buildGroups(dsTopics, DS_GROUP_ORDER)
+			: activeSection === 'db'
+				? buildGroups(dbTopics, DB_GROUP_ORDER)
+				: []
 	);
 
 	// $page.url.pathname 含 base 前缀，剥离后再匹配高亮
@@ -334,7 +270,7 @@
 		position: fixed;
 		inset: 0;
 		z-index: 60;
-		background: rgba(20, 20, 20, 0.35);
+		background: var(--color-scrim);
 		border: none;
 		padding: 0;
 		cursor: default;

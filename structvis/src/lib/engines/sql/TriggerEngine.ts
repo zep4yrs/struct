@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EnginePreset,
@@ -17,6 +16,7 @@ import type {
 	SqlTableData,
 	StepType
 } from '../algorithm/types';
+import { EngineBase } from '../algorithm/EngineBase';
 import { evalSqlWhere } from './sql-utils';
 
 export interface TriggerEngineInput {
@@ -101,11 +101,10 @@ const PRACTICE_QUESTIONS: PracticeQuestion[] = [
 	}
 ];
 
-export class TriggerEngine implements AlgorithmEngine<TriggerEngineInput> {
+export class TriggerEngine extends EngineBase<TriggerEngineInput> {
 	readonly name = '触发器';
 	readonly renderType = 'sql-table' as const;
 
-	pseudocode: string[] = [];
 	practiceQuestions: PracticeQuestion[] = PRACTICE_QUESTIONS;
 	readonly demoScript: DemoScriptItem[] = [
 		{
@@ -129,23 +128,10 @@ export class TriggerEngine implements AlgorithmEngine<TriggerEngineInput> {
 		description: p.description
 	}));
 
-	private _steps: AlgorithmStep[] = [];
-	private _stepId = 0;
 	private _table: SqlTableData = { columns: [], rows: [] };
 	private _trigger: TriggerDef | null = null;
 	private _dmlSql = '';
 	private _dmlKind: 'insert' | 'update' | 'delete' = 'insert';
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-	getProgress(): number {
-		return this.playbackPos;
-	}
 
 	init(input: TriggerEngineInput): void {
 		this._table = input.table;
@@ -172,14 +158,6 @@ export class TriggerEngine implements AlgorithmEngine<TriggerEngineInput> {
 		const dmlSql = (values.dmlSql ?? '').trim();
 		if (!triggerSql || !dmlSql) throw new Error('触发器 SQL 与 DML SQL 均不能为空');
 		this.init({ triggerSql, dmlSql, table: this._table });
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
 	}
 
 	private _parseTrigger(sql: string): TriggerDef | null {

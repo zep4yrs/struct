@@ -10,7 +10,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -19,6 +18,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 export type BstMode = 'search' | 'insert' | 'delete';
@@ -121,12 +121,9 @@ interface BstNode {
 	deleted: boolean;
 }
 
-export class BstEngine implements AlgorithmEngine<BstInput> {
+export class BstEngine extends EngineBase<BstInput> {
 	readonly name = '二叉搜索树';
 	readonly renderType = 'tree' as const;
-
-	pseudocode: string[] = [];
-	practiceQuestions: PracticeQuestion[] = [];
 
 	readonly demoScript: DemoScriptItem[] = [
 		{
@@ -156,11 +153,6 @@ export class BstEngine implements AlgorithmEngine<BstInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _nodes: BstNode[] = [];
 	private _root = -1;
 	private _mode: BstMode = 'search';
@@ -505,19 +497,4 @@ export class BstEngine implements AlgorithmEngine<BstInput> {
 		return out.join(' ');
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

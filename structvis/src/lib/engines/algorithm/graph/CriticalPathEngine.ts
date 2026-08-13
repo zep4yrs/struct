@@ -9,7 +9,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -20,6 +19,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseLabelList, parseWeightedEdgeList } from '../parseInput';
 
 export interface CriticalPathInput {
@@ -75,7 +75,7 @@ const DEFAULT_EDGES: [number, number, number][] = [
 	[4, 5, 1]
 ];
 
-export class CriticalPathEngine implements AlgorithmEngine<CriticalPathInput> {
+export class CriticalPathEngine extends EngineBase<CriticalPathInput> {
 	readonly name = '关键路径';
 	readonly renderType = 'graph' as const;
 
@@ -107,11 +107,6 @@ export class CriticalPathEngine implements AlgorithmEngine<CriticalPathInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _labels: string[] = [];
 	private _edges: [number, number, number][] = [];
 
@@ -398,19 +393,4 @@ export class CriticalPathEngine implements AlgorithmEngine<CriticalPathInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

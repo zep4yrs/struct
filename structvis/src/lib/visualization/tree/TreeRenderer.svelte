@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { onMount, onDestroy, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
+	import { resolveCSSVar } from '../visualization-utils';
+import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -11,13 +12,19 @@
 
 	let { steps, playbackPos }: Props = $props();
 
-	let canvasEl: HTMLCanvasElement | undefined;
-	let ctx: CanvasRenderingContext2D | null = null;
-	let dpr = 1;
-	let unwatchTheme: (() => void) | undefined;
-
-	let canvasWidth = 600;
-	let canvasHeight = 360;
+	// 画布与尺寸由 CanvasHost 统一管理（resize/ResizeObserver/主题监听）；
+	// CanvasHost 通过 onDraw 回调注入最新状态（$state 响应式）
+	let host: CanvasHostState = $state({
+		canvasEl: undefined,
+		ctx: null,
+		dpr: 1,
+		width: 600,
+		height: 280
+	});
+	let ctx = $derived(host.ctx);
+	let dpr = $derived(host.dpr);
+	let canvasWidth = $derived(host.width);
+	let canvasHeight = $derived(host.height);
 
 	const NODE_RADIUS = 22;
 	const PADDING_TOP = 40;
@@ -42,6 +49,7 @@
 		current: '#D97706',
 		sorted: '#2D6A4F',
 		compare: '#1B4965',
+		inkInverse: '#FAF9F6',
 		bg: 'transparent'
 	});
 
@@ -56,7 +64,8 @@
 			current: resolveCSSVar('--color-accent'),
 			sorted: resolveCSSVar('--color-success'),
 			compare: resolveCSSVar('--color-academic'),
-			bg: 'transparent'
+			inkInverse: resolveCSSVar('--color-ink-inverse'),
+		bg: 'transparent'
 		};
 	}
 
@@ -111,6 +120,19 @@
 		return nodes;
 	}
 
+	// 布局缓存：同一 step 在同一画布尺寸下坐标恒定，避免每帧重复递归计算
+	let layoutCache = new Map<string, TreeNode[]>();
+
+	function getLayout(stepIdx: number, data: number[]): TreeNode[] {
+		const key = stepIdx + ':' + canvasWidth + 'x' + canvasHeight;
+		let nodes = layoutCache.get(key);
+		if (!nodes) {
+			nodes = buildTree(data);
+			layoutCache.set(key, nodes);
+		}
+		return nodes;
+	}
+
 	function draw() {
 		if (!ctx || steps.length === 0) return;
 
@@ -120,7 +142,7 @@
 
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-		const nodes = buildTree(step.data);
+		const nodes = getLayout(stepIdx, step.data);
 		if (nodes.length === 0) return;
 
 		const byIdx: Record<number, TreeNode> = {};
@@ -152,11 +174,11 @@
 			if (currentSet.has(n.idx)) {
 				fill = colors.current;
 				border = colors.current;
-				textColor = '#FAF9F6';
+				textColor = 'colors.inkInverse';
 			} else if (sortedSet.has(n.idx)) {
 				fill = colors.sorted;
 				border = colors.sorted;
-				textColor = '#FAF9F6';
+				textColor = 'colors.inkInverse';
 			} else if (compareSet.has(n.idx)) {
 				fill = colors.node;
 				border = colors.compare;
@@ -171,75 +193,31 @@
 			ctx.stroke();
 
 			ctx.fillStyle = textColor;
-			ctx.font = '600 13px var(--font-mono)';
+			ctx.font = "600 13px 'JetBrains Mono', Consolas, monospace";
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
 			ctx.fillText(String(n.value), n.x, n.y + 1);
 		}
 	}
 
-	function resizeCanvas() {
-		if (!browser || !canvasEl) return;
-		const container = canvasEl.parentElement;
-		if (!container) return;
-
-		dpr = window.devicePixelRatio || 1;
-		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(320, rect.width - 24);
-		canvasHeight = Math.max(240, rect.height - 24);
-
-		canvasEl.width = canvasWidth * dpr;
-		canvasEl.height = canvasHeight * dpr;
-		canvasEl.style.width = `${canvasWidth}px`;
-		canvasEl.style.height = `${canvasHeight}px`;
-
-		ctx = canvasEl.getContext('2d');
-		if (ctx) ctx.scale(dpr, dpr);
-
-		updateColorsFromCSS();
-		draw();
-	}
-
-	$effect(() => {
+		$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
 
-	onMount(() => {
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
-		draw();
-		unwatchTheme = watchThemeChange(() => {
-			updateColorsFromCSS();
-			draw();
-		});
-	});
+	;
 
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', resizeCanvas);
-		unwatchTheme?.();
-	});
 </script>
 
-<div class="tree-canvas-wrap">
-	<canvas bind:this={canvasEl}></canvas>
-</div>
-
-<style>
-	.tree-canvas-wrap {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	canvas {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->
+<CanvasHost
+	minW={320}
+	minH={240}
+	onDraw={(h) => {
+		host = h;
+		draw();
+	}}
+	onThemeChange={updateColorsFromCSS}
+/>

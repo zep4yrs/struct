@@ -9,7 +9,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	BPlusTreeData,
 	BPlusNode,
@@ -19,6 +18,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../algorithm/types';
+import { EngineBase } from '../algorithm/EngineBase';
 
 export interface IndexEngineInput {
 	preset: string;
@@ -278,19 +278,12 @@ const PRESETS: BPlusPreset[] = [
 	}
 ];
 
-export class IndexEngine implements AlgorithmEngine<IndexEngineInput> {
+export class IndexEngine extends EngineBase<IndexEngineInput> {
 	readonly name = '索引原理';
 	readonly renderType = 'btree' as const;
 	readonly panelTitle = '查找步骤';
 
-	pseudocode: string[] = [];
 	practiceQuestions: PracticeQuestion[] = PRACTICE_QUESTIONS;
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 
 	presets: EnginePreset[] = PRESETS.map((p) => ({ name: p.name, description: p.description }));
 
@@ -351,19 +344,4 @@ export class IndexEngine implements AlgorithmEngine<IndexEngineInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

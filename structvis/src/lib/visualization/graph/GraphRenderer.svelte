@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type {
 		AlgorithmStep,
@@ -9,7 +9,8 @@
 		GraphNode,
 		GraphNodeState
 	} from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, watchThemeChange } from '../visualization-utils';
+	import { resolveCSSVar } from '../visualization-utils';
+import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -18,13 +19,19 @@
 
 	let { steps, playbackPos }: Props = $props();
 
-	let canvasEl: HTMLCanvasElement | undefined;
-	let ctx: CanvasRenderingContext2D | null = null;
-	let dpr = 1;
-	let unwatchTheme: (() => void) | undefined;
-
-	let canvasWidth = 640;
-	let canvasHeight = 400;
+	// 画布与尺寸由 CanvasHost 统一管理（resize/ResizeObserver/主题监听）；
+	// CanvasHost 通过 onDraw 回调注入最新状态（$state 响应式）
+	let host: CanvasHostState = $state({
+		canvasEl: undefined,
+		ctx: null,
+		dpr: 1,
+		width: 600,
+		height: 280
+	});
+	let ctx = $derived(host.ctx);
+	let dpr = $derived(host.dpr);
+	let canvasWidth = $derived(host.width);
+	let canvasHeight = $derived(host.height);
 
 	/** 逻辑空间（环形布局的坐标空间） */
 	const LOGICAL_W = 800;
@@ -36,6 +43,7 @@
 	const NOTE_FONT = '500 13px ui-monospace, SFMono-Regular, Menlo, monospace';
 
 	let colors = $state({
+		inkInverse: '#FAF9F6',
 		surface: '#FFFFFF',
 		border: '#D4D0C8',
 		ink: '#1A1A1A',
@@ -50,6 +58,7 @@
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
+		inkInverse: resolveCSSVar('--color-ink-inverse'),
 			surface: resolveCSSVar('--color-surface'),
 			border: resolveCSSVar('--color-line-regular'),
 			ink: resolveCSSVar('--color-ink'),
@@ -67,7 +76,13 @@
 		y: number;
 	}
 
+	// 环形布局只依赖节点 id 集合（与画布尺寸无关），按签名缓存避免每帧重算
+	let layoutCache = new Map<string, Map<number, Pos>>();
+
 	function layout(g: GraphData): Map<number, Pos> {
+		const sig = g.nodes.map((n) => n.id).join(',');
+		const cached = layoutCache.get(sig);
+		if (cached) return cached;
 		const n = g.nodes.length;
 		const cx = LOGICAL_W / 2;
 		const cy = LOGICAL_H / 2;
@@ -77,17 +92,18 @@
 			const angle = -Math.PI / 2 + (i * 2 * Math.PI) / Math.max(n, 1);
 			map.set(node.id, { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) });
 		});
+		layoutCache.set(sig, map);
 		return map;
 	}
 
 	function nodeFill(state: GraphNodeState): { fill: string; border: string; text: string } {
 		switch (state) {
 			case 'current':
-				return { fill: colors.accent, border: colors.accent, text: '#FAF9F6' };
+				return { fill: colors.accent, border: colors.accent, text: 'colors.inkInverse' };
 			case 'visited':
-				return { fill: colors.success, border: colors.success, text: '#FAF9F6' };
+				return { fill: colors.success, border: colors.success, text: 'colors.inkInverse' };
 			case 'done':
-				return { fill: colors.successDeep, border: colors.successDeep, text: '#FAF9F6' };
+				return { fill: colors.successDeep, border: colors.successDeep, text: 'colors.inkInverse' };
 			case 'frontier':
 				return { fill: colors.surface, border: colors.academic, text: colors.ink };
 			default:
@@ -211,68 +227,24 @@
 		ctx.restore();
 	}
 
-	function resizeCanvas() {
-		if (!browser || !canvasEl) return;
-		const container = canvasEl.parentElement;
-		if (!container) return;
-
-		dpr = window.devicePixelRatio || 1;
-		const rect = container.getBoundingClientRect();
-		canvasWidth = Math.max(Math.max(320, rect.width - 24), LOGICAL_W * MIN_SCALE);
-		canvasHeight = Math.max(Math.max(240, rect.height - 24), LOGICAL_H * MIN_SCALE);
-
-		canvasEl.width = canvasWidth * dpr;
-		canvasEl.height = canvasHeight * dpr;
-		canvasEl.style.width = `${canvasWidth}px`;
-		canvasEl.style.height = `${canvasHeight}px`;
-
-		ctx = canvasEl.getContext('2d');
-		if (ctx) ctx.scale(dpr, dpr);
-
-		updateColorsFromCSS();
-		draw();
-	}
-
-	$effect(() => {
+		$effect(() => {
 		if (!browser) return;
 		void playbackPos;
 		void steps;
 		tick().then(() => draw());
 	});
 
-	onMount(() => {
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
-		draw();
-		unwatchTheme = watchThemeChange(() => {
-			updateColorsFromCSS();
-			draw();
-		});
-	});
+	;
 
-	onDestroy(() => {
-		if (!browser) return;
-		window.removeEventListener('resize', resizeCanvas);
-		unwatchTheme?.();
-	});
 </script>
 
-<div class="graph-canvas-wrap">
-	<canvas bind:this={canvasEl}></canvas>
-</div>
-
-<style>
-	.graph-canvas-wrap {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	canvas {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<!-- 画布生命周期（resize/ResizeObserver/主题监听）由 CanvasHost 统一管理 -->
+<CanvasHost
+	minW={680}
+	minH={442}
+	onDraw={(h) => {
+		host = h;
+		draw();
+	}}
+	onThemeChange={updateColorsFromCSS}
+/>

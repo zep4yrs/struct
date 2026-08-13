@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -19,6 +18,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseLabelList, parseWeightedEdgeList } from '../parseInput';
 
 export type MstMode = 'prim' | 'kruskal';
@@ -100,12 +100,9 @@ const DEFAULT_EDGES: [number, number, number][] = [
 	[3, 4, 9]
 ];
 
-export class MstEngine implements AlgorithmEngine<MstInput> {
+export class MstEngine extends EngineBase<MstInput> {
 	readonly name = '最小生成树';
 	readonly renderType = 'graph' as const;
-
-	pseudocode: string[] = [];
-	practiceQuestions: PracticeQuestion[] = [];
 
 	readonly demoScript: DemoScriptItem[] = [
 		{
@@ -132,11 +129,6 @@ export class MstEngine implements AlgorithmEngine<MstInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _labels: string[] = [];
 	private _edges: [number, number, number][] = [];
 	private _mode: MstMode = 'prim';
@@ -432,19 +424,4 @@ export class MstEngine implements AlgorithmEngine<MstInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

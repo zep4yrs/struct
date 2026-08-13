@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -19,6 +18,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseLabelList, parseWeightedEdgeList } from '../parseInput';
 
 export interface DijkstraInput {
@@ -74,7 +74,7 @@ const DEFAULT_EDGES: [number, number, number][] = [
 	[4, 2, 6]
 ];
 
-export class DijkstraEngine implements AlgorithmEngine<DijkstraInput> {
+export class DijkstraEngine extends EngineBase<DijkstraInput> {
 	readonly name = '最短路径';
 	readonly renderType = 'graph' as const;
 
@@ -106,11 +106,6 @@ export class DijkstraEngine implements AlgorithmEngine<DijkstraInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _labels: string[] = [];
 	private _edges: [number, number, number][] = [];
 	private _directed = true;
@@ -344,19 +339,4 @@ export class DijkstraEngine implements AlgorithmEngine<DijkstraInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

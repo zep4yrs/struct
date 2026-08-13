@@ -19,6 +19,7 @@
 		<a
 			href={topic.planned ? undefined : base + topic.href}
 			class="topic-card block rounded-md border p-4 no-underline transition-all"
+			class:planned={topic.planned}
 			style="
 				background: var(--color-surface);
 				border-color: var(--color-line-hair);
@@ -58,7 +59,11 @@
 </div>
 
 <style>
-	.topic-card:hover:not([aria-disabled='true']) {
+	.topic-card.planned {
+		cursor: not-allowed;
+	}
+
+	.topic-card:not(.planned):hover {
 		border-color: var(--color-ink) !important;
 		transform: translateY(-2px);
 	}

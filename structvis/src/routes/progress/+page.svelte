@@ -3,7 +3,9 @@
 		progress,
 		reviewMistake,
 		markMistakeMastered,
-		removeMistake
+		removeMistake,
+		exportProgress,
+		importProgress
 	} from '$lib/stores/progress';
 	import { resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
@@ -11,17 +13,12 @@
 	import PracticePanel from '$lib/components/player/PracticePanel.svelte';
 	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
 
-	const EXTRA_TOPICS: Record<string, string> = {
-		triggers: '触发器',
-		procedures: '存储过程'
-	};
-
 	const TOPIC_NAMES: Record<string, string> = Object.fromEntries(
 		[...dsTopics, ...dbTopics].filter((t) => t.topicId).map((t) => [t.topicId as string, t.title])
 	);
 
 	function topicName(id: string): string {
-		return TOPIC_NAMES[id] ?? EXTRA_TOPICS[id] ?? id;
+		return TOPIC_NAMES[id] ?? id;
 	}
 
 	function formatDate(ts: number): string {
@@ -81,6 +78,43 @@
 		reviewQuestion = null;
 		reviewingMistake = null;
 		reviewAnswered = null;
+	}
+
+	// === 数据备份（导出/导入） ===
+	let backupMsg = $state('');
+	let backupError = $state('');
+	let fileInputRef: HTMLInputElement | undefined = $state();
+
+	function handleExport() {
+		const json = exportProgress();
+		const blob = new Blob([json], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `structvis-progress-${new Date().toISOString().slice(0, 10)}.json`;
+		a.click();
+		URL.revokeObjectURL(url);
+		backupMsg = '已导出备份文件（含全部学习进度与错题）。';
+		backupError = '';
+	}
+
+	function handleImportFile(e: Event) {
+		const file = (e.target as HTMLInputElement).files?.[0];
+		if (!file) return;
+		const reader = new FileReader();
+		reader.onload = () => {
+			const result = importProgress(String(reader.result ?? ''));
+			if (result.ok) {
+				backupMsg = '导入成功，学习进度已恢复。';
+				backupError = '';
+			} else {
+				backupError = result.error ?? '导入失败';
+				backupMsg = '';
+			}
+		};
+		reader.readAsText(file);
+		// 允许再次选择同一文件
+		if (fileInputRef) fileInputRef.value = '';
 	}
 </script>
 
@@ -264,6 +298,33 @@
 			</section>
 		{/if}
 	{/if}
+
+	<!-- 数据备份：空状态也可见（换设备后第一件事就是导入恢复） -->
+	<section class="mb-10">
+		<div class="section-label mb-3">数据备份</div>
+		<div class="card">
+			<p class="backup-desc">
+				学习进度与错题保存在本地浏览器。可导出为备份文件，换设备或清理浏览器后重新导入，避免数据丢失。
+			</p>
+			<div class="backup-actions">
+				<button class="btn btn-ghost btn-sm" onclick={handleExport}>导出备份</button>
+				<button class="btn btn-ghost btn-sm" onclick={() => fileInputRef?.click()}>导入备份</button>
+				<input
+					bind:this={fileInputRef}
+					type="file"
+					accept="application/json,.json"
+					class="hidden-file"
+					onchange={handleImportFile}
+				/>
+			</div>
+			{#if backupMsg}
+				<p class="backup-msg" aria-live="polite">{backupMsg}</p>
+			{/if}
+			{#if backupError}
+				<p class="backup-err" role="alert" aria-live="polite">{backupError}</p>
+			{/if}
+		</div>
+	</section>
 
 	{#if reviewQuestion !== null}
 		<PracticePanel
@@ -479,6 +540,37 @@
 		font-size: 12px;
 		padding: 4px 10px;
 		border-radius: var(--radius-sm);
+	}
+
+	/* 数据备份 */
+	.backup-desc {
+		font-size: 13px;
+		line-height: 1.7;
+		color: var(--color-ink-2);
+		margin: 0 0 12px;
+		max-width: 520px;
+	}
+
+	.backup-actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.hidden-file {
+		display: none;
+	}
+
+	.backup-msg {
+		margin: 10px 0 0;
+		font-size: 13px;
+		color: var(--color-success);
+	}
+
+	.backup-err {
+		margin: 10px 0 0;
+		font-size: 13px;
+		color: var(--color-danger);
 	}
 
 	.tag-blue {

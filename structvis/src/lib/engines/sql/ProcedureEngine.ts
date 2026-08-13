@@ -17,7 +17,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EnginePreset,
@@ -25,6 +24,107 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../algorithm/types';
+import { EngineBase } from '../algorithm/EngineBase';
+
+/**
+ * 安全算术表达式求值器 — 替代 new Function 动态执行。
+ * 仅支持：数字（含小数）、变量名、+ - * / ( ) 与一元正负号。
+ * 不支持函数调用、字符串字面量、逗号、成员访问等任何可执行构造。
+ * 解析或求值失败返回 null（调用方回退原样文本）。
+ */
+function evalArithmeticSafe(
+	expr: string,
+	lookup: (name: string) => string | number | undefined
+): number | null {
+	const src = expr.trim();
+	let pos = 0;
+
+	function peek(): string {
+		return src[pos] ?? '';
+	}
+	function next(): string {
+		return src[pos++] ?? '';
+	}
+	function skipWs(): void {
+		while (pos < src.length && /\s/.test(src[pos])) pos++;
+	}
+	function parseNumber(): number | null {
+		const m = /^-?\d+(\.\d+)?/.exec(src.slice(pos));
+		if (!m) return null;
+		pos += m[0].length;
+		return parseFloat(m[0]);
+	}
+	function parseIdent(): string | null {
+		const m = /^[a-zA-Z_]\w*/.exec(src.slice(pos));
+		if (!m) return null;
+		pos += m[0].length;
+		return m[0];
+	}
+	function parseFactor(): number | null {
+		skipWs();
+		const ch = peek();
+		if (ch === '(') {
+			next();
+			const v = parseExpr();
+			skipWs();
+			if (v === null || peek() !== ')') return null;
+			next();
+			return v;
+		}
+		if (ch === '+' || ch === '-') {
+			next();
+			const v = parseFactor();
+			return v === null ? null : ch === '-' ? -v : v;
+		}
+		if (/[0-9.]/.test(ch)) return parseNumber();
+		const ident = parseIdent();
+		if (ident !== null) {
+			const raw = lookup(ident);
+			if (raw === undefined) return null;
+			const num = typeof raw === 'number' ? raw : Number(raw);
+			return Number.isFinite(num) ? num : null;
+		}
+		return null;
+	}
+	function parseTerm(): number | null {
+		let v = parseFactor();
+		if (v === null) return null;
+		for (;;) {
+			skipWs();
+			const ch = peek();
+			if (ch !== '*' && ch !== '/') break;
+			next();
+			const rhs = parseFactor();
+			if (rhs === null) return null;
+			if (ch === '/') {
+				if (rhs === 0) return null; // 除零视为非法，回退原样文本
+				v = v / rhs;
+			} else {
+				v = v * rhs;
+			}
+		}
+		return v;
+	}
+	function parseExpr(): number | null {
+		let v = parseTerm();
+		if (v === null) return null;
+		for (;;) {
+			skipWs();
+			const ch = peek();
+			if (ch !== '+' && ch !== '-') break;
+			next();
+			const rhs = parseTerm();
+			if (rhs === null) return null;
+			v = ch === '+' ? v + rhs : v - rhs;
+		}
+		return v;
+	}
+
+	const result = parseExpr();
+	if (result === null) return null;
+	skipWs();
+	return pos === src.length ? result : null;
+}
 
 export type ProcedureInput = {
 	name: string;
@@ -158,11 +258,10 @@ interface Stmt {
 	condition?: string;
 }
 
-export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
+export class ProcedureEngine extends EngineBase<ProcedureInput> {
 	readonly name = '存储过程';
 	readonly renderType = 'pseudocode' as const;
 
-	pseudocode: string[] = [];
 	practiceQuestions: PracticeQuestion[] = PRACTICE_QUESTIONS;
 	readonly demoScript: DemoScriptItem[] = [
 		{
@@ -186,20 +285,6 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 		description: p.description
 	}));
 
-	private _steps: AlgorithmStep[] = [];
-	private _stepId = 0;
-
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
 	init(input: ProcedureInput): void {
 		this.pseudocode = input.body.split('\n').filter((l) => l.trim().length > 0);
 		this._build(input);
@@ -220,14 +305,6 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 		const body = (values.body ?? '').trim();
 		if (!body) throw new Error('过程体不能为空');
 		this.init({ name: '自定义', params: [], body, callArgs: [] });
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
 	}
 
 	private _build(input: ProcedureInput): void {
@@ -439,16 +516,12 @@ export class ProcedureEngine implements AlgorithmEngine<ProcedureInput> {
 			trimmed.includes('*') ||
 			trimmed.includes('/')
 		) {
-			try {
-				const replaced = trimmed.replace(/([a-zA-Z_]\w*)/g, (_, name) => {
-					const v = frame.vars[name];
-					return v !== undefined ? String(v.value) : name;
-				});
-				const result = new Function(`return ${replaced}`)();
-				return typeof result === 'number' ? result : String(result);
-			} catch {
-				return trimmed;
-			}
+			// 仅允许四则运算与变量引用；解析/求值失败回退原样文本（不再执行任意 JS）
+			const result = evalArithmeticSafe(trimmed, (name) => {
+				const v = frame.vars[name];
+				return v !== undefined ? v.value : undefined;
+			});
+			return result !== null ? result : trimmed;
 		}
 		const v = frame.vars[trimmed];
 		return v !== undefined ? v.value : trimmed;

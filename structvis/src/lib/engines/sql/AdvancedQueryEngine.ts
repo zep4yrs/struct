@@ -11,7 +11,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -21,6 +20,7 @@ import type {
 	SqlTableData,
 	StepType
 } from '../algorithm/types';
+import { EngineBase } from '../algorithm/EngineBase';
 import { AGG_RE, SelectEngine, type SqlTable } from './SelectEngine';
 import { evalSqlWhere } from './sql-utils';
 
@@ -130,11 +130,10 @@ export const ADVANCED_PRESETS: { name: string; description: string; sql: string 
 
 type QueryMode = 'having' | 'left-join' | 'union' | 'exists';
 
-export class AdvancedQueryEngine implements AlgorithmEngine<AdvancedQueryInput> {
+export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 	readonly name = '高级查询';
 	readonly renderType = 'sql-table' as const;
 
-	pseudocode: string[] = [];
 	practiceQuestions: PracticeQuestion[] = PRACTICE_QUESTIONS;
 
 	readonly demoScript: DemoScriptItem[] = [
@@ -153,11 +152,6 @@ export class AdvancedQueryEngine implements AlgorithmEngine<AdvancedQueryInput> 
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _tables: Record<string, SqlTable> = {};
 
 	presets: EnginePreset[] = ADVANCED_PRESETS.map((p) => ({
@@ -815,19 +809,4 @@ export class AdvancedQueryEngine implements AlgorithmEngine<AdvancedQueryInput> 
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

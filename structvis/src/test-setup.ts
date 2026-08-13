@@ -12,10 +12,12 @@ const TOKENS: Record<string, string> = {
 	'--color-danger': '#9B2226',
 	'--color-academic': '#1B4965',
 	'--color-success': '#2D6A4F',
+	'--color-success-deep': '#1F4D38',
 	'--color-accent': '#D97706',
 	'--color-ink': '#1A1A1A',
 	'--color-ink-2': '#5A5A5A',
 	'--color-ink-3': '#9A9A9A',
+	'--color-ink-inverse': '#FAF9F6',
 	'--color-surface': '#FFFFFF',
 	'--color-paper': '#FCFAF6'
 };

@@ -10,7 +10,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -20,6 +19,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseNumberList } from '../parseInput';
 
 export type HashMode = 'construct' | 'search' | 'chain';
@@ -132,12 +132,9 @@ const PRACTICE_BY_MODE: Record<HashMode, PracticeQuestion[]> = {
 	]
 };
 
-export class HashTableEngine implements AlgorithmEngine<HashInput> {
+export class HashTableEngine extends EngineBase<HashInput> {
 	readonly name = '哈希表';
 	readonly renderType = 'hashtable' as const;
-
-	pseudocode: string[] = [];
-	practiceQuestions: PracticeQuestion[] = [];
 
 	readonly demoScript: DemoScriptItem[] = [
 		{
@@ -164,11 +161,6 @@ export class HashTableEngine implements AlgorithmEngine<HashInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _mode: HashMode = 'construct';
 	private _size = 11;
 	private _slots: (number | null)[] = [];
@@ -486,19 +478,4 @@ export class HashTableEngine implements AlgorithmEngine<HashInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

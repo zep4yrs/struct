@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { tick } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { dsTopics, dbTopics, type TopicCard } from '$lib/content/topics';
 
@@ -20,11 +21,21 @@
 	let query = $state('');
 	let selected = $state(0);
 	let inputRef: HTMLInputElement | undefined = $state();
+	let cardRef: HTMLDivElement | undefined = $state();
+	// 打开前获得焦点的元素，关闭时归还焦点（模态对话框 a11y）
+	let lastFocused: HTMLElement | null = null;
 
 	const results = $derived.by(() => {
 		const q = query.trim().toLowerCase();
 		if (q.length === 0) return [];
 		return allItems.filter((t) => (t.title + ' ' + t.description).toLowerCase().includes(q));
+	});
+
+	// 结果收缩时夹取 selected，避免高亮越界导致 Enter 静默失效
+	$effect(() => {
+		if (results.length > 0 && selected >= results.length) {
+			selected = results.length - 1;
+		}
 	});
 
 	function reset() {
@@ -35,13 +46,16 @@
 	function close() {
 		reset();
 		onClose();
+		// 归还焦点到打开前的位置
+		lastFocused?.focus?.();
+		lastFocused = null;
 	}
 
 	function go(item: SearchItem) {
 		if (item.planned) return;
 		reset();
 		onClose();
-		window.location.href = base + item.href;
+		void goto(base + item.href);
 	}
 
 	function move(delta: number) {
@@ -50,9 +64,34 @@
 		selected = (selected + delta + n) % n;
 	}
 
+	/** 焦点圈定：Tab / Shift+Tab 在对话框内首尾循环，阻止焦点逃逸到背景页面 */
+	function trapFocus(e: KeyboardEvent) {
+		if (e.key !== 'Tab' || !cardRef) return;
+		const focusables = Array.from(
+			cardRef.querySelectorAll<HTMLElement>('button, input, [href], [tabindex]:not([tabindex="-1"])')
+		).filter((el) => !el.hasAttribute('disabled'));
+		if (focusables.length === 0) return;
+		const first = focusables[0];
+		const last = focusables[focusables.length - 1];
+		const active = document.activeElement;
+		if (e.shiftKey && (active === first || !cardRef.contains(active))) {
+			e.preventDefault();
+			last.focus();
+		} else if (!e.shiftKey && (active === last || !cardRef.contains(active))) {
+			e.preventDefault();
+			first.focus();
+		}
+	}
+
 	$effect(() => {
 		if (open) {
+			lastFocused = document.activeElement as HTMLElement | null;
+			// 打开时锁定背景滚动，关闭时还原
+			document.body.style.overflow = 'hidden';
 			tick().then(() => inputRef?.focus());
+			return () => {
+				document.body.style.overflow = '';
+			};
 		}
 	});
 
@@ -72,6 +111,8 @@
 				e.preventDefault();
 				const item = results[selected];
 				if (item) go(item);
+			} else {
+				trapFocus(e);
 			}
 		}
 		window.addEventListener('keydown', onKeydown);
@@ -82,7 +123,7 @@
 {#if open}
 	<div class="search-root">
 		<button class="search-overlay" aria-label="关闭搜索" onclick={close}></button>
-		<div class="search-card" role="dialog" aria-modal="true" aria-label="搜索课程">
+		<div class="search-card" role="dialog" aria-modal="true" aria-label="搜索课程" bind:this={cardRef}>
 			<div class="search-head">
 				<svg
 					class="search-icon"
@@ -104,6 +145,10 @@
 					bind:value={query}
 					placeholder="搜索课程，如：排序、二叉树、索引"
 					aria-label="搜索关键词"
+					role="combobox"
+					aria-expanded={results.length > 0}
+					aria-controls="search-listbox"
+					aria-activedescendant={results.length > 0 ? `search-opt-${selected}` : undefined}
 					autocomplete="off"
 					spellcheck="false"
 				/>
@@ -116,9 +161,9 @@
 				{:else if results.length === 0}
 					<div class="search-empty">没有找到与 “{query.trim()}” 匹配的课程</div>
 				{:else}
-					<ul class="search-list" role="listbox" aria-label="搜索结果">
+					<ul class="search-list" id="search-listbox" role="listbox" aria-label="搜索结果">
 						{#each results as item, i (item.href + item.title)}
-							<li role="option" aria-selected={i === selected}>
+							<li role="option" id={`search-opt-${i}`} aria-selected={i === selected}>
 								<button
 									class="search-item {i === selected ? 'active' : ''} {item.planned
 										? 'planned'
@@ -166,7 +211,7 @@
 		z-index: 80;
 		border: none;
 		padding: 0;
-		background: rgba(20, 20, 20, 0.35);
+		background: var(--color-scrim);
 		cursor: default;
 	}
 

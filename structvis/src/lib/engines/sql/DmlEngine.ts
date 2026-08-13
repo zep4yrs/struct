@@ -11,7 +11,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	EngineCustomConfig,
 	EnginePreset,
@@ -20,6 +19,7 @@ import type {
 	SqlTableData,
 	StepType
 } from '../algorithm/types';
+import { EngineBase } from '../algorithm/EngineBase';
 import { evalSqlWhere } from './sql-utils';
 
 export interface DmlEngineInput {
@@ -86,18 +86,12 @@ export const DML_PRESETS: { name: string; description: string; sql: string }[] =
 	}
 ];
 
-export class DmlEngine implements AlgorithmEngine<DmlEngineInput> {
+export class DmlEngine extends EngineBase<DmlEngineInput> {
 	readonly name = '数据更新';
 	readonly renderType = 'sql-table' as const;
 
-	pseudocode: string[] = [];
 	practiceQuestions: PracticeQuestion[] = PRACTICE_QUESTIONS;
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _table: SqlTableData = { columns: [], rows: [] };
 
 	presets: EnginePreset[] = DML_PRESETS.map((p) => ({ name: p.name, description: p.description }));
@@ -353,19 +347,4 @@ export class DmlEngine implements AlgorithmEngine<DmlEngineInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

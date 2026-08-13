@@ -9,7 +9,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -19,6 +18,7 @@ import type {
 	SqlTableData,
 	StepType
 } from '../algorithm/types';
+import { EngineBase } from '../algorithm/EngineBase';
 import { evalSqlWhere } from './sql-utils';
 
 export interface SqlTable {
@@ -139,11 +139,10 @@ export const SELECT_PRESETS: { name: string; description: string; sql: string }[
 	}
 ];
 
-export class SelectEngine implements AlgorithmEngine<SelectEngineInput> {
+export class SelectEngine extends EngineBase<SelectEngineInput> {
 	readonly name = 'MySQL 数据查询';
 	readonly renderType = 'sql-table' as const;
 
-	pseudocode: string[] = [];
 	practiceQuestions: PracticeQuestion[] = PRACTICE_QUESTIONS;
 
 	readonly demoScript: DemoScriptItem[] = [
@@ -166,11 +165,6 @@ export class SelectEngine implements AlgorithmEngine<SelectEngineInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _tables: Record<string, SqlTable> = {};
 
 	presets: EnginePreset[] = SELECT_PRESETS.map((p) => ({
@@ -727,19 +721,4 @@ export class SelectEngine implements AlgorithmEngine<SelectEngineInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

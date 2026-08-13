@@ -45,6 +45,7 @@
 	}
 
 	function handleProgressMouseDown(e: MouseEvent) {
+		if (disabled) return; // disabled 时鼠标拖拽同样失效（与键盘一致）
 		isDragging = true;
 		handleProgressClick(e);
 		window.addEventListener('mousemove', handleProgressMouseMove);
@@ -126,6 +127,16 @@
 			aria-valuemax={totalSteps - 1}
 			aria-valuenow={currentStep}
 			tabindex={0}
+			onkeydown={(e) => {
+				if (disabled) return;
+				if (e.key === 'ArrowLeft') {
+					e.preventDefault();
+					onJump(Math.max(0, currentStep - 1));
+				} else if (e.key === 'ArrowRight') {
+					e.preventDefault();
+					onJump(Math.min(totalSteps - 1, currentStep + 1));
+				}
+			}}
 		>
 			<div class="progress-fill" style="width: {progressPercent}%;"></div>
 		</div>

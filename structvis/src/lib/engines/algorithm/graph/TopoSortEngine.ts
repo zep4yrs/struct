@@ -8,7 +8,6 @@
  */
 
 import type {
-	AlgorithmEngine,
 	AlgorithmStep,
 	DemoScriptItem,
 	EngineCustomConfig,
@@ -18,6 +17,7 @@ import type {
 	PracticeQuestion,
 	StepType
 } from '../types';
+import { EngineBase } from '../EngineBase';
 import { parseEdgeList, parseLabelList } from '../parseInput';
 
 export interface TopoSortInput {
@@ -66,7 +66,7 @@ const DEFAULT_EDGES: [number, number][] = [
 	[3, 5]
 ];
 
-export class TopoSortEngine implements AlgorithmEngine<TopoSortInput> {
+export class TopoSortEngine extends EngineBase<TopoSortInput> {
 	readonly name = '拓扑排序';
 	readonly renderType = 'graph' as const;
 
@@ -98,11 +98,6 @@ export class TopoSortEngine implements AlgorithmEngine<TopoSortInput> {
 		}
 	];
 
-	steps: AlgorithmStep[] = [];
-	totalSteps = 0;
-	playbackPos = 0;
-
-	private _stepId = 0;
 	private _labels: string[] = [];
 	private _edges: [number, number][] = [];
 
@@ -280,19 +275,4 @@ export class TopoSortEngine implements AlgorithmEngine<TopoSortInput> {
 		});
 	}
 
-	getCurrentStep(): AlgorithmStep {
-		return this.steps[Math.min(Math.floor(this.playbackPos), this.steps.length - 1)];
-	}
-
-	getProgress(): number {
-		return this.playbackPos;
-	}
-
-	setProgress(pos: number): void {
-		this.playbackPos = pos;
-	}
-
-	reset(): void {
-		this.playbackPos = 0;
-	}
 }

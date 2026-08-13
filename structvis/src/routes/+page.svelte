@@ -90,9 +90,12 @@
 
 <!-- ══════════ 01 · 为什么它不一样 ══════════ -->
 <section class="home-section">
-	<div class="home-section-head" use:reveal>
-		<span class="section-label">01 · 为什么它不一样</span>
-		<h2 class="home-h2">把「看懂」变成「做对」</h2>
+	<div class="home-chapter" use:reveal>
+		<span class="home-chapter-num" aria-hidden="true">01</span>
+		<div>
+			<span class="section-label">为什么它不一样</span>
+			<h2 class="home-h2">把「看懂」变成「做对」</h2>
+		</div>
 	</div>
 
 	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -192,10 +195,13 @@
 </section>
 
 <!-- ══════════ 02 · 学什么 ══════════ -->
-<section class="home-section">
-	<div class="home-section-head" use:reveal={{ delay: 80 }}>
-		<span class="section-label">02 · 学什么</span>
-		<h2 class="home-h2">两门课，{TOTAL_TOPICS} 个知识点</h2>
+<section class="home-section home-section--band">
+	<div class="home-chapter" use:reveal>
+		<span class="home-chapter-num" aria-hidden="true">02</span>
+		<div>
+			<span class="section-label">学什么</span>
+			<h2 class="home-h2">两门课，{TOTAL_TOPICS} 个知识点</h2>
+		</div>
 	</div>
 
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -225,12 +231,15 @@
 
 <!-- ══════════ 03 · 数据背后 ══════════ -->
 <section class="home-section">
-	<div class="home-section-head" use:reveal={{ delay: 80 }}>
-		<span class="section-label">03 · 数据背后</span>
-		<h2 class="home-h2">每一帧都是可验证的</h2>
+	<div class="home-chapter" use:reveal>
+		<span class="home-chapter-num" aria-hidden="true">03</span>
+		<div>
+			<span class="section-label">数据背后</span>
+			<h2 class="home-h2">每一帧都是可验证的</h2>
+		</div>
 	</div>
 
-	<div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+	<div class="home-stats">
 		<div class="home-stat" use:reveal={{ delay: 120 }}>
 			<div class="home-stat-num">{TOTAL_TOPICS}</div>
 			<div class="home-stat-label">门课程</div>
@@ -356,19 +365,50 @@
 	.home-section {
 		max-width: 1080px;
 		margin: 0 auto;
-		padding: 72px 24px 8px;
+		padding: 96px 24px 24px;
 	}
 
-	.home-section-head {
-		margin-bottom: 28px;
+	.home-section--band {
+		max-width: none;
+		padding: 96px 24px;
+		background: var(--color-subtle);
+		border-top: 1px solid var(--color-line-hair);
+		border-bottom: 1px solid var(--color-line-hair);
+	}
+
+	.home-section--band > :global(*) {
+		max-width: 1080px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	/* 章节式页眉：大编号 + 标题组 */
+	.home-chapter {
+		display: flex;
+		align-items: flex-end;
+		gap: 28px;
+		margin-bottom: 44px;
+		padding-bottom: 24px;
+		border-bottom: 1px solid var(--color-line-hair);
+	}
+
+	.home-chapter-num {
+		font-family: var(--font-display);
+		font-size: 56px;
+		font-weight: 500;
+		line-height: 0.9;
+		letter-spacing: -0.03em;
+		color: var(--color-ink-3);
+		opacity: 0.55;
+		user-select: none;
 	}
 
 	.home-h2 {
 		font-family: var(--font-display);
-		font-size: 30px;
+		font-size: 34px;
 		font-weight: 500;
 		letter-spacing: -0.02em;
-		margin: 10px 0 0;
+		margin: 8px 0 0;
 		color: var(--color-ink);
 	}
 
@@ -411,35 +451,58 @@
 		color: var(--color-ink-3);
 	}
 
-	/* === 统计 === */
-	.home-stat {
-		text-align: center;
-		padding: 28px 16px;
-		border: 1px solid var(--color-line-hair);
-		border-radius: var(--radius-md);
-		background: var(--color-surface);
-		transition:
-			transform 0.22s var(--ease-out),
-			border-color 0.22s var(--ease-out);
+	/* === 统计（数据碑） === */
+	.home-stats {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
 	}
 
-	.home-stat:hover {
-		transform: translateY(-3px);
-		border-color: var(--color-ink-3);
+	.home-stat {
+		text-align: center;
+		padding: 12px 24px;
+	}
+
+	.home-stat + .home-stat {
+		border-left: 1px solid var(--color-line-hair);
 	}
 
 	.home-stat-num {
 		font-family: var(--font-display);
-		font-size: 44px;
+		font-size: 60px;
 		font-weight: 500;
 		line-height: 1;
-		letter-spacing: -0.02em;
-		color: var(--color-accent);
+		letter-spacing: -0.03em;
+		color: var(--color-ink);
+		background: linear-gradient(180deg, var(--color-ink), var(--color-ink-3));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
 	}
 
 	.home-stat-label {
-		margin-top: 10px;
-		font-size: 12px;
-		color: var(--color-ink-2);
+		margin-top: 12px;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.16em;
+		color: var(--color-ink-3);
+	}
+
+	@media (max-width: 760px) {
+		.home-stats {
+			grid-template-columns: repeat(2, 1fr);
+			row-gap: 36px;
+		}
+
+		.home-stat + .home-stat {
+			border-left: none;
+		}
+
+		.home-chapter-num {
+			font-size: 40px;
+		}
+
+		.home-h2 {
+			font-size: 26px;
+		}
 	}
 </style>

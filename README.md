@@ -72,7 +72,9 @@ GitHub Actions：push 到 master 自动构建并提交 `docs/`，通过 GitHub P
 
 ## 许可
 
-Proprietary（保留所有权利），详见 [LICENSE](LICENSE)。
+[GPL-3.0](LICENSE)（GNU General Public License v3）。Copyright (c) 2026 枫桥 (zep4yrs)。
+
+你可以自由使用、修改、分发本项目，但**基于本项目的衍生作品必须同样以 GPL-3.0 开源**——防止有人拿去闭源商用。
 
 ## 关于
 

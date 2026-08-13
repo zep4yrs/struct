@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { WebGLRenderer, Scene as ThreeScene, BufferGeometry, Mesh } from 'three';
+	import type { WebGLRenderer, Scene as ThreeScene, Object3D, MeshBasicMaterial } from 'three';
 
 	/** three.js 全页 3D 背景：粒子场 + 线框几何体，随鼠标视差缓慢旋转，固定于视口。
 	 *  - 懒加载：仅当组件挂载才动态 import three（约 150KB，只出现在首页）
@@ -74,30 +74,70 @@
 				const points = new THREE.Points(geo, pointsMat);
 				scene.add(points);
 
-				// === 线框几何体（学术蓝，呼应数据结构抽象） ===
-				const wireMat = new THREE.MeshBasicMaterial({
-					color: readColor('--color-academic'),
-					wireframe: true,
-					transparent: true,
-					opacity: 0.16
-				});
-				const shapes: { mesh: Mesh; rx: number; ry: number }[] = [];
-				const defs = [
-					{ kind: 'icosahedron', radius: 2.6, pos: [-6.2, 1.5, -2], rx: 0.12, ry: 0.2 },
-					{ kind: 'torus', radius: 2.2, tube: 0.7, pos: [6.6, -1.7, -3], rx: 0.2, ry: 0.1 },
-					{ kind: 'octahedron', radius: 1.8, pos: [5.4, 2.5, -1], rx: -0.18, ry: 0.12 },
-					{ kind: 'box', size: 2.2, pos: [-5.6, -2.3, -2.5], rx: 0.1, ry: -0.16 }
+				// === 主题漂浮体：数据库圆柱 / 排序柱 / 链表节点链（呼应「数据结构与数据库」） ===
+				let themeAcademic = new THREE.Color(readColor('--color-academic'));
+				let themeAccent = new THREE.Color(readColor('--color-accent'));
+				const floaters: {
+					mesh: Object3D;
+					rx: number;
+					ry: number;
+					phase: number;
+					baseY: number;
+					mats: MeshBasicMaterial[];
+				}[] = [];
+				const shapeDefs: { kind: string; size: number; extra?: number; accent?: boolean }[] = [
+					{ kind: 'cylinder', size: 0.55, extra: 0.95 }, // 数据库表（圆柱）
+					{ kind: 'bar', size: 0.42, extra: 0.9 }, // 排序柱（数组元素）
+					{ kind: 'bar', size: 0.42, extra: 1.35 },
+					{ kind: 'bar', size: 0.42, extra: 0.6, accent: true },
+					{ kind: 'chain', size: 0.26 } // 链表节点链（两节点 + 连线）
 				];
-				for (const d of defs) {
-					let g: BufferGeometry;
-					if (d.kind === 'icosahedron') g = new THREE.IcosahedronGeometry(d.radius, 1);
-					else if (d.kind === 'torus') g = new THREE.TorusGeometry(d.radius, d.tube, 12, 24);
-					else if (d.kind === 'octahedron') g = new THREE.OctahedronGeometry(d.radius, 0);
-					else g = new THREE.BoxGeometry(d.size, d.size, d.size);
-					const m = new THREE.Mesh(g, wireMat);
-					m.position.set(d.pos[0], d.pos[1], d.pos[2]);
+				for (let i = 0; i < shapeDefs.length; i++) {
+					const d = shapeDefs[i];
+					const mat = new THREE.MeshBasicMaterial({
+						color: d.accent ? themeAccent : themeAcademic,
+						transparent: true,
+						opacity: d.accent ? 0.4 : 0.45
+					});
+					let m: Object3D;
+					const mats: MeshBasicMaterial[] = [mat];
+					if (d.kind === 'cylinder') {
+						m = new THREE.Mesh(new THREE.CylinderGeometry(d.size, d.size, d.extra ?? 0.9, 20), mat);
+						m.rotation.z = Math.PI / 2; // 横放，像数据记录
+					} else if (d.kind === 'bar') {
+						m = new THREE.Mesh(new THREE.BoxGeometry(d.size, d.extra ?? 0.9, d.size), mat);
+					} else {
+						// 链表节点链：两球 + 连线
+						const g = new THREE.Group();
+						const nodeGeo = new THREE.SphereGeometry(d.size, 14, 10);
+						const n1 = new THREE.Mesh(nodeGeo, mat);
+						n1.position.x = -0.55;
+						const n2 = new THREE.Mesh(nodeGeo, mat);
+						n2.position.x = 0.55;
+						const linkMat = new THREE.MeshBasicMaterial({
+							color: themeAcademic,
+							transparent: true,
+							opacity: 0.35
+						});
+						const link = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.07, 0.07), linkMat);
+						g.add(n1, n2, link);
+						mats.push(linkMat);
+						m = g;
+					}
+					m.position.set(
+						(Math.random() - 0.5) * 30,
+						(Math.random() - 0.5) * 20,
+						-6 + Math.random() * 5
+					);
 					scene.add(m);
-					shapes.push({ mesh: m, rx: d.rx, ry: d.ry });
+					floaters.push({
+						mesh: m,
+						rx: (Math.random() - 0.5) * 0.5,
+						ry: (Math.random() - 0.5) * 0.5,
+						phase: Math.random() * Math.PI * 2,
+						baseY: m.position.y,
+						mats
+					});
 				}
 
 				renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -133,7 +173,14 @@
 				const applyTheme = () => {
 					paintColors();
 					geo.attributes.color.needsUpdate = true;
-					wireMat.color.set(readColor('--color-academic'));
+					themeAcademic.set(readColor('--color-academic'));
+					themeAccent.set(readColor('--color-accent'));
+					for (let i = 0; i < floaters.length; i++) {
+						const isAccent = shapeDefs[i].accent ?? false;
+						floaters[i].mats.forEach((mat, mi) => {
+							mat.color.set(mi === 0 ? (isAccent ? themeAccent : themeAcademic) : themeAcademic);
+						});
+					}
 				};
 				const mo = new MutationObserver(applyTheme);
 				mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
@@ -146,9 +193,11 @@
 					scene.rotation.x = curY * 0.4;
 					scene.rotation.y = curX * 0.6 + performance.now() * 0.00003;
 					points.rotation.y += 0.00006;
-					for (const s of shapes) {
-						s.mesh.rotation.x += s.rx * 0.01;
-						s.mesh.rotation.y += s.ry * 0.01;
+					const ft = performance.now() * 0.001;
+					for (const f of floaters) {
+						f.mesh.rotation.x += f.rx * 0.01;
+						f.mesh.rotation.y += f.ry * 0.01;
+						f.mesh.position.y = f.baseY + Math.sin(ft * 0.6 + f.phase) * 0.35;
 					}
 					renderer.render(scene, camera);
 					raf = requestAnimationFrame(tick);
@@ -166,8 +215,16 @@
 					window.removeEventListener('mousemove', onMove);
 					geo.dispose();
 					pointsMat.dispose();
-					wireMat.dispose();
-					shapes.forEach((s) => s.mesh.geometry.dispose());
+					floaters.forEach((f) => {
+						f.mats.forEach((mat) => mat.dispose());
+						if (f.mesh instanceof THREE.Mesh) {
+							f.mesh.geometry.dispose();
+						} else {
+							f.mesh.traverse((o) => {
+								if (o instanceof THREE.Mesh) o.geometry.dispose();
+							});
+						}
+					});
 					renderer.dispose();
 					canvas.remove();
 				};

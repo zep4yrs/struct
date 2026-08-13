@@ -48,8 +48,7 @@ structvis/
 │   │   ├── components/       # 播放器、控制栏、侧边栏、弹窗
 │   │   └── content/          # 课程主题配置
 │   └── routes/               # 页面路由
-├── e2e/                      # Playwright 端到端测试
-└── .nexus-map/               # 代码结构知识库
+└── e2e/                      # Playwright 端到端测试
 ```
 
 ## 当前状态

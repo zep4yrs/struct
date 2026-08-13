@@ -366,3 +366,41 @@ pre,
 .font-mono {
 	font-family: var(--font-mono);
 }
+
+/* === 循环微动效（入场完成后启用，保持页面「活着」） === */
+.loop-float {
+	animation: loop-float 3.4s ease-in-out infinite;
+	animation-delay: var(--loop-delay, 0s);
+}
+
+@keyframes loop-float {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-5px);
+	}
+}
+
+.loop-breathe {
+	animation: loop-breathe 2.8s ease-in-out infinite;
+	animation-delay: var(--loop-delay, 0s);
+}
+
+@keyframes loop-breathe {
+	0%,
+	100% {
+		opacity: var(--breathe-base, 0.55);
+	}
+	50% {
+		opacity: var(--breathe-peak, 0.85);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.loop-float,
+	.loop-breathe {
+		animation: none;
+	}
+}

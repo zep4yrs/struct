@@ -83,7 +83,9 @@
 <!-- ══════════ 01 · 为什么它不一样 ══════════ -->
 <section class="home-section">
 	<div class="home-chapter">
-		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll>01</span>
+		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll={{ loop: 'breathe' }}
+			>01</span
+		>
 		<div>
 			<span class="section-label" use:revealOnScroll={{ delay: 40 }}>为什么它不一样</span>
 			<h2 class="home-h2" use:revealOnScroll={{ delay: 80, split: true }}>
@@ -93,7 +95,7 @@
 	</div>
 
 	<div class="home-features">
-		<div class="home-feature" use:revealOnScroll={{ delay: 120 }}>
+		<div class="home-feature" use:revealOnScroll={{ delay: 120, loop: 'float' }}>
 			<span class="home-feature-num">01</span>
 			<div class="home-feature-head">
 				<svg
@@ -115,7 +117,7 @@
 			<p>排序、树、图、SQL 每一步都能暂停、前进、后退，动画与伪代码同步高亮。</p>
 		</div>
 
-		<div class="home-feature" use:revealOnScroll={{ delay: 210 }}>
+		<div class="home-feature" use:revealOnScroll={{ delay: 210, loop: 'float' }}>
 			<span class="home-feature-num">02</span>
 			<div class="home-feature-head">
 				<svg
@@ -137,7 +139,7 @@
 			<p>边看边答，做错了立刻看到正确答案与解析，而不是只给一个分数。</p>
 		</div>
 
-		<div class="home-feature" use:revealOnScroll={{ delay: 300 }}>
+		<div class="home-feature" use:revealOnScroll={{ delay: 300, loop: 'float' }}>
 			<span class="home-feature-num">03</span>
 			<div class="home-feature-head">
 				<svg
@@ -160,7 +162,7 @@
 			<p>答错的题自动进错题本，可重新作答、标记已掌握，复习不遗忘。</p>
 		</div>
 
-		<div class="home-feature" use:revealOnScroll={{ delay: 390 }}>
+		<div class="home-feature" use:revealOnScroll={{ delay: 390, loop: 'float' }}>
 			<span class="home-feature-num">04</span>
 			<div class="home-feature-head">
 				<svg
@@ -187,7 +189,9 @@
 <!-- ══════════ 02 · 学什么 ══════════ -->
 <section class="home-section">
 	<div class="home-chapter">
-		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll>02</span>
+		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll={{ loop: 'breathe' }}
+			>02</span
+		>
 		<div>
 			<span class="section-label" use:revealOnScroll={{ delay: 40 }}>学什么</span>
 			<h2 class="home-h2" use:revealOnScroll={{ delay: 80, split: true }}>
@@ -200,7 +204,7 @@
 		<a
 			href={resolve('/catalog')}
 			class="home-course no-underline"
-			use:revealOnScroll={{ delay: 160 }}
+			use:revealOnScroll={{ delay: 160, loop: 'float' }}
 		>
 			<div class="home-course-tag tag tag-blue">数据结构</div>
 			<h3 class="home-course-title">数据结构与算法</h3>
@@ -211,7 +215,7 @@
 		<a
 			href={resolve('/catalog')}
 			class="home-course no-underline"
-			use:revealOnScroll={{ delay: 260 }}
+			use:revealOnScroll={{ delay: 260, loop: 'float' }}
 		>
 			<div class="home-course-tag tag tag-blue">MySQL</div>
 			<h3 class="home-course-title">MySQL 数据库</h3>

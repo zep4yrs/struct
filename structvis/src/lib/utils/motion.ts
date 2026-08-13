@@ -20,6 +20,21 @@ export interface RevealOptions {
 	duration?: number;
 	/** 缓动；缺省用弹簧物理（带轻微 overshoot 的弹性） */
 	easing?: EasingParam;
+	/** 入场完成后的循环微动效：'float' 上下漂浮 / 'breathe' 呼吸 */
+	loop?: 'float' | 'breathe';
+}
+
+/** 入场完成后启用循环微动效（清除 anime 残留的内联 transform，交给 CSS 动画） */
+function applyLoop(node: HTMLElement, loop: 'float' | 'breathe', delay: number) {
+	node.style.transform = '';
+	if (loop === 'float') {
+		node.classList.add('loop-float');
+		// 错相位：基础延迟 + 随机偏移，避免全部同步浮动
+		node.style.setProperty('--loop-delay', delay + Math.round(Math.random() * 600) + 'ms');
+	} else {
+		node.classList.add('loop-breathe');
+		node.style.setProperty('--loop-delay', delay + 'ms');
+	}
 }
 
 /** 弹簧默认参数：轻微弹性、不弹过头 */
@@ -35,14 +50,17 @@ function springEasing() {
 export function reveal(node: HTMLElement, opts: RevealOptions = {}) {
 	if (typeof window === 'undefined' || prefersReducedMotion()) return {};
 
-	const { delay = 0, y = 16, duration = 640, easing } = opts;
+	const { delay = 0, y = 16, duration = 640, easing, loop } = opts;
 
 	const anim = animate(node, {
 		opacity: [0, 1],
 		translateY: [y, 0],
 		duration,
 		delay,
-		ease: easing ?? springEasing()
+		ease: easing ?? springEasing(),
+		onComplete: () => {
+			if (loop) applyLoop(node, loop, delay);
+		}
 	});
 
 	return {
@@ -92,7 +110,8 @@ export function revealOnScroll(node: HTMLElement, opts: ScrollRevealOptions = {}
 		threshold = 0.9,
 		easing,
 		split = false,
-		splitGap = 26
+		splitGap = 26,
+		loop
 	} = opts;
 
 	node.style.opacity = '0';
@@ -121,7 +140,10 @@ export function revealOnScroll(node: HTMLElement, opts: ScrollRevealOptions = {}
 					opacity: [0, 1],
 					translateY: [y, 0],
 					...common,
-					delay
+					delay,
+					onComplete: () => {
+						if (loop) applyLoop(node, loop, delay);
+					}
 				});
 			}
 		} catch {

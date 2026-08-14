@@ -193,8 +193,8 @@
 <div class="mx-auto max-w-4xl p-8">
 	<div class="section-label mb-4" use:reveal>学习进度</div>
 	<h1
-		class="mb-2 font-display text-3xl font-medium"
-		style="letter-spacing: -0.02em;"
+		class="mb-2 font-display text-5xl font-medium"
+		style="letter-spacing: -0.03em;"
 		use:reveal={{ delay: 90 }}
 	>
 		你的学习进度
@@ -243,20 +243,25 @@
 		</div>
 	{:else}
 		<!-- 3D 掌握度总览 -->
-		<div
-			class="relative mb-8 overflow-hidden rounded-lg border"
-			style="border-color: var(--color-line-hair); background: var(--color-surface); height: 300px;"
-			use:reveal
-		>
-			<Mastery3D topics={masteryData} avg={avgMastery} />
+		<div class="mb-10" use:reveal>
+			<div class="overview-head">
+				<span class="overview-label">掌握度总览 · 34 个知识点</span>
+				<span class="overview-hint">鼠标移动可旋转视角</span>
+			</div>
+			<div
+				class="relative overflow-hidden rounded-lg border"
+				style="border-color: var(--color-line-hair); background: var(--color-surface); height: 300px;"
+			>
+				<Mastery3D topics={masteryData} avg={avgMastery} />
+			</div>
 		</div>
 
-		<!-- 统计行 -->
-		<div class="mb-8 grid grid-cols-1 gap-3 md:grid-cols-3">
-			<div class="card" use:reveal={{ delay: 200 }}>
-				<div class="card-title" style="font-size: 15px;">连续学习</div>
+		<!-- 统计行（碑式） -->
+		<div class="progress-stats mb-12">
+			<div class="progress-stat" use:reveal={{ delay: 200 }}>
+				<div class="progress-stat-label">连续学习</div>
 				<div class="stat-row">
-					<span class="stat-num">{$progress.streakDays}</span>
+					<span class="stat-num progress-stat-num">{$progress.streakDays}</span>
 					<span class="stat-unit">天</span>
 				</div>
 				<div class="stat-meta">
@@ -268,10 +273,10 @@
 				</div>
 			</div>
 
-			<div class="card" use:reveal={{ delay: 290 }}>
-				<div class="card-title" style="font-size: 15px;">平均掌握度</div>
+			<div class="progress-stat" use:reveal={{ delay: 290 }}>
+				<div class="progress-stat-label">平均掌握度</div>
 				<div class="stat-row">
-					<span class="stat-num">{avgMastery}</span>
+					<span class="stat-num progress-stat-num">{avgMastery}</span>
 					<span class="stat-unit">%</span>
 				</div>
 				<div class="stat-meta">
@@ -285,10 +290,10 @@
 				</div>
 			</div>
 
-			<div class="card" use:reveal={{ delay: 380 }}>
-				<div class="card-title" style="font-size: 15px;">练习答题</div>
+			<div class="progress-stat" use:reveal={{ delay: 380 }}>
+				<div class="progress-stat-label">练习答题</div>
 				<div class="stat-row">
-					<span class="stat-num">{correctExercises}</span>
+					<span class="stat-num progress-stat-num">{correctExercises}</span>
 					<span class="stat-unit">/{totalExercises} 题</span>
 				</div>
 				<div class="stat-meta">
@@ -302,10 +307,10 @@
 				</div>
 			</div>
 
-			<div class="card">
-				<div class="card-title" style="font-size: 15px;">错题本</div>
+			<div class="progress-stat" use:reveal={{ delay: 470 }}>
+				<div class="progress-stat-label">错题本</div>
 				<div class="stat-row">
-					<span class="stat-num">{totalMistakes}</span>
+					<span class="stat-num progress-stat-num">{totalMistakes}</span>
 					<span class="stat-unit">道</span>
 				</div>
 				<div class="stat-meta">
@@ -450,16 +455,76 @@
 </div>
 
 <style>
-	.card-title {
-		font-family: var(--font-display);
-		font-weight: 500;
-		margin-bottom: 8px;
-	}
-
 	.stat-row {
 		display: flex;
 		align-items: baseline;
 		gap: 4px;
+	}
+
+	/* === 碑式统计 === */
+	.progress-stats {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.progress-stat {
+		padding: 8px 24px;
+	}
+
+	.progress-stat + .progress-stat {
+		border-left: 1px solid var(--color-line-hair);
+	}
+
+	.progress-stat-label {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.18em;
+		color: var(--color-ink-3);
+		margin-bottom: 14px;
+	}
+
+	.progress-stat-num {
+		font-family: var(--font-display);
+		font-size: 42px;
+		font-weight: 500;
+		line-height: 1;
+		letter-spacing: -0.02em;
+	}
+
+	/* === 3D 总览标题条 === */
+	.overview-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin-bottom: 12px;
+	}
+
+	.overview-label {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.2em;
+		color: var(--color-ink-3);
+	}
+
+	.overview-hint {
+		font-size: 11px;
+		color: var(--color-ink-3);
+	}
+
+	@media (max-width: 760px) {
+		.progress-stats {
+			grid-template-columns: repeat(2, 1fr);
+			row-gap: 28px;
+		}
+
+		.progress-stat:nth-child(odd) {
+			border-left: none;
+		}
+
+		.overview-hint {
+			display: none;
+		}
 	}
 
 	.stat-num {

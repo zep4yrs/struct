@@ -73,21 +73,22 @@
 		});
 	}
 
-	let data = $state<number[]>(randomData(12));
+	let data = $state<number[]>(randomData(10));
 	// data 变化（换数据/换长度）时自动重建全部跑道
 	const racers = $derived(buildRacers(data));
 
-	let progress = $state(0); // 0..1 归一化联播进度
+	// === 真竞速：每引擎独立时间线（每步固定时长，步数少者先冲线） ===
+	const PER_STEP_MS = 400; // 1× 速度下每步 400ms，与播放器节奏一致（可看清每一步）
+	let elapsedMs = $state(0); // 比赛进行时间（逻辑时间，speed 作用于推进速率）
 	let playing = $state(false);
 	let speed = $state(1);
 	let raf = 0;
-	let startTime = $state(0);
+	let lastFrameTs = $state(0);
 
 	function resetRun() {
 		playing = false;
-		cancelAnimationFrame(raf);
-		progress = 0;
-		startTime = 0;
+		if (typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(raf);
+		elapsedMs = 0;
 	}
 
 	function regenerate() {
@@ -102,29 +103,36 @@
 		data = randomData(size);
 	}
 
+	/** 引擎 i 的独立进度 0..1（到达 1 即冲线完成） */
+	function raceProgress(r: Racer): number {
+		const n = r.engine.steps.length;
+		if (n <= 1) return 1;
+		return Math.min(1, elapsedMs / (n * PER_STEP_MS));
+	}
+
 	function togglePlay() {
-		if (progress >= 1) {
-			progress = 0;
-			startTime = 0;
+		if (allFinished) {
+			resetRun();
 		}
 		playing = !playing;
 		if (playing) {
-			startTime = performance.now() - (startTime ? progress * 6000 * (1 / speed) : 0);
+			lastFrameTs = performance.now();
 			tick();
-		} else {
+		} else if (typeof cancelAnimationFrame !== 'undefined') {
 			cancelAnimationFrame(raf);
 		}
 	}
 
 	function tick() {
-		const total = 6000; // 默认 6 秒跑完全程
-		const elapsed = (performance.now() - startTime) * speed;
-		progress = Math.min(1, elapsed / total);
-		if (progress >= 1) {
+		const now = performance.now();
+		const dt = now - lastFrameTs;
+		lastFrameTs = now;
+		elapsedMs += dt * speed;
+		if (!allFinished) {
+			raf = requestAnimationFrame(tick);
+		} else {
 			playing = false;
-			return;
 		}
-		raf = requestAnimationFrame(tick);
 	}
 
 	onDestroy(() => {
@@ -136,7 +144,12 @@
 	function posOf(r: Racer): number {
 		const n = r.engine.steps.length;
 		if (n <= 1) return 0;
-		return Math.min(n - 1, Math.floor(progress * (n - 1)));
+		return Math.min(n - 1, Math.floor(raceProgress(r) * (n - 1)));
+	}
+
+	/** 引擎是否已冲线（完成） */
+	function isDone(r: Racer): boolean {
+		return raceProgress(r) >= 1;
 	}
 
 	function opCount(r: Racer, upTo: number): number {
@@ -166,26 +179,31 @@
 		).length;
 	}
 
-	const finished = $derived(progress >= 1);
-	// 冠军：总操作数最少（同输入、同速度 → 操作数即工作量）
+	const allFinished = $derived(racers.every(isDone));
+	// 冲线顺序：按各自完成时间（= 步数 × 每步时长），第一个完成的是冠军
+	const finishOrder = $derived.by(() => {
+		return [...racers]
+			.map((r) => ({ r, ms: r.engine.steps.length * PER_STEP_MS }))
+			.sort((a, b) => a.ms - b.ms);
+	});
 	const winner = $derived.by(() => {
-		if (!finished) return null;
-		let best: Racer | null = null;
-		let bestOps = Infinity;
-		for (const r of racers) {
-			const ops = totalOps(r);
-			if (ops < bestOps) {
-				bestOps = ops;
-				best = r;
-			}
-		}
-		return best;
+		if (!allFinished) return null;
+		return finishOrder[0]?.r ?? null;
 	});
 
-	// === 复杂度曲线：x=进度(0..100) y=累计操作数（各引擎同尺度） ===
+	// 显示比赛用时（秒）
+	const raceSeconds = $derived(elapsedMs / 1000);
+
+	// === 复杂度曲线：x=比赛时间(秒) y=累计操作数（各引擎同尺度） ===
 	const CHART_W = 720;
 	const CHART_H = 220;
 	const PAD = { l: 40, r: 12, t: 16, b: 28 };
+	// 横轴最大值：最长引擎的完成时间（秒）
+	const maxTimeSec = $derived.by(() => {
+		let m = 1;
+		for (const r of racers) m = Math.max(m, (r.engine.steps.length * PER_STEP_MS) / 1000);
+		return Math.ceil(m);
+	});
 	const maxOpsAll = $derived.by(() => {
 		let m = 1;
 		for (const r of racers) m = Math.max(m, totalOps(r));
@@ -209,7 +227,9 @@
 				t === 'partition-end'
 			)
 				acc += 1;
-			const x = PAD.l + (i / (n - 1)) * iw;
+			// x = 该步发生时的比赛时间（秒）
+			const tSec = ((i + 1) * PER_STEP_MS) / 1000;
+			const x = PAD.l + (tSec / maxTimeSec) * iw;
 			const y = PAD.t + ih - (acc / maxOpsAll) * ih;
 			pts.push(x.toFixed(1) + ',' + y.toFixed(1));
 		}
@@ -248,13 +268,13 @@
 		排序算法竞速
 	</h1>
 	<p class="mb-8" style="color: var(--color-ink-2); max-width: 560px;" use:reveal={{ delay: 160 }}>
-		同一份乱序数组，五个排序算法同时开跑。进度同步、输入相同——比的就是谁的「操作数」更少。复杂度不是背的，是看出来的。
+		同一份乱序数组，五个排序算法同时开跑。每步节奏相同——步数少的先冲线。看谁先跑完，复杂度一目了然。
 	</p>
 
 	<!-- 控制条 -->
 	<div class="race-controls glass" use:reveal>
 		<button class="btn btn-accent" onclick={togglePlay}
-			>{playing ? '⏸ 暂停' : progress >= 1 ? '↻ 重跑' : '▶ 开跑'}</button
+			>{playing ? '⏸ 暂停' : allFinished ? '↻ 重跑' : '▶ 开跑'}</button
 		>
 		<button class="btn btn-ghost" onclick={regenerate}>换一组数据</button>
 		<button class="btn btn-ghost" onclick={newData}>随机长度</button>
@@ -266,8 +286,12 @@
 				>
 			{/each}
 		</div>
-		<div class="race-progress">
-			<div class="race-progress-fill" style="width: {progress * 100}%;"></div>
+		<div class="race-timer" aria-live="polite">
+			<span class="race-timer-num">{raceSeconds.toFixed(1)}</span>
+			<span class="race-timer-unit">秒</span>
+			{#if allFinished}
+				<span class="race-timer-done">比赛结束</span>
+			{/if}
 		</div>
 	</div>
 
@@ -283,19 +307,21 @@
 							>{r.complexity}</span
 						>
 					</div>
-					{#if finished && winner?.id === r.id}
-						<span class="race-crown">🏆 冠军</span>
+					{#if isDone(r)}
+						<span class="race-crown">{winner?.id === r.id ? '🏆 冠军' : '✓ 完成'}</span>
 					{/if}
 				</div>
 				<div class="race-canvas">
 					<RendererSwitch engine={r.engine} playbackPos={posOf(r)} />
+					{#if !isDone(r) && playing}
+						<div class="race-lane-progress" style="width: {raceProgress(r) * 100}%;"></div>
+					{/if}
 				</div>
 				<div class="race-lane-stats">
 					<span class="race-stat">步数 <b>{r.engine.steps.length}</b></span>
 					<span class="race-stat">操作 <b>{opCount(r, posOf(r))}</b> / {totalOps(r)}</span>
 					<span class="race-stat"
-						>进度 <b>{Math.round((posOf(r) / Math.max(1, r.engine.steps.length - 1)) * 100)}%</b
-						></span
+						>用时 <b>{((r.engine.steps.length * PER_STEP_MS) / 1000).toFixed(1)}s</b></span
 					>
 				</div>
 			</div>
@@ -357,12 +383,19 @@
 				stroke="var(--color-line-regular)"
 			/>
 			<text x={PAD.l - 6} y={CHART_H - PAD.b + 18} text-anchor="end" class="race-chart-label"
-				>0%</text
+				>0s</text
 			>
 			<text x={CHART_W - PAD.r} y={CHART_H - PAD.b + 18} text-anchor="end" class="race-chart-label"
-				>100%</text
+				>{maxTimeSec}s</text
 			>
 			<text x={PAD.l} y={PAD.t - 6} class="race-chart-label">操作数</text>
+			<text
+				x={CHART_W - PAD.r}
+				y={CHART_H - PAD.b + 18}
+				text-anchor="end"
+				class="race-chart-label"
+				transform="translate(-40 0)">时间 →</text
+			>
 		</svg>
 		<div class="race-legend">
 			{#each racers as r (r.id)}
@@ -375,7 +408,7 @@
 				><i style="background: var(--color-ink-3); border-top: 1.5px dotted;"></i>理论 O(n²)</span
 			>
 		</div>
-		{#if finished && winner}
+		{#if allFinished && winner}
 			<div class="race-result" use:reveal>
 				🏆 <b>{winner.name}</b> 以 {totalOps(winner)} 次操作夺冠（{winner.complexity}）。 同输入下
 				O(n²) 的算法操作数明显多于 O(n log n)——这就是复杂度的真实含义。
@@ -436,20 +469,43 @@
 		color: var(--color-accent);
 	}
 
-	.race-progress {
-		flex: 1;
-		min-width: 120px;
-		height: 4px;
-		background: var(--color-subtle);
-		border-radius: var(--radius-full);
-		overflow: hidden;
+	.race-timer {
+		display: flex;
+		align-items: baseline;
+		gap: 6px;
+		margin-left: auto;
+		font-family: var(--font-mono);
 	}
 
-	.race-progress-fill {
-		height: 100%;
+	.race-timer-num {
+		font-size: 22px;
+		font-weight: 500;
+		color: var(--color-ink);
+		line-height: 1;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.race-timer-unit {
+		font-size: 11px;
+		color: var(--color-ink-3);
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+	}
+
+	.race-timer-done {
+		font-size: 11px;
+		color: var(--color-success);
+		font-weight: 500;
+	}
+
+	.race-lane-progress {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 3px;
 		background: var(--color-accent);
-		border-radius: var(--radius-full);
-		transition: width 60ms linear;
+		opacity: 0.7;
+		transition: width 80ms linear;
 	}
 
 	.race-grid {
@@ -516,6 +572,7 @@
 	}
 
 	.race-canvas {
+		position: relative;
 		height: 110px;
 		display: flex;
 		align-items: center;

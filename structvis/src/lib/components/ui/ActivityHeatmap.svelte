@@ -8,6 +8,8 @@
 	}
 
 	let { activity }: Props = $props();
+	// 防御：旧数据可能缺 dailyActivity 字段，兜底为空对象
+	const safeActivity = $derived(activity ?? {});
 
 	function localDateStr(d: Date): string {
 		const pad = (n: number) => String(n).padStart(2, '0');
@@ -26,7 +28,7 @@
 				day.setDate(sunday.getDate() - w * 7 + d);
 				if (day > today) continue;
 				const ds = localDateStr(day);
-				const count = activity[ds] ?? 0;
+				const count = safeActivity[ds] ?? 0;
 				out.push({ date: ds, count, level: countLevel(count), isToday: ds === todayStr });
 			}
 		}
@@ -41,8 +43,8 @@
 		return 4;
 	}
 
-	const totalCount = $derived(Object.values(activity).reduce((a, b) => a + b, 0));
-	const activeDays = $derived(Object.keys(activity).length);
+	const totalCount = $derived(Object.values(safeActivity).reduce((a, b) => a + b, 0));
+	const activeDays = $derived(Object.keys(safeActivity).length);
 
 	const MONTH_LABELS = $derived.by(() => {
 		const sunday = new Date(today);

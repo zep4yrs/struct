@@ -16,7 +16,10 @@ interface StoredEnvelope {
 	data: unknown;
 }
 
-/** 读取并迁移到当前版本；任何解析/迁移失败都回退默认值 */
+/**
+ * 读取并迁移到当前版本；任何解析/迁移失败都回退默认值。
+ * 顶层字段缺失时与默认值浅合并——旧数据缺新字段（如 dailyActivity）也能正常读取。
+ */
 function readStored<T>(raw: string, fallback: T): T {
 	try {
 		const parsed: unknown = JSON.parse(raw);
@@ -27,17 +30,32 @@ function readStored<T>(raw: string, fallback: T): T {
 			if (!Number.isInteger(v) || v < 1) throw new Error('bad version');
 			while (v < STORAGE_VERSION) {
 				const migrate = migrations[v];
-				if (!migrate) throw new Error(`no migration for v${v}`);
+				if (!migrate) throw new Error('no migration for v' + v);
 				data = migrate(data);
 				v++;
 			}
-			return data as T;
+			return mergeDefaults(fallback, data);
 		}
-		// 旧格式（无信封）：视为当前版本原样使用
-		return parsed as T;
+		// 旧格式（无信封）：视为当前版本，同样补默认字段
+		return mergeDefaults(fallback, parsed);
 	} catch {
 		return fallback;
 	}
+}
+
+/** 浅合并：data 缺失的顶层字段用默认值补齐（数组/对象字段整体保留原值） */
+function mergeDefaults<T>(fallback: T, data: unknown): T {
+	if (
+		fallback !== null &&
+		typeof fallback === 'object' &&
+		!Array.isArray(fallback) &&
+		data !== null &&
+		typeof data === 'object' &&
+		!Array.isArray(data)
+	) {
+		return { ...(fallback as object), ...(data as object) } as T;
+	}
+	return (data ?? fallback) as T;
 }
 
 /**

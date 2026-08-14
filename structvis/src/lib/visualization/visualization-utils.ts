@@ -54,3 +54,47 @@ export function watchCanvasSize(
 		observer?.disconnect();
 	};
 }
+
+/** 解析颜色字符串为 RGBA 分量（支持 #RRGGBB / rgb() / rgba()） */
+export function parseColorStr(c: string): { r: number; g: number; b: number; a: number } | null {
+	const hex = c.match(/^#([0-9a-fA-F]{6})$/);
+	if (hex) {
+		const n = parseInt(hex[1], 16);
+		return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255, a: 1 };
+	}
+	const rgb = c.match(/^rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)$/);
+	if (rgb) {
+		return {
+			r: Math.round(Number(rgb[1])),
+			g: Math.round(Number(rgb[2])),
+			b: Math.round(Number(rgb[3])),
+			a: rgb[4] !== undefined ? Number(rgb[4]) : 1
+		};
+	}
+	return null;
+}
+
+/** 颜色插值：两端点返回原值（保持 hex 格式），中间帧返回插值颜色 */
+export function lerpColorStr(a: string, b: string, t: number): string {
+	if (t <= 0) return a;
+	if (t >= 1) return b;
+	const pa = parseColorStr(a);
+	const pb = parseColorStr(b);
+	if (!pa || !pb) return t < 0.5 ? a : b;
+	const r = Math.round(pa.r + (pb.r - pa.r) * t);
+	const g = Math.round(pa.g + (pb.g - pa.g) * t);
+	const bl = Math.round(pa.b + (pb.b - pa.b) * t);
+	const al = pa.a + (pb.a - pa.a) * t;
+	return al < 1 ? `rgba(${r}, ${g}, ${bl}, ${al.toFixed(3)})` : `rgb(${r}, ${g}, ${bl})`;
+}
+
+/** 步骤间进度：由 playbackPos 计算 from/to 步骤索引与插值进度 t */
+export function stepProgress(
+	playbackPos: number,
+	stepsLength: number
+): { fromIdx: number; toIdx: number; t: number } {
+	const pos = Math.max(0, Math.min(stepsLength - 1 + 0.999, playbackPos));
+	const fromIdx = Math.floor(pos);
+	const toIdx = Math.min(fromIdx + 1, stepsLength - 1);
+	return { fromIdx, toIdx, t: pos - fromIdx };
+}

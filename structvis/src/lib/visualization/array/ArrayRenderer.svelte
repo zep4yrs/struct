@@ -93,6 +93,39 @@
 		return Math.max(6, (value / maxValue) * maxHeight);
 	}
 
+	// === 颜色插值（高亮状态平滑过渡，不再瞬间跳变） ===
+	function parseColorStr(c: string): { r: number; g: number; b: number; a: number } | null {
+		const hex = c.match(/^#([0-9a-fA-F]{6})$/);
+		if (hex) {
+			const n = parseInt(hex[1], 16);
+			return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255, a: 1 };
+		}
+		const rgb = c.match(/^rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)$/);
+		if (rgb) {
+			return {
+				r: Math.round(Number(rgb[1])),
+				g: Math.round(Number(rgb[2])),
+				b: Math.round(Number(rgb[3])),
+				a: rgb[4] !== undefined ? Number(rgb[4]) : 1
+			};
+		}
+		return null;
+	}
+
+	function lerpColorStr(a: string, b: string, t: number): string {
+		// 端点保真：直接返回原色值（保持 hex 格式，测试与视觉一致）
+		if (t <= 0) return a;
+		if (t >= 1) return b;
+		const pa = parseColorStr(a);
+		const pb = parseColorStr(b);
+		if (!pa || !pb) return t < 0.5 ? a : b;
+		const r = Math.round(pa.r + (pb.r - pa.r) * t);
+		const g = Math.round(pa.g + (pb.g - pa.g) * t);
+		const bl = Math.round(pa.b + (pb.b - pa.b) * t);
+		const al = pa.a + (pb.a - pa.a) * t;
+		return al < 1 ? `rgba(${r}, ${g}, ${bl}, ${al.toFixed(3)})` : `rgb(${r}, ${g}, ${bl})`;
+	}
+
 	// 获取柱子颜色状态
 	function getBarState(
 		position: number,
@@ -206,14 +239,17 @@
 			const height = getBarHeight(value, maxValue, maxHeight);
 			const y = canvasHeight - PADDING_BOTTOM - height;
 
-			const barState = getBarState(actualTo, toStep);
+			// 颜色插值：从上一帧颜色平滑过渡到当前帧（不再瞬间跳变）
+			const fromState = getBarState(actualFrom, fromStep);
+			const toState = getBarState(actualTo, toStep);
+			const fill = lerpColorStr(fromState.fill, toState.fill, easedT);
+			const border = lerpColorStr(fromState.border, toState.border, easedT);
+			const valueColor = lerpColorStr(fromState.valueColor, toState.valueColor, easedT);
+			const ringT =
+				(fromState.compareRing ? 1 : 0) +
+				((toState.compareRing ? 1 : 0) - (fromState.compareRing ? 1 : 0)) * easedT;
 
-			const fill = barState.fill;
-			const border = barState.border;
-			const valueColor = barState.valueColor;
-			const compareRing = barState.compareRing;
-
-			drawBar(x, y, barWidth, height, fill, border, compareRing);
+			drawBar(x, y, barWidth, height, fill, border, ringT > 0.01, 0.15 * ringT);
 
 			// 柱子底部数值
 			drawBarValue(x, canvasHeight - PADDING_BOTTOM + 8, value, valueColor);
@@ -233,12 +269,13 @@
 		h: number,
 		fill: string,
 		border: string,
-		compareRing: boolean
+		compareRing: boolean,
+		ringAlpha = 0.15
 	) {
 		if (!ctx) return;
 		const radius = Math.min(3, w / 2);
 
-		// 比较态的外发光环
+		// 比较态的外发光环（透明度随过渡淡入淡出）
 		if (compareRing) {
 			ctx.save();
 			ctx.shadowColor = colors.compare;
@@ -259,7 +296,7 @@
 			ctx.lineTo(rx, ry + rr);
 			ctx.quadraticCurveTo(rx, ry, rx + rr, ry);
 			ctx.closePath();
-			ctx.globalAlpha = 0.15;
+			ctx.globalAlpha = ringAlpha;
 			ctx.fillStyle = colors.compare;
 			ctx.fill();
 			ctx.globalAlpha = 1;

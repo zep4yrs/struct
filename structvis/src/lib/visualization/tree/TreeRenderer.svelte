@@ -2,7 +2,8 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar } from '../visualization-utils';
+	import { resolveCSSVar, lerpColorStr, stepProgress } from '../visualization-utils';
+	import { easeOutCubic } from '../array/array-render-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -135,20 +136,49 @@
 	function draw() {
 		if (!ctx || steps.length === 0) return;
 
-		const pos = Math.max(0, Math.min(steps.length - 1 + 0.999, playbackPos));
-		const stepIdx = Math.floor(pos);
-		const step = steps[stepIdx];
+		const { fromIdx, toIdx, t } = stepProgress(playbackPos, steps.length);
+		const easedT = easeOutCubic(t);
+		const step = steps[toIdx];
 
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-		const nodes = getLayout(stepIdx, step.data);
+		const nodes = getLayout(toIdx, step.data);
 		if (nodes.length === 0) return;
 
 		const byIdx: Record<number, TreeNode> = {};
 		for (const n of nodes) byIdx[n.idx] = n;
+		const fromStep = steps[fromIdx];
 		const sortedSet = new Set(step.highlights.find((h) => h.type === 'sorted')?.indices ?? []);
 		const currentSet = new Set(step.highlights.find((h) => h.type === 'current')?.indices ?? []);
 		const compareSet = new Set(step.highlights.find((h) => h.type === 'compare')?.indices ?? []);
+		const fromSortedSet = new Set(
+			fromStep.highlights.find((h) => h.type === 'sorted')?.indices ?? []
+		);
+		const fromCurrentSet = new Set(
+			fromStep.highlights.find((h) => h.type === 'current')?.indices ?? []
+		);
+		const fromCompareSet = new Set(
+			fromStep.highlights.find((h) => h.type === 'compare')?.indices ?? []
+		);
+
+		// 节点颜色状态（供插值）
+		const nodeState = (
+			idx: number,
+			sorted: Set<number>,
+			current: Set<number>,
+			compare: Set<number>
+		): { fill: string; border: string; text: string } => {
+			if (current.has(idx)) {
+				return { fill: colors.current, border: colors.current, text: colors.inkInverse };
+			}
+			if (sorted.has(idx)) {
+				return { fill: colors.sorted, border: colors.sorted, text: colors.inkInverse };
+			}
+			if (compare.has(idx)) {
+				return { fill: colors.node, border: colors.compare, text: colors.ink };
+			}
+			return { fill: colors.node, border: colors.nodeBorder, text: colors.ink };
+		};
 
 		// 1. 边
 		ctx.strokeStyle = colors.edge;
@@ -164,31 +194,21 @@
 			}
 		}
 
-		// 2. 节点
+		// 2. 节点（颜色从上一帧平滑过渡）
 		for (const n of nodes) {
-			let fill = colors.node;
-			let border = colors.nodeBorder;
-			let textColor = colors.ink;
-
-			if (currentSet.has(n.idx)) {
-				fill = colors.current;
-				border = colors.current;
-				textColor = 'colors.inkInverse';
-			} else if (sortedSet.has(n.idx)) {
-				fill = colors.sorted;
-				border = colors.sorted;
-				textColor = 'colors.inkInverse';
-			} else if (compareSet.has(n.idx)) {
-				fill = colors.node;
-				border = colors.compare;
-			}
+			const from = nodeState(n.idx, fromSortedSet, fromCurrentSet, fromCompareSet);
+			const to = nodeState(n.idx, sortedSet, currentSet, compareSet);
+			const fill = lerpColorStr(from.fill, to.fill, easedT);
+			const border = lerpColorStr(from.border, to.border, easedT);
+			const textColor = lerpColorStr(from.text, to.text, easedT);
+			const isStrong = currentSet.has(n.idx) || sortedSet.has(n.idx);
 
 			ctx.beginPath();
 			ctx.arc(n.x, n.y, NODE_RADIUS, 0, Math.PI * 2);
 			ctx.fillStyle = fill;
 			ctx.fill();
 			ctx.strokeStyle = border;
-			ctx.lineWidth = currentSet.has(n.idx) || sortedSet.has(n.idx) ? 2 : 1.2;
+			ctx.lineWidth = isStrong ? 2 : 1.2;
 			ctx.stroke();
 
 			ctx.fillStyle = textColor;

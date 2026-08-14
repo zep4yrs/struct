@@ -6,6 +6,7 @@
 	import { SelectionSortEngine } from '$lib/engines/algorithm/basicsort/SelectionSortEngine';
 	import { InsertionSortEngine } from '$lib/engines/algorithm/basicsort/InsertionSortEngine';
 	import RendererSwitch from '$lib/components/player/RendererSwitch.svelte';
+	import { STEP_DURATIONS } from '$lib/components/player/TimelineController';
 	import type { AlgorithmEngine } from '$lib/engines/algorithm/types';
 	import { reveal } from '$lib/utils/motion';
 
@@ -73,12 +74,11 @@
 		});
 	}
 
-	let data = $state<number[]>(randomData(10));
+	let data = $state<number[]>(randomData(8));
 	// data 变化（换数据/换长度）时自动重建全部跑道
 	const racers = $derived(buildRacers(data));
 
-	// === 真竞速：每引擎独立时间线（每步固定时长，步数少者先冲线） ===
-	const PER_STEP_MS = 400; // 1× 速度下每步 400ms，与播放器节奏一致（可看清每一步）
+	// === 真竞速：每引擎独立时间线（每步按真实类型时长，与播放器完全一致） ===
 	let elapsedMs = $state(0); // 比赛进行时间（逻辑时间，speed 作用于推进速率）
 	let playing = $state(false);
 	let speed = $state(1);
@@ -103,11 +103,17 @@
 		data = randomData(size);
 	}
 
+	/** 引擎总时长（ms）= 各步骤按类型时长的累加，与播放器时间线一致 */
+	function totalDurMs(r: Racer): number {
+		let sum = 0;
+		for (const s of r.engine.steps)
+			sum += (STEP_DURATIONS[s.type] || STEP_DURATIONS.default) * 1000;
+		return Math.max(sum, 1);
+	}
+
 	/** 引擎 i 的独立进度 0..1（到达 1 即冲线完成） */
 	function raceProgress(r: Racer): number {
-		const n = r.engine.steps.length;
-		if (n <= 1) return 1;
-		return Math.min(1, elapsedMs / (n * PER_STEP_MS));
+		return Math.min(1, elapsedMs / totalDurMs(r));
 	}
 
 	function togglePlay() {
@@ -180,11 +186,9 @@
 	}
 
 	const allFinished = $derived(racers.every(isDone));
-	// 冲线顺序：按各自完成时间（= 步数 × 每步时长），第一个完成的是冠军
+	// 冲线顺序：按各自真实总时长，第一个完成的是冠军
 	const finishOrder = $derived.by(() => {
-		return [...racers]
-			.map((r) => ({ r, ms: r.engine.steps.length * PER_STEP_MS }))
-			.sort((a, b) => a.ms - b.ms);
+		return [...racers].map((r) => ({ r, ms: totalDurMs(r) })).sort((a, b) => a.ms - b.ms);
 	});
 	const winner = $derived.by(() => {
 		if (!allFinished) return null;
@@ -201,7 +205,7 @@
 	// 横轴最大值：最长引擎的完成时间（秒）
 	const maxTimeSec = $derived.by(() => {
 		let m = 1;
-		for (const r of racers) m = Math.max(m, (r.engine.steps.length * PER_STEP_MS) / 1000);
+		for (const r of racers) m = Math.max(m, totalDurMs(r) / 1000);
 		return Math.ceil(m);
 	});
 	const maxOpsAll = $derived.by(() => {
@@ -210,14 +214,17 @@
 		return m;
 	});
 
+	/** 曲线只画到当前已完成的步骤——随比赛实时生长，完成后才是完整实测曲线 */
 	function curvePoints(r: Racer): string {
 		const n = r.engine.steps.length;
 		if (n <= 1) return '';
+		const upto = Math.min(n - 1, posOf(r));
 		const iw = CHART_W - PAD.l - PAD.r;
 		const ih = CHART_H - PAD.t - PAD.b;
 		let acc = 0;
+		let tAcc = 0;
 		const pts: string[] = [];
-		for (let i = 0; i < n; i++) {
+		for (let i = 0; i <= upto; i++) {
 			const t = r.engine.steps[i]?.type;
 			if (
 				t === 'compare' ||
@@ -227,9 +234,9 @@
 				t === 'partition-end'
 			)
 				acc += 1;
-			// x = 该步发生时的比赛时间（秒）
-			const tSec = ((i + 1) * PER_STEP_MS) / 1000;
-			const x = PAD.l + (tSec / maxTimeSec) * iw;
+			// x = 该步完成时的比赛时间（按步骤类型时长累计，与播放器一致）
+			tAcc += (STEP_DURATIONS[t] || STEP_DURATIONS.default) * 1000;
+			const x = PAD.l + (tAcc / 1000 / maxTimeSec) * iw;
 			const y = PAD.t + ih - (acc / maxOpsAll) * ih;
 			pts.push(x.toFixed(1) + ',' + y.toFixed(1));
 		}
@@ -280,7 +287,7 @@
 		<button class="btn btn-ghost" onclick={newData}>随机长度</button>
 		<div class="race-speed">
 			<span class="race-speed-label">速度</span>
-			{#each [0.5, 1, 2] as s (s)}
+			{#each [1, 2, 4] as s (s)}
 				<button class="race-speed-btn" class:on={speed === s} onclick={() => (speed = s)}
 					>{s}×</button
 				>
@@ -320,9 +327,7 @@
 				<div class="race-lane-stats">
 					<span class="race-stat">步数 <b>{r.engine.steps.length}</b></span>
 					<span class="race-stat">操作 <b>{opCount(r, posOf(r))}</b> / {totalOps(r)}</span>
-					<span class="race-stat"
-						>用时 <b>{((r.engine.steps.length * PER_STEP_MS) / 1000).toFixed(1)}s</b></span
-					>
+					<span class="race-stat">用时 <b>{(totalDurMs(r) / 1000).toFixed(1)}s</b></span>
 				</div>
 			</div>
 		{/each}

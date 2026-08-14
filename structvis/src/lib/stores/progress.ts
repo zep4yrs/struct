@@ -75,7 +75,9 @@ export function localDateStr(d: Date): string {
 /** 记录一次学习活动（练习作答/浏览课程等），供热力图统计 */
 function recordActivity(p: ProgressData, count = 1): void {
 	const today = localDateStr(new Date());
-	p.dailyActivity = { ...p.dailyActivity, [today]: (p.dailyActivity[today] ?? 0) + count };
+	// 防御：极端情况下旧数据可能缺 dailyActivity，兜底为空对象再累加
+	const da = p.dailyActivity ?? {};
+	p.dailyActivity = { ...da, [today]: (da[today] ?? 0) + count };
 }
 
 export const progress = persistentStore<ProgressData>('structvis:progress', defaultProgress);

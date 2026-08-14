@@ -64,6 +64,13 @@
 	);
 	const hasData = $derived(Object.keys($progress.topics).length > 0 || totalMistakes > 0);
 
+	// 学习路径：沿教材顺序找第一个未掌握的主题作为「下一步」
+	const nextTopic = $derived(
+		[...dsTopics, ...dbTopics].find(
+			(t) => t.topicId && !t.planned && !$progress.topics[t.topicId]?.completed
+		)
+	);
+
 	onMount(() => {
 		if (prefersReducedMotion()) return;
 		// 统计数字从 0 滚动到实际值
@@ -168,6 +175,34 @@
 	<p class="mb-8" style="color: var(--color-ink-2); max-width: 500px;">
 		所有数据保存在本地浏览器中，不会上传到任何服务器。
 	</p>
+
+	<!-- 学习路径：下一步学什么 -->
+	{#if hasData && nextTopic}
+		<div
+			class="mb-8 flex flex-wrap items-center gap-3 rounded-lg border p-4"
+			style="border-color: var(--color-line-hair); background: var(--color-surface);"
+			use:reveal
+		>
+			<span class="tag tag-accent">下一步</span>
+			<a
+				href={resolve(nextTopic.href as '/ds/quick-sort')}
+				class="font-display text-lg font-medium no-underline"
+				style="color: var(--color-ink);"
+			>
+				{nextTopic.title}
+			</a>
+			<span style="color: var(--color-ink-3); font-size: 12px;">
+				已完成 {masteredCount} / {allTopicIds.length} 个主题
+			</span>
+			<a
+				href={resolve(nextTopic.href as '/ds/quick-sort')}
+				class="btn btn-accent btn-sm"
+				style="margin-left: auto;"
+			>
+				开始学习
+			</a>
+		</div>
+	{/if}
 
 	{#if !hasData}
 		<div

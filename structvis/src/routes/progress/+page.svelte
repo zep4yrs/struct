@@ -232,14 +232,11 @@
 	{/if}
 
 	{#if !hasData}
-		<div
-			class="rounded-lg border p-8 text-center"
-			style="border-color: var(--color-line-hair); background: var(--color-surface);"
-		>
-			<div class="mb-2 font-display text-5xl font-medium" style="color: var(--color-ink);">0%</div>
-			<p style="color: var(--color-ink-3); font-size: 14px;">
-				还没有学习记录，开始你的第一个练习吧 → <a href={resolve('/ds/quick-sort')}>快速排序</a>
-			</p>
+		<div class="empty-panel" use:reveal>
+			<div class="empty-pct">0%</div>
+			<div class="empty-line"></div>
+			<p class="empty-desc">还没有学习记录，开始你的第一个练习吧</p>
+			<a href={resolve('/ds/quick-sort')} class="btn btn-accent">开始快速排序练习</a>
 		</div>
 	{:else}
 		<!-- 3D 掌握度总览 -->
@@ -327,9 +324,12 @@
 
 		<!-- 掌握度 -->
 		{#if topicEntries.length > 0}
-			<section class="mb-10">
-				<div class="section-label mb-3">掌握度</div>
-				<div class="card" style="padding: 8px 0;">
+			<section class="mb-12" use:reveal>
+				<div class="chapter-head">
+					<div class="section-label">掌握度</div>
+					<span class="chapter-count">{masteredCount} / {topicEntries.length} 已掌握</span>
+				</div>
+				<div class="topic-list">
 					{#each topicEntries as [id, t] (id)}
 						<div class="topic-row">
 							<div class="topic-info">
@@ -362,9 +362,12 @@
 
 		<!-- 错题本 -->
 		{#if totalMistakes > 0}
-			<section>
-				<div class="section-label mb-3">错题本</div>
-				<div class="card" style="padding: 0;">
+			<section class="mb-12" use:reveal>
+				<div class="chapter-head">
+					<div class="section-label">错题本</div>
+					<span class="chapter-count">{pendingMistakes} 道待复习</span>
+				</div>
+				<div class="mistake-list">
 					{#each $progress.mistakes as mistake (mistake.id)}
 						<div class="mistake-row">
 							<div class="mistake-head">
@@ -419,14 +422,17 @@
 	{/if}
 
 	<!-- 数据备份：空状态也可见（换设备后第一件事就是导入恢复） -->
-	<section class="mb-10">
-		<div class="section-label mb-3">数据备份</div>
-		<div class="card">
+	<section class="mb-12" use:reveal>
+		<div class="chapter-head">
+			<div class="section-label">数据备份</div>
+			<span class="chapter-count">本地存储 · 不会上传</span>
+		</div>
+		<div class="backup-panel">
 			<p class="backup-desc">
 				学习进度与错题保存在本地浏览器。可导出为备份文件，换设备或清理浏览器后重新导入，避免数据丢失。
 			</p>
 			<div class="backup-actions">
-				<button class="btn btn-ghost btn-sm" onclick={handleExport}>导出备份</button>
+				<button class="btn btn-accent btn-sm" onclick={handleExport}>导出备份</button>
 				<button class="btn btn-ghost btn-sm" onclick={() => fileInputRef?.click()}>导入备份</button>
 				<input
 					bind:this={fileInputRef}
@@ -550,18 +556,48 @@
 		color: var(--color-ink-3);
 	}
 
+	/* 章节标题行 */
+	.chapter-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 16px;
+	}
+
+	.chapter-count {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--color-ink-3);
+		flex-shrink: 0;
+	}
+
+	/* 掌握度列表（无框） */
+	.topic-list {
+		border-top: 1px solid var(--color-line-hair);
+	}
+
 	/* 掌握度行 */
 	.topic-row {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 16px;
-		padding: 14px 24px;
+		margin: 0 -12px;
+		padding: 14px 12px;
 		border-bottom: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-sm);
+		transition:
+			background var(--dur-fast) var(--ease-out),
+			transform var(--dur-fast) var(--ease-out);
 	}
 
 	.topic-row:last-child {
 		border-bottom: none;
+	}
+
+	.topic-row:hover {
+		background: var(--color-surface);
 	}
 
 	.topic-info {
@@ -575,6 +611,11 @@
 		font-size: 14px;
 		font-weight: 500;
 		color: var(--color-ink);
+		transition: color var(--dur-fast) var(--ease-out);
+	}
+
+	.topic-row:hover .topic-name {
+		color: var(--color-accent);
 	}
 
 	.topic-exercises {
@@ -620,14 +661,36 @@
 		text-align: right;
 	}
 
+	/* 错题列表（无框） */
+	.mistake-list {
+		border-top: 1px solid var(--color-line-hair);
+	}
+
 	/* 错题行 */
 	.mistake-row {
-		padding: 16px 24px;
+		margin: 0 -12px;
+		padding: 16px 12px;
 		border-bottom: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-sm);
+		transition:
+			background var(--dur-fast) var(--ease-out),
+			transform var(--dur-fast) var(--ease-out);
 	}
 
 	.mistake-row:last-child {
 		border-bottom: none;
+	}
+
+	.mistake-row:hover {
+		background: var(--color-surface);
+	}
+
+	.mistake-question {
+		transition: color var(--dur-fast) var(--ease-out);
+	}
+
+	.mistake-row:hover .mistake-question {
+		color: var(--color-accent);
 	}
 
 	.mistake-head {
@@ -723,7 +786,11 @@
 		border-radius: var(--radius-sm);
 	}
 
-	/* 数据备份 */
+	/* 数据备份（无框） */
+	.backup-panel {
+		border-top: 1px solid var(--color-line-hair);
+	}
+
 	.backup-desc {
 		font-size: 13px;
 		line-height: 1.7;
@@ -758,5 +825,38 @@
 		background: #e8f0fe;
 		border-color: #c5d5f5;
 		color: #1a3a8f;
+	}
+
+	/* 空状态（无学习记录） */
+	.empty-panel {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 14px;
+		padding: 56px 24px;
+		border: 1px dashed var(--color-line-regular);
+		border-radius: var(--radius-md);
+	}
+
+	.empty-pct {
+		font-family: var(--font-display);
+		font-size: 64px;
+		font-weight: 500;
+		line-height: 1;
+		letter-spacing: -0.03em;
+		color: var(--color-ink);
+	}
+
+	.empty-line {
+		width: 40px;
+		height: 1px;
+		background: var(--color-line-regular);
+	}
+
+	.empty-desc {
+		margin: 0;
+		font-size: 14px;
+		color: var(--color-ink-2);
 	}
 </style>

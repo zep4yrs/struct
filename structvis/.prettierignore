@@ -12,3 +12,6 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# 旁白音频清单（由 scripts/generate-narration.spec.ts 生成，JSON 风格输出）
+/src/lib/narration/audio-manifest.ts

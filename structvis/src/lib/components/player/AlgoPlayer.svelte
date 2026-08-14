@@ -18,6 +18,8 @@
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
 	import PracticePanel from './PracticePanel.svelte';
+	import { audioManifest } from '$lib/narration/audio-manifest';
+	import { base } from '$app/paths';
 
 	interface Props {
 		engine: AlgorithmEngine<unknown>;
@@ -61,6 +63,93 @@
 
 	// === 演示投影模式 ===
 	let projector = $state(false);
+
+	// === 讲授朗读（旁白驱动）：朗读当前步骤 → 动画到下一步 → 朗读下一步 ===
+	let narrationOn = $state(false); // 朗读开关（投影模式工具栏）
+	let currentAudio: HTMLAudioElement | null = null; // 预录音频（MiMo 生成）
+	let speechUtterance: SpeechSynthesisUtterance | null = null; // TTS 回落
+	let narrationAnimating = false; // 旁白读完、动画推进中（等待 onTweenEnd）
+
+	function narrationTextFor(s: { type: string; presenterNote?: string }): string {
+		if (s.presenterNote) return s.presenterNote;
+		return effectiveScript?.find((m) => m.type === s.type)?.narration ?? '';
+	}
+
+	/** 预录音频：manifest 存在且旁白文本未变（防止文案改了音频过期） */
+	function audioUrlFor(type: string, text: string): string | null {
+		const entry = audioManifest[topicId]?.[type];
+		if (!entry || entry.text !== text) return null;
+		return `${base}/audio/${topicId}/${entry.file}`;
+	}
+
+	function stopNarration() {
+		if (currentAudio) {
+			currentAudio.pause();
+			currentAudio = null;
+		}
+		if (speechUtterance) {
+			speechSynthesis.cancel();
+			speechUtterance = null;
+		}
+		narrationAnimating = false;
+	}
+
+	/** 朗读当前步骤；读完后推进动画（旁白驱动） */
+	function playNarrationStep() {
+		const s = currentStep;
+		if (!s) return;
+		const text = narrationTextFor(s);
+		if (!text) {
+			advanceAfterNarration();
+			return;
+		}
+		const done = () => {
+			currentAudio = null;
+			speechUtterance = null;
+			advanceAfterNarration();
+		};
+		// 优先预录音频（MiMo 神经语音）
+		const url = audioUrlFor(s.type, text);
+		if (url) {
+			const a = new Audio(url);
+			currentAudio = a;
+			a.onended = done;
+			a.onerror = done; // 音频加载失败 → 照常前进（不阻断讲授）
+			void a.play().catch(done);
+			return;
+		}
+		// 回落：Web Speech 文本朗读
+		if (typeof speechSynthesis !== 'undefined' && speechSynthesis.getVoices().length > 0) {
+			const u = new SpeechSynthesisUtterance(text);
+			speechUtterance = u;
+			u.lang = 'zh-CN';
+			u.rate = Math.min(2, Math.max(0.5, speed));
+			u.onend = done;
+			u.onerror = done;
+			speechSynthesis.speak(u);
+			return;
+		}
+		// 无任何语音能力 → 直接推进
+		advanceAfterNarration();
+	}
+
+	/** 旁白读完：播放当前步骤到下一步的动画（若已到最后则结束） */
+	function advanceAfterNarration() {
+		if (!narrationOn || !isPlaying) return;
+		if (currentStepIdx >= engine.totalSteps - 1) {
+			isPlaying = false;
+			return;
+		}
+		narrationAnimating = true;
+		timeline.tweenToStep(currentStepIdx + 1);
+	}
+
+	function toggleNarration() {
+		narrationOn = !narrationOn;
+		if (!narrationOn) {
+			stopNarration();
+		}
+	}
 
 	function enterProjector() {
 		if (activeQuestion !== null) return;
@@ -158,7 +247,17 @@
 				isPlaying = false;
 			},
 			onTweenStart: beginControlTween,
-			onTweenEnd: endControlTween
+			onTweenEnd: () => {
+				endControlTween();
+				// 旁白驱动：动画播完 → 进入下一步 → 朗读下一步
+				if (narrationAnimating) {
+					narrationAnimating = false;
+					currentStepIdx += 1;
+					if (narrationOn && isPlaying) {
+						playNarrationStep();
+					}
+				}
+			}
 		});
 	});
 
@@ -195,6 +294,12 @@
 			currentStepIdx = 0;
 			playbackPos = 0;
 		}
+		// 朗读模式：不走时间线连续播放，改为「朗读 → 动画 → 朗读」闭环
+		if (narrationOn) {
+			isPlaying = true;
+			playNarrationStep();
+			return;
+		}
 		timeline.play(speed);
 		isPlaying = true;
 	}
@@ -203,6 +308,7 @@
 		if (!timeline.hasTimeline) return;
 		timeline.pause();
 		isPlaying = false;
+		stopNarration();
 	}
 
 	function prev() {
@@ -248,6 +354,7 @@
 		currentStepIdx = step;
 		playbackPos = step;
 		checkPracticeAt(step);
+		if (narrationOn) playNarrationStep();
 	}
 
 	function changeSpeed(newSpeed: number) {
@@ -308,6 +415,8 @@
 	onDestroy(() => {
 		// SSR 卸载时 $effect 未运行（timeline/practice 未创建），可选链守卫
 		timeline?.destroy();
+		stopNarration();
+		if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
 		if (canvasBodyRef) {
 			gsap.killTweensOf(canvasBodyRef);
 		}
@@ -724,6 +833,14 @@
 					{#if engine.customConfig}
 						<button class="pj-btn" onclick={openCustomModal}>自定义</button>
 					{/if}
+					<button
+						class="pj-btn"
+						class:pj-on={narrationOn}
+						onclick={toggleNarration}
+						title="朗读旁白：读当前步骤讲解，读完自动前进到下一步（已生成 MiMo 语音）"
+					>
+						{narrationOn ? '🔊 朗读中' : '🔈 朗读'}
+					</button>
 					<button class="pj-btn pj-exit" onclick={exitProjector} title="退出投影 (Esc)"
 						>退出投影</button
 					>
@@ -1372,6 +1489,18 @@
 	.pj-exit:hover {
 		border-color: var(--color-danger);
 		color: var(--color-danger);
+	}
+
+	/* 朗读开关激活态 */
+	.pj-on {
+		border-color: var(--color-accent);
+		color: var(--color-accent);
+		background: rgba(217, 119, 6, 0.08);
+	}
+
+	.pj-on:hover {
+		border-color: var(--color-accent);
+		color: var(--color-accent);
 	}
 
 	.projector-body {

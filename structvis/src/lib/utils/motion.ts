@@ -116,19 +116,32 @@ export function revealOnScroll(node: HTMLElement, opts: ScrollRevealOptions = {}
 
 	node.style.opacity = '0';
 	let played = false;
+	// split 模式：字符只拆一次，之后重播直接复用
+	let splitSpans: HTMLElement[] | null = null;
 
 	const play = () => {
-		if (played) return;
 		const r = node.getBoundingClientRect();
-		if (r.top >= window.innerHeight * threshold || r.bottom <= 0) return;
+		const inView = r.top < window.innerHeight * threshold && r.bottom > 0;
+
+		if (!inView) {
+			// 滚出视口：重置并隐藏，下次进入重新播放（滚动动画可反复触发）
+			if (played) {
+				played = false;
+				node.style.opacity = '0';
+			}
+			return;
+		}
+		if (played) return;
 		played = true;
 		try {
 			const common = { duration, ease: easing ?? springEasing() };
 			if (split) {
 				// 逐字拆分浮现（拆分自实现，动画走 anime spring + stagger）
-				const chars = splitChars(node);
+				if (!splitSpans) {
+					splitSpans = splitChars(node);
+				}
 				node.style.opacity = '1'; // 父层先可见，动画作用于子字符
-				animate(chars, {
+				animate(splitSpans, {
 					opacity: [0, 1],
 					translateY: [20, 0],
 					rotateX: [40, 0],

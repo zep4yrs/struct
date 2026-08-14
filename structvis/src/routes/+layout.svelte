@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import '$lib/styles/app.css';
 	import AppLayout from '$lib/components/layout/AppLayout.svelte';
+	import { base } from '$app/paths';
 	import favicon from '$lib/assets/favicon.svg';
 	import { updateStreak } from '$lib/stores/progress';
 	import { settings } from '$lib/stores/settings';
@@ -32,6 +33,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="manifest" href={`${base}/manifest.webmanifest`} />
 </svelte:head>
 
 <AppLayout>{@render children()}</AppLayout>

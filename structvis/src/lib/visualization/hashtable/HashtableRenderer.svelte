@@ -2,7 +2,8 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HashData } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar } from '../visualization-utils';
+	import { resolveCSSVar, lerpColorStr, stepProgress } from '../visualization-utils';
+	import { easeOutCubic } from '../array/array-render-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -84,10 +85,16 @@
 			return;
 		}
 		drawHeader(f);
-		if (f.mode === 'chain') drawChain(f);
-		else drawLinear(f);
+		if (f.mode === 'chain') drawChain(f, fromFrame());
+		else drawLinear(f, fromFrame());
 		if (f.summary && isComplete()) drawSummary(f);
 		ctx.restore();
+	}
+
+	/** 上一帧的 hash 数据（颜色过渡用；无上一帧时回退当前帧） */
+	function fromFrame(): HashData | undefined {
+		const { fromIdx } = stepProgress(playbackPos, steps.length);
+		return steps[Math.min(fromIdx, steps.length - 1)]?.hash;
 	}
 
 	function isComplete(): boolean {
@@ -132,38 +139,47 @@
 
 	// ---------- 线性探测：单行槽位 ----------
 
-	function drawLinear(f: HashData) {
+	function drawLinear(f: HashData, fromF: HashData | undefined) {
 		if (!ctx) return;
 		const totalW = f.size * SLOT_W + (f.size - 1) * SLOT_GAP;
 		const xStart = (LOGICAL_W - totalW) / 2;
 		const y = LOGICAL_H / 2 - SLOT_H / 2 + 20;
+		const easedT = easeOutCubic(stepProgress(playbackPos, steps.length).t);
 		const probed = new Set(f.probe ?? []);
 		const cur = f.current;
 		const placed = f.placed;
+		const fromProbed = new Set(fromF?.probe ?? []);
+		const fromCur = fromF?.current;
+		const fromPlaced = fromF?.placed;
+
+		const slotState = (
+			pr: Set<number>,
+			c: number | undefined,
+			pl: number | undefined,
+			i: number
+		) => {
+			if (pl === i) {
+				return { fill: colors.sorted, border: colors.sorted, text: colors.inkInverse, lw: 2 };
+			}
+			if (c === i) {
+				return { fill: colors.current, border: colors.current, text: colors.inkInverse, lw: 2 };
+			}
+			if (pr.has(i)) {
+				return { fill: colors.node, border: colors.compare, text: colors.ink, lw: 2 };
+			}
+			return { fill: colors.node, border: colors.border, text: colors.ink, lw: 1.2 };
+		};
 
 		for (let i = 0; i < f.size; i++) {
 			const x = xStart + i * (SLOT_W + SLOT_GAP);
 			// 防御：slots 短于 size 时按空槽处理（不画出 "undefined"）
 			const v = f.slots[i] === undefined ? null : f.slots[i];
-			let fill = colors.node;
-			let border = colors.border;
-			let textColor = colors.ink;
-			let lw = 1.2;
-
-			if (placed === i) {
-				fill = colors.sorted;
-				border = colors.sorted;
-				textColor = 'colors.inkInverse';
-				lw = 2;
-			} else if (cur === i) {
-				fill = colors.current;
-				border = colors.current;
-				textColor = 'colors.inkInverse';
-				lw = 2;
-			} else if (probed.has(i)) {
-				border = colors.compare;
-				lw = 2;
-			}
+			const fromState = slotState(fromProbed, fromCur, fromPlaced, i);
+			const toState = slotState(probed, cur, placed, i);
+			const fill = lerpColorStr(fromState.fill, toState.fill, easedT);
+			const border = lerpColorStr(fromState.border, toState.border, easedT);
+			const textColor = lerpColorStr(fromState.text, toState.text, easedT);
+			const lw = toState.lw;
 
 			ctx.beginPath();
 			ctx.roundRect(x, y, SLOT_W, SLOT_H, 8);
@@ -190,51 +206,83 @@
 
 	// ---------- 链地址法：槽位 + 链表 ----------
 
-	function drawChain(f: HashData) {
+	function drawChain(f: HashData, fromF: HashData | undefined) {
 		if (!ctx) return;
+		const easedT = easeOutCubic(stepProgress(playbackPos, steps.length).t);
 		const curRow = f.current;
 		let highlightNode: { row: number; pos: number } | undefined;
 		if (f.key !== undefined && curRow !== undefined && f.chains?.[curRow]) {
 			const pos = f.chains[curRow].findIndex((k) => k === f.key);
 			if (pos !== -1) highlightNode = { row: curRow, pos };
 		}
+		const fromCurRow = fromF?.current;
 
 		for (let row = 0; row < f.size; row++) {
 			const y = CHAIN_TOP + row * CHAIN_ROW_H;
 			const chain = f.chains?.[row] ?? [];
 
-			// 槽位
+			// 槽位（颜色插值）
+			const fromIsCur = fromCurRow === row;
 			const isCur = curRow === row;
+			const slotFill = lerpColorStr(
+				fromIsCur ? colors.current : colors.node,
+				isCur ? colors.current : colors.node,
+				easedT
+			);
+			const slotBorder = lerpColorStr(
+				fromIsCur ? colors.current : colors.border,
+				isCur ? colors.current : colors.border,
+				easedT
+			);
 			ctx.beginPath();
 			ctx.roundRect(CHAIN_X, y, CHAIN_SLOT_W, CHAIN_SLOT_H, 6);
-			ctx.fillStyle = isCur ? colors.current : colors.node;
+			ctx.fillStyle = slotFill;
 			ctx.fill();
-			ctx.strokeStyle = isCur ? colors.current : colors.border;
+			ctx.strokeStyle = slotBorder;
 			ctx.lineWidth = isCur ? 2 : 1.2;
 			ctx.stroke();
 			ctx.font = '600 14px ui-monospace, SFMono-Regular, Menlo, monospace';
-			ctx.fillStyle = isCur ? 'colors.inkInverse' : colors.ink;
+			ctx.fillStyle = lerpColorStr(
+				fromIsCur ? colors.inkInverse : colors.ink,
+				isCur ? colors.inkInverse : colors.ink,
+				easedT
+			);
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
 			ctx.fillText(String(row), CHAIN_X + CHAIN_SLOT_W / 2, y + CHAIN_SLOT_H / 2 + 1);
 
 			if (chain.length === 0) continue;
 
-			// 链上结点
+			// 链上结点（颜色插值）
 			let x = CHAIN_X + CHAIN_SLOT_W + 12;
 			for (let p = 0; p < chain.length; p++) {
 				const k = chain[p];
 				const isHL =
 					highlightNode !== undefined && highlightNode.row === row && highlightNode.pos === p;
+				const nodeFill = lerpColorStr(
+					isHL ? colors.sorted : colors.node,
+					isHL ? colors.sorted : colors.node,
+					easedT
+				);
+				const nodeBorder = lerpColorStr(
+					isHL ? colors.sorted : colors.border,
+					isHL ? colors.sorted : colors.border,
+					easedT
+				);
+				const nodeText = lerpColorStr(
+					isHL ? colors.inkInverse : colors.ink,
+					isHL ? colors.inkInverse : colors.ink,
+					easedT
+				);
 				ctx.beginPath();
 				ctx.roundRect(x, y, CHAIN_NODE_W, CHAIN_NODE_H, 6);
-				ctx.fillStyle = isHL ? colors.sorted : colors.node;
+				ctx.fillStyle = nodeFill;
 				ctx.fill();
-				ctx.strokeStyle = isHL ? colors.sorted : colors.border;
+				ctx.strokeStyle = nodeBorder;
 				ctx.lineWidth = isHL ? 2 : 1.2;
 				ctx.stroke();
 				ctx.font = '600 13px ui-monospace, SFMono-Regular, Menlo, monospace';
-				ctx.fillStyle = isHL ? 'colors.inkInverse' : colors.ink;
+				ctx.fillStyle = nodeText;
 				ctx.fillText(String(k), x + CHAIN_NODE_W / 2, y + CHAIN_SLOT_H / 2 + 1);
 
 				// 链指针（结点间连接线 + 尾指针）

@@ -9,7 +9,8 @@
 		GraphNode,
 		GraphNodeState
 	} from '$lib/engines/algorithm/types';
-	import { resolveCSSVar } from '../visualization-utils';
+	import { resolveCSSVar, lerpColorStr, stepProgress } from '../visualization-utils';
+	import { easeOutCubic } from '../array/array-render-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -97,11 +98,11 @@
 	function nodeFill(state: GraphNodeState): { fill: string; border: string; text: string } {
 		switch (state) {
 			case 'current':
-				return { fill: colors.accent, border: colors.accent, text: 'colors.inkInverse' };
+				return { fill: colors.accent, border: colors.accent, text: colors.inkInverse };
 			case 'visited':
-				return { fill: colors.success, border: colors.success, text: 'colors.inkInverse' };
+				return { fill: colors.success, border: colors.success, text: colors.inkInverse };
 			case 'done':
-				return { fill: colors.successDeep, border: colors.successDeep, text: 'colors.inkInverse' };
+				return { fill: colors.successDeep, border: colors.successDeep, text: colors.inkInverse };
 			case 'frontier':
 				return { fill: colors.surface, border: colors.academic, text: colors.ink };
 			default:
@@ -124,9 +125,18 @@
 		}
 	}
 
-	function drawEdge(e: GraphEdge, a: Pos, b: Pos, state: GraphEdgeState, directed: boolean) {
+	function drawEdge(
+		e: GraphEdge,
+		a: Pos,
+		b: Pos,
+		state: GraphEdgeState,
+		directed: boolean,
+		fromState: GraphEdgeState,
+		t: number
+	) {
 		const style = edgeStyle(state);
-		ctx!.strokeStyle = style.color;
+		const fromStyle = edgeStyle(fromState);
+		ctx!.strokeStyle = lerpColorStr(fromStyle.color, style.color, t);
 		ctx!.lineWidth = style.width;
 		ctx!.setLineDash(style.dash);
 		ctx!.beginPath();
@@ -162,8 +172,19 @@
 		}
 	}
 
-	function drawNode(n: GraphNode, pos: Pos, state: GraphNodeState, note?: string) {
-		const { fill, border, text } = nodeFill(state);
+	function drawNode(
+		n: GraphNode,
+		pos: Pos,
+		state: GraphNodeState,
+		note: string | undefined,
+		fromState: GraphNodeState,
+		t: number
+	) {
+		const from = nodeFill(fromState);
+		const to = nodeFill(state);
+		const fill = lerpColorStr(from.fill, to.fill, t);
+		const border = lerpColorStr(from.border, to.border, t);
+		const text = lerpColorStr(from.text, to.text, t);
 		const R = 26;
 		ctx!.fillStyle = fill;
 		ctx!.strokeStyle = border;
@@ -187,10 +208,13 @@
 	function draw() {
 		if (!ctx || steps.length === 0) return;
 
-		const pos = Math.max(0, Math.min(steps.length - 1 + 0.999, playbackPos));
-		const step = steps[Math.floor(pos)];
+		const { fromIdx, toIdx, t } = stepProgress(playbackPos, steps.length);
+		const easedT = easeOutCubic(t);
+		const step = steps[toIdx];
+		const fromStep = steps[fromIdx];
 		const g = step.graph;
 		if (!g || g.nodes.length === 0) return;
+		const fromG = fromStep.graph;
 
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -204,22 +228,24 @@
 
 		const positions = layout(g);
 
-		// 1. 边
+		// 1. 边（颜色从上一帧平滑过渡）
 		g.edges.forEach((e, i) => {
 			const a = positions.get(e.from);
 			const b = positions.get(e.to);
 			if (!a || !b) return;
 			const state = g.edgeState?.[i] ?? 'normal';
-			drawEdge(e, a, b, state, !!g.directed);
+			const fromState = (fromG?.edgeState?.[i] ?? 'normal') as GraphEdgeState;
+			drawEdge(e, a, b, state, !!g.directed, fromState, easedT);
 		});
 
-		// 2. 节点
+		// 2. 节点（颜色从上一帧平滑过渡）
 		for (const n of g.nodes) {
 			const p = positions.get(n.id);
 			if (!p) continue;
 			const state = g.nodeState?.[n.id] ?? 'unvisited';
+			const fromState = (fromG?.nodeState?.[n.id] ?? 'unvisited') as GraphNodeState;
 			const note = g.nodeNote?.[n.id];
-			drawNode(n, p, state, note);
+			drawNode(n, p, state, note, fromState, easedT);
 		}
 
 		ctx.restore();

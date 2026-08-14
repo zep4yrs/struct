@@ -2,7 +2,8 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, hexToRgba } from '../visualization-utils';
+	import { resolveCSSVar, hexToRgba, stepProgress } from '../visualization-utils';
+	import { easeOutCubic } from '../array/array-render-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -61,8 +62,9 @@
 	function draw() {
 		if (!ctx || steps.length === 0) return;
 
-		const pos = Math.max(0, Math.min(steps.length - 1 + 0.999, playbackPos));
-		const step = steps[Math.floor(pos)];
+		const { fromIdx, toIdx, t } = stepProgress(playbackPos, steps.length);
+		const easedT = easeOutCubic(t);
+		const step = steps[toIdx];
 		const table = step.table;
 		if (!table || table.rows.length === 0 || table.columns.length === 0) {
 			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -77,6 +79,9 @@
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
 		const currentSet = new Set(step.highlights.find((h) => h.type === 'current')?.indices ?? []);
+		const fromSet = new Set(
+			steps[fromIdx].highlights.find((h) => h.type === 'current')?.indices ?? []
+		);
 
 		const colW = Math.max(64, Math.floor((canvasWidth - PAD * 2) / table.columns.length));
 		const totalW = colW * table.columns.length;
@@ -140,12 +145,17 @@
 			ctx.stroke();
 		}
 
-		// 当前检查行高亮（WHERE 逐行判定）
-		for (const idx of currentSet) {
-			if (idx >= visibleRows) continue;
+		// 当前检查行高亮（WHERE 逐行判定，淡入淡出过渡）
+		for (let idx = 0; idx < visibleRows; idx++) {
+			const a =
+				(fromSet.has(idx) ? 1 : 0) +
+				((currentSet.has(idx) ? 1 : 0) - (fromSet.has(idx) ? 1 : 0)) * easedT;
+			if (a <= 0.01) continue;
 			const y = HEADER_H + idx * ROW_H;
+			ctx.globalAlpha = a;
 			ctx.fillStyle = colors.rowHighlight;
 			ctx.fillRect(x0 + 1, y + 1, totalW - 2, ROW_H - 1);
+			ctx.globalAlpha = 1;
 		}
 
 		// 行号标注

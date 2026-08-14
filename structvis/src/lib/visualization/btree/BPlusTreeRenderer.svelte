@@ -2,7 +2,8 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, BPlusNode } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar } from '../visualization-utils';
+	import { resolveCSSVar, lerpColorStr, stepProgress } from '../visualization-utils';
+	import { easeOutCubic } from '../array/array-render-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -65,23 +66,34 @@
 		return n.keys.length * KEY_W + 8;
 	}
 
-	function drawNode(n: BPlusNode, hl: 'current' | 'sorted' | 'pivot' | 'compare' | null) {
+	function drawNode(
+		n: BPlusNode,
+		hl: 'current' | 'sorted' | 'pivot' | 'compare' | null,
+		fromHl: 'current' | 'sorted' | 'pivot' | 'compare' | null,
+		t: number
+	) {
 		const w = nodeWidth(n);
 		const x = n.x;
 		const y = n.y;
 
-		let fill = colors.surface;
-		let border = colors.border;
-		let text = colors.ink;
-		if (hl === 'current' || hl === 'sorted' || hl === 'pivot') {
-			fill = hl === 'current' ? colors.current : hl === 'sorted' ? colors.sorted : colors.pivot;
-			border = fill;
-			text = 'colors.inkInverse';
-		} else if (hl === 'compare') {
-			border = colors.compare;
-		}
+		const stateOf = (h: 'current' | 'sorted' | 'pivot' | 'compare' | null) => {
+			if (h === 'current' || h === 'sorted' || h === 'pivot') {
+				const fill =
+					h === 'current' ? colors.current : h === 'sorted' ? colors.sorted : colors.pivot;
+				return { fill, border: fill, text: colors.inkInverse, lw: 2 };
+			}
+			if (h === 'compare') {
+				return { fill: colors.surface, border: colors.compare, text: colors.ink, lw: 2 };
+			}
+			return { fill: colors.surface, border: colors.border, text: colors.ink, lw: 1.2 };
+		};
+		const from = stateOf(fromHl);
+		const to = stateOf(hl);
+		const fill = lerpColorStr(from.fill, to.fill, t);
+		const border = lerpColorStr(from.border, to.border, t);
+		const text = lerpColorStr(from.text, to.text, t);
 
-		ctx!.lineWidth = hl ? 2 : 1.2;
+		ctx!.lineWidth = to.lw;
 		ctx!.strokeStyle = border;
 		ctx!.fillStyle = fill;
 
@@ -117,8 +129,10 @@
 	function draw() {
 		if (!ctx || steps.length === 0) return;
 
-		const pos = Math.max(0, Math.min(steps.length - 1 + 0.999, playbackPos));
-		const step = steps[Math.floor(pos)];
+		const { fromIdx, toIdx, t } = stepProgress(playbackPos, steps.length);
+		const easedT = easeOutCubic(t);
+		const step = steps[toIdx];
+		const fromStep = steps[fromIdx];
 		const tree = step.btree;
 		if (!tree) return;
 
@@ -133,10 +147,15 @@
 		ctx.scale(scale, scale);
 
 		const byId = new Map(tree.nodes.map((n, i) => [n.id, { node: n, idx: i }]));
-		const hlByIdx: Record<number, string> = {};
-		for (const h of step.highlights) {
-			for (const idx of h.indices) hlByIdx[idx] = h.type;
-		}
+		const buildHl = (s: AlgorithmStep) => {
+			const map: Record<number, string> = {};
+			for (const h of s.highlights) {
+				for (const idx of h.indices) map[idx] = h.type;
+			}
+			return map;
+		};
+		const hlByIdx = buildHl(step);
+		const fromHlByIdx = buildHl(fromStep);
 
 		// 1. 父子边
 		for (const e of tree.edges) {
@@ -177,7 +196,8 @@
 		// 3. 节点
 		for (const { node, idx } of byId.values()) {
 			const hl = hlByIdx[idx] as 'current' | 'sorted' | 'pivot' | 'compare' | undefined;
-			drawNode(node, hl ?? null);
+			const fromHl = fromHlByIdx[idx] as 'current' | 'sorted' | 'pivot' | 'compare' | undefined;
+			drawNode(node, hl ?? null, fromHl ?? null, easedT);
 		}
 
 		ctx.restore();

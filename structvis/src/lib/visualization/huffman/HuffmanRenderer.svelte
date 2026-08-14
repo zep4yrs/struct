@@ -2,7 +2,8 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HuffmanData, HuffmanNode } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar } from '../visualization-utils';
+	import { resolveCSSVar, lerpColorStr, stepProgress } from '../visualization-utils';
+	import { easeOutCubic } from '../array/array-render-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -145,11 +146,22 @@
 			layoutCache.set(layoutKey, posFinal);
 		}
 
-		// 高亮集合每帧只算一次
-		const hl = stepHighlights();
-		const sortedSet = new Set(hl.sorted);
-		const currentSet = new Set(hl.current);
-		const compareSet = new Set(hl.compare);
+		// 高亮集合每帧只算一次（from/to 两帧，供颜色插值）
+		const { fromIdx, toIdx, t } = stepProgress(playbackPos, steps.length);
+		const easedT = easeOutCubic(t);
+		const hlAt = (idx: number) => {
+			const s = steps[Math.min(idx, steps.length - 1)];
+			return {
+				sorted: new Set(s?.highlights.find((h) => h.type === 'sorted')?.indices ?? []),
+				current: new Set(s?.highlights.find((h) => h.type === 'current')?.indices ?? []),
+				compare: new Set(s?.highlights.find((h) => h.type === 'compare')?.indices ?? [])
+			};
+		};
+		const from = hlAt(fromIdx);
+		const to = hlAt(toIdx);
+		const sortedSet = to.sorted;
+		const currentSet = to.current;
+		const compareSet = to.compare;
 
 		const nodeById = new Map<number, HuffmanNode>();
 		for (const n of f.nodes) nodeById.set(n.id, n);
@@ -171,30 +183,35 @@
 			}
 		}
 
-		// 2. 节点
+		// 2. 节点（颜色从上一帧平滑过渡）
+		const stateAt = (
+			sorted: Set<number>,
+			current: Set<number>,
+			compare: Set<number>,
+			id: number
+		): { fill: string; border: string; text: string; lw: number } => {
+			if (current.has(id)) {
+				return { fill: colors.current, border: colors.current, text: colors.inkInverse, lw: 2 };
+			}
+			if (sorted.has(id)) {
+				return { fill: colors.sorted, border: colors.sorted, text: colors.inkInverse, lw: 2 };
+			}
+			if (compare.has(id)) {
+				return { fill: colors.node, border: colors.compare, text: colors.ink, lw: 2 };
+			}
+			return { fill: colors.node, border: colors.border, text: colors.ink, lw: 1.2 };
+		};
+
 		for (const n of f.nodes) {
 			const p = posFinal.get(n.id);
 			if (!p) continue;
 			const isLeaf = n.left === -1 && n.right === -1;
-			let fill = colors.node;
-			let border = colors.border;
-			let textColor = colors.ink;
-			let lw = 1.2;
-
-			if (currentSet.has(n.id)) {
-				fill = colors.current;
-				border = colors.current;
-				textColor = 'colors.inkInverse';
-				lw = 2;
-			} else if (sortedSet.has(n.id)) {
-				fill = colors.sorted;
-				border = colors.sorted;
-				textColor = 'colors.inkInverse';
-				lw = 2;
-			} else if (compareSet.has(n.id)) {
-				border = colors.compare;
-				lw = 2;
-			}
+			const fromState = stateAt(from.sorted, from.current, from.compare, n.id);
+			const toState = stateAt(to.sorted, to.current, to.compare, n.id);
+			const fill = lerpColorStr(fromState.fill, toState.fill, easedT);
+			const border = lerpColorStr(fromState.border, toState.border, easedT);
+			const textColor = lerpColorStr(fromState.text, toState.text, easedT);
+			const lw = toState.lw;
 
 			ctx.beginPath();
 			ctx.arc(p.x, p.y, NODE_R, 0, Math.PI * 2);

@@ -159,9 +159,6 @@
 		};
 		const from = hlAt(fromIdx);
 		const to = hlAt(toIdx);
-		const sortedSet = to.sorted;
-		const currentSet = to.current;
-		const compareSet = to.compare;
 
 		const nodeById = new Map<number, HuffmanNode>();
 		for (const n of f.nodes) nodeById.set(n.id, n);
@@ -240,15 +237,6 @@
 		}
 
 		ctx.restore();
-	}
-
-	function stepHighlights(): { sorted: number[]; current: number[]; compare: number[] } {
-		const step = steps[Math.min(Math.floor(playbackPos), steps.length - 1)];
-		return {
-			sorted: step?.highlights.find((h) => h.type === 'sorted')?.indices ?? [],
-			current: step?.highlights.find((h) => h.type === 'current')?.indices ?? [],
-			compare: step?.highlights.find((h) => h.type === 'compare')?.indices ?? []
-		};
 	}
 
 	function depthOf(nodes: HuffmanNode[], rootId: number): number {

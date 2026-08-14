@@ -181,9 +181,7 @@
 
 		for (let i = 0; i < values.length; i++) {
 			// 颜色插值：上一帧 → 当前帧平滑过渡（并修复 inkInverse 字符串 bug）
-			const isCurrent = hl.current.has(i);
 			const isCompare = hl.compare.has(i);
-			const isPivot = hl.pivot.has(i);
 			const stateAt = (hl: { current: Set<number>; compare: Set<number>; pivot: Set<number> }) => {
 				const isCurrent = hl.current.has(i);
 				const isCompare = hl.compare.has(i);

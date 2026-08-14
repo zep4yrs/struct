@@ -147,10 +147,16 @@
 	});
 
 	// === 每引擎统计 ===
+	/** 渲染播放位置（浮点，渲染器在相邻步骤间插值 → 平滑动画） */
 	function posOf(r: Racer): number {
 		const n = r.engine.steps.length;
 		if (n <= 1) return 0;
-		return Math.min(n - 1, Math.floor(raceProgress(r) * (n - 1)));
+		return Math.min(n - 1, raceProgress(r) * (n - 1));
+	}
+
+	/** 当前到达的整数步骤（统计用） */
+	function stepOf(r: Racer): number {
+		return Math.floor(posOf(r));
 	}
 
 	/** 引擎是否已冲线（完成） */
@@ -218,7 +224,7 @@
 	function curvePoints(r: Racer): string {
 		const n = r.engine.steps.length;
 		if (n <= 1) return '';
-		const upto = Math.min(n - 1, posOf(r));
+		const upto = Math.min(n - 1, stepOf(r));
 		const iw = CHART_W - PAD.l - PAD.r;
 		const ih = CHART_H - PAD.t - PAD.b;
 		let acc = 0;
@@ -326,7 +332,7 @@
 				</div>
 				<div class="race-lane-stats">
 					<span class="race-stat">步数 <b>{r.engine.steps.length}</b></span>
-					<span class="race-stat">操作 <b>{opCount(r, posOf(r))}</b> / {totalOps(r)}</span>
+					<span class="race-stat">操作 <b>{opCount(r, stepOf(r))}</b> / {totalOps(r)}</span>
 					<span class="race-stat">用时 <b>{(totalDurMs(r) / 1000).toFixed(1)}s</b></span>
 				</div>
 			</div>

@@ -2,7 +2,8 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar } from '../visualization-utils';
+	import { resolveCSSVar, lerpColorStr, stepProgress } from '../visualization-utils';
+	import { easeOutCubic } from '../array/array-render-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -139,13 +140,16 @@
 	function draw() {
 		if (!ctx || steps.length === 0) return;
 
-		const pos = Math.max(0, Math.min(steps.length - 1 + 0.999, playbackPos));
-		const step = steps[Math.floor(pos)];
+		const { fromIdx, toIdx, t } = stepProgress(playbackPos, steps.length);
+		const easedT = easeOutCubic(t);
+		const step = steps[toIdx];
+		const fromStep = steps[fromIdx];
 
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
 		const values = step.data;
 		const hl = getHighlights(step);
+		const hlFrom = getHighlights(fromStep);
 		const cy = canvasHeight / 2;
 
 		// 新节点（虚线框）出现在最前面
@@ -176,31 +180,42 @@
 		ctx.fillText('head', x + NODE_W / 2, cy - NODE_H / 2 - 10);
 
 		for (let i = 0; i < values.length; i++) {
+			// 颜色插值：上一帧 → 当前帧平滑过渡（并修复 inkInverse 字符串 bug）
 			const isCurrent = hl.current.has(i);
 			const isCompare = hl.compare.has(i);
 			const isPivot = hl.pivot.has(i);
-
-			let fill = colors.node;
-			let border = colors.nodeBorder;
-			let text = colors.ink;
-			let lineWidth = 1.2;
-
-			if (isPivot) {
-				fill = colors.pivot;
-				border = colors.pivot;
-				text = 'colors.inkInverse';
-				lineWidth = 2;
-			} else if (isCurrent) {
-				fill = colors.current;
-				border = colors.current;
-				text = 'colors.inkInverse';
-				lineWidth = 2;
-			} else if (isCompare) {
-				border = colors.compare;
-				lineWidth = 2;
-			}
-
-			drawNode(x, cy - NODE_H / 2, values[i], { fill, border, text, lineWidth });
+			const stateAt = (hl: { current: Set<number>; compare: Set<number>; pivot: Set<number> }) => {
+				const isCurrent = hl.current.has(i);
+				const isCompare = hl.compare.has(i);
+				const isPivot = hl.pivot.has(i);
+				let fill = colors.node;
+				let border = colors.nodeBorder;
+				let text = colors.ink;
+				let lineWidth = 1.2;
+				if (isPivot) {
+					fill = colors.pivot;
+					border = colors.pivot;
+					text = colors.inkInverse;
+					lineWidth = 2;
+				} else if (isCurrent) {
+					fill = colors.current;
+					border = colors.current;
+					text = colors.inkInverse;
+					lineWidth = 2;
+				} else if (isCompare) {
+					border = colors.compare;
+					lineWidth = 2;
+				}
+				return { fill, border, text, lineWidth };
+			};
+			const from = stateAt(hlFrom);
+			const to = stateAt(hl);
+			drawNode(x, cy - NODE_H / 2, values[i], {
+				fill: lerpColorStr(from.fill, to.fill, easedT),
+				border: lerpColorStr(from.border, to.border, easedT),
+				text: lerpColorStr(from.text, to.text, easedT),
+				lineWidth: to.lineWidth
+			});
 
 			if (isCompare) {
 				ctx.fillStyle = colors.compare;

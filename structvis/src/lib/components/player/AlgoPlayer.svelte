@@ -182,6 +182,7 @@
 
 	function applyPreset(name: string) {
 		activePresetName = name;
+		lastAppliedInput = { kind: 'preset', name };
 		showPresetModal = false;
 		try {
 			engine.applyPreset?.(name);
@@ -201,8 +202,96 @@
 			customError = (e as Error).message;
 			return;
 		}
+		lastAppliedInput = { kind: 'custom', values: { ...customValues } };
 		showCustomModal = false;
 		rebuildAfterEngineChange();
+	}
+
+	// === 状态分享快照：当前输入 + 位置 + 速度 + 断点 编码进 URL（?s=...） ===
+	type ShareInput =
+		{ kind: 'preset'; name: string } | { kind: 'custom'; values: Record<string, string> };
+	let lastAppliedInput = $state<ShareInput | null>(null);
+	let shareMsg = $state('');
+	let pendingRestore: { step?: number; speed?: number; breakpoints?: number[] } | null = null;
+
+	function toB64(s: string): string {
+		const bytes = new TextEncoder().encode(s);
+		let bin = '';
+		for (const b of bytes) bin += String.fromCharCode(b);
+		return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+	}
+
+	function fromB64(s: string): string {
+		const b64 = s.replace(/-/g, '+').replace(/_/g, '/');
+		const bin = atob(b64);
+		const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+		return new TextDecoder().decode(bytes);
+	}
+
+	function copyShareLink() {
+		const payload: Record<string, unknown> = {};
+		if (lastAppliedInput?.kind === 'preset') payload.p = lastAppliedInput.name;
+		else if (lastAppliedInput?.kind === 'custom') payload.c = lastAppliedInput.values;
+		if (currentStepIdx > 0) payload.i = currentStepIdx;
+		if (speed !== 1) payload.sp = speed;
+		if (breakpoints.size > 0) payload.b = [...breakpoints];
+		const url = location.origin + location.pathname + '?s=' + toB64(JSON.stringify(payload));
+		void navigator.clipboard.writeText(url).then(
+			() => {
+				shareMsg = '分享链接已复制：打开即恢复当前输入与位置';
+				setTimeout(() => (shareMsg = ''), 3000);
+			},
+			() => {
+				shareMsg = '复制失败，请手动复制地址栏链接';
+				setTimeout(() => (shareMsg = ''), 3000);
+			}
+		);
+	}
+
+	/** 打开分享链接时恢复：输入 → 重建（revision effect）→ 位置/速度/断点 */
+	function applyPendingRestore() {
+		if (!pendingRestore) return;
+		const r = pendingRestore;
+		pendingRestore = null;
+		if (r.speed && r.speed !== 1) speed = r.speed;
+		if (r.breakpoints?.length) breakpoints = new Set(r.breakpoints);
+		if (r.step && r.step > 0 && timeline.hasTimeline) {
+			const target = Math.min(r.step, engine.totalSteps - 1);
+			timeline.seekToStep(target);
+			currentStepIdx = target;
+			playbackPos = target;
+		}
+	}
+
+	function restoreFromShareUrl() {
+		if (typeof window === 'undefined') return;
+		const s = new URLSearchParams(location.search).get('s');
+		if (!s) return;
+		try {
+			const payload = JSON.parse(fromB64(s)) as {
+				p?: string;
+				c?: Record<string, string>;
+				i?: number;
+				sp?: number;
+				b?: number[];
+			};
+			pendingRestore = {
+				step: payload.i,
+				speed: payload.sp,
+				breakpoints: payload.b
+			};
+			if (payload.p) {
+				applyPreset(payload.p);
+			} else if (payload.c && engine.customConfig) {
+				customValues = payload.c;
+				applyCustom();
+			} else {
+				// 无输入信息：直接恢复位置（走 revision effect 的 build 分支）
+				engineRevision++;
+			}
+		} catch {
+			// URL 解析失败 → 静默忽略（用户正常访问）
+		}
 	}
 
 	function rebuildAfterEngineChange() {
@@ -379,6 +468,7 @@
 					timeline.build();
 					currentStepIdx = 0;
 					playbackPos = 0;
+					applyPendingRestore();
 					return;
 				}
 				gsap.killTweensOf(canvasBodyRef);
@@ -390,6 +480,7 @@
 						timeline.build();
 						currentStepIdx = 0;
 						playbackPos = 0;
+						applyPendingRestore();
 						gsap.to(canvasBodyRef, {
 							opacity: 1,
 							duration: 0.24,
@@ -410,6 +501,8 @@
 		if (engine.steps.length > 0) {
 			timeline.build();
 		}
+		// 分享链接恢复：读 ?s= 参数（输入变化会走 revision effect 重建）
+		restoreFromShareUrl();
 	});
 
 	onDestroy(() => {
@@ -550,6 +643,14 @@
 								<button class="title-btn" onclick={openCustomModal} title="自定义输入"
 									>自定义</button
 								>
+							{/if}
+							<button
+								class="title-btn"
+								onclick={copyShareLink}
+								title="复制分享链接：打开即恢复当前输入与步骤">分享</button
+							>
+							{#if shareMsg}
+								<span class="share-msg" aria-live="polite">{shareMsg}</span>
 							{/if}
 						</div>
 					{/if}
@@ -1015,6 +1116,13 @@
 	.title-btn .caret {
 		font-size: 9px;
 		opacity: 0.7;
+	}
+
+	.share-msg {
+		font-family: var(--font-body);
+		font-size: 12px;
+		color: var(--color-success);
+		white-space: nowrap;
 	}
 
 	/* 投影模式入口按钮 */

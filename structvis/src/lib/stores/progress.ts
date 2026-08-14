@@ -21,6 +21,31 @@ export interface MistakeRecord {
 	reviewCount: number; // 复习次数
 	lastReviewed?: number; // 最近一次复习时间戳
 	mastered: boolean; // 是否已掌握
+	nextReview?: number; // 下次复习时间戳（SRS 排期）
+}
+
+// === SRS 间隔重复排期（复习答对后按阶梯拉长间隔，答错重置为 1 天） ===
+const SRS_INTERVALS_DAYS = [1, 3, 7, 14, 30];
+
+/** 复习答对后的下次间隔天数：按已复习次数走阶梯，封顶 30 天 */
+export function srsIntervalDays(reviewCount: number): number {
+	return SRS_INTERVALS_DAYS[Math.min(reviewCount, SRS_INTERVALS_DAYS.length - 1)];
+}
+
+/** 是否到期需要复习（未掌握且到达排期时间；老数据无 nextReview 视为立即到期） */
+export function isMistakeDue(m: MistakeRecord, now = Date.now()): boolean {
+	if (m.mastered) return false;
+	if (!m.nextReview) return true;
+	return m.nextReview <= now;
+}
+
+/** 到期时间的友好文案（用于错题本展示） */
+export function mistakeDueText(m: MistakeRecord, now = Date.now()): string {
+	if (m.mastered) return '已掌握';
+	if (!m.nextReview || m.nextReview <= now) return '待复习';
+	const days = Math.ceil((m.nextReview - now) / 86400000);
+	if (days <= 1) return '明天复习';
+	return days + ' 天后复习';
 }
 
 export interface ProgressData {
@@ -29,6 +54,7 @@ export interface ProgressData {
 	totalStudyTime: number; // 总学习时长（秒，粗略统计）
 	streakDays: number; // 连续学习天数
 	lastActiveDate: string; // 上次活跃日期 YYYY-MM-DD
+	dailyActivity: Record<string, number>; // 每日练习次数（YYYY-MM-DD → 次数，热力图数据源）
 }
 
 const defaultProgress: ProgressData = {
@@ -36,8 +62,21 @@ const defaultProgress: ProgressData = {
 	mistakes: [],
 	totalStudyTime: 0,
 	streakDays: 0,
-	lastActiveDate: ''
+	lastActiveDate: '',
+	dailyActivity: {}
 };
+
+/** 本地日期字符串 YYYY-MM-DD（东八区安全，避免 UTC 跨天误判） */
+export function localDateStr(d: Date): string {
+	const pad = (n: number) => String(n).padStart(2, '0');
+	return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+}
+
+/** 记录一次学习活动（练习作答/浏览课程等），供热力图统计 */
+function recordActivity(p: ProgressData, count = 1): void {
+	const today = localDateStr(new Date());
+	p.dailyActivity = { ...p.dailyActivity, [today]: (p.dailyActivity[today] ?? 0) + count };
+}
 
 export const progress = persistentStore<ProgressData>('structvis:progress', defaultProgress);
 
@@ -68,6 +107,7 @@ export function recordExercise(topicId: string, correct: boolean): void {
 		}
 
 		p.topics[topicId] = topic;
+		recordActivity(p);
 		return p;
 	});
 }
@@ -108,21 +148,26 @@ export function addMistake(
 			id: `m_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
 			timestamp: Date.now(),
 			reviewCount: 0,
-			mastered: false
+			mastered: false,
+			nextReview: Date.now() + 86400000 // 新错题：明天可复习
 		});
 		return p;
 	});
 }
 
 /**
- * 复习一次错题：累计复习次数并记录最近复习时间
+ * 复习一次错题：累计复习次数并按 SRS 排期下次复习。
+ * correct=true 复习答对 → 间隔按阶梯拉长（1/3/7/14/30 天）；
+ * correct=false 答错 → 间隔重置为 1 天。
  */
-export function reviewMistake(id: string): void {
+export function reviewMistake(id: string, correct = true): void {
 	progress.update((p) => {
 		const m = p.mistakes.find((x) => x.id === id);
 		if (m) {
 			m.reviewCount += 1;
 			m.lastReviewed = Date.now();
+			const days = correct ? srsIntervalDays(m.reviewCount - 1) : 1;
+			m.nextReview = Date.now() + days * 86400000;
 		}
 		return p;
 	});
@@ -154,11 +199,6 @@ export function removeMistake(id: string): void {
  * 注意：必须用本地日期而非 toISOString()（UTC）——东八区 00:00-08:00 学习会被
  * toISOString 记成前一天，跨午夜连续学习会被误判为中断。
  */
-function localDateStr(d: Date): string {
-	const pad = (n: number) => String(n).padStart(2, '0');
-	return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-}
-
 export function updateStreak(): void {
 	const today = localDateStr(new Date());
 
@@ -241,7 +281,13 @@ export function importProgress(json: string): ImportProgressResult {
 		mistakes,
 		totalStudyTime: typeof data.totalStudyTime === 'number' ? data.totalStudyTime : 0,
 		streakDays: typeof data.streakDays === 'number' ? data.streakDays : 0,
-		lastActiveDate: typeof data.lastActiveDate === 'string' ? data.lastActiveDate : ''
+		lastActiveDate: typeof data.lastActiveDate === 'string' ? data.lastActiveDate : '',
+		dailyActivity:
+			data.dailyActivity !== null &&
+			typeof data.dailyActivity === 'object' &&
+			!Array.isArray(data.dailyActivity)
+				? (data.dailyActivity as Record<string, number>)
+				: {}
 	};
 
 	progress.set(normalized);

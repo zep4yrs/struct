@@ -116,6 +116,7 @@
 			<a href={resolve('/progress')} class="topnav-link" class:active={isActive('/progress')}
 				>学习进度</a
 			>
+			<a href={resolve('/race')} class="topnav-link" class:active={isActive('/race')}>竞速实验室</a>
 			<a href={resolve('/about')} class="topnav-link" class:active={isActive('/about')}>关于</a>
 		</nav>
 	</div>

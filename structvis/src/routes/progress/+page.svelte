@@ -5,13 +5,16 @@
 		markMistakeMastered,
 		removeMistake,
 		exportProgress,
-		importProgress
+		importProgress,
+		isMistakeDue,
+		mistakeDueText
 	} from '$lib/stores/progress';
 	import { resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
 	import type { MistakeRecord, TopicProgress } from '$lib/stores/progress';
 	import PracticePanel from '$lib/components/player/PracticePanel.svelte';
 	import Mastery3D from '$lib/components/ui/Mastery3D.svelte';
+	import ActivityHeatmap from '$lib/components/ui/ActivityHeatmap.svelte';
 	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
 	import { onMount } from 'svelte';
 	import { animate } from 'animejs';
@@ -50,7 +53,7 @@
 
 	const masteredCount = $derived(topicEntries.filter(([, t]) => t.completed).length);
 	const totalMistakes = $derived($progress.mistakes.length);
-	const pendingMistakes = $derived($progress.mistakes.filter((m) => !m.mastered).length);
+	const pendingMistakes = $derived($progress.mistakes.filter((m) => isMistakeDue(m)).length);
 	const totalExercises = $derived(topicEntries.reduce((acc, [, t]) => acc + t.totalExercises, 0));
 	const correctExercises = $derived(
 		topicEntries.reduce((acc, [, t]) => acc + t.correctExercises, 0)
@@ -139,7 +142,7 @@
 	function handleReviewAnswered(result: { correct: boolean }) {
 		if (reviewingMistake === null) return;
 		reviewAnswered = result.correct;
-		reviewMistake(reviewingMistake.id);
+		reviewMistake(reviewingMistake.id, result.correct);
 	}
 
 	function handleReviewContinue() {
@@ -322,6 +325,15 @@
 			</div>
 		</div>
 
+		<!-- 学习热力图 -->
+		<section class="mb-12" use:reveal>
+			<div class="chapter-head">
+				<div class="section-label">学习热力图</div>
+				<span class="chapter-count">最近一年</span>
+			</div>
+			<ActivityHeatmap activity={$progress.dailyActivity} />
+		</section>
+
 		<!-- 掌握度 -->
 		{#if topicEntries.length > 0}
 			<section class="mb-12" use:reveal>
@@ -376,7 +388,9 @@
 									{#if mistake.mastered}
 										<span class="tag tag-success">已掌握</span>
 									{:else}
-										<span class="tag tag-accent">待复习 · {mistake.reviewCount} 次</span>
+										<span class="tag {isMistakeDue(mistake) ? 'tag-accent' : ''}"
+											>{mistakeDueText(mistake)} · 复习 {mistake.reviewCount} 次</span
+										>
 									{/if}
 									<span class="tag tag-blue">{mistake.type === 'sql' ? 'SQL' : '算法'}</span>
 								</div>

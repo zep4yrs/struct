@@ -195,12 +195,12 @@ test.describe('练习模式', () => {
 		await expect(dialog.locator('.feedback')).toContainText('回答错误');
 		await dialog.getByRole('button', { name: '继续下一步' }).click();
 
-		// 进度页：错题记录 + 待复习标记
+		// 进度页：错题记录 + SRS 复习排期标记（新错题排期在明天，显示「明天复习」）
 		await page.goto('/struct/progress');
 		await waitForHydratedGlobal(page);
 		const mistakeRow = page.locator('.mistake-row').first();
 		await expect(mistakeRow).toContainText('冒泡排序');
-		await expect(mistakeRow).toContainText('待复习');
+		await expect(mistakeRow).toContainText(/待复习|明天复习/);
 
 		// 重新作答：再次答错，复习次数累计；答对则标记已掌握
 		await mistakeRow.getByRole('button', { name: '重新作答' }).click();

@@ -2,18 +2,30 @@
 	interface Props {
 		lines: string[];
 		activeLine: number;
+		/** 断点行集合（0-based 伪代码行号） */
+		breakpoints?: Set<number>;
+		/** 点击行首圆点切换断点 */
+		onToggleBreakpoint?: (line: number) => void;
 	}
 
-	let { lines, activeLine }: Props = $props();
+	let { lines, activeLine, breakpoints = new Set<number>(), onToggleBreakpoint }: Props = $props();
 </script>
 
 <div class="pseudocode">
 	<pre><code
 			>{#each lines as line, i (i)}
-				<span class="line {i === activeLine ? 'active' : ''}" data-line={i}>
-	<span class="line-num">{i + 1}</span>
-	<span class="line-text">{line || '\u00A0'}</span>
-</span>
+				<span
+					class="line {i === activeLine ? 'active' : ''} {breakpoints.has(i) ? 'breakpoint' : ''}"
+					data-line={i}>
+					<button
+						class="bp-dot"
+						class:on={breakpoints.has(i)}
+						aria-label={breakpoints.has(i) ? '移除断点' : '设置断点'}
+						title="点击设置/移除断点"
+						onclick={() => onToggleBreakpoint?.(i)}></button>
+					<span class="line-num">{i + 1}</span>
+					<span class="line-text">{line || ' '}</span>
+				</span>
 			{/each}</code
 		></pre>
 </div>
@@ -35,7 +47,7 @@
 		line-height: 0;
 		tab-size: 2;
 		flex: 1;
-		overflow-x: auto; /* 窄屏长行可横向滚动 */
+		overflow-x: auto;
 	}
 
 	code {
@@ -45,8 +57,9 @@
 
 	.line {
 		display: flex;
-		gap: 12px;
-		padding: 0 20px 0 16px;
+		align-items: center;
+		gap: 8px;
+		padding: 0 20px 0 12px;
 		border-left: 2px solid transparent;
 		transition: background-color 120ms ease-out;
 		white-space: pre;
@@ -70,11 +83,42 @@
 		vertical-align: top;
 	}
 
+	/* 断点圆点 */
+	.bp-dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 999px;
+		border: 1.5px solid var(--color-ink-3);
+		background: transparent;
+		padding: 0;
+		flex-shrink: 0;
+		cursor: pointer;
+		transition:
+			background-color 120ms ease-out,
+			border-color 120ms ease-out;
+		opacity: 0.5;
+	}
+
+	.bp-dot:hover {
+		opacity: 1;
+		border-color: var(--color-danger);
+	}
+
+	.bp-dot.on {
+		background: var(--color-danger);
+		border-color: var(--color-danger);
+		opacity: 1;
+	}
+
+	.line.breakpoint {
+		background: rgba(155, 34, 38, 0.06);
+	}
+
 	/* 激活行 */
 	.line.active {
 		background: rgba(217, 119, 6, 0.1);
 		border-left-color: var(--color-accent);
-		padding-left: 14px;
+		padding-left: 10px;
 	}
 
 	.line.active .line-num {

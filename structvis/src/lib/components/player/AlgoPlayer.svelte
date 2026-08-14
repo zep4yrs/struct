@@ -32,6 +32,16 @@
 	let speed = $state($settings.animationSpeed);
 	let currentStepIdx = $state(0);
 	let playbackPos = $state(0);
+	// 断点行集合（伪代码行号 0-based）——播放到断点行自动暂停
+	let breakpoints = $state<Set<number>>(new Set());
+	// 复杂度可视化：累计比较/交换次数（排序类引擎；其他引擎为 0 不显示）
+	const compareCount = $derived(
+		engine.steps.slice(0, Math.floor(playbackPos) + 1).filter((s) => s.type === 'compare').length
+	);
+	const swapCount = $derived(
+		engine.steps.slice(0, Math.floor(playbackPos) + 1).filter((s) => s.type === 'swap').length
+	);
+	const showOps = $derived(engine.steps.some((s) => s.type === 'compare' || s.type === 'swap'));
 
 	let activeQuestion = $state<PracticeQuestion | null>(null);
 	// 控制器在 effect 内创建（engine prop 在播放器生命周期内不变，effect 只运行一次）
@@ -138,6 +148,11 @@
 			},
 			onStep: (idx) => {
 				currentStepIdx = idx;
+				// 断点：到达断点伪代码行自动暂停（模拟调试器）
+				const stepAt = engine.steps[idx];
+				if (stepAt && breakpoints.has(stepAt.pseudocodeLine)) {
+					pause();
+				}
 			},
 			onFinished: () => {
 				isPlaying = false;
@@ -511,9 +526,14 @@
 				</div>
 			{/key}
 
-			<!-- 底部状态栏（字幕式步骤说明） -->
+			<!-- 底部状态栏（字幕式步骤说明 + 复杂度计数器） -->
 			<div class="status-bar">
 				<span class="status-text">{currentStep?.description || 'Ready'}</span>
+				{#if showOps}
+					<span class="op-count" aria-label="操作计数">
+						比较 {compareCount} · 交换 {swapCount}
+					</span>
+				{/if}
 			</div>
 		</div>
 
@@ -525,7 +545,19 @@
 				>
 			</div>
 			<div class="panel-body">
-				<PseudocodePanel lines={engine.pseudocode} activeLine={currentStep?.pseudocodeLine ?? 0} />
+				<PseudocodePanel
+					lines={engine.pseudocode}
+					activeLine={currentStep?.pseudocodeLine ?? 0}
+					{breakpoints}
+					onToggleBreakpoint={(line) => {
+						breakpoints = new Set(breakpoints);
+						if (breakpoints.has(line)) {
+							breakpoints.delete(line);
+						} else {
+							breakpoints.add(line);
+						}
+					}}
+				/>
 			</div>
 			<div class="panel-controls">
 				<ControlBar
@@ -1021,12 +1053,25 @@
 		border-top: 1px solid var(--color-line-hair);
 		background: var(--color-paper);
 		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
 	}
 
 	.status-text {
 		font-size: 13px;
 		color: var(--color-ink-2);
 		line-height: 1.5;
+	}
+
+	/* 复杂度计数器 */
+	.op-count {
+		flex-shrink: 0;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--color-ink-3);
+		letter-spacing: 0.04em;
 	}
 
 	.engine-error {

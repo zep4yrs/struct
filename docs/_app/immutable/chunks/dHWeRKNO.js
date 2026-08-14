@@ -1,0 +1,1 @@
+import{t as e}from"./DI_3KcQ3.js";var t=e(`structvis:settings`,{theme:`light`,sqlEngine:`sqljs`,animationSpeed:1,showHints:!0});function n(){t.update(e=>({...e,theme:e.theme===`light`?`dark`:`light`}))}export{n,t};

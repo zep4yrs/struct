@@ -205,6 +205,9 @@
 	<p class="mb-8" style="color: var(--color-ink-2); max-width: 500px;">
 		所有数据保存在本地浏览器中，不会上传到任何服务器。
 	</p>
+	<div class="mb-8" use:reveal>
+		<a href={resolve('/report')} class="btn btn-accent btn-sm">📊 生成学习报告</a>
+	</div>
 
 	<!-- 学习路径：下一步学什么 -->
 	{#if hasData && nextTopic}

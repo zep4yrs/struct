@@ -17,10 +17,11 @@ interface StoredEnvelope {
 }
 
 /**
- * 读取并迁移到当前版本；任何解析/迁移失败都回退默认值。
+ * 读取并迁移到当前版本。
+ * 返回 { ok: true, value } 表示成功；{ ok: false } 表示数据缺失/损坏（调用方不得写回覆盖）。
  * 顶层字段缺失时与默认值浅合并——旧数据缺新字段（如 dailyActivity）也能正常读取。
  */
-function readStored<T>(raw: string, fallback: T): T {
+function readStored<T>(raw: string, fallback: T): { ok: boolean; value: T } {
 	try {
 		const parsed: unknown = JSON.parse(raw);
 		if (parsed !== null && typeof parsed === 'object' && '__sv' in (parsed as object)) {
@@ -34,12 +35,13 @@ function readStored<T>(raw: string, fallback: T): T {
 				data = migrate(data);
 				v++;
 			}
-			return mergeDefaults(fallback, data);
+			return { ok: true, value: mergeDefaults(fallback, data) };
 		}
 		// 旧格式（无信封）：视为当前版本，同样补默认字段
-		return mergeDefaults(fallback, parsed);
+		return { ok: true, value: mergeDefaults(fallback, parsed) };
 	} catch {
-		return fallback;
+		// 数据损坏：不抛异常，返回 ok:false 并回退默认值（但绝不写回覆盖原数据）
+		return { ok: false, value: fallback };
 	}
 }
 
@@ -65,17 +67,26 @@ function mergeDefaults<T>(fallback: T, data: unknown): T {
  */
 export function persistentStore<T>(key: string, initialValue: T): Writable<T> {
 	const store = writable<T>(initialValue);
+	// 成功从 localStorage 读取过后才允许写回——防止读取失败/数据损坏时
+	// 用默认值覆盖用户数据（进度永久丢失的根因）。
+	let hydrated = false;
 
 	// 只在浏览器环境读写 localStorage
 	if (browser) {
 		// 从 localStorage 读取初始值（含版本迁移）
 		const stored = localStorage.getItem(key);
 		if (stored !== null) {
-			store.set(readStored<T>(stored, initialValue));
+			const result = readStored<T>(stored, initialValue);
+			hydrated = result.ok;
+			store.set(result.value);
+		} else {
+			// 无存储记录：视为全新用户，允许首次写回
+			hydrated = true;
 		}
 
 		// 订阅变化，写入 localStorage（版本信封格式）
 		store.subscribe((value) => {
+			if (!hydrated) return; // 读取失败：保留原数据，绝不覆盖
 			try {
 				const envelope: StoredEnvelope = { __sv: STORAGE_VERSION, data: value };
 				localStorage.setItem(key, JSON.stringify(envelope));

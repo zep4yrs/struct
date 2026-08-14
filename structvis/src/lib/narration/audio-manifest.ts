@@ -647,5 +647,42 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"text": "执行选中的计划并返回结果。索引不是越多越好——写多读少的表要考虑维护成本。",
 			"hash": "aa298008024a"
 		}
+	},
+	"heap-sort": {
+		"init": {
+			"file": "init.mp3",
+			"text": "堆排序的思路：先把数组调整成一个大根堆（父节点不小于孩子），然后反复把堆顶——也就是最大值——与堆末尾交换，每轮确定一个最大值就位。",
+			"hash": "983f87243f65"
+		},
+		"partition-start": {
+			"file": "partition-start.mp3",
+			"text": "开始建堆：从最后一个非叶节点开始，自底向上逐个下滤，让每个子树都满足大根堆性质。",
+			"hash": "7f8bd272642b"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "比较当前节点与它的孩子：在大根堆中，父节点应该不小于两个孩子。",
+			"hash": "db8ecfbfe79f"
+		},
+		"pivot-select": {
+			"file": "pivot-select.mp3",
+			"text": "选定较大的孩子作为交换对象——只有与较大的孩子交换，才能维持大根堆性质。",
+			"hash": "851dd460e274"
+		},
+		"swap": {
+			"file": "swap.mp3",
+			"text": "交换并继续下滤：节点下沉到孩子的位置，重复比较，直到满足堆性质或到达叶子。",
+			"hash": "62d7491e3ead"
+		},
+		"partition-end": {
+			"file": "partition-end.mp3",
+			"text": "建堆完成：整个数组满足大根堆性质，堆顶就是最大值。",
+			"hash": "ac71e322dc0a"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "排序完成。堆排序时间复杂度稳定为 O(n log n)：建堆 O(n)，每轮下滤 O(log n) 共 n 轮；空间复杂度 O(1)（就地排序）。",
+			"hash": "0ac50ae6afe1"
+		}
 	}
 };

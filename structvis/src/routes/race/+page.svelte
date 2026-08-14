@@ -5,6 +5,7 @@
 	import { BubbleSortEngine } from '$lib/engines/algorithm/basicsort/BubbleSortEngine';
 	import { SelectionSortEngine } from '$lib/engines/algorithm/basicsort/SelectionSortEngine';
 	import { InsertionSortEngine } from '$lib/engines/algorithm/basicsort/InsertionSortEngine';
+	import { HeapSortEngine } from '$lib/engines/algorithm/basicsort/HeapSortEngine';
 	import RendererSwitch from '$lib/components/player/RendererSwitch.svelte';
 	import { STEP_DURATIONS } from '$lib/components/player/TimelineController';
 	import type { AlgorithmEngine } from '$lib/engines/algorithm/types';
@@ -53,6 +54,13 @@
 			complexity: 'O(n²)',
 			color: '#b8860b',
 			make: () => new InsertionSortEngine()
+		},
+		{
+			id: 'heap-sort',
+			name: '堆排序',
+			complexity: 'O(n log n)',
+			color: '#6b21a8',
+			make: () => new HeapSortEngine()
 		}
 	] as const;
 

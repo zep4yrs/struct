@@ -50,6 +50,7 @@ import { ExplainEngine } from '../src/lib/engines/sql/ExplainEngine';
 import { ErEngine } from '../src/lib/engines/db/ErEngine';
 import { IndexEngine } from '../src/lib/engines/db/IndexEngine';
 import { NormalizeEngine } from '../src/lib/engines/db/NormalizeEngine';
+import { HeapSortEngine } from '../src/lib/engines/algorithm/basicsort/HeapSortEngine';
 
 type EngineLike = { demoScript?: { type: string; narration: string }[] };
 
@@ -84,7 +85,8 @@ const ENGINE_MAP: { topicId: string; make: () => EngineLike }[] = [
 	{ topicId: 'explain-plan', make: () => new ExplainEngine() },
 	{ topicId: 'er', make: () => new ErEngine() },
 	{ topicId: 'index', make: () => new IndexEngine() },
-	{ topicId: 'normalize', make: () => new NormalizeEngine() }
+	{ topicId: 'normalize', make: () => new NormalizeEngine() },
+	{ topicId: 'heap-sort', make: () => new HeapSortEngine() }
 ];
 
 // === 工具 ===
@@ -160,10 +162,11 @@ function parseManifest(): Record<
 > | null {
 	if (!existsSync(MANIFEST_FILE)) return null;
 	const raw = readFileSync(MANIFEST_FILE, 'utf-8');
-	const m = raw.match(/{[\s\S]*}/);
+	// 只匹配 audioManifest: ... = { ... }; 的字面量（避开 interface 的花括号）
+	const m = raw.match(/audioManifest[\s\S]*?=\s*(\{[\s\S]*\});/);
 	if (!m) return null;
 	try {
-		return JSON.parse(m[0]);
+		return JSON.parse(m[1]);
 	} catch {
 		return null;
 	}

@@ -99,6 +99,15 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 排序 / [current]归并排序[/current]'
 	},
 	{
+		title: '堆排序',
+		description: '建堆下滤 · 不稳定 · O(n log n)',
+		href: '/ds/heap-sort',
+		topicId: 'heap-sort',
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]堆排序[/current]'
+	},
+	{
 		title: '图的存储',
 		description: '邻接矩阵 · 邻接表 · 空间对比',
 		href: '/ds/graph-storage',

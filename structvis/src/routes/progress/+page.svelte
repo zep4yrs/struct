@@ -11,6 +11,7 @@
 	import { dsTopics, dbTopics } from '$lib/content/topics';
 	import type { MistakeRecord, TopicProgress } from '$lib/stores/progress';
 	import PracticePanel from '$lib/components/player/PracticePanel.svelte';
+	import Mastery3D from '$lib/components/ui/Mastery3D.svelte';
 	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
 	import { onMount } from 'svelte';
 	import { animate } from 'animejs';
@@ -64,6 +65,17 @@
 	);
 	const hasData = $derived(Object.keys($progress.topics).length > 0 || totalMistakes > 0);
 
+	// 3D 掌握度总览数据
+	const masteryData = $derived(
+		[...dsTopics, ...dbTopics]
+			.filter((t) => t.topicId)
+			.map((t) => ({
+				title: t.title,
+				mastery: $progress.topics[t.topicId as string]?.mastery ?? 0,
+				completed: $progress.topics[t.topicId as string]?.completed ?? false
+			}))
+	);
+
 	// 学习路径：沿教材顺序找第一个未掌握的主题作为「下一步」
 	const nextTopic = $derived(
 		[...dsTopics, ...dbTopics].find(
@@ -72,6 +84,21 @@
 	);
 
 	onMount(() => {
+		// 掌握度进度条：进入视口时从 0 填充到目标宽度
+		if (typeof IntersectionObserver !== 'undefined') {
+			const io = new IntersectionObserver(
+				(entries) => {
+					for (const entry of entries) {
+						if (!entry.isIntersecting) continue;
+						const bar = entry.target as HTMLElement;
+						bar.style.width = bar.dataset.target ?? '0%';
+						io.unobserve(bar);
+					}
+				},
+				{ threshold: 0.3 }
+			);
+			document.querySelectorAll('.topic-bar-fill').forEach((el) => io.observe(el));
+		}
 		if (prefersReducedMotion()) return;
 		// 统计数字从 0 滚动到实际值
 		document.querySelectorAll('.stat-num').forEach((el) => {
@@ -215,6 +242,15 @@
 			</p>
 		</div>
 	{:else}
+		<!-- 3D 掌握度总览 -->
+		<div
+			class="relative mb-8 overflow-hidden rounded-lg border"
+			style="border-color: var(--color-line-hair); background: var(--color-surface); height: 300px;"
+			use:reveal
+		>
+			<Mastery3D topics={masteryData} avg={avgMastery} />
+		</div>
+
 		<!-- 统计行 -->
 		<div class="mb-8 grid grid-cols-1 gap-3 md:grid-cols-3">
 			<div class="card" use:reveal={{ delay: 200 }}>
@@ -301,7 +337,8 @@
 								<div class="topic-bar">
 									<div
 										class="topic-bar-fill"
-										style="width: {t.mastery}%;"
+										style="width: 0%;"
+										data-target="{t.mastery}%"
 										class:done={t.completed}
 									></div>
 								</div>
@@ -497,6 +534,8 @@
 	}
 
 	.topic-bar-fill {
+		transition: width 1s var(--ease-out);
+
 		height: 100%;
 		background: var(--color-accent);
 		border-radius: var(--radius-full);

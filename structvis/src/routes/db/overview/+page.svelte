@@ -164,6 +164,8 @@
 		border: 1px solid var(--color-line-hair);
 		border-radius: 8px;
 		background: var(--color-surface);
+		-webkit-backdrop-filter: blur(12px) saturate(1.4);
+		backdrop-filter: blur(12px) saturate(1.4);
 		padding: 20px;
 	}
 

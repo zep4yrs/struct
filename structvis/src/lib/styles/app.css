@@ -7,10 +7,11 @@
 
 @theme {
 	/* === 色彩系统 === */
-	--color-paper: #faf9f6; /* 纸白，微暖 — 页面背景 */
-	--color-surface: #ffffff; /* 纯白 — 卡片/面板背景 */
-	--color-subtle: #f3f1ec; /* 浅暖灰 — 次级背景/hover */
-	--color-code-bg: #1a1a1a; /* 深灰 — 代码块背景 */
+	--color-paper: #faf9f6; /* 纸白，微暖 — 页面背景（粒子层之下的最底层） */
+	/* 液态玻璃：面板底色半透明，粒子背景透出；外层容器由 .glass/.card 负责 backdrop-blur */
+	--color-surface: color-mix(in srgb, #ffffff 55%, transparent);
+	--color-subtle: color-mix(in srgb, #f3f1ec 60%, transparent);
+	--color-code-bg: #1a1a1a; /* 深灰 — 代码块背景（保持不透明，保证可读性） */
 
 	--color-ink: #1a1a1a; /* 墨黑 — 主文字 */
 	--color-ink-2: #5a5a5a; /* 炭灰 — 次文字 */
@@ -78,10 +79,10 @@
 .dark {
 	color-scheme: dark;
 
-	--color-paper: #161514; /* 墨纸 — 页面背景 */
-	--color-surface: #1e1d1b; /* 深面 — 卡片/面板背景 */
-	--color-subtle: #282624; /* 深浅灰 — 次级背景/hover */
-	--color-code-bg: #0f0e0d; /* 更深 — 代码块背景 */
+	--color-paper: #161514; /* 墨纸 — 页面背景（粒子层之下的最底层） */
+	--color-surface: color-mix(in srgb, #1e1d1b 50%, transparent);
+	--color-subtle: color-mix(in srgb, #282624 55%, transparent);
+	--color-code-bg: #0f0e0d; /* 更深 — 代码块背景（保持不透明） */
 
 	--color-ink: #e9e6e0; /* 暖白 — 主文字 */
 	--color-ink-2: #a6a39b; /* 灰 — 次文字 */
@@ -235,12 +236,20 @@ pre,
 	background: var(--color-line-regular);
 }
 
-/* 卡片 */
+/* 液态玻璃：模糊背后的粒子背景（-webkit- 前缀兼容 Safari） */
+.glass {
+	-webkit-backdrop-filter: blur(14px) saturate(1.5);
+	backdrop-filter: blur(14px) saturate(1.5);
+}
+
+/* 卡片（玻璃质感） */
 .card {
 	background: var(--color-surface);
 	border: 1px solid var(--color-line-hair);
 	border-radius: var(--radius-md);
 	padding: var(--spacing-6);
+	-webkit-backdrop-filter: blur(14px) saturate(1.5);
+	backdrop-filter: blur(14px) saturate(1.5);
 	transition: border-color var(--dur-fast) var(--ease-out);
 }
 .card:hover {

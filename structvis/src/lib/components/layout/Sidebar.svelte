@@ -79,12 +79,12 @@
 
 <nav
 	aria-label="课程目录"
-	class="drawer {open
+	class="glass drawer {open
 		? 'open'
 		: ''} h-full flex-shrink-0 overflow-hidden border-r transition-[width,color] duration-300 md:block"
 	style="
 		border-color: {open ? 'var(--color-line-hair)' : 'transparent'};
-		background: var(--color-paper);
+		background: var(--color-surface);
 		width: {open ? '224px' : '0px'};
 	"
 >

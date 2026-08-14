@@ -206,7 +206,7 @@
 	<!-- 学习路径：下一步学什么 -->
 	{#if hasData && nextTopic}
 		<div
-			class="mb-8 flex flex-wrap items-center gap-3 rounded-lg border p-4"
+			class="glass mb-8 flex flex-wrap items-center gap-3 rounded-lg border p-4"
 			style="border-color: var(--color-line-hair); background: var(--color-surface);"
 			use:reveal
 		>
@@ -246,7 +246,7 @@
 				<span class="overview-hint">鼠标移动可旋转视角</span>
 			</div>
 			<div
-				class="relative overflow-hidden rounded-lg border"
+				class="glass relative overflow-hidden rounded-lg border"
 				style="border-color: var(--color-line-hair); background: var(--color-surface); height: 300px;"
 			>
 				<Mastery3D topics={masteryData} avg={avgMastery} />

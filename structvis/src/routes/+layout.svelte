@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import '$lib/styles/app.css';
 	import AppLayout from '$lib/components/layout/AppLayout.svelte';
+	import Scene3D from '$lib/components/ui/Scene3D.svelte';
 	import { base } from '$app/paths';
 	import favicon from '$lib/assets/favicon.svg';
 	import { updateStreak } from '$lib/stores/progress';
@@ -36,4 +37,5 @@
 	<link rel="manifest" href={`${base}/manifest.webmanifest`} />
 </svelte:head>
 
+<Scene3D />
 <AppLayout>{@render children()}</AppLayout>

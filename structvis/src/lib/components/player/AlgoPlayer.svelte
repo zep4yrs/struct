@@ -812,6 +812,8 @@
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-lg);
 		overflow: hidden;
+		-webkit-backdrop-filter: blur(14px) saturate(1.5);
+		backdrop-filter: blur(14px) saturate(1.5);
 		box-shadow:
 			0 1px 2px rgba(0, 0, 0, 0.04),
 			0 8px 32px rgba(0, 0, 0, 0.04);

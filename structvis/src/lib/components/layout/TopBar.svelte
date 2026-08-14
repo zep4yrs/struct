@@ -45,8 +45,8 @@
 </script>
 
 <header
-	class="flex h-12 items-center justify-between border-b px-6"
-	style="border-color: var(--color-line-hair); background: var(--color-paper);"
+	class="glass flex h-12 items-center justify-between border-b px-6"
+	style="border-color: var(--color-line-hair); background: var(--color-surface);"
 >
 	<div class="flex items-center gap-6">
 		{#if showSidebarBtn}

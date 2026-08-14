@@ -1,5 +1,13 @@
 import { test, expect, type Page } from '@playwright/test';
 
+// 全站粒子背景（three.js WebGL）在无 GPU 的 headless 环境走软件渲染，拖慢每个页面。
+// 测试前注入禁用标志，让 Scene3D 静默跳过（功能断言不受影响）。
+test.beforeEach(async ({ page }) => {
+	await page.addInitScript(() => {
+		(window as unknown as Record<string, unknown>).__DSH_NO_SCENE__ = true;
+	});
+});
+
 // vite dev 冷启动首编时模块图尚未就绪，页面已 SSR 渲染但事件系统未水合。
 // 通过功能探测等待水合完成：点击「下一步」直到步骤编号响应，随后 Home 复位。
 async function waitForHydrated(page: Page) {
@@ -711,6 +719,8 @@ test.describe('视觉回归（渲染器截图基线）', () => {
 		await expect(page.locator('.player-wrap')).toHaveCSS('opacity', '1');
 		// 等待首帧绘制与字体稳定
 		await expect(page.locator('.status-text')).toContainText('初始数组');
+		// 粒子背景随机分布，截图前隐藏以保证基线可复现
+		await page.locator('.scene3d').evaluate((el) => ((el as HTMLElement).style.display = 'none'));
 		await expect(page.locator('.algo-player')).toHaveScreenshot('quick-sort-player.png', {
 			animations: 'disabled',
 			maxDiffPixelRatio: 0.05
@@ -725,6 +735,8 @@ test.describe('视觉回归（渲染器截图基线）', () => {
 		// 等待页面入场动画完成
 		await expect(page.locator('.section-header')).toHaveCSS('opacity', '1');
 		await expect(page.locator('.player-wrap')).toHaveCSS('opacity', '1');
+		// 粒子背景随机分布，截图前隐藏以保证基线可复现
+		await page.locator('.scene3d').evaluate((el) => ((el as HTMLElement).style.display = 'none'));
 		await expect(page.locator('.algo-player')).toHaveScreenshot('graph-traversal-player.png', {
 			animations: 'disabled',
 			maxDiffPixelRatio: 0.05
@@ -739,6 +751,8 @@ test.describe('视觉回归（渲染器截图基线）', () => {
 		// 等待页面入场动画完成
 		await expect(page.locator('.section-header')).toHaveCSS('opacity', '1');
 		await expect(page.locator('.player-wrap')).toHaveCSS('opacity', '1');
+		// 粒子背景随机分布，截图前隐藏以保证基线可复现
+		await page.locator('.scene3d').evaluate((el) => ((el as HTMLElement).style.display = 'none'));
 		await expect(page.locator('.algo-player')).toHaveScreenshot('binary-tree-player.png', {
 			animations: 'disabled',
 			maxDiffPixelRatio: 0.05

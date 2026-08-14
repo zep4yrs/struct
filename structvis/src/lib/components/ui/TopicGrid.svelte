@@ -26,6 +26,8 @@
 			style="
 				background: var(--color-surface);
 				border-color: var(--color-line-hair);
+				-webkit-backdrop-filter: blur(10px) saturate(1.4);
+				backdrop-filter: blur(10px) saturate(1.4);
 				opacity: {topic.planned ? '0.5' : '1'};
 				cursor: {topic.planned ? 'not-allowed' : 'pointer'};
 			"

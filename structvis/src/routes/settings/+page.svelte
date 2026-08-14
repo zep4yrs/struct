@@ -138,6 +138,8 @@
 		border-radius: var(--radius-md);
 		background: var(--color-surface);
 		border: 1px solid var(--color-line-hair);
+		-webkit-backdrop-filter: blur(12px) saturate(1.4);
+		backdrop-filter: blur(12px) saturate(1.4);
 	}
 
 	.setting-info {

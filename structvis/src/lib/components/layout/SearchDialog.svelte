@@ -235,6 +235,8 @@
 		background: var(--color-surface);
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-lg);
+		-webkit-backdrop-filter: blur(16px) saturate(1.5);
+		backdrop-filter: blur(16px) saturate(1.5);
 		box-shadow:
 			0 1px 2px rgba(0, 0, 0, 0.04),
 			0 8px 32px rgba(0, 0, 0, 0.06);

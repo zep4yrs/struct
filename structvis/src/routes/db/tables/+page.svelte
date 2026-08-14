@@ -260,6 +260,8 @@
 		padding: 16px 20px;
 		display: flex;
 		flex-direction: column;
+		-webkit-backdrop-filter: blur(12px) saturate(1.4);
+		backdrop-filter: blur(12px) saturate(1.4);
 		gap: 10px;
 	}
 
@@ -351,7 +353,7 @@
 		font-size: 12px;
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-sm);
-		background: var(--color-paper);
+		background: var(--color-surface);
 		color: var(--color-ink);
 		outline: none;
 		transition: border-color 120ms var(--ease-out);
@@ -424,6 +426,8 @@
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-md);
 		overflow: hidden;
+		-webkit-backdrop-filter: blur(12px) saturate(1.4);
+		backdrop-filter: blur(12px) saturate(1.4);
 	}
 
 	.schema-head {
@@ -555,6 +559,8 @@
 		padding: 14px 16px;
 		display: flex;
 		flex-direction: column;
+		-webkit-backdrop-filter: blur(12px) saturate(1.4);
+		backdrop-filter: blur(12px) saturate(1.4);
 		gap: 8px;
 	}
 

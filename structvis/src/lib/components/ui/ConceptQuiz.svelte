@@ -91,6 +91,8 @@
 		border: 1px solid var(--color-line-hair);
 		border-radius: 8px;
 		background: var(--color-surface);
+		-webkit-backdrop-filter: blur(12px) saturate(1.4);
+		backdrop-filter: blur(12px) saturate(1.4);
 		padding: 16px 20px;
 		margin-bottom: 12px;
 	}
@@ -120,7 +122,7 @@
 	.quiz-option {
 		border: 1px solid var(--color-line-regular);
 		border-radius: 6px;
-		background: var(--color-paper);
+		background: var(--color-surface);
 		padding: 8px 12px;
 		font-size: 13px;
 		color: var(--color-ink-2);

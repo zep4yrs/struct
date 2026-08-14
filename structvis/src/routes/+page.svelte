@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { animate, stagger, spring } from 'animejs';
-	import Scene3D from '$lib/components/ui/Scene3D.svelte';
 	import { resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
 	import { reveal, revealOnScroll, prefersReducedMotion } from '$lib/utils/motion';
@@ -37,8 +36,6 @@
 		}
 	});
 </script>
-
-<Scene3D />
 
 <!-- ══════════ 首屏 Hero：整屏电影海报 ══════════ -->
 <section class="hero">

@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import type { WebGLRenderer, Scene as ThreeScene, Object3D, MeshBasicMaterial } from 'three';
 
-	/** three.js 全页 3D 背景：粒子场 + 线框几何体，随鼠标视差缓慢旋转，固定于视口。
-	 *  - 懒加载：仅当组件挂载才动态 import three（约 150KB，只出现在首页）
+	/** three.js 全站 3D 背景：粒子场 + 线框几何体，随鼠标视差缓慢旋转，固定于视口。
+	 *  - 懒加载：仅当组件挂载才动态 import three（约 150KB，由根布局全局挂载）
 	 *  - 降级：WebGL 不可用 / 系统减弱动效 → 静默不渲染（页面功能不受影响）
 	 *  - 主题联动：切换亮/暗主题时粒子与线框颜色跟随 token
 	 */
@@ -11,6 +11,8 @@
 
 	onMount(() => {
 		if (typeof window === 'undefined') return;
+		// 测试/无头环境可注入禁用标志（e2e 注入 window.__DSH_NO_SCENE__ 避免软件渲染拖慢）
+		if ((window as unknown as Record<string, unknown>).__DSH_NO_SCENE__) return;
 		const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		const holder = containerEl;
 		if (!holder) return;
@@ -245,7 +247,7 @@
 		inset: 0;
 		overflow: hidden;
 		pointer-events: none;
-		z-index: 0;
+		z-index: -1; /* 沉到内容之下：粒子成为玻璃卡片的模糊底景 */
 	}
 
 	.scene3d :global(canvas) {

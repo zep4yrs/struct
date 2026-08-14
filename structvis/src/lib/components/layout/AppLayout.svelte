@@ -47,7 +47,7 @@
 	const isHome = $derived(stripBase($page.url.pathname) === '/');
 </script>
 
-<div class="flex min-h-screen flex-col" style="background: var(--color-paper);">
+<div class="flex min-h-screen flex-col">
 	<a href="#main-content" class="skip-link">跳到主要内容</a>
 
 	<TopBar

@@ -170,6 +170,8 @@
 		border: 1px solid var(--color-line-hair);
 		border-radius: 8px;
 		background: var(--color-surface);
+		-webkit-backdrop-filter: blur(12px) saturate(1.4);
+		backdrop-filter: blur(12px) saturate(1.4);
 		padding: 20px;
 	}
 
@@ -190,7 +192,7 @@
 	.sql-line {
 		font-family: var(--font-mono);
 		font-size: 12.5px;
-		background: var(--color-paper);
+		background: var(--color-surface);
 		border: 1px solid var(--color-line-hair);
 		border-radius: 6px;
 		padding: 8px 12px;

@@ -167,7 +167,7 @@ const PRESETS: BPlusPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '从叶子 [20103, 20104] 顺序扫描：20103 ✓、20104 ✓，均满足范围。',
+				desc: '从叶子 [20103, 20104] 顺序扫描：20103、20104 均满足范围。',
 				reveal: [],
 				hl: ['l2'],
 				hlType: 'sorted',
@@ -182,7 +182,7 @@ const PRESETS: BPlusPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '20105 ✓（满足 ≤ 20105）；扫描 20106：超过上界 20105，扫描停止。',
+				desc: '20105 满足 ≤ 20105；扫描 20106：超过上界 20105，扫描停止。',
 				reveal: [],
 				hl: ['l3'],
 				hlType: 'sorted',

@@ -34,7 +34,7 @@
 <div class="page">
 	<div class="section-header" use:reveal>
 		<div class="section-label">
-			<span class="section-num">⚙</span>
+			<span class="section-num">设</span>
 			<span class="section-name">偏好</span>
 		</div>
 		<h1 class="page-title">设置</h1>

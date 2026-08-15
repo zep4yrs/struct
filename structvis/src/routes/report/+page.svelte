@@ -277,7 +277,7 @@
 	</div>
 
 	<div class="report-actions" use:reveal>
-		<button class="btn btn-accent" onclick={downloadPng}>⬇ 下载报告图片</button>
+		<button class="btn btn-accent" onclick={downloadPng}>下载报告图片</button>
 		<a href={resolve('/progress')} class="btn btn-ghost">返回学习进度</a>
 	</div>
 

@@ -282,7 +282,7 @@ export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 				if (pass) filtered.push(rows[i]);
 				this._emit(
 					'compare',
-					`WHERE ${where}：第 ${i + 1} 行${pass ? '满足条件 ✓' : '不满足条件 ✗'}。`,
+					`WHERE ${where}：第 ${i + 1} 行${pass ? '满足条件' : '不满足条件'}。`,
 					tableData,
 					[],
 					pass ? [{ type: 'current', indices: [i] }] : [],
@@ -322,7 +322,7 @@ export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 			else rejected.push(g);
 			this._emit(
 				'compare',
-				`HAVING ${havingCond}：组 [${g.join(', ')}]${pass ? ' 满足条件 ✓' : ' 不满足条件 ✗'}。`,
+				`HAVING ${havingCond}：组 [${g.join(', ')}]${pass ? ' 满足条件' : ' 不满足条件'}。`,
 				grouped,
 				[],
 				pass ? [{ type: 'current', indices: [grouped.rows.indexOf(g)] }] : [],
@@ -424,7 +424,7 @@ export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 				matched.push(...hits);
 				this._emit(
 					'compare',
-					`第 ${li + 1} 行（${lrow.join(', ')}）：在 ${rightName} 找到 ${hits.length} 条匹配 ✓。`,
+					`第 ${li + 1} 行（${lrow.join(', ')}）：在 ${rightName} 找到 ${hits.length} 条匹配。`,
 					{ columns: [...allCols], rows: [...matched.map((r) => [...r])] },
 					[],
 					[
@@ -439,7 +439,7 @@ export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 				unmatchedLeft.push(lrow);
 				this._emit(
 					'compare',
-					`第 ${li + 1} 行（${lrow.join(', ')}）：在 ${rightName} 无匹配 ✗——左表行仍保留，右表列补 NULL。`,
+					`第 ${li + 1} 行（${lrow.join(', ')}）：在 ${rightName} 无匹配——左表行仍保留，右表列补 NULL。`,
 					{ columns: [...allCols], rows: [...matched.map((r) => [...r])] },
 					[],
 					[],
@@ -619,7 +619,7 @@ export class AdvancedQueryEngine extends EngineBase<AdvancedQueryInput> {
 			if (pass) kept.push(row);
 			this._emit(
 				'compare',
-				`第 ${i + 1} 行（${row.join(', ')}）：执行子查询 ${bound} → ${nonEmpty ? '非空' : '空'}，${pass ? '保留 ✓' : '剔除 ✗'}。`,
+				`第 ${i + 1} 行（${row.join(', ')}）：执行子查询 ${bound} → ${nonEmpty ? '非空' : '空'}，${pass ? '保留' : '剔除'}。`,
 				{ columns: [...table.columns], rows: [...kept.map((r) => [...r])] },
 				[],
 				pass ? [{ type: 'current', indices: [kept.length - 1] }] : [],

@@ -299,8 +299,8 @@
 		const ok = a.length === b.length && a.every((v, i) => v === b[i]);
 		predictOk = ok;
 		predictMsg = ok
-			? '✓ 正确！下一步确实交换这两个元素。点击「继续」看动画。'
-			: '✗ 不对。交换的是位置 ' +
+			? '正确！下一步确实交换这两个元素。点击「继续」看动画。'
+			: '不对。交换的是位置 ' +
 				b.map((v) => v + 1).join(' 和 ') +
 				'。点击「重试」再试一次，或「跳过」看演示。';
 	}
@@ -312,8 +312,8 @@
 		predictOk = ok;
 		selected = [optIdx];
 		predictMsg = ok
-			? '✓ 正确！点击「继续」看这一步。'
-			: '✗ 不对，' + predictOptions[predictAnswer] + '。可「重试」或「跳过」。';
+			? '正确！点击「继续」看这一步。'
+			: '不对，' + predictOptions[predictAnswer] + '。可「重试」或「跳过」。';
 	}
 
 	function continueAfterPredict() {
@@ -773,7 +773,7 @@
 									title="选择演示数据"
 								>
 									{activePresetName || '演示数据'}
-									<span class="caret">▾</span>
+									<span class="caret"></span>
 								</button>
 							{/if}
 							{#if engine.customConfig}
@@ -798,7 +798,7 @@
 						onclick={toggleHandsOn}
 						title="动手模式：预测每一步的交换，亲手点击两个柱子"
 					>
-						✋ 动手
+						动手
 					</button>
 					{#if effectiveScript?.length}
 						<button class="pj-entry" onclick={enterProjector} title="演示投影模式（全屏讲授）"
@@ -906,8 +906,8 @@
 					<span class="predict-msg"
 						>{predictMsg ||
 							(isArrayEngine
-								? '✋ 动手模式：即将交换的两个元素，点击画布预测。'
-								: '✋ 动手模式：预测下一步操作。')}</span
+								? '动手模式：即将交换的两个元素，点击画布预测。'
+								: '动手模式：预测下一步操作。')}</span
 					>
 					{#if predictActive && !isArrayEngine && predictOptions.length > 0 && !predictOk}
 						<div class="predict-options">
@@ -925,7 +925,7 @@
 					{#if predictMsg && (isArrayEngine ? selected.length === 2 : selected.length > 0)}
 						<div class="predict-actions">
 							{#if predictOk}
-								<button class="btn btn-accent btn-sm" onclick={continueAfterPredict}>继续 ▶</button>
+								<button class="btn btn-accent btn-sm" onclick={continueAfterPredict}>继续</button>
 							{:else if !isArrayEngine}
 								<button class="btn btn-ghost btn-sm" onclick={retryPredict}>重试</button>
 								<button class="btn btn-ghost btn-sm" onclick={skipPredict}>跳过</button>
@@ -1014,7 +1014,13 @@
 				<header class="modal-header">
 					<span class="modal-title">演示数据</span>
 					<button class="modal-close" aria-label="关闭" onclick={() => (showPresetModal = false)}>
-						✕
+						<svg
+							viewBox="0 0 16 16"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.6"
+							stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"></path></svg
+						>
 					</button>
 				</header>
 				<div class="preset-list">
@@ -1059,7 +1065,13 @@
 				<header class="modal-header">
 					<span class="modal-title">{engine.customConfig.title ?? '自定义数据'}</span>
 					<button class="modal-close" aria-label="关闭" onclick={() => (showCustomModal = false)}>
-						✕
+						<svg
+							viewBox="0 0 16 16"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.6"
+							stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"></path></svg
+						>
 					</button>
 				</header>
 				<div class="custom-fields">
@@ -1132,7 +1144,7 @@
 						onclick={toggleNarration}
 						title="朗读旁白：读当前步骤讲解，读完自动前进到下一步（已生成 MiMo 语音）"
 					>
-						{narrationOn ? '🔊 朗读中' : '🔈 朗读'}
+						{narrationOn ? '朗读中' : '朗读'}
 					</button>
 					<button class="pj-btn pj-exit" onclick={exitProjector} title="退出投影 (Esc)"
 						>退出投影</button
@@ -1154,10 +1166,27 @@
 				<div class="pj-narration">{projectorNarration || currentStep?.description || 'Ready'}</div>
 				<div class="pj-actions">
 					<button class="pj-ctrl" onclick={reset} title="重置 (Home)" aria-label="重置 (Home)"
-						>⏮</button
+						><svg
+							viewBox="0 0 16 16"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							><polyline points="2 5 2 9 6 9"></polyline><path d="M3.5 12a6 6 0 1 0 1.5-7L2 9"
+							></path></svg
+						></button
 					>
 					<button class="pj-ctrl" onclick={prev} title="上一步 (←)" aria-label="上一步 (←)"
-						>◀</button
+						><svg viewBox="0 0 16 16" fill="currentColor"
+							><polygon points="10 3 4 8 10 13 10 3"></polygon><rect
+								x="2"
+								y="3"
+								width="2"
+								height="10"
+								rx="1"
+							></rect></svg
+						></button
 					>
 					<button
 						class="pj-ctrl pj-play"
@@ -1165,16 +1194,38 @@
 						title="播放 / 暂停 (Space)"
 						aria-label={isPlaying ? '暂停 (Space)' : '播放 (Space)'}
 					>
-						{#if isPlaying}⏸{:else}▶{/if}
+						{#if isPlaying}<svg viewBox="0 0 16 16" fill="currentColor"
+								><rect x="4" y="3" width="2.5" height="10" rx="1"></rect><rect
+									x="9.5"
+									y="3"
+									width="2.5"
+									height="10"
+									rx="1"
+								></rect></svg
+							>{:else}<svg viewBox="0 0 16 16" fill="currentColor"
+								><polygon points="5 3 13 8 5 13 5 3"></polygon></svg
+							>{/if}
 					</button>
 					<button class="pj-ctrl" onclick={next} title="下一步 (→)" aria-label="下一步 (→)"
-						>▶</button
+						><svg viewBox="0 0 16 16" fill="currentColor"
+							><polygon points="6 3 12 8 6 13 6 3"></polygon><rect
+								x="12"
+								y="3"
+								width="2"
+								height="10"
+								rx="1"
+							></rect></svg
+						></button
 					>
 					<button
 						class="pj-ctrl"
 						onclick={() => jumpTo(engine.totalSteps - 1)}
 						title="到最后 (End)"
-						aria-label="到最后 (End)">⏭</button
+						aria-label="到最后 (End)"
+						><svg viewBox="0 0 16 16" fill="currentColor"
+							><polygon points="9 3 3 8 9 13 9 3"></polygon><polygon points="13 3 7 8 13 13 13 3"
+							></polygon></svg
+						></button
 					>
 				</div>
 				<div class="pj-hints">Esc 退出 · 空格 播放 / 暂停 · ← → 步进</div>
@@ -1311,8 +1362,14 @@
 	}
 
 	.title-btn .caret {
-		font-size: 9px;
+		display: inline-block;
+		width: 0;
+		height: 0;
+		border-left: 4px solid transparent;
+		border-right: 4px solid transparent;
+		border-top: 5px solid currentColor;
 		opacity: 0.7;
+		margin-left: 6px;
 	}
 
 	.share-msg {
@@ -1904,6 +1961,11 @@
 		transition:
 			border-color 120ms var(--ease-out),
 			transform 120ms var(--ease-out);
+	}
+
+	.pj-ctrl svg {
+		width: 16px;
+		height: 16px;
 	}
 
 	.pj-ctrl:hover {

@@ -80,7 +80,7 @@ describe('PracticePanel 判题交互', () => {
 		expect(onAnswered).toHaveBeenCalledWith({ correct: true, answer: '选项C' });
 		expect(container.querySelector('.tag-success')?.textContent).toBe('回答正确');
 		expect(container.querySelector('.correct-answer')).toBeNull();
-		expect(container.querySelector('.mark-ok')?.textContent).toBe('✓');
+		expect(container.querySelector('.mark-ok svg')).not.toBeNull();
 	});
 
 	it('提交后选项禁用并显示标记，继续按钮触发 onContinue', async () => {

@@ -341,9 +341,9 @@ describe('AlgoPlayer 投影模式', () => {
 			[...container.querySelectorAll('button')].find((b) => b.textContent === '投影')!
 		);
 		const pjPlay = container.querySelector('.pj-play') as HTMLButtonElement;
-		expect(pjPlay.textContent).toBe('▶');
+		expect(pjPlay.querySelector('svg')).not.toBeNull();
 		await fireEvent.click(pjPlay);
 		expect(gsapState.tl.play).toHaveBeenCalledOnce();
-		expect(container.querySelector('.pj-play')?.textContent).toBe('⏸');
+		expect(container.querySelector('.pj-play')?.querySelector('svg')).not.toBeNull();
 	});
 });

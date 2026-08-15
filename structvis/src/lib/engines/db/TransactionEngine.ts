@@ -228,7 +228,7 @@ export class TransactionEngine extends EngineBase<TransactionInput> {
 		// 6. COMMIT
 		this._emit(
 			'complete',
-			`COMMIT：全部修改写入数据库并持久化——A=900、B=1100，Σ=2000 守恒。事务原子完成 ✓。`,
+			`COMMIT：全部修改写入数据库并持久化——A=900、B=1100，Σ=2000 守恒。事务原子完成。`,
 			{ columns: cols, rows },
 			[],
 			[{ type: 'compare', indices: [0, 1] }],
@@ -301,7 +301,7 @@ export class TransactionEngine extends EngineBase<TransactionInput> {
 
 		this._emit(
 			'complete',
-			`回滚完成：A、B 都与事务前完全一致，就像事务从未发生。原子性 = 要么全做，要么全不做 ✓。`,
+			`回滚完成：A、B 都与事务前完全一致，就像事务从未发生。原子性 = 要么全做，要么全不做。`,
 			{ columns: cols, rows },
 			[],
 			[{ type: 'compare', indices: [0, 1] }],
@@ -375,7 +375,7 @@ export class TransactionEngine extends EngineBase<TransactionInput> {
 
 		this._emit(
 			'complete',
-			`结果：A = 800，T1 的更新「丢失」✗。解决：加锁或隔离级别——T1 提交前锁住 A，T2 只能等 T1 结束再写。`,
+			`结果：A = 800，T1 的更新「丢失」。解决：加锁或隔离级别——T1 提交前锁住 A，T2 只能等 T1 结束再写。`,
 			{ columns: cols, rows },
 			[],
 			[{ type: 'compare', indices: [A] }],

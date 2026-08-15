@@ -5,7 +5,7 @@ import type { AlgorithmEngine, StepType } from '$lib/engines/algorithm/types';
  * 播放时间线控制器 — 把 AlgoPlayer 中 GSAP timeline 的构建与播放控制独立成
  * 可单测模块（步长换算、tweenTo/seek 秒数语义、控制 tween 忙闲信号）。
  *
- * ⚠️ tweenTo/seek 的参数必须是时间秒数（stepEndSeconds），不是步骤序数——
+ * 注意：tweenTo/seek 的参数必须是时间秒数（stepEndSeconds），不是步骤序数——
  * 步骤时长不都是 1s（swap=1.2、complete=1.5），传序数会错位导致卡步/漂移。
  */
 export const STEP_DURATIONS: Record<StepType, number> = {

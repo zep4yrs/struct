@@ -165,8 +165,8 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 				{
 					columns: ['计划', '读取行数', '估算代价', '结论'],
 					rows: [
-						['全表扫描', scanRows, scanRows, better ? '放弃' : '✓ 选中'],
-						['索引查找(' + col + ')', indexRows, indexCost, better ? '✓ 选中' : '放弃']
+						['全表扫描', scanRows, scanRows, better ? '放弃' : '选中'],
+						['索引查找(' + col + ')', indexRows, indexCost, better ? '选中' : '放弃']
 					]
 				},
 				[],
@@ -189,7 +189,7 @@ export class ExplainEngine extends EngineBase<ExplainInput> {
 				'列「' + col + '」没有索引 —— 只有全表扫描一种候选计划。',
 				{
 					columns: ['计划', '读取行数', '估算代价', '结论'],
-					rows: [['全表扫描', scanRows, scanRows, '✓ 选中']]
+					rows: [['全表扫描', scanRows, scanRows, '选中']]
 				},
 				[],
 				[]

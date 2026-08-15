@@ -176,9 +176,26 @@
 							<span class="slot-val">{option}</span>
 							<span class="slot-idx">{i}</span>
 							{#if submitted && option === question.correctAnswer}
-								<span class="mark mark-ok slot-mark">✓</span>
+								<span class="mark mark-ok slot-mark"
+									><svg
+										viewBox="0 0 16 16"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.2"
+										stroke-linecap="round"
+										stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4.5"></polyline></svg
+									></span
+								>
 							{:else if submitted && selectedIndex === i && option !== question.correctAnswer}
-								<span class="mark mark-no slot-mark">✗</span>
+								<span class="mark mark-no slot-mark"
+									><svg
+										viewBox="0 0 16 16"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.2"
+										stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"></path></svg
+									></span
+								>
 							{/if}
 						</button>
 					{/each}
@@ -198,9 +215,26 @@
 							<span class="option-key">{LETTERS[i]}</span>
 							<code class="code-line">{option}</code>
 							{#if submitted && option === question.correctAnswer}
-								<span class="mark mark-ok">✓</span>
+								<span class="mark mark-ok"
+									><svg
+										viewBox="0 0 16 16"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.2"
+										stroke-linecap="round"
+										stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4.5"></polyline></svg
+									></span
+								>
 							{:else if submitted && selectedIndex === i && option !== question.correctAnswer}
-								<span class="mark mark-no">✗</span>
+								<span class="mark mark-no"
+									><svg
+										viewBox="0 0 16 16"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.2"
+										stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"></path></svg
+									></span
+								>
 							{/if}
 						</button>
 					{/each}
@@ -219,9 +253,26 @@
 							<span class="option-key">{LETTERS[i]}</span>
 							<span class="option-text">{option}</span>
 							{#if submitted && option === question.correctAnswer}
-								<span class="mark mark-ok">✓</span>
+								<span class="mark mark-ok"
+									><svg
+										viewBox="0 0 16 16"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.2"
+										stroke-linecap="round"
+										stroke-linejoin="round"><polyline points="3 8.5 6.5 12 13 4.5"></polyline></svg
+									></span
+								>
 							{:else if submitted && selectedIndex === i && option !== question.correctAnswer}
-								<span class="mark mark-no">✗</span>
+								<span class="mark mark-no"
+									><svg
+										viewBox="0 0 16 16"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.2"
+										stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"></path></svg
+									></span
+								>
 							{/if}
 						</button>
 					{/each}
@@ -421,9 +472,15 @@
 	}
 
 	.mark {
-		font-size: 13px;
-		font-weight: 600;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		flex-shrink: 0;
+	}
+
+	.mark svg {
+		width: 14px;
+		height: 14px;
 	}
 
 	.mark-ok {

@@ -101,7 +101,7 @@
 			<div class="quiz-top">
 				<span class="quiz-progress">第 {idx + 1} / {questions.length} 题</span>
 				<span class="quiz-timer" class:urgent={secondsLeft <= 60}
-					>⏱ {Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}</span
+					>{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}</span
 				>
 			</div>
 			<div class="quiz-question">{questions[idx].q}</div>
@@ -121,7 +121,7 @@
 			</div>
 			{#if picked !== null}
 				<div class="quiz-feedback" class:ok={picked === questions[idx].answer}>
-					{picked === questions[idx].answer ? '✓ 回答正确' : '✗ 回答错误'}
+					{picked === questions[idx].answer ? '回答正确' : '回答错误'}
 					<span class="quiz-explain">{questions[idx].explain}</span>
 				</div>
 				<button class="btn btn-accent" onclick={nextQ}>

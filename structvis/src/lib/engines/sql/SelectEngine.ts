@@ -315,7 +315,7 @@ export class SelectEngine extends EngineBase<SelectEngineInput> {
 					.join(' ↔ ');
 				this._emit(
 					'compare',
-					`第 ${i + 1} 对组合：${describe}${query.joinOns.length > 0 ? `，判定 ${condText}` : ''}：${pass ? '匹配 ✓ 加入结果' : '不匹配 ✗'}。`,
+					`第 ${i + 1} 对组合：${describe}${query.joinOns.length > 0 ? `，判定 ${condText}` : ''}：${pass ? '匹配，加入结果' : '不匹配'}。`,
 					{ columns: resultColsRaw, rows: [...matched] },
 					[],
 					pass ? [{ type: 'current', indices: [matched.length - 1] }] : [],
@@ -338,7 +338,7 @@ export class SelectEngine extends EngineBase<SelectEngineInput> {
 				if (pass) filtered.push(row);
 				this._emit(
 					'compare',
-					`WHERE ${query.where}：第 ${i + 1} 行${pass ? '满足条件 ✓' : '不满足条件 ✗'}。`,
+					`WHERE ${query.where}：第 ${i + 1} 行${pass ? '满足条件' : '不满足条件'}。`,
 					current,
 					[],
 					pass ? [{ type: 'current', indices: [i] }] : [],

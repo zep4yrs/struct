@@ -319,7 +319,7 @@
 	<!-- 控制条 -->
 	<div class="race-controls glass" use:reveal>
 		<button class="btn btn-accent" onclick={togglePlay}
-			>{playing ? '⏸ 暂停' : allFinished ? '↻ 重跑' : '▶ 开跑'}</button
+			>{playing ? '暂停' : allFinished ? '重跑' : '开跑'}</button
 		>
 		<button class="btn btn-ghost" onclick={regenerate}>换一组数据</button>
 		<div class="race-size">
@@ -365,7 +365,7 @@
 						>
 					</div>
 					{#if isDone(r)}
-						<span class="race-crown">{winner?.id === r.id ? '🏆 冠军' : '✓ 完成'}</span>
+						<span class="race-crown">{winner?.id === r.id ? '冠军' : '完成'}</span>
 					{/if}
 				</div>
 				<div class="race-canvas">
@@ -465,7 +465,7 @@
 		</div>
 		{#if allFinished && winner}
 			<div class="race-result" use:reveal>
-				🏆 <b>{winner.name}</b> 以 {totalOps(winner)} 次操作夺冠（{winner.complexity}）。 同输入下
+				<b>{winner.name}</b> 以 {totalOps(winner)} 次操作夺冠（{winner.complexity}）。 同输入下
 				O(n²) 的算法操作数明显多于 O(n log n)——这就是复杂度的真实含义。
 			</div>
 		{/if}

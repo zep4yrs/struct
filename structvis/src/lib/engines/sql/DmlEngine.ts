@@ -209,7 +209,7 @@ export class DmlEngine extends EngineBase<DmlEngineInput> {
 				const pass = q.where === null || evalSqlWhere(q.where, table.rows[i], table);
 				this._emit(
 					'compare',
-					`第 ${i + 1} 行${pass ? '命中条件，准备删除 ✗' : '不满足条件，保留 ✓'}。`,
+					`第 ${i + 1} 行${pass ? '命中条件，准备删除' : '不满足条件，保留'}。`,
 					{ columns, rows },
 					[],
 					pass ? [{ type: 'current', indices: [i - offset] }] : [],

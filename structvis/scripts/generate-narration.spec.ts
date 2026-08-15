@@ -244,11 +244,11 @@ describe('旁白音频生成（MiMo-V2.5-TTS）', () => {
 					writeFileSync(t.file, buf);
 					generated++;
 					console.log(
-						'  ✓ ' + t.topicId + '/' + t.type + ' ' + (buf.length / 1024).toFixed(0) + 'KB'
+						'  [OK] ' + t.topicId + '/' + t.type + ' ' + (buf.length / 1024).toFixed(0) + 'KB'
 					);
 				} catch (err) {
 					failed.push(t.topicId + '/' + t.type + ': ' + (err as Error).message);
-					console.error('  ✗ ' + t.topicId + '/' + t.type + ': ' + (err as Error).message);
+					console.error('  [FAIL] ' + t.topicId + '/' + t.type + ': ' + (err as Error).message);
 				}
 			}
 		}

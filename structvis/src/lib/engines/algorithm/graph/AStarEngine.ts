@@ -279,7 +279,7 @@ export class AStarEngine extends EngineBase<number[]> {
 		}
 		const edgeState: Record<number, GraphEdgeState> = {};
 		const labels = Array.from({ length: total }, (_, i) =>
-			OBSTACLES.has(i) ? '■' : i === START ? 'S' : i === GOAL ? 'G' : ''
+			OBSTACLES.has(i) ? '#' : i === START ? 'S' : i === GOAL ? 'G' : ''
 		);
 		const graph: GraphData = {
 			nodes: labels.map((label, id) => ({ id, label })),

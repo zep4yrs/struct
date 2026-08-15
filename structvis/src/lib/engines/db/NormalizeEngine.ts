@@ -121,7 +121,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '检查 1NF：所有属性都是不可再分的原子值——满足 1NF ✓。',
+				desc: '检查 1NF：所有属性都是不可再分的原子值——满足 1NF。',
 				reveal: [],
 				hl: ['sc'],
 				hlType: 'sorted',
@@ -129,21 +129,21 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '检查 2NF：判定 学号→姓名。学号是候选键 (学号, 课程号) 的真子集——非主属性「姓名」部分依赖候选键 ✗。',
+				desc: '检查 2NF：判定 学号→姓名。学号是候选键 (学号, 课程号) 的真子集——非主属性「姓名」部分依赖候选键。',
 				reveal: [],
 				hl: ['f1'],
 				line: 2
 			},
 			{
 				type: 'compare',
-				desc: '学号→专业：同理，「专业」也部分依赖候选键 ✗。',
+				desc: '学号→专业：同理，「专业」也部分依赖候选键。',
 				reveal: [],
 				hl: ['f2'],
 				line: 2
 			},
 			{
 				type: 'compare',
-				desc: '(学号,课程号)→成绩：决定因素为完整候选键，不存在部分依赖 ✓。',
+				desc: '(学号,课程号)→成绩：决定因素为完整候选键，不存在部分依赖。',
 				reveal: [],
 				hl: ['f3'],
 				hlType: 'sorted',
@@ -166,7 +166,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '原违规依赖 学号→姓名、学号→专业 已随分解消除（变绿）✓。',
+				desc: '原违规依赖 学号→姓名、学号→专业 已随分解消除（变绿）。',
 				reveal: [],
 				hl: ['f1', 'f2'],
 				hlType: 'sorted',
@@ -174,7 +174,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '检查新关系 2NF ✓：非主属性均完全函数依赖候选键。',
+				desc: '检查新关系 2NF：非主属性均完全函数依赖候选键。',
 				reveal: [],
 				hl: ['r-student', 'r-score'],
 				hlType: 'sorted',
@@ -182,7 +182,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '检查 3NF ✓：无传递依赖。分解完成，两个关系均达到 3NF。',
+				desc: '检查 3NF：无传递依赖。分解完成，两个关系均达到 3NF。',
 				reveal: [],
 				hl: ['r-student', 'r-score'],
 				hlType: 'sorted',
@@ -252,7 +252,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '1NF ✓：属性均为原子值。',
+				desc: '1NF：属性均为原子值。',
 				reveal: [],
 				hl: ['stu'],
 				hlType: 'sorted',
@@ -260,7 +260,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '2NF 检查：候选键是单属性学号，不存在真子集——无非主属性部分依赖，满足 2NF ✓。',
+				desc: '2NF 检查：候选键是单属性学号，不存在真子集——无非主属性部分依赖，满足 2NF。',
 				reveal: [],
 				hl: ['stu'],
 				hlType: 'sorted',
@@ -268,14 +268,14 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '3NF 检查：学号→班级 的决定因素就是候选键 ✓；再看 班级→辅导员——决定因素「班级」不含候选键，需要判断是否形成传递链。',
+				desc: '3NF 检查：学号→班级 的决定因素就是候选键；再看 班级→辅导员——决定因素「班级」不含候选键，需要判断是否形成传递链。',
 				reveal: [],
 				hl: ['f2'],
 				line: 3
 			},
 			{
 				type: 'compare',
-				desc: '由 学号→班级→辅导员 传递得到 学号→辅导员：非主属性「辅导员」传递依赖候选键 ✗。',
+				desc: '由 学号→班级→辅导员 传递得到 学号→辅导员：非主属性「辅导员」传递依赖候选键。',
 				reveal: [],
 				hl: ['f3'],
 				hlType: 'pivot',
@@ -298,7 +298,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '传递依赖已消除 ✓（违规依赖变绿）。',
+				desc: '传递依赖已消除（违规依赖变绿）。',
 				reveal: [],
 				hl: ['f2', 'f3'],
 				hlType: 'sorted',
@@ -306,7 +306,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '新关系检查：均无部分/传递依赖，满足 3NF ✓（也满足 1NF、2NF）。',
+				desc: '新关系检查：均无部分/传递依赖，满足 3NF（也满足 1NF、2NF）。',
 				reveal: [],
 				hl: ['r-stu', 'r-klass'],
 				hlType: 'sorted',
@@ -370,7 +370,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '1NF ✓：属性均为原子值。',
+				desc: '1NF：属性均为原子值。',
 				reveal: [],
 				hl: ['s'],
 				hlType: 'sorted',
@@ -378,7 +378,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '2NF ✓：唯一非主属性「教师」的决定因素是课程，课程不是候选键真子集——无部分依赖。',
+				desc: '2NF：唯一非主属性「教师」的决定因素是课程，课程不是候选键真子集——无部分依赖。',
 				reveal: [],
 				hl: ['s'],
 				hlType: 'sorted',
@@ -386,7 +386,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '3NF ✓：F 中没有传递链，「教师」不传递依赖候选键 (学生, 课程)。',
+				desc: '3NF：F 中没有传递链，「教师」不传递依赖候选键 (学生, 课程)。',
 				reveal: [],
 				hl: ['s'],
 				hlType: 'sorted',
@@ -394,7 +394,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: 'BCNF 检查：课程→教师。决定因素「课程」不是超键（不包含候选键 (学生,课程)）——违反 BCNF ✗。',
+				desc: 'BCNF 检查：课程→教师。决定因素「课程」不是超键（不包含候选键 (学生,课程)）——违反 BCNF。',
 				reveal: [],
 				hl: ['f1'],
 				line: 4
@@ -416,7 +416,7 @@ const PRESETS: NormPreset[] = [
 			},
 			{
 				type: 'compare',
-				desc: '新关系检查：所有决定因素均为候选键——满足 BCNF ✓。',
+				desc: '新关系检查：所有决定因素均为候选键——满足 BCNF。',
 				reveal: [],
 				hl: ['r-s1', 'r-s2'],
 				hlType: 'sorted',

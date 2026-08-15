@@ -232,6 +232,8 @@
 	const CHART_W = 720;
 	const CHART_H = 220;
 	const PAD = { l: 40, r: 12, t: 16, b: 28 };
+	const iw = CHART_W - PAD.l - PAD.r;
+	const ih = CHART_H - PAD.t - PAD.b;
 	// 横轴最大值：最长引擎的完成时间（秒）
 	const maxTimeSec = $derived.by(() => {
 		let m = 1;
@@ -242,6 +244,31 @@
 		let m = 1;
 		for (const r of racers) m = Math.max(m, totalOps(r));
 		return m;
+	});
+	// 坐标轴刻度：横轴时间均分 4 段；纵轴操作数用对数刻度（基数大时曲线不会被压成水平线）
+	const TICK_FRACS = [0, 0.25, 0.5, 0.75, 1];
+	/** 秒数 → 友好显示：<60s 用「Xs」，≥60s 用「X分Y秒」 */
+	function fmtSec(sec: number): string {
+		const s = Math.round(sec);
+		if (s < 60) return s + 's';
+		const m = Math.floor(s / 60);
+		const r = s % 60;
+		return r > 0 ? m + '分' + r + '秒' : m + '分';
+	}
+	/** 对数纵轴映射：1..maxOpsAll → 0..1（log10） */
+	const logOpsBase = $derived.by(() => Math.log10(1 + maxOpsAll));
+	function logY(acc: number): number {
+		return Math.log10(1 + acc) / logOpsBase;
+	}
+	/** 纵轴对数刻度值（10 的整数幂，含最大值） */
+	const opsTicks = $derived.by(() => {
+		const ticks: { v: number }[] = [];
+		for (let k = 1; ; k++) {
+			const v = Math.pow(10, k);
+			if (v > maxOpsAll * 2) break;
+			ticks.push({ v });
+		}
+		return ticks;
 	});
 
 	/** 曲线只画到当前已完成的步骤——随比赛实时生长，完成后才是完整实测曲线 */
@@ -267,7 +294,7 @@
 			// x = 该步完成时的比赛时间（按步骤类型时长累计，与播放器一致）
 			tAcc += (STEP_DURATIONS[t] || STEP_DURATIONS.default) * 1000;
 			const x = PAD.l + (tAcc / 1000 / maxTimeSec) * iw;
-			const y = PAD.t + ih - (acc / maxOpsAll) * ih;
+			const y = PAD.t + ih - logY(acc) * ih;
 			pts.push(x.toFixed(1) + ',' + y.toFixed(1));
 		}
 		return pts.join(' ');
@@ -420,6 +447,41 @@
 				stroke-dasharray="2 4"
 				opacity="0.5"
 			/>
+			<!-- 网格线 + 刻度（横轴时间 / 纵轴对数操作数） -->
+			{#each TICK_FRACS as u (u)}
+				<line
+					x1={PAD.l + u * iw}
+					y1={PAD.t}
+					x2={PAD.l + u * iw}
+					y2={CHART_H - PAD.b}
+					stroke="var(--color-line-hair)"
+					stroke-dasharray="3 3"
+					opacity="0.6"
+				/>
+				<text
+					x={PAD.l + u * iw}
+					y={CHART_H - PAD.b + 16}
+					text-anchor="middle"
+					class="race-chart-label">{fmtSec(maxTimeSec * u)}</text
+				>
+			{/each}
+			{#each opsTicks as tk (tk.v)}
+				<line
+					x1={PAD.l}
+					y1={PAD.t + ih - logY(tk.v) * ih}
+					x2={CHART_W - PAD.r}
+					y2={PAD.t + ih - logY(tk.v) * ih}
+					stroke="var(--color-line-hair)"
+					stroke-dasharray="3 3"
+					opacity="0.4"
+				/>
+				<text
+					x={PAD.l - 6}
+					y={PAD.t + ih - logY(tk.v) * ih + 4}
+					text-anchor="end"
+					class="race-chart-label">{tk.v}</text
+				>
+			{/each}
 			<!-- 轴线 -->
 			<line
 				x1={PAD.l}
@@ -435,13 +497,7 @@
 				y2={CHART_H - PAD.b}
 				stroke="var(--color-line-regular)"
 			/>
-			<text x={PAD.l - 6} y={CHART_H - PAD.b + 18} text-anchor="end" class="race-chart-label"
-				>0s</text
-			>
-			<text x={CHART_W - PAD.r} y={CHART_H - PAD.b + 18} text-anchor="end" class="race-chart-label"
-				>{maxTimeSec}s</text
-			>
-			<text x={PAD.l} y={PAD.t - 6} class="race-chart-label">操作数</text>
+			<text x={PAD.l} y={PAD.t - 6} class="race-chart-label">操作数（对数）</text>
 			<text
 				x={CHART_W - PAD.r}
 				y={CHART_H - PAD.b + 18}

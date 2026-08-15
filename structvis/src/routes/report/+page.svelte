@@ -2,6 +2,58 @@
 	import { progress } from '$lib/stores/progress';
 	import { resolve } from '$app/paths';
 	import { reveal } from '$lib/utils/motion';
+	import RadarChart from '$lib/components/ui/RadarChart.svelte';
+
+	// 章节 → topicId 映射（雷达图分组）
+	const CHAPTER_MAP: Record<string, string[]> = {
+		线性结构: ['linear-list', 'stack-queue', 'kmp'],
+		树形结构: ['binary-tree', 'bst', 'avl', 'rbtree', 'huffman'],
+		图结构: [
+			'graph-storage',
+			'graph-traversal',
+			'mst',
+			'shortest-path',
+			'topo-sort',
+			'critical-path',
+			'astar'
+		],
+		排序算法: [
+			'bubble-sort',
+			'insertion-sort',
+			'selection-sort',
+			'quick-sort',
+			'merge-sort',
+			'heap-sort',
+			'shell-sort',
+			'radix-sort'
+		],
+		查找: ['binary-search', 'hash-table', 'hash-probing'],
+		SQL: [
+			'sql',
+			'join',
+			'left-join',
+			'group-by',
+			'subquery',
+			'update',
+			'index',
+			'view',
+			'triggers',
+			'procedures',
+			'transaction',
+			'isolation',
+			'er',
+			'normalize'
+		]
+	};
+
+	const chapterMastery = $derived.by(() => {
+		const out: Record<string, number> = {};
+		for (const [ch, ids] of Object.entries(CHAPTER_MAP)) {
+			const vals = ids.map((id) => $progress.topics[id]?.mastery ?? 0).filter((v) => v > 0);
+			out[ch] = vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+		}
+		return out;
+	});
 
 	// === 报告数据 ===
 	const topics = $derived(Object.entries($progress.topics));
@@ -19,6 +71,19 @@
 	const mistakeCount = $derived($progress.mistakes.length);
 	const pendingReview = $derived($progress.mistakes.filter((m) => !m.mastered).length);
 	const streakDays = $derived($progress.streakDays);
+
+	// 最弱章节（有掌握数据的章节里最低的）
+	const weakestChapter = $derived.by(() => {
+		let best = '线性结构';
+		let bestVal = Infinity;
+		for (const [ch, v] of Object.entries(chapterMastery)) {
+			if (v > 0 && v < bestVal) {
+				bestVal = v;
+				best = ch;
+			}
+		}
+		return bestVal === Infinity ? '排序算法' : best;
+	});
 
 	// 环形图：平均掌握度
 	const RING_R = 84;
@@ -195,6 +260,22 @@
 		</div>
 	</div>
 
+	<!-- 章节弱项雷达图 -->
+	<div class="glass report-radar" use:reveal>
+		<div class="chapter-head">
+			<div class="section-label">章节掌握度雷达</div>
+			<span class="chapter-count">六维能力画像</span>
+		</div>
+		<div class="radar-wrap">
+			<RadarChart values={chapterMastery} />
+			<div class="radar-tip">
+				最弱章节：<b>{weakestChapter}</b>（{chapterMastery[
+					weakestChapter
+				]}%）——去对应章节复习一下吧。
+			</div>
+		</div>
+	</div>
+
 	<div class="report-actions" use:reveal>
 		<button class="btn btn-accent" onclick={downloadPng}>⬇ 下载报告图片</button>
 		<a href={resolve('/progress')} class="btn btn-ghost">返回学习进度</a>
@@ -301,6 +382,35 @@
 		font-size: 14px;
 		color: var(--color-ink-3);
 		margin-left: 4px;
+	}
+
+	.report-radar {
+		border: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-md);
+		padding: 18px 22px;
+		margin-top: 16px;
+	}
+
+	.radar-wrap {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
+
+	.radar-wrap :global(svg) {
+		max-width: 260px;
+	}
+
+	.radar-tip {
+		font-size: 13px;
+		color: var(--color-ink-2);
+		line-height: 1.7;
+		max-width: 240px;
+	}
+
+	.radar-tip b {
+		color: var(--color-danger);
 	}
 
 	.report-actions {

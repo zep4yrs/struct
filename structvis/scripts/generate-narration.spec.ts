@@ -59,6 +59,10 @@ import { LeftJoinEngine } from '../src/lib/engines/sql/LeftJoinEngine';
 import { GroupByEngine } from '../src/lib/engines/sql/GroupByEngine';
 import { LinearProbeEngine } from '../src/lib/engines/algorithm/hash/LinearProbeEngine';
 import { RedBlackTreeEngine } from '../src/lib/engines/algorithm/rbtree/RedBlackTreeEngine';
+import { TrieEngine } from '../src/lib/engines/algorithm/trie/TrieEngine';
+import { AStarEngine } from '../src/lib/engines/algorithm/graph/AStarEngine';
+import { SubQueryEngine } from '../src/lib/engines/sql/SubQueryEngine';
+import { IsolationEngine } from '../src/lib/engines/sql/IsolationEngine';
 
 type EngineLike = { demoScript?: { type: string; narration: string }[] };
 
@@ -102,7 +106,11 @@ const ENGINE_MAP: { topicId: string; make: () => EngineLike }[] = [
 	{ topicId: 'left-join', make: () => new LeftJoinEngine() },
 	{ topicId: 'group-by', make: () => new GroupByEngine() },
 	{ topicId: 'hash-probing', make: () => new LinearProbeEngine() },
-	{ topicId: 'rbtree', make: () => new RedBlackTreeEngine() }
+	{ topicId: 'rbtree', make: () => new RedBlackTreeEngine() },
+	{ topicId: 'trie', make: () => new TrieEngine() },
+	{ topicId: 'astar', make: () => new AStarEngine() },
+	{ topicId: 'subquery', make: () => new SubQueryEngine() },
+	{ topicId: 'isolation', make: () => new IsolationEngine() }
 ];
 
 // === 工具 ===

@@ -72,6 +72,19 @@ export interface AlgorithmStep {
 	huffman?: HuffmanData;
 	/** 哈希表快照（仅 hashtable 渲染器使用） */
 	hash?: HashData;
+	/** Trie 字典树快照（仅 trie 渲染器使用） */
+	trie?: TrieData;
+}
+
+/** Trie 字典树数据 */
+export interface TrieData {
+	/** 节点列表（id = 数组下标） */
+	nodes: { id: number; char: string; isWord: boolean; children: number[] }[];
+	root: number;
+	/** 当前高亮路径（插入/查找经过的节点 id） */
+	active?: number[];
+	/** 本次插入的单词（完整路径标记） */
+	wordPath?: number[];
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -126,7 +139,7 @@ export interface BPlusTreeData {
 }
 
 /** 图节点状态 */
-export type GraphNodeState = 'unvisited' | 'frontier' | 'visited' | 'current' | 'done';
+export type GraphNodeState = 'unvisited' | 'frontier' | 'visited' | 'current' | 'done' | 'selected';
 
 /** 图边状态 */
 export type GraphEdgeState = 'normal' | 'candidate' | 'tried' | 'selected' | 'current';
@@ -241,6 +254,7 @@ export type RenderType =
 	| 'sql-table'
 	| 'er'
 	| 'btree'
+	| 'trie'
 	| 'pseudocode';
 
 /**

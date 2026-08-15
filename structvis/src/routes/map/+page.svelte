@@ -82,6 +82,14 @@
 			desc: '变色与旋转'
 		},
 		{
+			id: 'trie',
+			title: 'Trie 字典树',
+			href: '/ds/trie',
+			topicId: 'trie',
+			group: '线性结构',
+			desc: '公共前缀共享'
+		},
+		{
 			id: 'huffman',
 			title: '哈夫曼树',
 			href: '/ds/huffman',
@@ -136,6 +144,14 @@
 			topicId: 'critical-path',
 			group: '图结构',
 			desc: 'AOE 网的最长路径'
+		},
+		{
+			id: 'astar',
+			title: 'A* 寻路',
+			href: '/ds/astar',
+			topicId: 'astar',
+			group: '图结构',
+			desc: '启发式搜索'
 		},
 		{
 			id: 'bubble-sort',
@@ -240,6 +256,22 @@
 			topicId: 'group-by',
 			group: '数据库 · 查询',
 			desc: '分组聚合'
+		},
+		{
+			id: 'subquery',
+			title: '子查询',
+			href: '/db/subquery',
+			topicId: 'subquery',
+			group: '数据库 · 查询',
+			desc: '先子后外'
+		},
+		{
+			id: 'isolation',
+			title: '事务隔离',
+			href: '/db/isolation',
+			topicId: 'isolation',
+			group: '数据库 · 进阶',
+			desc: '并发异常演示'
 		},
 		{
 			id: 'advanced-query',
@@ -368,6 +400,10 @@
 		{ from: 'sql', to: 'join' },
 		{ from: 'join', to: 'left-join' },
 		{ from: 'sql', to: 'group-by' },
+		{ from: 'sql', to: 'subquery' },
+		{ from: 'transaction', to: 'isolation' },
+		{ from: 'shortest-path', to: 'astar' },
+		{ from: 'kmp', to: 'trie' },
 		{ from: 'sql', to: 'update' },
 		{ from: 'sql', to: 'view' },
 		{ from: 'advanced-query', to: 'window-function' },

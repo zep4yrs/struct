@@ -250,6 +250,24 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '树形结构',
 		crumb: '数据结构 / 树 / [current]红黑树[/current]'
+	},
+	{
+		title: 'Trie 字典树',
+		description: '公共前缀共享 · 自动补全',
+		href: '/ds/trie',
+		topicId: 'trie',
+		badge: '交互式',
+		group: '串与数组',
+		crumb: '数据结构 / 串 / [current]Trie 字典树[/current]'
+	},
+	{
+		title: 'A* 寻路',
+		description: '启发式搜索 · f = g + h',
+		href: '/ds/astar',
+		topicId: 'astar',
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]A* 寻路[/current]'
 	}
 ];
 
@@ -298,6 +316,24 @@ export const dbTopics: TopicCard[] = [
 		badge: '分步执行',
 		group: '基础',
 		crumb: '数据库 / [current]SQL 分组聚合 GROUP BY[/current]'
+	},
+	{
+		title: 'SQL 子查询',
+		description: '先子后外 · 标量/集合',
+		href: '/db/subquery',
+		topicId: 'subquery',
+		badge: '分步执行',
+		group: '基础',
+		crumb: '数据库 / [current]SQL 子查询[/current]'
+	},
+	{
+		title: '事务隔离级别',
+		description: '脏读 · 不可重复读 · 并发演示',
+		href: '/db/isolation',
+		topicId: 'isolation',
+		badge: '分步执行',
+		group: '进阶',
+		crumb: '数据库 / [current]事务隔离级别[/current]'
 	},
 	{
 		title: '高级查询',

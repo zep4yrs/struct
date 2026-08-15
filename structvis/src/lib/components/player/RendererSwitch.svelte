@@ -11,6 +11,7 @@
 	import KmpRenderer from '$lib/visualization/kmp/KmpRenderer.svelte';
 	import HuffmanRenderer from '$lib/visualization/huffman/HuffmanRenderer.svelte';
 	import HashtableRenderer from '$lib/visualization/hashtable/HashtableRenderer.svelte';
+	import TrieRenderer from '$lib/visualization/trie/TrieRenderer.svelte';
 
 	interface Props {
 		engine: AlgorithmEngine<unknown>;
@@ -45,4 +46,6 @@
 	<HuffmanRenderer steps={engine.steps} {playbackPos} />
 {:else if engine.renderType === 'hashtable'}
 	<HashtableRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'trie'}
+	<TrieRenderer steps={engine.steps} {playbackPos} />
 {/if}

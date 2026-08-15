@@ -945,5 +945,128 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"text": "插入完成。红黑树高度不超过 2·log₂(n+1)，查找、插入、删除都是 O(log n)，是实际应用最广的平衡树（如 TreeMap、Linux 内核）。",
 			"hash": "9a1445fb753b"
 		}
+	},
+	"trie": {
+		"init": {
+			"file": "init.mp3",
+			"text": "字典树 Trie：把一组字符串按公共前缀共享存储。根节点是空的，每个节点保存一个字符，从根到单词结束标记（双圈）的路径就是一个完整的单词。",
+			"hash": "07be1fe6054d"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "取出单词的当前字符，从根开始沿路径查找：有这个孩子的节点就继续走，没有就创建。",
+			"hash": "15bdc344d411"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "当前字符的节点已存在：直接复用，继续下一个字符。",
+			"hash": "83ab05859c87"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "创建新节点，把当前字符挂到路径上。",
+			"hash": "38a52572e488"
+		},
+		"pivot-select": {
+			"file": "pivot-select.mp3",
+			"text": "单词走完：给最后一个节点打上单词结束标记（双圈）。",
+			"hash": "c34bec16efc0"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "全部插入完成。可以看到公共前缀被多个单词共享：例如 cat 和 car 共用 c-a。前缀查询（自动补全）只需沿路径走，复杂度 O(单词长度)。",
+			"hash": "fc3f5770c642"
+		}
+	},
+	"astar": {
+		"init": {
+			"file": "init.mp3",
+			"text": "A* 寻路：在网格中找到起点到终点的最短路径。每个格子有代价 f = g + h：g 是起点到它的实际步数，h 是它到终点的估计步数（曼哈顿距离）。每次都扩展 f 最小的格子。",
+			"hash": "0de130a52549"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "从 open 表中取出 f 值最小的格子进行扩展。",
+			"hash": "bb7ee0d4058b"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "考察邻居格子：计算它的 g、h、f，加入 open 表。",
+			"hash": "4966fb290f7c"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "当前格子已扩展完毕，移入 closed 表（不再考察）。",
+			"hash": "ba1ec66ffc94"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "找到终点！沿着记录的父指针回溯即可得到最短路径。A* 在启发式可采纳时保证最优，且比 Dijkstra 更快（有方向性地搜索）。",
+			"hash": "54e61a7cb1cb"
+		}
+	},
+	"subquery": {
+		"init": {
+			"file": "init.mp3",
+			"text": "子查询：先执行括号里的查询得到平均值，外层查询再用它过滤——分数大于平均分的同学。",
+			"hash": "c84ac6ecc1b5"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "执行子查询：计算所有分数的平均值。",
+			"hash": "819624c2c77f"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "外层逐行比较：该行分数是否大于平均分？",
+			"hash": "1cb831141399"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "大于平均分：该行进入结果集。",
+			"hash": "25b0e12d921c"
+		},
+		"edge-reject": {
+			"file": "edge-reject.mp3",
+			"text": "不大于平均分：该行被过滤掉。",
+			"hash": "e62aab04b6a8"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "查询完成。子查询先执行（得到 AVG = 83.2），外层 SELECT 用这个常量过滤——这是非相关子查询的标准执行顺序。",
+			"hash": "f251b4b4870e"
+		}
+	},
+	"isolation": {
+		"init": {
+			"file": "init.mp3",
+			"text": "并发事务演示：T1 修改账户余额，T2 同时读取。隔离级别决定了 T2 能看到什么，也决定了会发生哪种并发异常。",
+			"hash": "3284e503e25e"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "T1 修改数据但尚未提交——此时另一个事务能否看到这个未提交的值？",
+			"hash": "cb1ac787bb7a"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "T2 读取数据：不同隔离级别下看到的版本不同。",
+			"hash": "8690f719ae6f"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "T1 提交：修改生效，数据对所有事务可见。",
+			"hash": "4dfe947e2360"
+		},
+		"edge-reject": {
+			"file": "edge-reject.mp3",
+			"text": "T1 回滚：修改撤销，之前读到该值的事务就遇到了脏读。",
+			"hash": "f7e43ea7daaf"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "演示结束。读未提交会产生脏读；读已提交每次读最新已提交值（不可重复读）；可重复读（MySQL 默认）事务内快照一致；串行化彻底隔离但并发度最低。",
+			"hash": "f6ca0343ede9"
+		}
 	}
 };

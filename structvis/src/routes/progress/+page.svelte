@@ -19,6 +19,8 @@
 	import { onMount } from 'svelte';
 	import { animate } from 'animejs';
 	import { reveal, prefersReducedMotion } from '$lib/utils/motion';
+	import { QUIZ_BANK } from '$lib/content/quiz-bank';
+	import { recordExercise } from '$lib/stores/progress';
 
 	const TOPIC_NAMES: Record<string, string> = Object.fromEntries(
 		[...dsTopics, ...dbTopics].filter((t) => t.topicId).map((t) => [t.topicId as string, t.title])
@@ -145,6 +147,37 @@
 		reviewMistake(reviewingMistake.id, result.correct);
 	}
 
+	// === 每日一题 ===
+	function dayKey(): string {
+		const d = new Date();
+		const pad = (n: number) => String(n).padStart(2, '0');
+		return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+	}
+
+	const daily = $derived.by(() => {
+		// 按日期确定题目（稳定随机：当天所有人同一题）
+		const key = dayKey();
+		let seed = 0;
+		for (const c of key) seed = (seed * 31 + c.charCodeAt(0)) % 100000;
+		const q = QUIZ_BANK[seed % QUIZ_BANK.length];
+		// SSR 无 localStorage：客户端才读取完成标记
+		const done =
+			typeof localStorage !== 'undefined' && localStorage.getItem('structvis:daily:' + key) === '1';
+		return { q, done, key };
+	});
+
+	function pickDaily(i: number) {
+		if (daily.done) return;
+		if (i === daily.q.answer) {
+			recordExercise(daily.q.topicId, true);
+			if (typeof localStorage !== 'undefined') {
+				localStorage.setItem('structvis:daily:' + daily.key, '1');
+			}
+		} else {
+			recordExercise(daily.q.topicId, false);
+		}
+	}
+
 	function scrollToMistakes() {
 		document.querySelector('.mistake-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}
@@ -211,6 +244,25 @@
 	</p>
 	<div class="mb-8" use:reveal>
 		<a href={resolve('/report')} class="btn btn-accent btn-sm">📊 生成学习报告</a>
+	</div>
+
+	<!-- 每日一题 -->
+	<div class="glass daily-card mb-8 rounded-lg border p-4" use:reveal>
+		<div class="daily-head">
+			<span class="tag tag-accent">今日一题</span>
+			<span class="daily-chapter">{daily.q.chapter}</span>
+			{#if daily.done}
+				<span class="daily-done">✓ 今日已完成</span>
+			{/if}
+		</div>
+		<div class="daily-q">{daily.q.q}</div>
+		{#if !daily.done}
+			<div class="daily-opts">
+				{#each daily.q.options as opt, i (i)}
+					<button class="btn btn-ghost btn-sm" onclick={() => pickDaily(i)}>{opt}</button>
+				{/each}
+			</div>
+		{/if}
 	</div>
 
 	<!-- SRS 到期提醒 -->
@@ -862,6 +914,43 @@
 		background: #e8f0fe;
 		border-color: #c5d5f5;
 		color: #1a3a8f;
+	}
+
+	.daily-card {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.daily-head {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.daily-chapter {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--color-ink-3);
+	}
+
+	.daily-done {
+		font-size: 12px;
+		color: var(--color-success);
+		font-weight: 500;
+		margin-left: auto;
+	}
+
+	.daily-q {
+		font-size: 15px;
+		font-weight: 500;
+		color: var(--color-ink);
+	}
+
+	.daily-opts {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
 	}
 
 	/* 空状态（无学习记录） */

@@ -684,5 +684,143 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"text": "排序完成。堆排序时间复杂度稳定为 O(n log n)：建堆 O(n)，每轮下滤 O(log n) 共 n 轮；空间复杂度 O(1)（就地排序）。",
 			"hash": "0ac50ae6afe1"
 		}
+	},
+	"shell-sort": {
+		"init": {
+			"file": "init.mp3",
+			"text": "希尔排序是插入排序的改进：先按大步长把数组分成几组分别排序，让元素快速接近最终位置，再逐步缩小步长，最后一轮步长为 1 时就是普通插入排序。",
+			"hash": "c507febafcc2"
+		},
+		"partition-start": {
+			"file": "partition-start.mp3",
+			"text": "开始新一轮：步长为 gap，数组被分成若干组，每组内做插入排序。",
+			"hash": "952250f09228"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "在组内比较并后移：把当前元素与它前面相隔 gap 的元素比较，大的后移。",
+			"hash": "693b4017d7a0"
+		},
+		"swap": {
+			"file": "swap.mp3",
+			"text": "插入到正确位置：组内元素前移后，把当前元素放到空出来的位置。",
+			"hash": "6021fa850ade"
+		},
+		"partition-end": {
+			"file": "partition-end.mp3",
+			"text": "本轮完成：gap 减半，继续下一轮更精细的排序。",
+			"hash": "59b7df395d39"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "排序完成。希尔排序的时间复杂度取决于增量序列，平均约 O(n^1.3)；它是不稳定排序，但比简单插入排序快得多，且同样就地排序。",
+			"hash": "416b8942d951"
+		}
+	},
+	"radix-sort": {
+		"init": {
+			"file": "init.mp3",
+			"text": "基数排序不做元素比较，而是按数字的每一位分桶：先按个位分 0-9 十个桶，按序收集；再按十位分桶收集，逐位处理，直到最高位。",
+			"hash": "ffbe6cd603d4"
+		},
+		"partition-start": {
+			"file": "partition-start.mp3",
+			"text": "开始处理某一位：把每个元素按该位数字放入对应的桶（0-9）。",
+			"hash": "7b0720828d9a"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "取元素的当前位数字，决定它进入哪个桶。",
+			"hash": "a8f3b123a964"
+		},
+		"pivot-select": {
+			"file": "pivot-select.mp3",
+			"text": "元素已入桶：同一位数字的元素进入同一个桶，保持相对顺序。",
+			"hash": "8d3da3cf5691"
+		},
+		"swap": {
+			"file": "swap.mp3",
+			"text": "收集：按桶 0 到 9 的顺序把元素放回数组，这一位就排好了。",
+			"hash": "17fe6c9593b2"
+		},
+		"partition-end": {
+			"file": "partition-end.mp3",
+			"text": "这一位处理完成，进入下一位。",
+			"hash": "0f06db6e8855"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "排序完成。基数排序时间复杂度 O(d·n)（d 为最大位数），稳定且适合整数/定长字符串排序。",
+			"hash": "7c1928029f30"
+		}
+	},
+	"avl": {
+		"init": {
+			"file": "init.mp3",
+			"text": "AVL 树是一种自平衡的二叉搜索树：插入节点后，任何节点的左右子树高度差都不超过 1。一旦失衡，就通过旋转来恢复平衡。",
+			"hash": "d6f673807d1a"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "按二叉搜索树的规则查找插入位置：比当前节点小走左边，大走右边。",
+			"hash": "0cdbd070e8de"
+		},
+		"swap": {
+			"file": "swap.mp3",
+			"text": "新节点插入为叶子。现在从它向上检查平衡因子，看是否有节点失衡。",
+			"hash": "eff3a82f8892"
+		},
+		"pivot-select": {
+			"file": "pivot-select.mp3",
+			"text": "发现失衡：某个节点的左右子树高度差超过 1，需要旋转来恢复平衡。",
+			"hash": "0ca529670d08"
+		},
+		"partition-start": {
+			"file": "partition-start.mp3",
+			"text": "执行旋转：调整失衡节点与其子树的连接关系，使树恢复平衡。",
+			"hash": "4a311f9dbc93"
+		},
+		"partition-end": {
+			"file": "partition-end.mp3",
+			"text": "旋转完成，这棵子树重新满足 AVL 性质，继续向上检查。",
+			"hash": "aa4a59889b9f"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "插入完成，AVL 树始终平衡。查找、插入、删除的时间复杂度都是 O(log n)。",
+			"hash": "1a1002f9167b"
+		}
+	},
+	"join": {
+		"init": {
+			"file": "init.mp3",
+			"text": "内连接（INNER JOIN）：拿左表 student 的每一行，去右表 sc 中找学号相同的行，匹配成功的行对合并为结果的一行。",
+			"hash": "181686114048"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "取出左表的一行，准备与右表的每一行比较连接条件。",
+			"hash": "45f9b5e31fa1"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "拿右表的一行做匹配：比较学号是否相等。",
+			"hash": "2a80fd2ece36"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "匹配成功！左右两行合并，追加到结果表中。",
+			"hash": "05b5c3bc9d37"
+		},
+		"edge-reject": {
+			"file": "edge-reject.mp3",
+			"text": "不匹配，跳过这一行，继续比较右表的下一行。",
+			"hash": "dec352d4123d"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "内连接完成：结果集包含所有匹配成功的行对。注意赵强的学号 20105 没有选课记录，而 sc 中的 20105 在 student 中不存在——两边不匹配的行都被丢弃。",
+			"hash": "eba38ac75ecd"
+		}
 	}
 };

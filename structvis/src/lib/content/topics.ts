@@ -108,6 +108,24 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 排序 / [current]堆排序[/current]'
 	},
 	{
+		title: '希尔排序',
+		description: '递减增量分组 · 不稳定 · O(n^1.3)',
+		href: '/ds/shell-sort',
+		topicId: 'shell-sort',
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]希尔排序[/current]'
+	},
+	{
+		title: '基数排序',
+		description: '按位分桶 · 稳定 · O(d·n)',
+		href: '/ds/radix-sort',
+		topicId: 'radix-sort',
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]基数排序[/current]'
+	},
+	{
 		title: '图的存储',
 		description: '邻接矩阵 · 邻接表 · 空间对比',
 		href: '/ds/graph-storage',
@@ -189,6 +207,15 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 树 / [current]哈夫曼树[/current]'
 	},
 	{
+		title: 'AVL 树',
+		description: '平衡因子 · 四种旋转',
+		href: '/ds/avl',
+		topicId: 'avl',
+		badge: '交互式',
+		group: '树形结构',
+		crumb: '数据结构 / 树 / [current]AVL 树[/current]'
+	},
+	{
 		title: '二分查找',
 		description: '有序表折半 · O(log n)',
 		href: '/ds/binary-search',
@@ -226,6 +253,15 @@ export const dbTopics: TopicCard[] = [
 		badge: '分步执行',
 		group: '基础',
 		crumb: '数据库 / [current]MySQL 数据查询[/current]'
+	},
+	{
+		title: 'SQL 内连接 JOIN',
+		description: '嵌套循环连接 · 结果逐行生长',
+		href: '/db/join',
+		topicId: 'join',
+		badge: '分步执行',
+		group: '基础',
+		crumb: '数据库 / [current]SQL 内连接 JOIN[/current]'
 	},
 	{
 		title: '高级查询',

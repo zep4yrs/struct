@@ -15,13 +15,16 @@
 	interface Props {
 		engine: AlgorithmEngine<unknown>;
 		playbackPos: number;
+		/** 手动模拟练习透传：点击柱子的回调 / 外部选中高亮 */
+		onBarClick?: (index: number) => void;
+		clickSelected?: number[];
 	}
 
-	let { engine, playbackPos }: Props = $props();
+	let { engine, playbackPos, onBarClick, clickSelected = [] }: Props = $props();
 </script>
 
 {#if engine.renderType === 'array'}
-	<ArrayRenderer steps={engine.steps} {playbackPos} />
+	<ArrayRenderer steps={engine.steps} {playbackPos} {onBarClick} {clickSelected} />
 {:else if engine.renderType === 'tree'}
 	<TreeRenderer steps={engine.steps} {playbackPos} />
 {:else if engine.renderType === 'linkedlist'}

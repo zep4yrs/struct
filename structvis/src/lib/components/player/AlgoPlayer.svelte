@@ -207,6 +207,106 @@
 		rebuildAfterEngineChange();
 	}
 
+	// === 手动模拟练习（动手模式）：预测下一步的交换，点击两个柱子 ===
+	let handsOn = $state(false); // 动手模式开关
+	let predictActive = $state(false); // 正在等待用户选择
+	let selected = $state<number[]>([]); // 用户已选的柱下标
+	let expectedSwap = $state<number[]>([]); // 引擎预期的交换下标
+	let predictMsg = $state(''); // 反馈信息
+	let predictOk = $state(false); // 最近一次判定是否正确
+
+	function toggleHandsOn() {
+		handsOn = !handsOn;
+		predictActive = false;
+		selected = [];
+		predictMsg = '';
+		predictOk = false;
+		if (handsOn) {
+			// 打开时跳到下一个 swap 前一步，开始第一轮预测
+			seekToNextSwap();
+		}
+	}
+
+	/** 向后扫描找下一个 swap 步骤；停在它的前一步（compare）等待用户预测 */
+	function seekToNextSwap() {
+		if (!timeline.hasTimeline) return;
+		for (let i = currentStepIdx + 1; i < engine.steps.length; i++) {
+			const s = engine.steps[i];
+			if (s.type === 'swap' && i > 0) {
+				const target = i - 1;
+				pause();
+				timeline.killControlTweens();
+				timeline.seekToStep(target);
+				currentStepIdx = target;
+				playbackPos = target;
+				// 预期 = swap 步骤的 swap 高亮下标
+				const swapHl = s.highlights.find((h) => h.type === 'swap');
+				expectedSwap = swapHl ? [...swapHl.indices] : [];
+				selected = [];
+				predictActive = expectedSwap.length === 2;
+				predictMsg = predictActive ? '预测下一步：这两个元素会被交换。点击画布上的两个柱子。' : '';
+				predictOk = false;
+				return;
+			}
+		}
+		// 没有更多 swap：正常结束
+		predictActive = false;
+		predictMsg = '';
+	}
+
+	/** 用户点击柱子（来自 ArrayRenderer.onBarClick） */
+	function handleBarClick(idx: number) {
+		if (!predictActive) return;
+		if (selected.includes(idx)) {
+			// 再点一次取消
+			selected = selected.filter((x) => x !== idx);
+			return;
+		}
+		const next = [...selected, idx];
+		if (next.length < 2) {
+			selected = next;
+			return;
+		}
+		selected = next;
+		// 判定（交换不分顺序）
+		const a = [...next].sort((x, y) => x - y);
+		const b = [...expectedSwap].sort((x, y) => x - y);
+		const ok = a.length === b.length && a.every((v, i) => v === b[i]);
+		predictOk = ok;
+		predictMsg = ok
+			? '✓ 正确！下一步确实交换这两个元素。点击「继续」看动画。'
+			: '✗ 不对。交换的是位置 ' +
+				b.map((v) => v + 1).join(' 和 ') +
+				'。点击「重试」再试一次，或「跳过」看演示。';
+	}
+
+	function continueAfterPredict() {
+		if (!handsOn) return;
+		const target = Math.min(engine.totalSteps - 1, currentStepIdx + 1);
+		pause();
+		timeline.killControlTweens();
+		timeline.tweenToStep(target);
+		currentStepIdx = target;
+		playbackPos = target;
+		predictActive = false;
+		selected = [];
+		predictMsg = '';
+		// 播完这个 swap 后找下一个
+		setTimeout(() => {
+			if (handsOn && !isPlaying) seekToNextSwap();
+		}, 600);
+	}
+
+	function retryPredict() {
+		selected = [];
+		predictOk = false;
+		predictMsg = '再试一次：点击两个会被交换的元素。';
+	}
+
+	function skipPredict() {
+		continueAfterPredict();
+	}
+
 	// === 状态分享快照：当前输入 + 位置 + 速度 + 断点 编码进 URL（?s=...） ===
 	type ShareInput =
 		{ kind: 'preset'; name: string } | { kind: 'custom'; values: Record<string, string> };
@@ -656,6 +756,13 @@
 					{/if}
 				</div>
 				<div class="header-right">
+					<button
+						class="pj-entry {handsOn ? 'active' : ''}"
+						onclick={toggleHandsOn}
+						title="动手模式：预测每一步的交换，亲手点击两个柱子"
+					>
+						✋ 动手
+					</button>
 					{#if effectiveScript?.length}
 						<button class="pj-entry" onclick={enterProjector} title="演示投影模式（全屏讲授）"
 							>投影</button
@@ -730,7 +837,12 @@
 							<div class="engine-error" role="alert">{engineError}</div>
 						{:else}
 							<!-- 投影时卸载主区渲染器，避免双实例双份重绘/监听 -->
-							<RendererSwitch {engine} {playbackPos} />
+							<RendererSwitch
+								{engine}
+								{playbackPos}
+								onBarClick={handleBarClick}
+								clickSelected={selected}
+							/>
 						{/if}
 					{/if}
 				</div>
@@ -745,6 +857,29 @@
 					</span>
 				{/if}
 			</div>
+
+			<!-- 动手模式：预测提示条 -->
+			{#if handsOn}
+				<div
+					class="predict-bar"
+					class:correct={predictOk}
+					class:wrong={predictOk === false && selected.length === 2}
+				>
+					<span class="predict-msg"
+						>{predictMsg || '✋ 动手模式：即将交换的两个元素，点击画布预测。'}</span
+					>
+					{#if predictMsg && selected.length === 2}
+						<div class="predict-actions">
+							{#if predictOk}
+								<button class="btn btn-accent btn-sm" onclick={continueAfterPredict}>继续 ▶</button>
+							{:else}
+								<button class="btn btn-ghost btn-sm" onclick={retryPredict}>重试</button>
+								<button class="btn btn-ghost btn-sm" onclick={skipPredict}>跳过</button>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
 		</div>
 
 		<!-- 右侧：伪代码 -->
@@ -950,7 +1085,12 @@
 
 			<main class="projector-body">
 				<!-- steps 引用变化时渲染器由 props 驱动重绘，无需 {#key} 强制重建 -->
-				<RendererSwitch {engine} {playbackPos} />
+				<RendererSwitch
+					{engine}
+					{playbackPos}
+					onBarClick={handleBarClick}
+					clickSelected={selected}
+				/>
 			</main>
 
 			<footer class="projector-footer">
@@ -1299,6 +1439,38 @@
 		font-size: 11px;
 		color: var(--color-ink-3);
 		letter-spacing: 0.04em;
+	}
+
+	/* 动手模式：预测提示条 */
+	.predict-bar {
+		padding: 10px 24px;
+		border-top: 1px solid var(--color-line-hair);
+		background: rgba(217, 119, 6, 0.05);
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		font-size: 13px;
+		color: var(--color-ink);
+	}
+
+	.predict-bar.correct {
+		background: rgba(45, 106, 79, 0.08);
+	}
+
+	.predict-bar.wrong {
+		background: rgba(155, 34, 38, 0.06);
+	}
+
+	.predict-msg {
+		line-height: 1.5;
+	}
+
+	.predict-actions {
+		display: flex;
+		gap: 8px;
+		flex-shrink: 0;
 	}
 
 	.engine-error {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { tick, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HighlightType } from '$lib/engines/algorithm/types';
 	import { precomputeBarIdentities, easeOutCubic } from './array-render-utils';
@@ -9,9 +9,46 @@
 	interface Props {
 		steps: AlgorithmStep[];
 		playbackPos: number;
+		/** 手动模拟练习：点击柱子的回调（传入柱下标） */
+		onBarClick?: (index: number) => void;
+		/** 手动模拟练习：外部选中的柱子下标（高亮显示） */
+		clickSelected?: number[];
 	}
 
-	let { steps, playbackPos }: Props = $props();
+	let { steps, playbackPos, onBarClick, clickSelected = [] }: Props = $props();
+
+	// 柱点击 → 下标换算（挂在 host.canvasEl 上，仅在有回调时激活）
+	let clickCleanup: (() => void) | null = null;
+	$effect(() => {
+		clickCleanup?.();
+		clickCleanup = null;
+		if (!onBarClick || !host.canvasEl) return;
+		const el = host.canvasEl;
+		const handler = (e: MouseEvent) => {
+			const rect = el.getBoundingClientRect();
+			const x = e.clientX - rect.left;
+			const y = e.clientY - rect.top;
+			const step = steps[Math.min(steps.length - 1, Math.floor(playbackPos))];
+			if (!step) return;
+			const n = step.data.length;
+			const { barWidth, gap, startX } = getBarLayout(n);
+			const maxValue = Math.max(1, ...step.data);
+			const maxHeight = canvasHeight - PADDING_TOP - PADDING_BOTTOM;
+			// 落在柱体矩形内？
+			for (let i = 0; i < n; i++) {
+				const bx = startX + i * (barWidth + gap) + gap / 2;
+				const bh = getBarHeight(step.data[i] ?? 1, maxValue, maxHeight);
+				const by = canvasHeight - PADDING_BOTTOM - bh;
+				if (x >= bx && x <= bx + barWidth && y >= by && y <= by + bh) {
+					onBarClick(i);
+					return;
+				}
+			}
+		};
+		el.addEventListener('click', handler);
+		clickCleanup = () => el.removeEventListener('click', handler);
+	});
+	onDestroy(() => clickCleanup?.());
 
 	// 画布与尺寸由 CanvasHost 统一管理（resize/ResizeObserver/主题监听）；
 	// CanvasHost 通过 onDraw 回调注入最新状态（$state 响应式）
@@ -260,6 +297,31 @@
 
 		// 4. 指针标签（文字式，不是胶囊）
 		drawPointerLabels(fromStep, toStep, easedT, n);
+
+		// 5. 手动模拟练习：外部选中的柱子高亮（琥珀色描边 + 顶部三角）
+		if (clickSelected.length > 0 && ctx) {
+			const stepNow = steps[Math.min(steps.length - 1, Math.floor(playbackPos))];
+			if (stepNow) {
+				const maxV = Math.max(1, ...stepNow.data);
+				for (const idx of clickSelected) {
+					if (idx < 0 || idx >= n) continue;
+					const x = getBarX(idx, n);
+					const bh = getBarHeight(stepNow.data[idx] ?? 1, maxV, maxHeight);
+					const by = canvasHeight - PADDING_BOTTOM - bh;
+					ctx.strokeStyle = colors.current;
+					ctx.lineWidth = 2.5;
+					ctx.strokeRect(x - 1, by - 1, barWidth + 2, bh + 2);
+					// 顶部标记
+					ctx.fillStyle = colors.current;
+					ctx.beginPath();
+					ctx.moveTo(x + barWidth / 2, by - 10);
+					ctx.lineTo(x + barWidth / 2 - 5, by - 2);
+					ctx.lineTo(x + barWidth / 2 + 5, by - 2);
+					ctx.closePath();
+					ctx.fill();
+				}
+			}
+		}
 	}
 
 	function drawBar(

@@ -6,6 +6,8 @@
 	import { SelectionSortEngine } from '$lib/engines/algorithm/basicsort/SelectionSortEngine';
 	import { InsertionSortEngine } from '$lib/engines/algorithm/basicsort/InsertionSortEngine';
 	import { HeapSortEngine } from '$lib/engines/algorithm/basicsort/HeapSortEngine';
+	import { ShellSortEngine } from '$lib/engines/algorithm/basicsort/ShellSortEngine';
+	import { RadixSortEngine } from '$lib/engines/algorithm/basicsort/RadixSortEngine';
 	import RendererSwitch from '$lib/components/player/RendererSwitch.svelte';
 	import { STEP_DURATIONS } from '$lib/components/player/TimelineController';
 	import type { AlgorithmEngine } from '$lib/engines/algorithm/types';
@@ -61,6 +63,20 @@
 			complexity: 'O(n log n)',
 			color: '#6b21a8',
 			make: () => new HeapSortEngine()
+		},
+		{
+			id: 'shell-sort',
+			name: '希尔排序',
+			complexity: 'O(n^1.3)',
+			color: '#0e7490',
+			make: () => new ShellSortEngine()
+		},
+		{
+			id: 'radix-sort',
+			name: '基数排序',
+			complexity: 'O(d·n)',
+			color: '#be185d',
+			make: () => new RadixSortEngine()
 		}
 	] as const;
 

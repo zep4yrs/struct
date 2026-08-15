@@ -51,6 +51,10 @@ import { ErEngine } from '../src/lib/engines/db/ErEngine';
 import { IndexEngine } from '../src/lib/engines/db/IndexEngine';
 import { NormalizeEngine } from '../src/lib/engines/db/NormalizeEngine';
 import { HeapSortEngine } from '../src/lib/engines/algorithm/basicsort/HeapSortEngine';
+import { ShellSortEngine } from '../src/lib/engines/algorithm/basicsort/ShellSortEngine';
+import { RadixSortEngine } from '../src/lib/engines/algorithm/basicsort/RadixSortEngine';
+import { AvlEngine } from '../src/lib/engines/algorithm/avl/AvlEngine';
+import { JoinEngine } from '../src/lib/engines/sql/JoinEngine';
 
 type EngineLike = { demoScript?: { type: string; narration: string }[] };
 
@@ -86,7 +90,11 @@ const ENGINE_MAP: { topicId: string; make: () => EngineLike }[] = [
 	{ topicId: 'er', make: () => new ErEngine() },
 	{ topicId: 'index', make: () => new IndexEngine() },
 	{ topicId: 'normalize', make: () => new NormalizeEngine() },
-	{ topicId: 'heap-sort', make: () => new HeapSortEngine() }
+	{ topicId: 'heap-sort', make: () => new HeapSortEngine() },
+	{ topicId: 'shell-sort', make: () => new ShellSortEngine() },
+	{ topicId: 'radix-sort', make: () => new RadixSortEngine() },
+	{ topicId: 'avl', make: () => new AvlEngine() },
+	{ topicId: 'join', make: () => new JoinEngine() }
 ];
 
 // === 工具 ===

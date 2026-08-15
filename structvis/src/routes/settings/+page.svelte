@@ -4,6 +4,19 @@
 
 	let speed = $state($settings.animationSpeed);
 	let showHints = $state($settings.showHints);
+	// 通知权限状态（用于模板判断；授权后刷新显示）
+	let notifPermission = $state(
+		typeof Notification !== 'undefined' ? Notification.permission : 'unsupported'
+	);
+
+	async function requestNotification() {
+		if (typeof Notification === 'undefined') return;
+		try {
+			notifPermission = await Notification.requestPermission();
+		} catch {
+			notifPermission = Notification.permission;
+		}
+	}
 
 	function save() {
 		settings.update((s) => ({
@@ -62,6 +75,24 @@
 				<button class="btn btn-primary" onclick={toggleTheme}>
 					切换到{$settings.theme === 'dark' ? '亮色' : '暗色'}主题
 				</button>
+			</div>
+		</div>
+
+		<div class="setting-item">
+			<div class="setting-info">
+				<div class="setting-label">学习提醒</div>
+				<div class="setting-desc">错题到期时发送浏览器通知（每天一次）</div>
+			</div>
+			<div class="setting-control">
+				{#if notifPermission === 'granted'}
+					<span class="notif-status on">已开启</span>
+				{:else if notifPermission === 'denied'}
+					<span class="notif-status off">已禁用（请在浏览器设置中允许）</span>
+				{:else if notifPermission === 'unsupported'}
+					<span class="notif-status off">当前浏览器不支持通知</span>
+				{:else}
+					<button class="btn btn-ghost" onclick={requestNotification}>开启提醒</button>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -127,6 +158,19 @@
 		display: flex;
 		flex-direction: column;
 		gap: 24px;
+	}
+
+	.notif-status {
+		font-family: var(--font-mono);
+		font-size: 12px;
+	}
+
+	.notif-status.on {
+		color: var(--color-success);
+	}
+
+	.notif-status.off {
+		color: var(--color-ink-3);
 	}
 
 	.setting-item {

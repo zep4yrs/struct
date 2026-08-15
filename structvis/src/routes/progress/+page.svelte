@@ -145,6 +145,10 @@
 		reviewMistake(reviewingMistake.id, result.correct);
 	}
 
+	function scrollToMistakes() {
+		document.querySelector('.mistake-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+
 	function handleReviewContinue() {
 		if (reviewingMistake === null) return;
 		if (reviewAnswered) {
@@ -208,6 +212,22 @@
 	<div class="mb-8" use:reveal>
 		<a href={resolve('/report')} class="btn btn-accent btn-sm">📊 生成学习报告</a>
 	</div>
+
+	<!-- SRS 到期提醒 -->
+	{#if pendingMistakes > 0}
+		<div
+			class="glass srs-banner mb-8 flex flex-wrap items-center gap-3 rounded-lg border p-4"
+			use:reveal
+		>
+			<span class="tag tag-accent">📌 复习提醒</span>
+			<span style="font-size: 13px; color: var(--color-ink);">
+				有 <b style="color: var(--color-accent);">{pendingMistakes}</b> 道错题今天到期，间隔复习效果最好
+			</span>
+			<button class="btn btn-accent btn-sm" style="margin-left: auto;" onclick={scrollToMistakes}
+				>去复习</button
+			>
+		</div>
+	{/if}
 
 	<!-- 学习路径：下一步学什么 -->
 	{#if hasData && nextTopic}

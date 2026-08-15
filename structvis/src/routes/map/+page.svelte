@@ -66,6 +66,14 @@
 			desc: '有序二叉树的查找/插入'
 		},
 		{
+			id: 'avl',
+			title: 'AVL 树',
+			href: '/ds/avl',
+			topicId: 'avl',
+			group: '树形结构',
+			desc: '平衡因子与四种旋转'
+		},
+		{
 			id: 'huffman',
 			title: '哈夫曼树',
 			href: '/ds/huffman',
@@ -194,6 +202,14 @@
 			desc: 'SELECT 基础'
 		},
 		{
+			id: 'join',
+			title: 'JOIN 连接',
+			href: '/db/join',
+			topicId: 'join',
+			group: '数据库 · 查询',
+			desc: '内连接逐步匹配'
+		},
+		{
 			id: 'advanced-query',
 			title: '高级查询',
 			href: '/db/advanced-query',
@@ -303,6 +319,7 @@
 		{ from: 'array', to: 'linear-list' },
 		{ from: 'linear-list', to: 'stack-queue' },
 		{ from: 'binary-tree', to: 'bst' },
+		{ from: 'bst', to: 'avl' },
 		{ from: 'binary-tree', to: 'huffman' },
 		{ from: 'graph-storage', to: 'graph-traversal' },
 		{ from: 'graph-traversal', to: 'mst' },
@@ -314,6 +331,7 @@
 		{ from: 'binary-tree', to: 'heap-sort' },
 		{ from: 'binary-search', to: 'bst' },
 		{ from: 'sql', to: 'advanced-query' },
+		{ from: 'sql', to: 'join' },
 		{ from: 'sql', to: 'update' },
 		{ from: 'sql', to: 'view' },
 		{ from: 'advanced-query', to: 'window-function' },

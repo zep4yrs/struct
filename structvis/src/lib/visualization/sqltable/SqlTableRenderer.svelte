@@ -64,7 +64,9 @@
 
 		const { fromIdx, toIdx, t } = stepProgress(playbackPos, steps.length);
 		const easedT = easeOutCubic(t);
-		const step = steps[toIdx];
+		// 内容跟随当前已完成步骤（与状态文本 currentStepIdx 同步）；
+		// 高亮仍按 from→to 插值，播放中渐变到目标步骤的高亮
+		const step = steps[Math.min(steps.length - 1, Math.floor(playbackPos))];
 		const table = step.table;
 		if (!table || table.rows.length === 0 || table.columns.length === 0) {
 			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -78,7 +80,9 @@
 
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-		const currentSet = new Set(step.highlights.find((h) => h.type === 'current')?.indices ?? []);
+		const currentSet = new Set(
+			steps[toIdx].highlights.find((h) => h.type === 'current')?.indices ?? []
+		);
 		const fromSet = new Set(
 			steps[fromIdx].highlights.find((h) => h.type === 'current')?.indices ?? []
 		);

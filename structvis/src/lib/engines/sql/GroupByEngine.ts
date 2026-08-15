@@ -105,11 +105,16 @@ export class GroupByEngine extends EngineBase<SqlTableData> {
 		const cols = ['dept', '人数'];
 		const resultRows: (string | number)[][] = [];
 
+		// 初始：显示原始 student 表（输入数据），与旧引擎"先读表"一致
+		const srcCols = ['id', 'name', 'dept'];
+		const srcRows: (string | number)[][] = STUDENT.map((s) => [s.id, s.name, s.dept]);
 		this._emit(
 			'init',
-			'准备执行：SELECT dept, COUNT(*) FROM student GROUP BY dept。',
-			cols,
-			resultRows,
+			'准备执行：SELECT dept, COUNT(*) FROM student GROUP BY dept。原始表 ' +
+				STUDENT.length +
+				' 行。',
+			srcCols,
+			srcRows,
 			[]
 		);
 

@@ -118,11 +118,15 @@ export class LeftJoinEngine extends EngineBase<SqlTableData> {
 		const cols = ['id', 'name', 'dept', 'cid', 'score'];
 		const resultRows: (string | number)[][] = [];
 
+		// 初始：显示左表（student）完整数据，与旧引擎"先读表"一致
+		const leftRows: (string | number)[][] = STUDENT.map((s) => [s.id, s.name, s.dept, '—', '—']);
 		this._emit(
 			'init',
-			'准备执行：SELECT ... FROM student LEFT JOIN sc ON student.id = sc.sid。',
+			'准备执行：SELECT ... FROM student LEFT JOIN sc ON student.id = sc.sid。左表 student 共 ' +
+				STUDENT.length +
+				' 行（全部保留）。',
 			cols,
-			resultRows,
+			leftRows,
 			[]
 		);
 

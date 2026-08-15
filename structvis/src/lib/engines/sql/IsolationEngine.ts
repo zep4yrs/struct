@@ -149,7 +149,14 @@ export class IsolationEngine extends EngineBase<SqlTableData> {
 			}
 		];
 
-		this._emit('init', '事务隔离演示：T1 写、T2 读，逐步观察各隔离级别下的可见性。', cols, [], '');
+		// 初始：显示账户表初始状态
+		this._emit(
+			'init',
+			'事务隔离演示：T1 写、T2 读。账户表初始状态：余额 1000（已提交）。',
+			cols,
+			[[1, '张明', 1000, '已提交']],
+			''
+		);
 
 		for (const op of ops) {
 			const rows: (string | number)[][] = [

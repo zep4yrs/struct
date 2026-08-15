@@ -104,11 +104,15 @@ export class SubQueryEngine extends EngineBase<SqlTableData> {
 		const cols = ['name', 'score'];
 		const resultRows: (string | number)[][] = [];
 
+		// 初始：显示原始 sc 表（输入数据），与旧引擎"先读表"一致
+		const srcRows: (string | number)[][] = SC.map((s) => [s.name, s.score]);
 		this._emit(
 			'init',
-			'准备执行：SELECT name, score FROM sc WHERE score > (SELECT AVG(score) FROM sc)。',
+			'准备执行：SELECT name, score FROM sc WHERE score > (SELECT AVG(score) FROM sc)。原始表 ' +
+				SC.length +
+				' 行。',
 			cols,
-			resultRows,
+			srcRows,
 			'init'
 		);
 

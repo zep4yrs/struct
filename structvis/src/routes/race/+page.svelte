@@ -127,20 +127,12 @@
 		data = randomData(dataSize);
 	}
 
-	/** 每步实际时长（ms）：规模越大单步越快，总时长稳定在 ~45s，避免大数组跑太久 */
-	const maxStepsAll = $derived.by(() => {
-		let m = 1;
-		for (const r of racers) m = Math.max(m, r.engine.steps.length);
-		return m;
-	});
-	const perStepMs = $derived(Math.min(400, Math.max(20, Math.round(45000 / maxStepsAll))));
-
-	/** 引擎总时长（ms）= 各步骤按类型时长的累加 × 节奏缩放，与播放器时间线一致 */
+	/** 引擎总时长（ms）= 各步骤按类型真实时长的累加，与播放器时间线完全一致（不随规模缩放） */
 	function totalDurMs(r: Racer): number {
 		let sum = 0;
 		for (const s of r.engine.steps)
 			sum += (STEP_DURATIONS[s.type] || STEP_DURATIONS.default) * 1000;
-		return Math.max(sum * (perStepMs / 400), 1);
+		return Math.max(sum, 1);
 	}
 
 	/** 引擎 i 的独立进度 0..1（到达 1 即冲线完成） */
@@ -344,14 +336,18 @@
 			{/each}
 		</div>
 		<div class="race-timer" aria-live="polite">
-			<span class="race-timer-num">{raceSeconds.toFixed(1)}</span>
-			<span class="race-timer-unit">秒</span>
-			{#if allFinished}
-				<span class="race-timer-done">比赛结束</span>
+			{#if !playing && !allFinished}
+				<span class="race-timer-num race-timer-idle">—</span>
+				<span class="race-timer-unit">秒</span>
+			{:else}
+				<span class="race-timer-num">{raceSeconds.toFixed(1)}</span>
+				<span class="race-timer-unit">秒</span>
+				{#if allFinished}
+					<span class="race-timer-done">比赛结束</span>
+				{/if}
 			{/if}
 		</div>
 	</div>
-
 	<!-- 跑道 -->
 	<div class="race-grid">
 		{#each racers as r (r.id)}
@@ -377,7 +373,9 @@
 				<div class="race-lane-stats">
 					<span class="race-stat">步数 <b>{r.engine.steps.length}</b></span>
 					<span class="race-stat">操作 <b>{opCount(r, stepOf(r))}</b> / {totalOps(r)}</span>
-					<span class="race-stat">用时 <b>{(totalDurMs(r) / 1000).toFixed(1)}s</b></span>
+					{#if isDone(r)}
+						<span class="race-stat">用时 <b>{(totalDurMs(r) / 1000).toFixed(1)}s</b></span>
+					{/if}
 				</div>
 			</div>
 		{/each}
@@ -557,6 +555,10 @@
 		color: var(--color-ink);
 		line-height: 1;
 		font-variant-numeric: tabular-nums;
+	}
+
+	.race-timer-idle {
+		color: var(--color-ink-3);
 	}
 
 	.race-timer-unit {

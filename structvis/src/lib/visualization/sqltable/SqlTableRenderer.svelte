@@ -67,17 +67,27 @@
 		// 内容跟随当前已完成步骤（与状态文本 currentStepIdx 同步）；
 		// 高亮仍按 from→to 插值，播放中渐变到目标步骤的高亮
 		const step = steps[Math.min(steps.length - 1, Math.floor(playbackPos))];
-		const table = step.table;
+		let table = step.table;
 		if (!table || table.rows.length === 0 || table.columns.length === 0) {
-			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-			ctx.fillStyle = colors.ink3;
-			ctx.font = "13px 'JetBrains Mono', Consolas, monospace";
-			ctx.textAlign = 'center';
-			ctx.textBaseline = 'middle';
-			ctx.fillText('(空结果集)', canvasWidth / 2, canvasHeight / 2);
-			return;
+			// 中间步骤可能尚无结果（如动手模式停在动作前一步）：
+			// 向前回退到最近一个带数据的表格，保证画布始终有内容可看
+			for (let k = Math.floor(playbackPos) - 1; k >= 0; k--) {
+				const tb = steps[k].table;
+				if (tb && tb.rows.length > 0 && tb.columns.length > 0) {
+					table = tb;
+					break;
+				}
+			}
+			if (!table || table.rows.length === 0 || table.columns.length === 0) {
+				ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+				ctx.fillStyle = colors.ink3;
+				ctx.font = "13px 'JetBrains Mono', Consolas, monospace";
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'middle';
+				ctx.fillText('(空结果集)', canvasWidth / 2, canvasHeight / 2);
+				return;
+			}
 		}
-
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
 		const currentSet = new Set(

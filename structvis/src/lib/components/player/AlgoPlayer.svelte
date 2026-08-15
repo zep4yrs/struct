@@ -207,13 +207,17 @@
 		rebuildAfterEngineChange();
 	}
 
-	// === 手动模拟练习（动手模式）：预测下一步的交换，点击两个柱子 ===
+	// === 手动模拟练习（动手模式） ===
+	// 数组引擎：预测交换，点击画布两个柱子；树/图引擎：预测下一步动作，选项选择
 	let handsOn = $state(false); // 动手模式开关
 	let predictActive = $state(false); // 正在等待用户选择
 	let selected = $state<number[]>([]); // 用户已选的柱下标
 	let expectedSwap = $state<number[]>([]); // 引擎预期的交换下标
 	let predictMsg = $state(''); // 反馈信息
 	let predictOk = $state(false); // 最近一次判定是否正确
+	let predictOptions = $state<string[]>([]); // 动作预测选项（树/图引擎）
+	let predictAnswer = $state(-1); // 正确选项下标
+	const isArrayEngine = $derived(engine.renderType === 'array');
 
 	function toggleHandsOn() {
 		handsOn = !handsOn;
@@ -221,25 +225,21 @@
 		selected = [];
 		predictMsg = '';
 		predictOk = false;
-		if (handsOn) {
-			// 打开时跳到下一个 swap 前一步，开始第一轮预测
-			seekToNextSwap();
-		}
+		if (handsOn) seekToNextAction();
 	}
 
-	/** 向后扫描找下一个 swap 步骤；停在它的前一步（compare）等待用户预测 */
-	function seekToNextSwap() {
+	/** 向后扫描找下一个"可预测"步骤：数组引擎找 swap（柱点击），树/图找关键动作（选项） */
+	function seekToNextAction() {
 		if (!timeline.hasTimeline) return;
 		for (let i = currentStepIdx + 1; i < engine.steps.length; i++) {
 			const s = engine.steps[i];
-			if (s.type === 'swap' && i > 0) {
+			if (isArrayEngine && s.type === 'swap' && i > 0) {
 				const target = i - 1;
 				pause();
 				timeline.killControlTweens();
 				timeline.seekToStep(target);
 				currentStepIdx = target;
 				playbackPos = target;
-				// 预期 = swap 步骤的 swap 高亮下标
 				const swapHl = s.highlights.find((h) => h.type === 'swap');
 				expectedSwap = swapHl ? [...swapHl.indices] : [];
 				selected = [];
@@ -248,17 +248,43 @@
 				predictOk = false;
 				return;
 			}
+			if (!isArrayEngine && i > 0 && (s.type === 'pivot-select' || s.type === 'edge-select')) {
+				const target = i - 1;
+				pause();
+				timeline.killControlTweens();
+				timeline.seekToStep(target);
+				currentStepIdx = target;
+				playbackPos = target;
+				// 生成选项：正确动作 vs 干扰
+				const actionMap: Record<string, { correct: string; wrong: string[] }> = {
+					'pivot-select': {
+						correct: '检测到失衡/需要调整：进行旋转或变色',
+						wrong: ['继续正常比较', '本轮结束']
+					},
+					'edge-select': {
+						correct: '这一步会选中它（添加边/命中）',
+						wrong: ['这一步会跳过它', '这一步什么都不做']
+					}
+				};
+				const def = actionMap[s.type];
+				const opts = [def.correct, ...def.wrong];
+				predictOptions = opts;
+				predictAnswer = 0;
+				selected = [];
+				predictActive = true;
+				predictMsg = '预测下一步操作（' + engine.name + '）：';
+				predictOk = false;
+				return;
+			}
 		}
-		// 没有更多 swap：正常结束
 		predictActive = false;
 		predictMsg = '';
 	}
 
-	/** 用户点击柱子（来自 ArrayRenderer.onBarClick） */
+	/** 用户点击柱子（数组引擎） */
 	function handleBarClick(idx: number) {
 		if (!predictActive) return;
 		if (selected.includes(idx)) {
-			// 再点一次取消
 			selected = selected.filter((x) => x !== idx);
 			return;
 		}
@@ -268,7 +294,6 @@
 			return;
 		}
 		selected = next;
-		// 判定（交换不分顺序）
 		const a = [...next].sort((x, y) => x - y);
 		const b = [...expectedSwap].sort((x, y) => x - y);
 		const ok = a.length === b.length && a.every((v, i) => v === b[i]);
@@ -278,6 +303,17 @@
 			: '✗ 不对。交换的是位置 ' +
 				b.map((v) => v + 1).join(' 和 ') +
 				'。点击「重试」再试一次，或「跳过」看演示。';
+	}
+
+	/** 用户选择动作选项（树/图引擎） */
+	function handleActionSelect(optIdx: number) {
+		if (!predictActive) return;
+		const ok = optIdx === predictAnswer;
+		predictOk = ok;
+		selected = [optIdx];
+		predictMsg = ok
+			? '✓ 正确！点击「继续」看这一步。'
+			: '✗ 不对，' + predictOptions[predictAnswer] + '。可「重试」或「跳过」。';
 	}
 
 	function continueAfterPredict() {
@@ -291,16 +327,17 @@
 		predictActive = false;
 		selected = [];
 		predictMsg = '';
-		// 播完这个 swap 后找下一个
 		setTimeout(() => {
-			if (handsOn && !isPlaying) seekToNextSwap();
+			if (handsOn && !isPlaying) seekToNextAction();
 		}, 600);
 	}
 
 	function retryPredict() {
 		selected = [];
 		predictOk = false;
-		predictMsg = '再试一次：点击两个会被交换的元素。';
+		predictMsg = isArrayEngine
+			? '再试一次：点击两个会被交换的元素。'
+			: '再试一次：选择正确的下一步操作。';
 	}
 
 	function skipPredict() {
@@ -863,15 +900,35 @@
 				<div
 					class="predict-bar"
 					class:correct={predictOk}
-					class:wrong={predictOk === false && selected.length === 2}
+					class:wrong={predictOk === false &&
+						(isArrayEngine ? selected.length === 2 : selected.length > 0)}
 				>
 					<span class="predict-msg"
-						>{predictMsg || '✋ 动手模式：即将交换的两个元素，点击画布预测。'}</span
+						>{predictMsg ||
+							(isArrayEngine
+								? '✋ 动手模式：即将交换的两个元素，点击画布预测。'
+								: '✋ 动手模式：预测下一步操作。')}</span
 					>
-					{#if predictMsg && selected.length === 2}
+					{#if predictActive && !isArrayEngine && predictOptions.length > 0 && !predictOk}
+						<div class="predict-options">
+							{#each predictOptions as opt, i (i)}
+								<button
+									class="btn btn-ghost btn-sm"
+									class:predict-opt-selected={selected.includes(i)}
+									onclick={() => handleActionSelect(i)}
+								>
+									{opt}
+								</button>
+							{/each}
+						</div>
+					{/if}
+					{#if predictMsg && (isArrayEngine ? selected.length === 2 : selected.length > 0)}
 						<div class="predict-actions">
 							{#if predictOk}
 								<button class="btn btn-accent btn-sm" onclick={continueAfterPredict}>继续 ▶</button>
+							{:else if !isArrayEngine}
+								<button class="btn btn-ghost btn-sm" onclick={retryPredict}>重试</button>
+								<button class="btn btn-ghost btn-sm" onclick={skipPredict}>跳过</button>
 							{:else}
 								<button class="btn btn-ghost btn-sm" onclick={retryPredict}>重试</button>
 								<button class="btn btn-ghost btn-sm" onclick={skipPredict}>跳过</button>
@@ -1471,6 +1528,18 @@
 		display: flex;
 		gap: 8px;
 		flex-shrink: 0;
+	}
+
+	.predict-options {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		flex-shrink: 0;
+	}
+
+	.predict-opt-selected {
+		border-color: var(--color-accent) !important;
+		color: var(--color-accent) !important;
 	}
 
 	.engine-error {

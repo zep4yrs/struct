@@ -55,6 +55,10 @@ import { ShellSortEngine } from '../src/lib/engines/algorithm/basicsort/ShellSor
 import { RadixSortEngine } from '../src/lib/engines/algorithm/basicsort/RadixSortEngine';
 import { AvlEngine } from '../src/lib/engines/algorithm/avl/AvlEngine';
 import { JoinEngine } from '../src/lib/engines/sql/JoinEngine';
+import { LeftJoinEngine } from '../src/lib/engines/sql/LeftJoinEngine';
+import { GroupByEngine } from '../src/lib/engines/sql/GroupByEngine';
+import { LinearProbeEngine } from '../src/lib/engines/algorithm/hash/LinearProbeEngine';
+import { RedBlackTreeEngine } from '../src/lib/engines/algorithm/rbtree/RedBlackTreeEngine';
 
 type EngineLike = { demoScript?: { type: string; narration: string }[] };
 
@@ -94,7 +98,11 @@ const ENGINE_MAP: { topicId: string; make: () => EngineLike }[] = [
 	{ topicId: 'shell-sort', make: () => new ShellSortEngine() },
 	{ topicId: 'radix-sort', make: () => new RadixSortEngine() },
 	{ topicId: 'avl', make: () => new AvlEngine() },
-	{ topicId: 'join', make: () => new JoinEngine() }
+	{ topicId: 'join', make: () => new JoinEngine() },
+	{ topicId: 'left-join', make: () => new LeftJoinEngine() },
+	{ topicId: 'group-by', make: () => new GroupByEngine() },
+	{ topicId: 'hash-probing', make: () => new LinearProbeEngine() },
+	{ topicId: 'rbtree', make: () => new RedBlackTreeEngine() }
 ];
 
 // === 工具 ===

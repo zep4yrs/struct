@@ -74,6 +74,14 @@
 			desc: '平衡因子与四种旋转'
 		},
 		{
+			id: 'rbtree',
+			title: '红黑树',
+			href: '/ds/rbtree',
+			topicId: 'rbtree',
+			group: '树形结构',
+			desc: '变色与旋转'
+		},
+		{
 			id: 'huffman',
 			title: '哈夫曼树',
 			href: '/ds/huffman',
@@ -194,6 +202,14 @@
 			desc: '散列与冲突处理'
 		},
 		{
+			id: 'hash-probing',
+			title: '线性探测',
+			href: '/ds/hash-probing',
+			topicId: 'hash-probing',
+			group: '查找',
+			desc: '开放定址探测路径'
+		},
+		{
 			id: 'sql',
 			title: '数据查询',
 			href: '/db/sql',
@@ -208,6 +224,22 @@
 			topicId: 'join',
 			group: '数据库 · 查询',
 			desc: '内连接逐步匹配'
+		},
+		{
+			id: 'left-join',
+			title: 'LEFT JOIN',
+			href: '/db/left-join',
+			topicId: 'left-join',
+			group: '数据库 · 查询',
+			desc: '左外连接补 NULL'
+		},
+		{
+			id: 'group-by',
+			title: 'GROUP BY',
+			href: '/db/group-by',
+			topicId: 'group-by',
+			group: '数据库 · 查询',
+			desc: '分组聚合'
 		},
 		{
 			id: 'advanced-query',
@@ -330,8 +362,12 @@
 		{ from: 'merge-sort', to: 'heap-sort' },
 		{ from: 'binary-tree', to: 'heap-sort' },
 		{ from: 'binary-search', to: 'bst' },
+		{ from: 'hash-table', to: 'hash-probing' },
+		{ from: 'avl', to: 'rbtree' },
 		{ from: 'sql', to: 'advanced-query' },
 		{ from: 'sql', to: 'join' },
+		{ from: 'join', to: 'left-join' },
+		{ from: 'sql', to: 'group-by' },
 		{ from: 'sql', to: 'update' },
 		{ from: 'sql', to: 'view' },
 		{ from: 'advanced-query', to: 'window-function' },

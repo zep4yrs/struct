@@ -118,6 +118,7 @@
 			>
 			<a href={resolve('/race')} class="topnav-link" class:active={isActive('/race')}>竞速实验室</a>
 			<a href={resolve('/map')} class="topnav-link" class:active={isActive('/map')}>技能图谱</a>
+			<a href={resolve('/quiz')} class="topnav-link" class:active={isActive('/quiz')}>章节自测</a>
 			<a href={resolve('/about')} class="topnav-link" class:active={isActive('/about')}>关于</a>
 		</nav>
 	</div>

@@ -232,6 +232,24 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '查找',
 		crumb: '数据结构 / 查找 / [current]哈希表[/current]'
+	},
+	{
+		title: '哈希表 · 线性探测',
+		description: '开放定址 · 探测路径 · ASL',
+		href: '/ds/hash-probing',
+		topicId: 'hash-probing',
+		badge: '交互式',
+		group: '查找',
+		crumb: '数据结构 / 查找 / [current]哈希表 · 线性探测[/current]'
+	},
+	{
+		title: '红黑树',
+		description: '变色 · 旋转 · O(log n)',
+		href: '/ds/rbtree',
+		topicId: 'rbtree',
+		badge: '交互式',
+		group: '树形结构',
+		crumb: '数据结构 / 树 / [current]红黑树[/current]'
 	}
 ];
 
@@ -262,6 +280,24 @@ export const dbTopics: TopicCard[] = [
 		badge: '分步执行',
 		group: '基础',
 		crumb: '数据库 / [current]SQL 内连接 JOIN[/current]'
+	},
+	{
+		title: 'SQL 左外连接 LEFT JOIN',
+		description: '保留左表 · 无匹配填 NULL',
+		href: '/db/left-join',
+		topicId: 'left-join',
+		badge: '分步执行',
+		group: '基础',
+		crumb: '数据库 / [current]SQL 左外连接 LEFT JOIN[/current]'
+	},
+	{
+		title: 'SQL 分组聚合 GROUP BY',
+		description: '分组计数 · 聚合结果表',
+		href: '/db/group-by',
+		topicId: 'group-by',
+		badge: '分步执行',
+		group: '基础',
+		crumb: '数据库 / [current]SQL 分组聚合 GROUP BY[/current]'
 	},
 	{
 		title: '高级查询',

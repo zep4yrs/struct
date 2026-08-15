@@ -822,5 +822,128 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"text": "内连接完成：结果集包含所有匹配成功的行对。注意赵强的学号 20105 没有选课记录，而 sc 中的 20105 在 student 中不存在——两边不匹配的行都被丢弃。",
 			"hash": "eba38ac75ecd"
 		}
+	},
+	"left-join": {
+		"init": {
+			"file": "init.mp3",
+			"text": "左外连接：以左表 student 为主，每一行都保留。右表 sc 匹配不到时，结果行的右半部分填 NULL。",
+			"hash": "8efce10fe470"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "取出左表的一行，去右表找匹配。",
+			"hash": "bbb377f48cf9"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "比较右表一行的连接条件。",
+			"hash": "5a87c23227f6"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "匹配成功：合并进结果表。",
+			"hash": "267623c8c205"
+		},
+		"edge-reject": {
+			"file": "edge-reject.mp3",
+			"text": "右表没有匹配：左表行保留，右半部分填 NULL——这是与内连接最大的区别。",
+			"hash": "ea132275435d"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "左外连接完成：左表 4 行全部在结果中。和内连接对比，赵强虽然没有选课记录，但他的行仍然出现，只是课程和分数为 NULL。",
+			"hash": "79e709e41716"
+		}
+	},
+	"group-by": {
+		"init": {
+			"file": "init.mp3",
+			"text": "分组聚合：把 student 表按院系分组，统计每个院系的人数。分组后每个组输出一行：分组列 + 聚合函数结果。",
+			"hash": "696c90251b4e"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "扫描一行记录，看它属于哪个分组。",
+			"hash": "eb29741a8e16"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "该院系已存在分组：组内人数加一。",
+			"hash": "1a645ed9126b"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "新院系：创建新分组，人数从 1 开始。",
+			"hash": "8dd2323ab167"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "分组完成：每个院系一行，显示人数。注意分组后只能输出分组列和聚合结果——这是 GROUP BY 的语法约束。",
+			"hash": "6ea3c426e996"
+		}
+	},
+	"hash-probing": {
+		"init": {
+			"file": "init.mp3",
+			"text": "开放定址法解决哈希冲突：元素直接存在哈希表里，发生冲突时按线性探测规则（逐个向后）寻找下一个空槽放入。",
+			"hash": "47440f7fb60b"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "用除留余数法计算散列位置：H(x) = x mod m。",
+			"hash": "15b6b10653e8"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "目标槽被占用，发生冲突：开始线性探测，向后寻找空位。",
+			"hash": "0ab4acac953e"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "找到空槽，元素放入。",
+			"hash": "f2df7962c96e"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "构造完成。线性探测简单直观，但容易形成聚集：连续占用的槽越长，后续插入的探测次数越多。",
+			"hash": "5066f89cb418"
+		}
+	},
+	"rbtree": {
+		"init": {
+			"file": "init.mp3",
+			"text": "红黑树：二叉搜索树加颜色约束——根和空叶是黑色、红节点的孩子必须是黑、任意路径的黑节点数相同。插入后最多旋转两次即可恢复平衡。",
+			"hash": "c5d7641cabf7"
+		},
+		"compare": {
+			"file": "compare.mp3",
+			"text": "按二叉搜索树规则找到插入位置，新节点初始为红色。",
+			"hash": "7d974b34b5c3"
+		},
+		"pivot-select": {
+			"file": "pivot-select.mp3",
+			"text": "插入后检查红黑性质：如果父节点是红色，需要修复。",
+			"hash": "88be9e0e3aeb"
+		},
+		"edge-candidate": {
+			"file": "edge-candidate.mp3",
+			"text": "叔叔节点也是红色：变色——父、叔变黑，祖父变红，红色继续上推。",
+			"hash": "2108ba8b5f1d"
+		},
+		"edge-select": {
+			"file": "edge-select.mp3",
+			"text": "叔叔是黑色（或无）：通过旋转 + 变色调整局部结构。",
+			"hash": "fa7cae41f769"
+		},
+		"swap": {
+			"file": "swap.mp3",
+			"text": "旋转完成，红黑性质恢复。",
+			"hash": "7c0ab789fe37"
+		},
+		"complete": {
+			"file": "complete.mp3",
+			"text": "插入完成。红黑树高度不超过 2·log₂(n+1)，查找、插入、删除都是 O(log n)，是实际应用最广的平衡树（如 TreeMap、Linux 内核）。",
+			"hash": "9a1445fb753b"
+		}
 	}
 };

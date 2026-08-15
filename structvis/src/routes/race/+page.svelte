@@ -98,6 +98,7 @@
 		});
 	}
 
+	let dataSize = $state(8); // 规模滑块（元素数量）
 	let data = $state<number[]>(randomData(8));
 	// data 变化（换数据/换长度）时自动重建全部跑道
 	const racers = $derived(buildRacers(data));
@@ -117,22 +118,29 @@
 
 	function regenerate() {
 		resetRun();
-		data = randomData(data.length);
+		data = randomData(dataSize);
 	}
 
-	function newData() {
-		// 随机换长度 8~16
-		const size = 8 + Math.floor(Math.random() * 9);
+	function onSizeChange() {
+		// 滑块变化：按新规模重新生成数据
 		resetRun();
-		data = randomData(size);
+		data = randomData(dataSize);
 	}
 
-	/** 引擎总时长（ms）= 各步骤按类型时长的累加，与播放器时间线一致 */
+	/** 每步实际时长（ms）：规模越大单步越快，总时长稳定在 ~45s，避免大数组跑太久 */
+	const maxStepsAll = $derived.by(() => {
+		let m = 1;
+		for (const r of racers) m = Math.max(m, r.engine.steps.length);
+		return m;
+	});
+	const perStepMs = $derived(Math.min(400, Math.max(20, Math.round(45000 / maxStepsAll))));
+
+	/** 引擎总时长（ms）= 各步骤按类型时长的累加 × 节奏缩放，与播放器时间线一致 */
 	function totalDurMs(r: Racer): number {
 		let sum = 0;
 		for (const s of r.engine.steps)
 			sum += (STEP_DURATIONS[s.type] || STEP_DURATIONS.default) * 1000;
-		return Math.max(sum, 1);
+		return Math.max(sum * (perStepMs / 400), 1);
 	}
 
 	/** 引擎 i 的独立进度 0..1（到达 1 即冲线完成） */
@@ -314,7 +322,19 @@
 			>{playing ? '⏸ 暂停' : allFinished ? '↻ 重跑' : '▶ 开跑'}</button
 		>
 		<button class="btn btn-ghost" onclick={regenerate}>换一组数据</button>
-		<button class="btn btn-ghost" onclick={newData}>随机长度</button>
+		<div class="race-size">
+			<span class="race-speed-label">规模</span>
+			<input
+				type="range"
+				min="6"
+				max="64"
+				step="2"
+				bind:value={dataSize}
+				oninput={onSizeChange}
+				aria-label="数据规模"
+			/>
+			<span class="race-size-num">{dataSize} 个</span>
+		</div>
 		<div class="race-speed">
 			<span class="race-speed-label">速度</span>
 			{#each [1, 2, 4] as s (s)}
@@ -462,6 +482,25 @@
 		border: 1px solid var(--color-line-hair);
 		border-radius: var(--radius-md);
 		margin-bottom: 20px;
+	}
+
+	.race-size {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin-left: 4px;
+	}
+
+	.race-size input[type='range'] {
+		width: 120px;
+		accent-color: var(--color-accent);
+	}
+
+	.race-size-num {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--color-ink-2);
+		min-width: 40px;
 	}
 
 	.race-speed {

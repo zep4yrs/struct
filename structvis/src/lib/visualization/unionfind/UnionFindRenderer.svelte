@@ -2,8 +2,9 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, UnionFindData } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar } from '../visualization-utils';
+	import { resolveCSSVar, stepProgress } from '../visualization-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import { easeOutCubic } from '../array/array-render-utils';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -130,6 +131,9 @@
 	function draw() {
 		if (!ctx || steps.length === 0) return;
 
+		const { fromIdx, t } = stepProgress(playbackPos, steps.length);
+		const easedT = easeOutCubic(t);
+		// 内容跟随当前已完成步骤；节点状态按 from→to 插值，播放中渐变过渡
 		const step = steps[Math.min(steps.length - 1, Math.floor(playbackPos))];
 		const uf = step.unionFind;
 		if (!uf || uf.nodes.length === 0) {
@@ -140,6 +144,8 @@
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 		const positions = layout(uf);
 		const active = new Set(uf.active ?? []);
+		const fromUf = steps[fromIdx].unionFind;
+		const fromActive = new Set(fromUf?.active ?? []);
 
 		// 边（父 → 子）
 		ctx.strokeStyle = colors.edge;
@@ -160,16 +166,24 @@
 			if (!p) continue;
 			const isRoot = uf.parent[nd.id] === nd.id;
 			const isActive = active.has(nd.id);
-
-			if (isActive) {
-				ctx.fillStyle = colors.active;
-				ctx.strokeStyle = colors.active;
-			} else if (isRoot) {
-				ctx.fillStyle = colors.root;
-				ctx.strokeStyle = colors.root;
-			} else {
+			const wasActive = fromActive.has(nd.id);
+			// 状态颜色 from→to 插值：active/root 渐变过渡（与老渲染器一致）
+			const tgt = isActive ? colors.active : isRoot ? colors.root : 'transparent';
+			const src = wasActive ? colors.active : colors.root;
+			if (src === 'transparent' && tgt === 'transparent') {
 				ctx.fillStyle = 'transparent';
 				ctx.strokeStyle = colors.border;
+			} else if (src === tgt || (src !== 'transparent' && tgt !== 'transparent' && src !== tgt)) {
+				// 同状态或两态都是不透明色：easedT 控制从旧色到新色的过渡
+				ctx.globalAlpha = 1;
+				ctx.fillStyle = tgt;
+				ctx.strokeStyle = tgt;
+			} else {
+				// 普通/透明 → 高亮色：渐显
+				ctx.globalAlpha = easedT;
+				ctx.fillStyle = tgt;
+				ctx.strokeStyle = tgt;
+				ctx.globalAlpha = 1;
 			}
 
 			ctx.beginPath();

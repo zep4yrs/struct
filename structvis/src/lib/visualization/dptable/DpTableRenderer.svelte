@@ -2,8 +2,9 @@
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, DpCellHighlight } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar } from '../visualization-utils';
+	import { resolveCSSVar, stepProgress } from '../visualization-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
+	import { easeOutCubic } from '../array/array-render-utils';
 
 	interface Props {
 		steps: AlgorithmStep[];
@@ -73,6 +74,9 @@
 	function draw() {
 		if (!ctx || steps.length === 0) return;
 
+		const { fromIdx, t } = stepProgress(playbackPos, steps.length);
+		const easedT = easeOutCubic(t);
+		// 内容跟随当前已完成步骤（与状态文本同步）；高亮按 from→to 插值，播放中渐变过渡
 		const step = steps[Math.min(steps.length - 1, Math.floor(playbackPos))];
 		const dp = step.dp;
 		if (!dp || dp.grid.length === 0) {
@@ -124,6 +128,9 @@
 		// 格子值 + 高亮
 		const hlMap = new Map<string, DpCellHighlight>();
 		for (const h of dp.highlights ?? []) hlMap.set(h.row + ',' + h.col, h);
+		const fromDp = steps[fromIdx].dp;
+		const fromHlMap = new Map<string, DpCellHighlight>();
+		for (const h of fromDp?.highlights ?? []) fromHlMap.set(h.row + ',' + h.col, h);
 
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
@@ -135,14 +142,26 @@
 				if (v === undefined || v === null) continue;
 
 				const hl = hlMap.get(r + ',' + c);
-				if (hl) {
-					ctx.fillStyle = hlColor(hl.type) + '22';
-					ctx.fillRect(gx + 1, gy + 1, colW - 2, rowH - 2);
-					ctx.strokeStyle = hlColor(hl.type);
-					ctx.lineWidth = 1.6;
-					ctx.strokeRect(gx + 1.5, gy + 1.5, colW - 3, rowH - 3);
-					ctx.fillStyle =
-						hl.type === 'depend' ? colors.depend : hl.type === 'keep' ? colors.keep : colors.ink;
+				const fromHl = fromHlMap.get(r + ',' + c);
+				if (hl || fromHl) {
+					const a = (fromHl ? 1 : 0) + ((hl ? 1 : 0) - (fromHl ? 1 : 0)) * easedT;
+					if (a > 0.02) {
+						const col = hl ? hlColor(hl.type) : hlColor(fromHl!.type);
+						ctx.globalAlpha = a;
+						ctx.fillStyle = col + '22';
+						ctx.fillRect(gx + 1, gy + 1, colW - 2, rowH - 2);
+						ctx.strokeStyle = col;
+						ctx.lineWidth = 1.6;
+						ctx.strokeRect(gx + 1.5, gy + 1.5, colW - 3, rowH - 3);
+						ctx.globalAlpha = 1;
+					}
+					ctx.fillStyle = hl
+						? hl.type === 'depend'
+							? colors.depend
+							: hl.type === 'keep'
+								? colors.keep
+								: colors.ink
+						: colors.ink;
 				} else {
 					ctx.fillStyle = colors.ink;
 				}

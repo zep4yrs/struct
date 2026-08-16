@@ -286,6 +286,24 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 图 / [current]并查集[/current]'
 	},
 	{
+		title: 'B+ 树插入',
+		description: '多路平衡 · 叶满分裂 · 键提升',
+		href: '/ds/bplus-insert',
+		topicId: 'bplus-insert',
+		badge: '交互式',
+		group: '查找',
+		crumb: '数据结构 / 查找 / [current]B+ 树插入[/current]'
+	},
+	{
+		title: '单调栈',
+		description: '每日温度 · 单调性维护 · O(n)',
+		href: '/ds/mono-stack',
+		topicId: 'mono-stack',
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 线性表 / [current]单调栈[/current]'
+	},
+	{
 		title: '0-1 背包',
 		description: '动态规划 · 取与不取的抉择',
 		href: '/ds/knapsack',
@@ -306,6 +324,15 @@ export const dsTopics: TopicCard[] = [
 ];
 
 export const dbTopics: TopicCard[] = [
+	{
+		title: 'MySQL 架构总览',
+		description: '一条 SQL 的完整旅程 · 五层链路',
+		href: '/db/mysql-arch',
+		topicId: 'mysql-arch',
+		badge: '交互式',
+		group: '基础',
+		crumb: '数据库 / [current]MySQL 架构总览[/current]'
+	},
 	{
 		title: '数据库系统概述',
 		description: '数据模型 · 三级模式结构',

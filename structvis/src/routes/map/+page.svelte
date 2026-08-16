@@ -178,6 +178,22 @@
 			desc: '最长公共子序列'
 		},
 		{
+			id: 'bplus-insert',
+			title: 'B+ 树',
+			href: '/ds/bplus-insert',
+			topicId: 'bplus-insert',
+			group: '查找',
+			desc: '插入 · 分裂 · 键提升'
+		},
+		{
+			id: 'mono-stack',
+			title: '单调栈',
+			href: '/ds/mono-stack',
+			topicId: 'mono-stack',
+			group: '线性结构',
+			desc: '单调性维护 · O(n)'
+		},
+		{
 			id: 'bubble-sort',
 			title: '冒泡排序',
 			href: '/ds/bubble-sort',
@@ -248,6 +264,14 @@
 			topicId: 'hash-probing',
 			group: '查找',
 			desc: '开放定址探测路径'
+		},
+		{
+			id: 'mysql-arch',
+			title: 'MySQL 架构',
+			href: '/db/mysql-arch',
+			topicId: 'mysql-arch',
+			group: '数据库 · 基础',
+			desc: '一条 SQL 的旅程'
 		},
 		{
 			id: 'sql',
@@ -430,6 +454,9 @@
 		{ from: 'graph-storage', to: 'union-find' },
 		{ from: 'hash-probing', to: 'knapsack' },
 		{ from: 'knapsack', to: 'lcs' },
+		{ from: 'bst', to: 'bplus-insert' },
+		{ from: 'stack-queue', to: 'mono-stack' },
+		{ from: 'mysql-arch', to: 'sql' },
 		{ from: 'kmp', to: 'trie' },
 		{ from: 'sql', to: 'update' },
 		{ from: 'sql', to: 'view' },
@@ -450,6 +477,7 @@
 		'排序算法',
 		'查找',
 		'动态规划',
+		'数据库 · 基础',
 		'数据库 · 查询',
 		'数据库 · 设计',
 		'数据库 · 进阶',

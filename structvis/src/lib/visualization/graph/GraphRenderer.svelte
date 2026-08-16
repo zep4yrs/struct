@@ -79,18 +79,27 @@
 	let layoutCache = new Map<string, Map<number, Pos>>();
 
 	function layout(g: GraphData): Map<number, Pos> {
-		const sig = g.nodes.map((n) => n.id).join(',');
+		const sig = g.nodes.map((n) => n.id).join(',') + '|' + (g.layout ?? 'ring');
 		const cached = layoutCache.get(sig);
 		if (cached) return cached;
 		const n = g.nodes.length;
-		const cx = LOGICAL_W / 2;
-		const cy = LOGICAL_H / 2;
-		const r = Math.min(LOGICAL_W, LOGICAL_H) * 0.38;
 		const map = new Map<number, Pos>();
-		g.nodes.forEach((node, i) => {
-			const angle = -Math.PI / 2 + (i * 2 * Math.PI) / Math.max(n, 1);
-			map.set(node.id, { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) });
-		});
+		if (g.layout === 'chain') {
+			// 水平链式：按节点 id 顺序从左到右均分（MySQL 架构等流程链路）
+			const sorted = [...g.nodes].sort((a, b) => a.id - b.id);
+			const gap = LOGICAL_W / Math.max(n, 1);
+			sorted.forEach((node, i) => {
+				map.set(node.id, { x: gap * (i + 0.5), y: LOGICAL_H / 2 });
+			});
+		} else {
+			const cx = LOGICAL_W / 2;
+			const cy = LOGICAL_H / 2;
+			const r = Math.min(LOGICAL_W, LOGICAL_H) * 0.38;
+			g.nodes.forEach((node, i) => {
+				const angle = -Math.PI / 2 + (i * 2 * Math.PI) / Math.max(n, 1);
+				map.set(node.id, { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) });
+			});
+		}
 		layoutCache.set(sig, map);
 		return map;
 	}

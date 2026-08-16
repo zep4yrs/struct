@@ -14,6 +14,7 @@
 	import TrieRenderer from '$lib/visualization/trie/TrieRenderer.svelte';
 	import DpTableRenderer from '$lib/visualization/dptable/DpTableRenderer.svelte';
 	import UnionFindRenderer from '$lib/visualization/unionfind/UnionFindRenderer.svelte';
+	import MonotonicStackRenderer from '$lib/visualization/monostack/MonotonicStackRenderer.svelte';
 
 	interface Props {
 		engine: AlgorithmEngine<unknown>;
@@ -54,4 +55,6 @@
 	<DpTableRenderer steps={engine.steps} {playbackPos} />
 {:else if engine.renderType === 'union-find'}
 	<UnionFindRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'monostack'}
+	<MonotonicStackRenderer steps={engine.steps} {playbackPos} />
 {/if}

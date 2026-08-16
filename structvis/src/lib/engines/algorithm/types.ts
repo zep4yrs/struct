@@ -78,6 +78,8 @@ export interface AlgorithmStep {
 	dp?: DpTableData;
 	/** 并查集森林快照（仅 union-find 渲染器使用） */
 	unionFind?: UnionFindData;
+	/** 单调栈快照（仅 monostack 渲染器使用） */
+	monoStack?: MonoStackData;
 }
 
 /** Trie 字典树数据 */
@@ -129,6 +131,17 @@ export interface UnionFindData {
 	active?: number[];
 	/** 根节点集合（可选，用于根标记） */
 	roots?: number[];
+}
+
+/** 单调栈数据（monostack 渲染器：数组柱状 + 底部栈） */
+export interface MonoStackData {
+	temps: number[];
+	/** 栈中下标（栈底 → 栈顶） */
+	stack: number[];
+	/** 答案数组 */
+	answer: number[];
+	/** 当前扫描位置（-1 = 未开始） */
+	cur: number;
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -206,6 +219,8 @@ export interface GraphEdge {
 export interface GraphData {
 	nodes: GraphNode[];
 	edges: GraphEdge[];
+	/** 布局方式：ring=环形（默认，图算法用）；chain=水平链式（架构/流程用） */
+	layout?: 'ring' | 'chain';
 	/** 有向图（渲染箭头） */
 	directed?: boolean;
 	/** 节点状态覆写（key 为节点 id，缺省 unvisited） */
@@ -301,6 +316,7 @@ export type RenderType =
 	| 'trie'
 	| 'dp-table'
 	| 'union-find'
+	| 'monostack'
 	| 'pseudocode';
 
 /**

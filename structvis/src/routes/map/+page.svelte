@@ -154,6 +154,30 @@
 			desc: '启发式搜索'
 		},
 		{
+			id: 'union-find',
+			title: '并查集',
+			href: '/ds/union-find',
+			topicId: 'union-find',
+			group: '图结构',
+			desc: '路径压缩 · 按秩合并'
+		},
+		{
+			id: 'knapsack',
+			title: '0-1 背包',
+			href: '/ds/knapsack',
+			topicId: 'knapsack',
+			group: '动态规划',
+			desc: '取与不取'
+		},
+		{
+			id: 'lcs',
+			title: 'LCS',
+			href: '/ds/lcs',
+			topicId: 'lcs',
+			group: '动态规划',
+			desc: '最长公共子序列'
+		},
+		{
 			id: 'bubble-sort',
 			title: '冒泡排序',
 			href: '/ds/bubble-sort',
@@ -403,6 +427,9 @@
 		{ from: 'sql', to: 'subquery' },
 		{ from: 'transaction', to: 'isolation' },
 		{ from: 'shortest-path', to: 'astar' },
+		{ from: 'graph-storage', to: 'union-find' },
+		{ from: 'hash-probing', to: 'knapsack' },
+		{ from: 'knapsack', to: 'lcs' },
 		{ from: 'kmp', to: 'trie' },
 		{ from: 'sql', to: 'update' },
 		{ from: 'sql', to: 'view' },
@@ -422,6 +449,7 @@
 		'图结构',
 		'排序算法',
 		'查找',
+		'动态规划',
 		'数据库 · 查询',
 		'数据库 · 设计',
 		'数据库 · 进阶',

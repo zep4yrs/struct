@@ -22,7 +22,14 @@ export interface TopicCard {
 }
 
 /** 侧边栏分组顺序（组内按 topics 数组顺序，即课程教学顺序） */
-export const DS_GROUP_ORDER = ['线性结构', '树形结构', '图结构', '排序算法', '查找'] as const;
+export const DS_GROUP_ORDER = [
+	'线性结构',
+	'树形结构',
+	'图结构',
+	'排序算法',
+	'查找',
+	'动态规划'
+] as const;
 export const DB_GROUP_ORDER = ['基础', '进阶', '设计', '运维'] as const;
 
 export const dsTopics: TopicCard[] = [
@@ -268,6 +275,33 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]A* 寻路[/current]'
+	},
+	{
+		title: '并查集',
+		description: '森林集合 · 路径压缩 · 按秩合并',
+		href: '/ds/union-find',
+		topicId: 'union-find',
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]并查集[/current]'
+	},
+	{
+		title: '0-1 背包',
+		description: '动态规划 · 取与不取的抉择',
+		href: '/ds/knapsack',
+		topicId: 'knapsack',
+		badge: '交互式',
+		group: '动态规划',
+		crumb: '数据结构 / 动态规划 / [current]0-1 背包[/current]'
+	},
+	{
+		title: '最长公共子序列',
+		description: 'LCS · 表格回溯',
+		href: '/ds/lcs',
+		topicId: 'lcs',
+		badge: '交互式',
+		group: '动态规划',
+		crumb: '数据结构 / 动态规划 / [current]LCS[/current]'
 	}
 ];
 

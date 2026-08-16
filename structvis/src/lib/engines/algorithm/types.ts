@@ -74,6 +74,10 @@ export interface AlgorithmStep {
 	hash?: HashData;
 	/** Trie 字典树快照（仅 trie 渲染器使用） */
 	trie?: TrieData;
+	/** 动态规划表格快照（仅 dp-table 渲染器使用：0-1 背包 / LCS） */
+	dp?: DpTableData;
+	/** 并查集森林快照（仅 union-find 渲染器使用） */
+	unionFind?: UnionFindData;
 }
 
 /** Trie 字典树数据 */
@@ -85,6 +89,46 @@ export interface TrieData {
 	active?: number[];
 	/** 本次插入的单词（完整路径标记） */
 	wordPath?: number[];
+}
+
+/** 动态规划表格数据（dp-table 渲染器：0-1 背包 / LCS 共用） */
+export interface DpCellHighlight {
+	row: number;
+	col: number;
+	/** current=刚填写的格子；depend=被引用的前置格子；keep=取上方值；take=取左上值+当前物品 */
+	type: 'current' | 'depend' | 'keep' | 'take';
+}
+
+export interface DpTableData {
+	/** 行头标签（如「物品 1 (w=2, v=3)」或 LCS 的字符） */
+	rowHeaders: string[];
+	/** 列头标签（如「容量 0..C」或 LCS 的字符） */
+	colHeaders: string[];
+	/** 表格值 grid[row][col]（含表头行列，值可为数/字符串） */
+	grid: (string | number)[][];
+	/** 高亮格子 */
+	highlights?: DpCellHighlight[];
+	/** 回溯箭头（LCS 用）：from → to */
+	arrows?: { fromRow: number; fromCol: number; toRow: number; toCol: number }[];
+	/** 角标（左上角说明文字） */
+	cornerLabel?: string;
+	/** 行/列标签说明 */
+	rowLabel?: string;
+	colLabel?: string;
+}
+
+/** 并查集森林数据（union-find 渲染器） */
+export interface UnionFindData {
+	/** 节点列表（id = 数组下标） */
+	nodes: { id: number; label: string }[];
+	/** parent[i] = i 的父节点（自身 = 根） */
+	parent: number[];
+	/** 树边（父 → 子） */
+	edges: { from: number; to: number }[];
+	/** 当前高亮节点（查找路径 / 合并涉及） */
+	active?: number[];
+	/** 根节点集合（可选，用于根标记） */
+	roots?: number[];
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -255,6 +299,8 @@ export type RenderType =
 	| 'er'
 	| 'btree'
 	| 'trie'
+	| 'dp-table'
+	| 'union-find'
 	| 'pseudocode';
 
 /**

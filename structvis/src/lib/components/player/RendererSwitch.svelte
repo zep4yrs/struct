@@ -12,6 +12,8 @@
 	import HuffmanRenderer from '$lib/visualization/huffman/HuffmanRenderer.svelte';
 	import HashtableRenderer from '$lib/visualization/hashtable/HashtableRenderer.svelte';
 	import TrieRenderer from '$lib/visualization/trie/TrieRenderer.svelte';
+	import DpTableRenderer from '$lib/visualization/dptable/DpTableRenderer.svelte';
+	import UnionFindRenderer from '$lib/visualization/unionfind/UnionFindRenderer.svelte';
 
 	interface Props {
 		engine: AlgorithmEngine<unknown>;
@@ -48,4 +50,8 @@
 	<HashtableRenderer steps={engine.steps} {playbackPos} />
 {:else if engine.renderType === 'trie'}
 	<TrieRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'dp-table'}
+	<DpTableRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'union-find'}
+	<UnionFindRenderer steps={engine.steps} {playbackPos} />
 {/if}

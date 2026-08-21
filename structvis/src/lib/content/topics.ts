@@ -286,6 +286,33 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 图 / [current]并查集[/current]'
 	},
 	{
+		title: 'Tarjan 强连通分量',
+		description: 'dfn/low · 一次 DFS 求全部 SCC',
+		href: '/ds/tarjan',
+		topicId: 'tarjan',
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]Tarjan[/current]'
+	},
+	{
+		title: '最大流 Edmonds-Karp',
+		description: '增广路 · 瓶颈推流',
+		href: '/ds/max-flow',
+		topicId: 'max-flow',
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]最大流[/current]'
+	},
+	{
+		title: '二分图判定',
+		description: '交替染色 · 无奇环',
+		href: '/ds/bipartite',
+		topicId: 'bipartite',
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]二分图判定[/current]'
+	},
+	{
 		title: 'B+ 树插入',
 		description: '多路平衡 · 叶满分裂 · 键提升',
 		href: '/ds/bplus-insert',
@@ -302,6 +329,15 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]单调栈[/current]'
+	},
+	{
+		title: '跳表 Skip List',
+		description: '多层链表 · 抛硬币层高 · O(log n)',
+		href: '/ds/skip-list',
+		topicId: 'skip-list',
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 线性表 / [current]跳表[/current]'
 	},
 	{
 		title: '0-1 背包',

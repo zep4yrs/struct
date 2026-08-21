@@ -19,14 +19,12 @@
 - ✅ **MySQL 架构总览**（MySqlArchEngine：连接器→解析器→优化器→执行器→存储引擎 五层链路，chain 布局逐步高亮；/db/mysql-arch）
 - ✅ **单调栈 · 每日温度**（MonotonicStackEngine：单调递减栈 + 批量结算答案；/ds/mono-stack）
 
-## 批次三
+## 批次三 ✅ 已完成（本轮落地）
 
-| 主题                   | 教学点                                 |
-| ---------------------- | -------------------------------------- |
-| 强连通分量 Tarjan      | 时间戳 + 低链接，DFS 树 + 栈内节点着色 |
-| 最大流（Edmonds-Karp） | 增广路 + 残余网络，双向边流量/容量标注 |
-| 二分图判定             | 染色法，交替染色冲突检测               |
-| 跳表 Skip List         | 多层索引、概率平衡，插入逐层下沉       |
+- ✅ **Tarjan 强连通分量**（dfn/low 时间戳 + DFS 栈；/ds/tarjan）
+- ✅ **最大流 Edmonds-Karp**（BFS 增广路 + 瓶颈推流，边标 flow/cap；/ds/max-flow）
+- ✅ **二分图判定**（BFS 交替染色，奇环冲突检测；/ds/bipartite）
+- ✅ **跳表 Skip List**（多层链表 + 抛硬币层高，专用 skiplist 渲染器；/ds/skip-list）
 
 ## 批次四
 

@@ -186,12 +186,44 @@
 			desc: '插入 · 分裂 · 键提升'
 		},
 		{
+			id: 'tarjan',
+			title: 'Tarjan SCC',
+			href: '/ds/tarjan',
+			topicId: 'tarjan',
+			group: '图结构',
+			desc: '强连通分量'
+		},
+		{
+			id: 'max-flow',
+			title: '最大流',
+			href: '/ds/max-flow',
+			topicId: 'max-flow',
+			group: '图结构',
+			desc: 'Edmonds-Karp 增广'
+		},
+		{
+			id: 'bipartite',
+			title: '二分图判定',
+			href: '/ds/bipartite',
+			topicId: 'bipartite',
+			group: '图结构',
+			desc: '交替染色'
+		},
+		{
 			id: 'mono-stack',
 			title: '单调栈',
 			href: '/ds/mono-stack',
 			topicId: 'mono-stack',
 			group: '线性结构',
 			desc: '单调性维护 · O(n)'
+		},
+		{
+			id: 'skip-list',
+			title: '跳表',
+			href: '/ds/skip-list',
+			topicId: 'skip-list',
+			group: '线性结构',
+			desc: '多层链表 · O(log n)'
 		},
 		{
 			id: 'bubble-sort',
@@ -455,6 +487,10 @@
 		{ from: 'hash-probing', to: 'knapsack' },
 		{ from: 'knapsack', to: 'lcs' },
 		{ from: 'bst', to: 'bplus-insert' },
+		{ from: 'graph-traversal', to: 'tarjan' },
+		{ from: 'shortest-path', to: 'max-flow' },
+		{ from: 'graph-traversal', to: 'bipartite' },
+		{ from: 'linear-list', to: 'skip-list' },
 		{ from: 'stack-queue', to: 'mono-stack' },
 		{ from: 'mysql-arch', to: 'sql' },
 		{ from: 'kmp', to: 'trie' },

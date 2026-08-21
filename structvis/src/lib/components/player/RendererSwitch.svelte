@@ -15,6 +15,7 @@
 	import DpTableRenderer from '$lib/visualization/dptable/DpTableRenderer.svelte';
 	import UnionFindRenderer from '$lib/visualization/unionfind/UnionFindRenderer.svelte';
 	import MonotonicStackRenderer from '$lib/visualization/monostack/MonotonicStackRenderer.svelte';
+	import SkipListRenderer from '$lib/visualization/skiplist/SkipListRenderer.svelte';
 
 	interface Props {
 		engine: AlgorithmEngine<unknown>;
@@ -57,4 +58,6 @@
 	<UnionFindRenderer steps={engine.steps} {playbackPos} />
 {:else if engine.renderType === 'monostack'}
 	<MonotonicStackRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'skiplist'}
+	<SkipListRenderer steps={engine.steps} {playbackPos} />
 {/if}

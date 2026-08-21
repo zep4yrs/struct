@@ -80,6 +80,8 @@ export interface AlgorithmStep {
 	unionFind?: UnionFindData;
 	/** 单调栈快照（仅 monostack 渲染器使用） */
 	monoStack?: MonoStackData;
+	/** 跳表快照（仅 skiplist 渲染器使用） */
+	skipList?: SkipListData;
 }
 
 /** Trie 字典树数据 */
@@ -142,6 +144,19 @@ export interface MonoStackData {
 	answer: number[];
 	/** 当前扫描位置（-1 = 未开始） */
 	cur: number;
+}
+
+/** 跳表数据（skiplist 渲染器）：多层有序链表 */
+export interface SkipListData {
+	/** 每层节点（level 0 = 底层完整链表；nodes 为该层节点 key 序列） */
+	levels: { level: number; nodes: number[] }[];
+	/** 当前比较位置 */
+	curLevel: number;
+	curKey: number | null;
+	/** 高亮新插入的键 */
+	insertedKey?: number;
+	/** 说明文字 */
+	note?: string;
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -317,6 +332,7 @@ export type RenderType =
 	| 'dp-table'
 	| 'union-find'
 	| 'monostack'
+	| 'skiplist'
 	| 'pseudocode';
 
 /**

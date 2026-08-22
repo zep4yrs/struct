@@ -1,6 +1,12 @@
 <script lang="ts">
 	import Logo from '$lib/components/ui/Logo.svelte';
 	import { reveal } from '$lib/utils/motion';
+	import { dsTopics, dbTopics } from '$lib/content/topics';
+	import { QUIZ_BANK } from '$lib/content/quiz-bank';
+
+	const topicTotal = dsTopics.length + dbTopics.length;
+	const RACE_ENGINES = 30;
+	const FUN_ENGINES = 9;
 </script>
 
 <div class="mx-auto max-w-7xl px-8 py-16">
@@ -21,13 +27,18 @@
 		>
 			「看见数据结构与数据库的每一步跳动。」
 		</p>
-		<p
-			class="mt-4 max-w-2xl text-base leading-relaxed"
-			style="color: var(--color-ink-3);"
-			use:reveal={{ delay: 260 }}
-		>
-			StructVis 是一款面向自学者的数据结构与数据库可视化学习工具。
-		</p>
+
+		<!-- 关键数字（全部从源码派生，与内容单源同步） -->
+		<div class="mt-10 flex flex-wrap gap-x-10 gap-y-4" use:reveal={{ delay: 300 }}>
+			<div class="stat-chip">
+				<b>{topicTotal}</b><span>个知识点</span>
+			</div>
+			<div class="stat-chip"><b>{dsTopics.length}</b><span>数据结构 · 李春葆教材</span></div>
+			<div class="stat-chip"><b>{dbTopics.length}</b><span>MySQL · 杨宏霞教材</span></div>
+			<div class="stat-chip"><b>{RACE_ENGINES}</b><span>竞速排序引擎</span></div>
+			<div class="stat-chip"><b>{QUIZ_BANK.length}</b><span>自测题库</span></div>
+			<div class="stat-chip"><b>100%</b><span>本地存储 · 零上传</span></div>
+		</div>
 	</section>
 
 	<section class="mb-16">
@@ -45,13 +56,60 @@
 
 	<section class="mb-16">
 		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
+			功能全景
+		</h2>
+		<div class="feature-grid">
+			<div class="feature-block">
+				<h3>学习 · 可视化</h3>
+				<ul>
+					<li>{dsTopics.length} 个数据结构知识点：排序 / 树 / 图 / 线性结构 / 查找 / 动态规划</li>
+					<li>{dbTopics.length} 个 MySQL 知识点：查询 / 窗口函数 / 执行计划 / 事务 / 范式等</li>
+					<li>步进播放器：逐帧、回放、调速、跳步、断点，动画与伪代码同步高亮</li>
+					<li>动手模式：先预测下一步，再亲手点选验证</li>
+				</ul>
+			</div>
+			<div class="feature-block">
+				<h3>练习 · 复习闭环</h3>
+				<ul>
+					<li>四类题型：选择 / 填空 / 拖指针 / 补代码，答错立刻给正确答案与解析</li>
+					<li>错题本自动收集，SRS 间隔复习排期（到期提醒）</li>
+					<li>每日一题：全站每天同一题，60 秒微学习</li>
+					<li>章节自测：{QUIZ_BANK.length} 道题按章随机抽题限时作答，成绩回写掌握度</li>
+				</ul>
+			</div>
+			<div class="feature-block">
+				<h3>竞技 · 洞察</h3>
+				<ul>
+					<li>
+						竞速实验室：{RACE_ENGINES}
+						个排序引擎同屏竞速——{RACE_ENGINES - FUN_ENGINES}
+						条经典跑道 + {FUN_ENGINES} 条玩梗跑道（Stalin / Thanos / 量子 Bogo…）
+					</li>
+					<li>技能图谱：知识点前置依赖网络，规划学习路径</li>
+					<li>掌握度雷达、学习热力图、一键生成学习报告</li>
+				</ul>
+			</div>
+			<div class="feature-block">
+				<h3>讲授 · 分享</h3>
+				<ul>
+					<li>投影模式：全屏大字号旁白，键盘翻页，适合课堂大屏</li>
+					<li>讲授剧本：每步旁白可导入 / 导出 / 重置，配套预录语音朗读</li>
+					<li>状态分享链接：复制 URL 即恢复当前输入、步数与速度</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<section class="mb-16">
+		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 			不是什么
 		</h2>
 		<ul class="max-w-3xl list-disc space-y-2 pl-6 text-base" style="color: var(--color-ink-2);">
 			<li>不是通用算法可视化网站（不是给所有人看的炫技 Demo）</li>
 			<li>不是在线 IDE（不是用来写项目的）</li>
-			<li>不是题库平台（不是刷选择题的）</li>
+			<li>不是题库平台（不刷无解析的选择题）</li>
 			<li>不是课程平台（不卖课、不做视频）</li>
+			<li>没有账号体系——进度只存在你的浏览器里，可随时导出备份</li>
 		</ul>
 	</section>
 
@@ -61,32 +119,30 @@
 			<li>教材对齐的自学辅助工具 — 跟着《数据结构教程》和《数据库技术及应用（MySQL）》的章节走</li>
 			<li>交互式步进可视化 — 不是看动画，是每一步都可以暂停、可以自己操作、可以试错</li>
 			<li>即时反馈的练习系统 — 做错了立刻告诉你为什么错，不是只给一个答案</li>
-			<li>本地进度追踪 — 学到哪了、掌握了多少、错了哪些，全在本地存着</li>
+			<li>本地进度追踪 — 学到哪了、掌握了多少、错了哪些，全在本地存着，支持导入导出备份</li>
 		</ul>
 	</section>
 
 	<section class="mb-16">
 		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">技术栈</h2>
 		<ul class="max-w-3xl list-disc space-y-2 pl-6 text-base" style="color: var(--color-ink-2);">
-			<li>Svelte 5 + SvelteKit</li>
-			<li>Tailwind v4</li>
-			<li>GSAP</li>
-			<li>Vitest + Playwright</li>
-			<li>adapter-static（纯静态部署）</li>
+			<li>Svelte 5 + SvelteKit（adapter-static 纯静态部署，GitHub Pages）</li>
+			<li>Tailwind v4 + 自研设计 token（亮 / 暗双主题，AA 对比度基线）</li>
+			<li>Canvas 渲染器插件体系 + GSAP 时间线动画</li>
+			<li>three.js 全站粒子背景（可在设置中关闭）· anime.js 数据动效 · sql.js 浏览器内 SQL 执行</li>
+			<li>Web Speech API 讲授朗读（含预录神经语音回落）</li>
+			<li>Vitest（480+ 单测）+ Playwright（42 条端到端，含视觉截图基线）</li>
 		</ul>
 	</section>
 
 	<section class="mb-16">
 		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
-			当前状态
+			数据与隐私
 		</h2>
 		<p class="max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
-			v2.0 正式版。已实现数据结构 19
-			课：排序（快速/冒泡/插入/选择/归并）、树（二叉树遍历/二叉搜索树/哈夫曼）、图（存储/遍历/最短路径/最小生成树/拓扑排序/关键路径）、线性表、栈和队列、KMP、二分查找、哈希表。已实现数据库
-			15 课：数据库系统概述、SELECT
-			查询、高级查询、窗口函数、执行计划与索引选择、建表练习、数据更新、视图、索引、触发器、存储过程、E-R
-			模型、关系规范化、事务与并发、用户与权限管理。全部支持步进可视化、即时练习反馈、错题本与掌握度追踪；v2.0
-			新增三类交互题型、可导入导出的讲授剧本与移动端优化。
+			掌握度、错题本、连续学习天数等所有学习数据仅保存在你的浏览器 localStorage
+			中，不上传任何服务器。进度页提供一键导出 /
+			导入备份；隐私模式下若写入失败会明确提示，绝不静默丢数据。
 		</p>
 	</section>
 
@@ -95,8 +151,8 @@
 			开源协议
 		</h2>
 		<p class="max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
-			本项目以 GPL-3.0（GNU General Public License v3.0）开源，Copyright (c) 2026 枫桥 (zep4yrs)。
-			你可以自由使用、修改、分发本项目，但基于本项目的衍生作品必须同样以 GPL-3.0
+			本项目以 GPL-3.0（GNU General Public License v3.0）开源，Copyright (c) 2026 枫桥
+			(zep4yrs)。你可以自由使用、修改、分发本项目，但基于本项目的衍生作品必须同样以 GPL-3.0
 			开源——防止有人拿去闭源商用。完整许可文本见仓库 LICENSE 文件。
 		</p>
 	</section>
@@ -109,3 +165,78 @@
 		<span>© 2026 枫桥 (zep4yrs)</span>
 	</footer>
 </div>
+
+<style>
+	.stat-chip {
+		display: flex;
+		align-items: baseline;
+		gap: 6px;
+	}
+
+	.stat-chip b {
+		font-family: var(--font-mono);
+		font-size: 22px;
+		font-weight: 600;
+		color: var(--color-accent-text);
+	}
+
+	.stat-chip span {
+		font-size: 12px;
+		color: var(--color-ink-2);
+	}
+
+	.feature-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 28px;
+		max-width: 1080px;
+	}
+
+	.feature-block {
+		padding: 18px 22px;
+		border: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-md);
+		background: var(--color-surface);
+		-webkit-backdrop-filter: blur(10px) saturate(1.4);
+		backdrop-filter: blur(10px) saturate(1.4);
+	}
+
+	.feature-block h3 {
+		font-family: var(--font-display);
+		font-size: 17px;
+		font-weight: 600;
+		margin: 0 0 12px;
+		color: var(--color-ink);
+	}
+
+	.feature-block ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.feature-block li {
+		position: relative;
+		padding-left: 14px;
+		font-size: 13px;
+		line-height: 1.7;
+		color: var(--color-ink-2);
+	}
+
+	.feature-block li::before {
+		content: '·';
+		position: absolute;
+		left: 2px;
+		color: var(--color-accent-text);
+		font-weight: 700;
+	}
+
+	@media (max-width: 860px) {
+		.feature-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

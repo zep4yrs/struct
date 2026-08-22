@@ -3,7 +3,10 @@
 	import { animate, stagger, spring } from 'animejs';
 	import { resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
+	import { QUIZ_BANK } from '$lib/content/quiz-bank';
 	import { reveal, revealOnScroll, prefersReducedMotion } from '$lib/utils/motion';
+
+	const topicTotal = dsTopics.length + dbTopics.length;
 
 	let titleLine1: HTMLSpanElement | undefined = $state();
 	let titleLine2: HTMLSpanElement | undefined = $state();
@@ -183,16 +186,75 @@
 	</div>
 </section>
 
-<!-- ══════════ 02 · 学什么 ══════════ -->
+<!-- ══════════ 02 · 学完之后：检验与竞技 ══════════ -->
 <section class="home-section">
 	<div class="home-chapter">
 		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll={{ loop: 'breathe' }}
 			>02</span
 		>
 		<div>
+			<span class="section-label" use:revealOnScroll={{ delay: 40 }}>学完之后</span>
+			<h2 class="home-h2" use:revealOnScroll={{ delay: 80, split: true }}>检验、竞技与复盘</h2>
+		</div>
+	</div>
+
+	<div class="home-tools">
+		<a
+			href={resolve('/quiz')}
+			class="home-tool no-underline"
+			use:revealOnScroll={{ delay: 120, loop: 'float' }}
+		>
+			<span class="home-tool-num">01</span>
+			<h3 class="home-tool-title">章节自测</h3>
+			<p>{QUIZ_BANK.length} 道题库按章随机抽题，5 分钟限时，成绩直接写回掌握度。</p>
+			<span class="home-tool-meta">去自测 →</span>
+		</a>
+
+		<a
+			href={resolve('/race')}
+			class="home-tool no-underline"
+			use:revealOnScroll={{ delay: 200, loop: 'float' }}
+		>
+			<span class="home-tool-num">02</span>
+			<h3 class="home-tool-title">竞速实验室</h3>
+			<p>30 个排序引擎同屏竞速——21 条经典跑道对垒 9 条玩梗跑道，复杂度一目了然。</p>
+			<span class="home-tool-meta">开赛 →</span>
+		</a>
+
+		<a
+			href={resolve('/map')}
+			class="home-tool no-underline"
+			use:revealOnScroll={{ delay: 280, loop: 'float' }}
+		>
+			<span class="home-tool-num">03</span>
+			<h3 class="home-tool-title">技能图谱</h3>
+			<p>{topicTotal} 个知识点的前置依赖网络，看清「先学什么、再去哪里」。</p>
+			<span class="home-tool-meta">看图谱 →</span>
+		</a>
+
+		<a
+			href={resolve('/report')}
+			class="home-tool no-underline"
+			use:revealOnScroll={{ delay: 360, loop: 'float' }}
+		>
+			<span class="home-tool-num">04</span>
+			<h3 class="home-tool-title">学习报告</h3>
+			<p>掌握度雷达、热力图与错题分布，一键生成可分享的阶段总结。</p>
+			<span class="home-tool-meta">生成报告 →</span>
+		</a>
+	</div>
+</section>
+
+<!-- ══════════ 03 · 学什么 ══════════ -->
+<section class="home-section">
+	<div class="home-chapter">
+		<span class="home-chapter-num" aria-hidden="true" use:revealOnScroll={{ loop: 'breathe' }}
+			>03</span
+		>
+		<div>
 			<span class="section-label" use:revealOnScroll={{ delay: 40 }}>学什么</span>
 			<h2 class="home-h2" use:revealOnScroll={{ delay: 80, split: true }}>
-				两门课，{dsTopics.length + dbTopics.length} 个知识点
+				两门课，{topicTotal} 个知识点
 			</h2>
 		</div>
 	</div>
@@ -457,15 +519,74 @@
 		color: var(--color-ink-3);
 	}
 
+	/* === 碑式工具入口（学完之后） === */
+	.home-tools {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.home-tool {
+		display: block;
+		padding: 8px 28px;
+		transition: background 0.2s var(--ease-out);
+	}
+
+	.home-tool + .home-tool {
+		border-left: 1px solid var(--color-line-hair);
+	}
+
+	.home-tool:hover {
+		background: var(--color-subtle);
+	}
+
+	.home-tool-num {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.2em;
+		color: var(--color-ink-3);
+		margin-bottom: 18px;
+	}
+
+	.home-tool-title {
+		font-family: var(--font-display);
+		font-size: 19px;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		margin: 0 0 10px;
+		color: var(--color-ink);
+		transition: color 0.2s var(--ease-out);
+	}
+
+	.home-tool:hover .home-tool-title {
+		color: var(--color-accent-text);
+	}
+
+	.home-tool p {
+		font-size: 13px;
+		line-height: 1.8;
+		color: var(--color-ink-2);
+		margin-bottom: 14px;
+	}
+
+	.home-tool-meta {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.12em;
+		color: var(--color-accent-text);
+	}
+
 	@media (max-width: 760px) {
 		.home-features,
-		.home-courses {
+		.home-courses,
+		.home-tools {
 			grid-template-columns: 1fr;
 			gap: 36px;
 		}
 
 		.home-feature + .home-feature,
-		.home-course + .home-course {
+		.home-course + .home-course,
+		.home-tool + .home-tool {
 			border-left: none;
 			border-top: 1px solid var(--color-line-hair);
 			padding-top: 28px;

@@ -205,6 +205,15 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 线性表 / [current]Sunday[/current]'
 	},
 	{
+		title: '最长回文子串',
+		description: '中心扩展 · 相似度基础',
+		href: '/ds/manacher',
+		topicId: 'manacher',
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 串 / [current]最长回文子串[/current]'
+	},
+	{
 		title: '二叉搜索树',
 		description: '查找 · 插入 · 删除',
 		href: '/ds/bst',
@@ -313,6 +322,24 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 图 / [current]割点检测[/current]'
 	},
 	{
+		title: 'LCA 最近公共祖先',
+		description: '倍增上跳 · O(log n) 查询',
+		href: '/ds/lca',
+		topicId: 'lca',
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]LCA[/current]'
+	},
+	{
+		title: 'Bellman-Ford 最短路',
+		description: '负权松弛 · 负环检测',
+		href: '/ds/bellman-ford',
+		topicId: 'bellman-ford',
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]Bellman-Ford[/current]'
+	},
+	{
 		title: '最大流 Edmonds-Karp',
 		description: '增广路 · 瓶颈推流',
 		href: '/ds/max-flow',
@@ -356,6 +383,15 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]跳表[/current]'
+	},
+	{
+		title: '树状数组 Fenwick Tree',
+		description: 'lowbit 跳跃 · 前缀和 O(log n)',
+		href: '/ds/fenwick-tree',
+		topicId: 'fenwick-tree',
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 线性表 / [current]树状数组[/current]'
 	},
 	{
 		title: 'LRU 缓存',

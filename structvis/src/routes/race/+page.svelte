@@ -8,6 +8,28 @@
 	import { HeapSortEngine } from '$lib/engines/algorithm/basicsort/HeapSortEngine';
 	import { ShellSortEngine } from '$lib/engines/algorithm/basicsort/ShellSortEngine';
 	import { RadixSortEngine } from '$lib/engines/algorithm/basicsort/RadixSortEngine';
+	import { CocktailSortEngine } from '$lib/engines/algorithm/sortextra/CocktailSortEngine';
+	import { CombSortEngine } from '$lib/engines/algorithm/sortextra/CombSortEngine';
+	import { OddEvenSortEngine } from '$lib/engines/algorithm/sortextra/OddEvenSortEngine';
+	import { CycleSortEngine } from '$lib/engines/algorithm/sortextra/CycleSortEngine';
+	import { PatienceSortEngine } from '$lib/engines/algorithm/sortextra/PatienceSortEngine';
+	import { BitonicSortEngine } from '$lib/engines/algorithm/sortextra/BitonicSortEngine';
+	import { Quick3WayEngine } from '$lib/engines/algorithm/sortextra/Quick3WayEngine';
+	import { DualPivotQuickSortEngine } from '$lib/engines/algorithm/sortextra/DualPivotQuickSortEngine';
+	import { NaturalMergeSortEngine } from '$lib/engines/algorithm/sortextra/NaturalMergeSortEngine';
+	import { StoogeSortEngine } from '$lib/engines/algorithm/sortextra/StoogeSortEngine';
+	import { CountingSortEngine } from '$lib/engines/algorithm/sortextra/CountingSortEngine';
+	import { ThanosSortEngine } from '$lib/engines/algorithm/sortextra/ThanosSortEngine';
+	import { StalinSortEngine } from '$lib/engines/algorithm/sortextra/StalinSortEngine';
+	import { BogoSortEngine } from '$lib/engines/algorithm/sortextra/BogoSortEngine';
+	import { BozoSortEngine } from '$lib/engines/algorithm/sortextra/BozoSortEngine';
+	import { GnomeSortEngine } from '$lib/engines/algorithm/sortextra/GnomeSortEngine';
+	import { PancakeSortEngine } from '$lib/engines/algorithm/sortextra/PancakeSortEngine';
+	import { WorstSortEngine } from '$lib/engines/algorithm/sortextra/WorstSortEngine';
+	import { SleepSortEngine } from '$lib/engines/algorithm/sortextra/SleepSortEngine';
+	import { QuantumBogoSortEngine } from '$lib/engines/algorithm/sortextra/QuantumBogoSortEngine';
+	import { IntelligentDesignSortEngine } from '$lib/engines/algorithm/sortextra/IntelligentDesignSortEngine';
+	import { ProcrastinationSortEngine } from '$lib/engines/algorithm/sortextra/ProcrastinationSortEngine';
 	import RendererSwitch from '$lib/components/player/RendererSwitch.svelte';
 	import { STEP_DURATIONS } from '$lib/components/player/TimelineController';
 	import type { AlgorithmEngine } from '$lib/engines/algorithm/types';
@@ -77,6 +99,160 @@
 			complexity: 'O(d·n)',
 			color: '#be185d',
 			make: () => new RadixSortEngine()
+		},
+		{
+			id: 'cocktail-sort',
+			name: '鸡尾酒排序',
+			complexity: 'O(n²)',
+			color: '#b45309',
+			make: () => new CocktailSortEngine()
+		},
+		{
+			id: 'comb-sort',
+			name: '梳排序',
+			complexity: '≈O(n²/2^p)',
+			color: '#7c2d12',
+			make: () => new CombSortEngine()
+		},
+		{
+			id: 'oddeven-sort',
+			name: '奇偶排序',
+			complexity: 'O(n²)',
+			color: '#334155',
+			make: () => new OddEvenSortEngine()
+		},
+		{
+			id: 'cycle-sort',
+			name: '圈排序',
+			complexity: '写O(n)',
+			color: '#065f46',
+			make: () => new CycleSortEngine()
+		},
+		{
+			id: 'patience-sort',
+			name: '耐心排序',
+			complexity: 'O(n log n)',
+			color: '#0e7490',
+			make: () => new PatienceSortEngine()
+		},
+		{
+			id: 'bitonic-sort',
+			name: '双调排序',
+			complexity: 'O(n log²n)',
+			color: '#4c1d95',
+			make: () => new BitonicSortEngine()
+		},
+		{
+			id: 'quick3way',
+			name: '三路快排',
+			complexity: 'O(n log n)',
+			color: '#a16207',
+			make: () => new Quick3WayEngine()
+		},
+		{
+			id: 'dualpivot',
+			name: '双轴快排',
+			complexity: 'O(n log n)',
+			color: '#166534',
+			make: () => new DualPivotQuickSortEngine()
+		},
+		{
+			id: 'natural-merge',
+			name: '自然归并',
+			complexity: '自适应',
+			color: '#1d4ed8',
+			make: () => new NaturalMergeSortEngine()
+		},
+		{
+			id: 'stooge-sort',
+			name: '斯托奇排序',
+			complexity: 'O(n^2.7)',
+			color: '#991b1b',
+			make: () => new StoogeSortEngine()
+		},
+		{
+			id: 'counting-sort',
+			name: '计数排序',
+			complexity: 'O(n+k)',
+			color: '#0f766e',
+			make: () => new CountingSortEngine()
+		},
+		{
+			id: 'thanos-sort',
+			name: '灭霸排序',
+			complexity: '响指减半',
+			color: '#525252',
+			make: () => new ThanosSortEngine()
+		},
+		{
+			id: 'stalin-sort',
+			name: '斯大林排序',
+			complexity: 'O(n)清除',
+			color: '#7f1d1d',
+			make: () => new StalinSortEngine()
+		},
+		{
+			id: 'bogo-sort',
+			name: '猴子排序',
+			complexity: 'O(n·n!)',
+			color: '#581c87',
+			make: () => new BogoSortEngine()
+		},
+		{
+			id: 'bozo-sort',
+			name: '博佐排序',
+			complexity: '随机交换',
+			color: '#6b21a8',
+			make: () => new BozoSortEngine()
+		},
+		{
+			id: 'gnome-sort',
+			name: '地精排序',
+			complexity: 'O(n²)',
+			color: '#365314',
+			make: () => new GnomeSortEngine()
+		},
+		{
+			id: 'pancake-sort',
+			name: '煎饼排序',
+			complexity: '≤2n-3翻转',
+			color: '#92400e',
+			make: () => new PancakeSortEngine()
+		},
+		{
+			id: 'worst-sort',
+			name: '最差排序',
+			complexity: 'O(n×n!)',
+			color: '#450a0a',
+			make: () => new WorstSortEngine()
+		},
+		{
+			id: 'sleep-sort',
+			name: '睡眠排序',
+			complexity: 'O(max值)',
+			color: '#0c4a6e',
+			make: () => new SleepSortEngine()
+		},
+		{
+			id: 'quantum-bogo',
+			name: '量子猴排',
+			complexity: 'O(1)*',
+			color: '#1e1b4b',
+			make: () => new QuantumBogoSortEngine()
+		},
+		{
+			id: 'intelligent-design',
+			name: '智能设计',
+			complexity: '宣告有序',
+			color: '#3f3f46',
+			make: () => new IntelligentDesignSortEngine()
+		},
+		{
+			id: 'procrastination',
+			name: '拖延排序',
+			complexity: 'O(∞)',
+			color: '#171717',
+			make: () => new ProcrastinationSortEngine()
 		}
 	] as const;
 

@@ -27,3 +27,5 @@ vite.config.ts.timestamp-*
 
 # Build output (adapter-static) — committed to repo for GitHub Pages
 # /docs
+# 本地审计临时脚本
+.audit-tmp/

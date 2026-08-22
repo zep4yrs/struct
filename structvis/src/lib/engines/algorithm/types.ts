@@ -82,6 +82,10 @@ export interface AlgorithmStep {
 	monoStack?: MonoStackData;
 	/** 跳表快照（仅 skiplist 渲染器使用） */
 	skipList?: SkipListData;
+	/** Sunday 匹配快照（仅 sunday 渲染器使用） */
+	sunday?: SundayData;
+	/** 八皇后棋盘快照（仅 queens 渲染器使用） */
+	queens?: QueensData;
 }
 
 /** Trie 字典树数据 */
@@ -157,6 +161,39 @@ export interface SkipListData {
 	insertedKey?: number;
 	/** 说明文字 */
 	note?: string;
+}
+
+/** Sunday 匹配数据（sunday 渲染器）：文本行 + 模式行 + 偏移表 */
+export interface SundayData {
+	text: string;
+	pattern: string;
+	/** 模式对齐到文本的起始下标 */
+	align: number;
+	/** 当前比较位置（文本下标） */
+	cur: number;
+	/** 本帧表现 */
+	phase: 'compare' | 'match-char' | 'mismatch' | 'shift' | 'found' | 'failed';
+	/** 偏移表：每个字符 → 在模式中最右出现位置（1-based 从右数），未出现为 pattern.length+1 */
+	offset: Record<string, number>;
+	/** 对齐后参与判定的下一个文本字符 */
+	nextChar?: string;
+}
+
+/** 八皇后棋盘数据（queens 渲染器） */
+export interface QueensData {
+	/** 棋盘边长（N=8） */
+	n: number;
+	/** 已放置的皇后：每项为该行的列下标（index=行号） */
+	placed: number[];
+	/** 当前试探的格子（row, col；-1 表示无 */
+	curRow: number;
+	curCol: number;
+	/** 冲突的格子列表 */
+	conflicts?: { row: number; col: number }[];
+	/** 本帧表现 */
+	phase: 'try' | 'conflict' | 'place' | 'backtrack' | 'solution';
+	/** 解编号 */
+	solutionIndex?: number;
 }
 
 /** SQL 表格数据（sql-table 渲染器） */
@@ -333,6 +370,8 @@ export type RenderType =
 	| 'union-find'
 	| 'monostack'
 	| 'skiplist'
+	| 'sunday'
+	| 'queens'
 	| 'pseudocode';
 
 /**

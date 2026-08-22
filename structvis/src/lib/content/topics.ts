@@ -196,6 +196,15 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 线性表 / [current]串的模式匹配（KMP）[/current]'
 	},
 	{
+		title: 'Sunday 匹配',
+		description: '偏移表 · 大步跳跃 · 平均 O(n)',
+		href: '/ds/sunday',
+		topicId: 'sunday',
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 线性表 / [current]Sunday[/current]'
+	},
+	{
 		title: '二叉搜索树',
 		description: '查找 · 插入 · 删除',
 		href: '/ds/bst',
@@ -340,6 +349,24 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 线性表 / [current]跳表[/current]'
 	},
 	{
+		title: 'LRU 缓存',
+		description: '哈希+双向链表 · O(1) 淘汰',
+		href: '/ds/lru-cache',
+		topicId: 'lru-cache',
+		badge: '交互式',
+		group: '线性结构',
+		crumb: '数据结构 / 线性表 / [current]LRU 缓存[/current]'
+	},
+	{
+		title: 'N 皇后回溯',
+		description: '冲突剪枝 · 状态回退',
+		href: '/ds/n-queens',
+		topicId: 'n-queens',
+		badge: '交互式',
+		group: '回溯算法',
+		crumb: '数据结构 / 回溯 / [current]N 皇后[/current]'
+	},
+	{
 		title: '0-1 背包',
 		description: '动态规划 · 取与不取的抉择',
 		href: '/ds/knapsack',
@@ -368,6 +395,33 @@ export const dbTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '基础',
 		crumb: '数据库 / [current]MySQL 架构总览[/current]'
+	},
+	{
+		title: '锁机制与死锁',
+		description: '排他锁 · 循环等待 · 等待图检测',
+		href: '/db/lock-deadlock',
+		topicId: 'lock-deadlock',
+		badge: '交互式',
+		group: '基础',
+		crumb: '数据库 / [current]锁机制与死锁[/current]'
+	},
+	{
+		title: 'InnoDB 日志体系',
+		description: 'undo/redo/binlog · 两阶段提交',
+		href: '/db/innodb-log',
+		topicId: 'innodb-log',
+		badge: '交互式',
+		group: '基础',
+		crumb: '数据库 / [current]InnoDB 日志体系[/current]'
+	},
+	{
+		title: '主从复制',
+		description: '三线程 · relay log · 读写分离',
+		href: '/db/replication',
+		topicId: 'replication',
+		badge: '交互式',
+		group: '基础',
+		crumb: '数据库 / [current]主从复制[/current]'
 	},
 	{
 		title: '数据库系统概述',

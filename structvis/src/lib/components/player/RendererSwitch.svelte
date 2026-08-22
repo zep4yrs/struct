@@ -16,6 +16,8 @@
 	import UnionFindRenderer from '$lib/visualization/unionfind/UnionFindRenderer.svelte';
 	import MonotonicStackRenderer from '$lib/visualization/monostack/MonotonicStackRenderer.svelte';
 	import SkipListRenderer from '$lib/visualization/skiplist/SkipListRenderer.svelte';
+	import SundayRenderer from '$lib/visualization/sunday/SundayRenderer.svelte';
+	import QueensRenderer from '$lib/visualization/queens/QueensRenderer.svelte';
 
 	interface Props {
 		engine: AlgorithmEngine<unknown>;
@@ -60,4 +62,8 @@
 	<MonotonicStackRenderer steps={engine.steps} {playbackPos} />
 {:else if engine.renderType === 'skiplist'}
 	<SkipListRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'sunday'}
+	<SundayRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'queens'}
+	<QueensRenderer steps={engine.steps} {playbackPos} />
 {/if}

@@ -16,7 +16,7 @@
 	}
 </script>
 
-<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
 	{#each topics as topic, i (topic.title)}
 		<a
 			use:revealOnScroll={{ delay: (i % 8) * 55 }}

@@ -279,6 +279,21 @@
 	// data 变化（换数据/换长度）时自动重建全部跑道
 	const racers = $derived(buildRacers(data));
 
+	// === 经典 / 娱乐分组（用户反馈：30 条跑道混排无法区分教学与玩梗） ===
+	const FUN_IDS: ReadonlySet<string> = new Set([
+		'thanos-sort',
+		'stalin-sort',
+		'bogo-sort',
+		'bozo-sort',
+		'worst-sort',
+		'sleep-sort',
+		'quantum-bogo',
+		'intelligent-design',
+		'procrastination'
+	]);
+	const classicRacers = $derived(racers.filter((r) => !FUN_IDS.has(r.id)));
+	const funRacers = $derived(racers.filter((r) => FUN_IDS.has(r.id)));
+
 	// === 真竞速：每引擎独立时间线（每步按真实类型时长，与播放器完全一致） ===
 	let elapsedMs = $state(0); // 比赛进行时间（逻辑时间，speed 作用于推进速率）
 	let playing = $state(false);
@@ -551,36 +566,50 @@
 			{/if}
 		</div>
 	</div>
-	<!-- 跑道 -->
-	<div class="race-grid">
-		{#each racers as r (r.id)}
-			<div class="race-lane glass" use:reveal>
-				<div class="race-lane-head">
-					<div class="race-lane-title">
-						<span class="race-lane-dot" style="background: {r.color};"></span>
-						<span class="race-lane-name">{r.name}</span>
-						<span class="tag" style="border-color: {r.color}; color: {r.color};"
-							>{r.complexity}</span
-						>
-					</div>
-					{#if isDone(r)}
-						<span class="race-crown">{winner?.id === r.id ? '冠军' : '完成'}</span>
-					{/if}
+	<!-- 跑道：经典 / 娱乐 两组 -->
+	{#snippet lane(r: Racer)}
+		<div class="race-lane glass" use:reveal>
+			<div class="race-lane-head">
+				<div class="race-lane-title">
+					<span class="race-lane-dot" style="background: {r.color};"></span>
+					<span class="race-lane-name">{r.name}</span>
+					<span class="tag" style="border-color: {r.color}; color: {r.color};">{r.complexity}</span>
 				</div>
-				<div class="race-canvas">
-					<RendererSwitch engine={r.engine} playbackPos={posOf(r)} />
-					{#if !isDone(r) && playing}
-						<div class="race-lane-progress" style="width: {raceProgress(r) * 100}%;"></div>
-					{/if}
-				</div>
-				<div class="race-lane-stats">
-					<span class="race-stat">步数 <b>{r.engine.steps.length}</b></span>
-					<span class="race-stat">操作 <b>{opCount(r, stepOf(r))}</b> / {totalOps(r)}</span>
-					{#if isDone(r)}
-						<span class="race-stat">用时 <b>{(totalDurMs(r) / 1000).toFixed(1)}s</b></span>
-					{/if}
-				</div>
+				{#if isDone(r)}
+					<span class="race-crown">{winner?.id === r.id ? '冠军' : '完成'}</span>
+				{/if}
 			</div>
+			<div class="race-canvas">
+				<RendererSwitch engine={r.engine} playbackPos={posOf(r)} />
+				{#if !isDone(r) && playing}
+					<div class="race-lane-progress" style="width: {raceProgress(r) * 100}%;"></div>
+				{/if}
+			</div>
+			<div class="race-lane-stats">
+				<span class="race-stat">步数 <b>{r.engine.steps.length}</b></span>
+				<span class="race-stat">操作 <b>{opCount(r, stepOf(r))}</b> / {totalOps(r)}</span>
+				{#if isDone(r)}
+					<span class="race-stat">用时 <b>{(totalDurMs(r) / 1000).toFixed(1)}s</b></span>
+				{/if}
+			</div>
+		</div>
+	{/snippet}
+
+	<div class="race-grid">
+		<div class="race-group-head">
+			<span class="section-label">经典算法</span>
+			<span class="chapter-count">{classicRacers.length} 条跑道 · 教材标准实现</span>
+		</div>
+		{#each classicRacers as r (r.id)}
+			{@render lane(r)}
+		{/each}
+
+		<div class="race-group-head">
+			<span class="section-label">娱乐算法</span>
+			<span class="chapter-count">{funRacers.length} 条跑道 · 玩梗与思想实验，图一乐</span>
+		</div>
+		{#each funRacers as r (r.id)}
+			{@render lane(r)}
 		{/each}
 	</div>
 
@@ -818,9 +847,43 @@
 
 	.race-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: 1fr;
 		gap: 14px;
 		margin-bottom: 20px;
+	}
+
+	/* 全屏（≥1440px）4 列；1024–1439 3 列；640–1023 2 列 */
+	@media (min-width: 640px) {
+		.race-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.race-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 1440px) {
+		.race-grid {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+	}
+
+	/* 组标题行：横跨整行 */
+	.race-group-head {
+		grid-column: 1 / -1;
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+		padding-top: 14px;
+		border-top: 1px solid var(--color-line-hair);
+	}
+
+	.race-group-head:first-child {
+		padding-top: 0;
+		border-top: none;
 	}
 
 	.race-lane {

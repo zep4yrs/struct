@@ -33,7 +33,7 @@ src/
 │   ├── content/          # 课程目录（topics.ts，导航/面包屑/搜索的唯一数据源）
 │   ├── stores/           # progress / settings（localStorage 持久化，带版本迁移）
 │   └── styles/           # app.css 设计 token（亮/暗双主题）
-├── routes/               # 31 个页面（/、/catalog、ds×19、db×13、/progress、/settings、/about）
+├── routes/               # 84 个页面（/、/catalog、ds×48、db×24、/progress、/quiz、/race、/map、/report、/settings、/about）
 ├── test/                 # canvas-mock 记录式 2D 上下文
 └── test-setup.ts         # jsdom 测试基建
 e2e/                      # Playwright 端到端测试

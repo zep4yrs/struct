@@ -685,3 +685,57 @@ export const dbTopics: TopicCard[] = [
 		crumb: '数据库 / [current]用户与权限管理[/current]'
 	}
 ];
+
+/**
+ * 搜索别名表（audit-9）：key = TopicCard.href，value = 额外可命中的关键词。
+ * 全站搜索在 title/description 之外追加匹配这些别名（缩写 / 英文 / 常见叫法）。
+ */
+export const TOPIC_ALIASES: Record<string, string[]> = {
+	'/ds/linear-list': ['链表', 'linked list'],
+	'/ds/kmp': ['kmp', '模式匹配', '字符串匹配'],
+	'/ds/sunday': ['sunday', ' sunday算法'],
+	'/ds/manacher': ['manacher', '回文'],
+	'/ds/skip-list': ['skiplist', '跳表'],
+	'/ds/fenwick-tree': ['fenwick', 'bit', '树状数组'],
+	'/ds/lru-cache': ['lru', '缓存'],
+	'/ds/bst': ['bst', '搜索树'],
+	'/ds/huffman': ['huffman', '霍夫曼'],
+	'/ds/avl': ['avl', '平衡二叉树'],
+	'/ds/rbtree': ['红黑树', 'red-black', 'rbtree'],
+	'/ds/bplus-insert': ['b+树', 'bplus', 'b树'],
+	'/ds/mst': ['mst', 'kruskal', 'prim'],
+	'/ds/shortest-path': ['dijkstra', '迪杰斯特拉', '最短路', 'spfa'],
+	'/ds/topo-sort': ['拓扑'],
+	'/ds/astar': ['a*', 'a star', '启发式搜索'],
+	'/ds/union-find': ['并查集', 'union find', 'dsu'],
+	'/ds/tarjan': ['tarjan', '强连通'],
+	'/ds/lca': ['最近公共祖先', 'lowest common'],
+	'/ds/max-flow': ['网络流', 'edmonds', 'ford'],
+	'/ds/hash-table': ['散列表', 'hash'],
+	'/ds/hash-probing': ['线性探测', '开放寻址', 'probing'],
+	'/ds/knapsack': ['背包', '01背包', 'dp'],
+	'/ds/complete-knapsack': ['完全背包', 'dp'],
+	'/ds/lcs': ['最长公共子序列', 'lcs'],
+	'/ds/lis': ['最长递增子序列', 'lis'],
+	'/ds/edit-distance': ['levenshtein', '编辑距离'],
+	'/ds/trie': ['字典树', '前缀树'],
+	'/ds/radix-sort': ['基数排序', '桶排序'],
+	'/ds/counting-sort': ['计数排序', '桶排序'],
+	'/db/sql': ['select', '查询', 'dql'],
+	'/db/advanced-query': ['having', 'group by', '分组'],
+	'/db/window-function': ['窗口函数', 'over', 'rank'],
+	'/db/explain-plan': ['explain', '执行计划'],
+	'/db/join': ['join', '连接查询'],
+	'/db/left-join': ['left join', '左连接'],
+	'/db/subquery': ['子查询', '嵌套查询'],
+	'/db/index': ['index', 'b+树索引', 'innodb'],
+	'/db/transaction': ['acid', 'mvcc', '隔离级别'],
+	'/db/isolation': ['隔离级别', '锁'],
+	'/db/lock-deadlock': ['死锁', '行锁'],
+	'/db/normalize': ['范式', '3nf', '函数依赖'],
+	'/db/er': ['er图', 'e-r', '实体关系'],
+	'/db/view': ['视图', 'view'],
+	'/db/triggers': ['触发器', 'trigger'],
+	'/db/procedures': ['存储过程', 'procedure'],
+	'/db/users': ['grant', 'revoke', '权限']
+};

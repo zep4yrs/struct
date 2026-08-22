@@ -1,5 +1,8 @@
 node_modules
 
+# SparkSkillsHub 设计链路工作区产物（audit/brief/journey/stories/sitemap/flow 报告与面板）
+spark-output/
+
 # Output
 .output
 .vercel

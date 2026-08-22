@@ -4,6 +4,7 @@
 
 	let speed = $state($settings.animationSpeed);
 	let showHints = $state($settings.showHints);
+	let particles = $state($settings.particleBackground);
 	// 通知权限状态（用于模板判断；授权后刷新显示）
 	let notifPermission = $state(
 		typeof Notification !== 'undefined' ? Notification.permission : 'unsupported'
@@ -22,7 +23,8 @@
 		settings.update((s) => ({
 			...s,
 			animationSpeed: speed,
-			showHints
+			showHints,
+			particleBackground: particles
 		}));
 	}
 
@@ -61,6 +63,19 @@
 			<div class="setting-control">
 				<label class="toggle">
 					<input type="checkbox" bind:checked={showHints} />
+					<span class="toggle-slider"></span>
+				</label>
+			</div>
+		</div>
+
+		<div class="setting-item">
+			<div class="setting-info">
+				<div class="setting-label">粒子背景</div>
+				<div class="setting-desc">全站 3D 粒子动效背景；低配设备或省电场景建议关闭</div>
+			</div>
+			<div class="setting-control">
+				<label class="toggle">
+					<input type="checkbox" bind:checked={particles} />
 					<span class="toggle-slider"></span>
 				</label>
 			</div>

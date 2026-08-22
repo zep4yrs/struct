@@ -99,7 +99,7 @@
 				{/each}
 			</div>
 			<div class="quiz-start-row">
-				<span style="color: var(--color-ink-3); font-size: 13px;">
+				<span style="color: var(--color-ink-2); font-size: 13px;">
 					{chapterPool.length} 道题可用 · 随机 {quizSize} 题 · 5 分钟限时
 				</span>
 				<button class="btn btn-accent" onclick={startQuiz}>开始自测</button>

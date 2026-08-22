@@ -197,11 +197,16 @@
 			</button>
 		</div>
 
-		<div class="speed-group">
-			<span class="speed-label">速度</span>
-			<div class="speed-opts">
+		<div class="speed-group" role="group" aria-label="播放速度">
+			<span class="speed-label" id="speed-label">速度</span>
+			<div class="speed-opts" role="radiogroup" aria-labelledby="speed-label">
 				{#each speedOptions as s (s)}
-					<button class="speed-opt {speed === s ? 'active' : ''}" onclick={() => onSpeedChange(s)}>
+					<button
+						class="speed-opt {speed === s ? 'active' : ''}"
+						role="radio"
+						aria-checked={speed === s}
+						onclick={() => onSpeedChange(s)}
+					>
 						{s}x
 					</button>
 				{/each}
@@ -261,15 +266,15 @@
 
 	.step-count .current {
 		font-weight: 600;
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 	}
 
 	.step-count .sep {
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.step-count .total {
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	/* 控制行 */
@@ -356,7 +361,7 @@
 		font-size: 9px;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.speed-opts {

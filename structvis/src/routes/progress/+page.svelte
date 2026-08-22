@@ -955,7 +955,7 @@
 	.daily-chapter {
 		font-family: var(--font-mono);
 		font-size: 11px;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.daily-done {

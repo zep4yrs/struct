@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { RouteId } from '../../../routes/$types';
-	import { dsTopics, dbTopics, type TopicCard } from '$lib/content/topics';
+	import { dsTopics, dbTopics, TOPIC_ALIASES, type TopicCard } from '$lib/content/topics';
 
 	interface Props {
 		open: boolean;
@@ -26,10 +26,18 @@
 	// 打开前获得焦点的元素，关闭时归还焦点（模态对话框 a11y）
 	let lastFocused: HTMLElement | null = null;
 
+	// 匹配文本 = title + description + 别名表（缩写/英文/常见叫法，audit-9）
+	const haystack = new Map<string, string>(
+		allItems.map((t) => [
+			t.href,
+			(t.title + ' ' + t.description + ' ' + (TOPIC_ALIASES[t.href]?.join(' ') ?? '')).toLowerCase()
+		])
+	);
+
 	const results = $derived.by(() => {
 		const q = query.trim().toLowerCase();
 		if (q.length === 0) return [];
-		return allItems.filter((t) => (t.title + ' ' + t.description).toLowerCase().includes(q));
+		return allItems.filter((t) => (haystack.get(t.href) ?? '').includes(q));
 	});
 
 	// 结果收缩时夹取 selected，避免高亮越界导致 Enter 静默失效
@@ -381,13 +389,13 @@
 		font-size: 10px;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.si-badge {
 		font-family: var(--font-mono);
 		font-size: 10px;
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		border: 1px solid var(--color-accent);
 		border-radius: 4px;
 		padding: 1px 6px;

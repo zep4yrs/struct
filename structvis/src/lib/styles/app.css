@@ -19,7 +19,8 @@
 	--color-ink-inverse: #faf9f6; /* 反白 — 深色背景上的文字 */
 
 	--color-academic: #1b4965; /* 学术深蓝 — 主色/链接/关键字 */
-	--color-accent: #d97706; /* 琥珀 — 当前步进高亮/强调 */
+	--color-accent: #d97706; /* 琥珀 — 当前步进高亮/强调（图形/边框用，对纸白 ≈3:1） */
+	--color-accent-text: #8a4508; /* 琥珀加深 — 小号强调**文字**专用（对纸白 ≥4.5:1，audit-10） */
 	--color-success: #2d6a4f; /* 深绿 — 完成/正确/命中 */
 	--color-success-deep: #1f4d38; /* 深绿加深 — 图/KMP 渲染器 done 态节点 */
 	--color-danger: #9b2226; /* 暗红 — 错误/pivot */
@@ -90,7 +91,8 @@
 	--color-ink-inverse: #161514; /* 反白（深底上文字变深） */
 
 	--color-academic: #6fa8ce; /* 学术蓝提亮 — 链接/关键字 */
-	--color-accent: #f5a623; /* 琥珀提亮 — 当前步进高亮 */
+	--color-accent: #f5a623; /* 琥珀提亮 — 当前步进高亮（暗底上 ≥4.5:1，可兼作文字） */
+	--color-accent-text: #f5a623; /* 暗色下强调文字与高亮同色 */
 	--color-success: #5cb088; /* 绿提亮 — 完成/正确 */
 	--color-success-deep: #3e7d5b; /* 深绿提亮 — done 态节点 */
 	--color-danger: #d96a6e; /* 红提亮 — 错误 */
@@ -411,5 +413,41 @@ pre,
 	.loop-float,
 	.loop-breathe {
 		animation: none;
+	}
+}
+
+/* ============================================================
+   触控热区扩展（audit-13 / Story-4）—— 仅 pointer:coarse 生效
+   伪元素外扩命中区，不改变视觉尺寸与布局（e2e 截图基线安全）
+   ============================================================ */
+@media (pointer: coarse) {
+	.btn-icon,
+	.btn-icon-lg,
+	.topnav-link,
+	.title-btn,
+	.pj-entry,
+	.mode-btn,
+	.icon-btn,
+	.play-btn,
+	.speed-opt,
+	.btn-sm,
+	.modal-close {
+		position: relative;
+	}
+
+	.btn-icon::after,
+	.btn-icon-lg::after,
+	.topnav-link::after,
+	.title-btn::after,
+	.pj-entry::after,
+	.mode-btn::after,
+	.icon-btn::after,
+	.play-btn::after,
+	.speed-opt::after,
+	.btn-sm::after,
+	.modal-close::after {
+		content: '';
+		position: absolute;
+		inset: -9px;
 	}
 }

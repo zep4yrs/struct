@@ -60,6 +60,9 @@ function mergeDefaults<T>(fallback: T, data: unknown): T {
 	return (data ?? fallback) as T;
 }
 
+/** 存储会话内已告警标记：写失败只提醒一次，避免刷屏（audit-11） */
+let storageWarningDispatched = false;
+
 /**
  * 带 localStorage 持久化的 writable store
  * 在服务端渲染时返回默认值，客户端挂载后从 localStorage 读取。
@@ -91,7 +94,12 @@ export function persistentStore<T>(key: string, initialValue: T): Writable<T> {
 				const envelope: StoredEnvelope = { __sv: STORAGE_VERSION, data: value };
 				localStorage.setItem(key, JSON.stringify(envelope));
 			} catch {
-				// 存储失败（比如空间不足）静默处理
+				// 写入失败（隐私模式 / 空间不足）：不再静默——派发一次全局事件，
+				// 由 AppLayout 展示「建议导出备份」横幅（audit-11）
+				if (!storageWarningDispatched && typeof window !== 'undefined') {
+					storageWarningDispatched = true;
+					window.dispatchEvent(new CustomEvent('structvis:storage-warning'));
+				}
 			}
 		});
 	}

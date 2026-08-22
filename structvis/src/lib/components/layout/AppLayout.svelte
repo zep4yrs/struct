@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import TopBar from '$lib/components/layout/TopBar.svelte';
 	import Sidebar from '$lib/components/layout/Sidebar.svelte';
 	import { page } from '$app/stores';
-	import { base } from '$app/paths';
+	import { base, resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
 
 	interface Props {
@@ -12,6 +13,8 @@
 	let { children }: Props = $props();
 
 	let sidebarOpen = $state(false);
+	// 存储写入失败横幅（audit-11：隐私模式/空间不足时提示导出备份）
+	let storageWarning = $state(false);
 
 	// 面包屑由 topics.ts 单源生成（href → crumb）
 	const crumbByHref = new Map<string, string>(
@@ -45,10 +48,33 @@
 	const activeSection = $derived(getActiveSection(stripBase($page.url.pathname)));
 	const crumb = $derived(getCrumb(stripBase($page.url.pathname)));
 	const isHome = $derived(stripBase($page.url.pathname) === '/');
+
+	// 监听持久层写失败事件：会话内只提示一次（persistent.ts 保证派发频率）
+	onMount(() => {
+		const onStorageWarning = () => (storageWarning = true);
+		window.addEventListener('structvis:storage-warning', onStorageWarning);
+		return () => window.removeEventListener('structvis:storage-warning', onStorageWarning);
+	});
 </script>
 
 <div class="flex min-h-screen flex-col">
 	<a href="#main-content" class="skip-link">跳到主要内容</a>
+
+	{#if storageWarning}
+		<div class="storage-banner" role="alert">
+			<span>
+				学习进度保存失败（可能是浏览器隐私模式或存储空间不足）。建议前往
+				<a href={resolve('/progress')}>学习进度页</a> 导出备份，避免记录丢失。
+			</span>
+			<button
+				class="storage-banner-close"
+				aria-label="关闭提示"
+				onclick={() => (storageWarning = false)}
+			>
+				✕
+			</button>
+		</div>
+	{/if}
 
 	<TopBar
 		{crumb}
@@ -84,5 +110,42 @@
 		top: 8px;
 		outline: 2px solid var(--color-accent);
 		outline-offset: 2px;
+	}
+
+	/* 存储失败横幅（audit-11） */
+	.storage-banner {
+		position: fixed;
+		top: 56px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 150;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		max-width: min(640px, calc(100vw - 32px));
+		padding: 10px 14px;
+		font-size: 13px;
+		line-height: 1.5;
+		color: var(--color-danger);
+		background: rgba(155, 34, 38, 0.08);
+		border: 1px solid rgba(155, 34, 38, 0.3);
+		border-radius: var(--radius-md);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+	}
+
+	.storage-banner a {
+		color: var(--color-danger);
+		font-weight: 500;
+		text-decoration: underline;
+	}
+
+	.storage-banner-close {
+		flex-shrink: 0;
+		border: none;
+		background: transparent;
+		color: inherit;
+		font-size: 13px;
+		cursor: pointer;
+		padding: 2px 4px;
 	}
 </style>

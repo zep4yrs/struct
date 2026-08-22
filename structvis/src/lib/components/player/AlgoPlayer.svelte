@@ -18,6 +18,8 @@
 	import PseudocodePanel from './PseudocodePanel.svelte';
 	import ControlBar from './ControlBar.svelte';
 	import PracticePanel from './PracticePanel.svelte';
+	import CoachMarkLayer from './CoachMarkLayer.svelte';
+	import HelpSheet from './HelpSheet.svelte';
 	import { audioManifest } from '$lib/narration/audio-manifest';
 	import { base } from '$app/paths';
 
@@ -63,6 +65,8 @@
 
 	// === 演示投影模式 ===
 	let projector = $state(false);
+	// 功能速查面板（Story-1）
+	let helpOpen = $state(false);
 
 	// === 讲授朗读（旁白驱动）：朗读当前步骤 → 动画到下一步 → 朗读下一步 ===
 	let narrationOn = $state(false); // 朗读开关（投影模式工具栏）
@@ -769,6 +773,7 @@
 							{#if engine.presets?.length}
 								<button
 									class="title-btn {activePresetName ? 'active' : ''}"
+									data-coach="preset"
 									onclick={openPresetModal}
 									title="选择演示数据"
 								>
@@ -777,12 +782,16 @@
 								</button>
 							{/if}
 							{#if engine.customConfig}
-								<button class="title-btn" onclick={openCustomModal} title="自定义输入"
-									>自定义</button
+								<button
+									class="title-btn"
+									data-coach="custom"
+									onclick={openCustomModal}
+									title="自定义输入">自定义</button
 								>
 							{/if}
 							<button
 								class="title-btn"
+								data-coach="share"
 								onclick={copyShareLink}
 								title="复制分享链接：打开即恢复当前输入与步骤">分享</button
 							>
@@ -794,19 +803,32 @@
 				</div>
 				<div class="header-right">
 					<button
+						class="pj-entry help-entry"
+						title="功能速查 (?)"
+						aria-label="功能速查"
+						onclick={() => (helpOpen = true)}
+					>
+						?
+					</button>
+					<button
 						class="pj-entry {handsOn ? 'active' : ''}"
+						data-coach="hands-on"
 						onclick={toggleHandsOn}
 						title="动手模式：预测每一步的交换，亲手点击两个柱子"
 					>
 						动手
 					</button>
 					{#if effectiveScript?.length}
-						<button class="pj-entry" onclick={enterProjector} title="演示投影模式（全屏讲授）"
-							>投影</button
+						<button
+							class="pj-entry"
+							data-coach="projector"
+							onclick={enterProjector}
+							title="演示投影模式（全屏讲授）">投影</button
 						>
 						<div class="script-menu-wrap">
 							<button
 								class="pj-entry {scriptOverride ? 'active' : ''}"
+								data-coach="script"
 								onclick={() => (showScriptMenu = !showScriptMenu)}
 								title="讲授剧本：导入 / 导出 / 重置"
 							>
@@ -837,7 +859,7 @@
 							{/if}
 						</div>
 					{/if}
-					<div class="mode-switch" role="tablist" aria-label="播放模式">
+					<div class="mode-switch" role="tablist" aria-label="播放模式" data-coach="mode">
 						<button
 							class="mode-btn {mode === 'demo' ? 'active' : ''}"
 							role="tab"
@@ -887,7 +909,7 @@
 
 			<!-- 底部状态栏（字幕式步骤说明 + 复杂度计数器） -->
 			<div class="status-bar">
-				<span class="status-text">{currentStep?.description || 'Ready'}</span>
+				<span class="status-text" aria-live="polite">{currentStep?.description || 'Ready'}</span>
 				{#if showOps}
 					<span class="op-count" aria-label="操作计数">
 						比较 {compareCount} · 交换 {swapCount}
@@ -1232,12 +1254,21 @@
 			</footer>
 		</div>
 	{/if}
+
+	<HelpSheet open={helpOpen} onClose={() => (helpOpen = false)} />
+	<CoachMarkLayer />
 </div>
 
 <svelte:window
 	onkeydown={(e) => {
 		const target = e.target as HTMLElement;
 		if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+
+		// ? 唤起功能速查（非投影态；投影态已有完整键盘体系）
+		if (e.key === '?' && !projector) {
+			helpOpen = !helpOpen;
+			return;
+		}
 
 		if (e.key === 'Escape') {
 			if (projector) {
@@ -1386,14 +1417,22 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		background: transparent;
 		border: 1px solid var(--color-accent);
 		border-radius: 6px;
 		cursor: pointer;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		transition:
 			background-color 120ms var(--ease-out),
 			color 120ms var(--ease-out);
+	}
+
+	.help-entry {
+		min-width: 30px;
+		padding-inline: 9px;
 	}
 
 	.pj-entry:hover {
@@ -1481,7 +1520,7 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 		background: transparent;
 		border: none;
 		border-radius: 4px;
@@ -1506,16 +1545,16 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.meta-step .current-num {
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		font-weight: 600;
 	}
 
 	.meta-step .total-num {
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.canvas-body {
@@ -1551,7 +1590,7 @@
 		flex-shrink: 0;
 		font-family: var(--font-mono);
 		font-size: 11px;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 		letter-spacing: 0.04em;
 	}
 
@@ -1596,7 +1635,7 @@
 
 	.predict-opt-selected {
 		border-color: var(--color-accent) !important;
-		color: var(--color-accent) !important;
+		color: var(--color-accent-text) !important;
 	}
 
 	.engine-error {
@@ -1627,7 +1666,7 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.12em;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.panel-body {
@@ -1697,13 +1736,13 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.12em;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.modal-close {
 		border: none;
 		background: transparent;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 		font-size: 13px;
 		cursor: pointer;
 		padding: 4px 6px;
@@ -1785,7 +1824,7 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	.custom-control {
@@ -1851,13 +1890,13 @@
 	.projector-step {
 		font-family: var(--font-mono);
 		font-size: 15px;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 		letter-spacing: 0.04em;
 		white-space: nowrap;
 	}
 
 	.projector-step .pj-num {
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		font-weight: 600;
 	}
 
@@ -1900,13 +1939,13 @@
 	/* 朗读开关激活态 */
 	.pj-on {
 		border-color: var(--color-accent);
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 		background: rgba(217, 119, 6, 0.08);
 	}
 
 	.pj-on:hover {
 		border-color: var(--color-accent);
-		color: var(--color-accent);
+		color: var(--color-accent-text);
 	}
 
 	.projector-body {
@@ -1988,7 +2027,7 @@
 		font-family: var(--font-mono);
 		font-size: 12px;
 		letter-spacing: 0.06em;
-		color: var(--color-ink-3);
+		color: var(--color-ink-2);
 	}
 
 	@media (max-width: 900px) {

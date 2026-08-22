@@ -146,7 +146,7 @@
 			<div class="mb-6">
 				<div
 					class="mb-2 px-4 font-mono text-[11px] tracking-widest uppercase"
-					style="color: var(--color-ink-3);"
+					style="color: var(--color-ink-2);"
 				>
 					{group.title}
 				</div>

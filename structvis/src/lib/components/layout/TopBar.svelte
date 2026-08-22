@@ -91,7 +91,7 @@
 		{#if crumb}
 			<nav
 				class="hidden font-mono text-xs tracking-wider uppercase md:block"
-				style="color: var(--color-ink-3); letter-spacing: 0.08em;"
+				style="color: var(--color-ink-2); letter-spacing: 0.08em;"
 			>
 				{#each crumb.split(' / ') as part, i (i)}
 					{#if part.startsWith('[current]') && part.endsWith('[/current]')}

@@ -148,6 +148,10 @@
 	}
 
 	// === 每日一题 ===
+	// 答对/答错均就地反馈（Story-2）：picked 记录本次选择，doneLocal 让「已完成」无需刷新即时生效
+	let dailyPicked = $state<number | null>(null);
+	let dailyDoneLocal = $state(false);
+
 	function dayKey(): string {
 		const d = new Date();
 		const pad = (n: number) => String(n).padStart(2, '0');
@@ -166,16 +170,17 @@
 		return { q, done, key };
 	});
 
+	const dailyFinished = $derived(daily.done || dailyDoneLocal);
+
 	function pickDaily(i: number) {
-		if (daily.done) return;
-		if (i === daily.q.answer) {
-			recordExercise(daily.q.topicId, true);
-			if (typeof localStorage !== 'undefined') {
-				localStorage.setItem('structvis:daily:' + daily.key, '1');
-			}
-		} else {
-			recordExercise(daily.q.topicId, false);
+		if (dailyFinished || dailyPicked !== null) return;
+		dailyPicked = i;
+		recordExercise(daily.q.topicId, i === daily.q.answer);
+		// 答对/答错都标记当日完成（题目只出一次，反馈就地展示）
+		if (typeof localStorage !== 'undefined') {
+			localStorage.setItem('structvis:daily:' + daily.key, '1');
 		}
+		dailyDoneLocal = true;
 	}
 
 	function scrollToMistakes() {
@@ -251,17 +256,36 @@
 		<div class="daily-head">
 			<span class="tag tag-accent">今日一题</span>
 			<span class="daily-chapter">{daily.q.chapter}</span>
-			{#if daily.done}
+			{#if dailyFinished}
 				<span class="daily-done">今日已完成</span>
 			{/if}
 		</div>
 		<div class="daily-q">{daily.q.q}</div>
-		{#if !daily.done}
+		{#if !dailyFinished}
 			<div class="daily-opts">
 				{#each daily.q.options as opt, i (i)}
-					<button class="btn btn-ghost btn-sm" onclick={() => pickDaily(i)}>{opt}</button>
+					<button
+						class="btn btn-ghost btn-sm daily-opt"
+						class:daily-opt-correct={dailyPicked !== null && i === daily.q.answer}
+						class:daily-opt-wrong={dailyPicked === i && i !== daily.q.answer}
+						disabled={dailyPicked !== null}
+						onclick={() => pickDaily(i)}>{opt}</button
+					>
 				{/each}
 			</div>
+			{#if dailyPicked !== null}
+				<div
+					class="daily-feedback"
+					class:ok={dailyPicked === daily.q.answer}
+					role="status"
+					aria-live="polite"
+				>
+					{dailyPicked === daily.q.answer
+						? '回答正确'
+						: '回答错误，正确答案是「' + daily.q.options[daily.q.answer] + '」'}
+					<span class="daily-explain">{daily.q.explain}</span>
+				</div>
+			{/if}
 		{/if}
 	</div>
 
@@ -320,7 +344,7 @@
 		<!-- 3D 掌握度总览 -->
 		<div class="mb-10" use:reveal>
 			<div class="overview-head">
-				<span class="overview-label">掌握度总览 · 34 个知识点</span>
+				<span class="overview-label">掌握度总览 · {allTopicIds.length} 个知识点</span>
 				<span class="overview-hint">鼠标移动可旋转视角</span>
 			</div>
 			<div
@@ -951,6 +975,51 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 8px;
+	}
+
+	/* 每日一题：就地反馈（Story-2 / audit-1） */
+	.daily-opt[disabled] {
+		cursor: default;
+		opacity: 0.55;
+	}
+
+	.daily-opt-correct,
+	.daily-opt-correct:hover {
+		border-color: var(--color-success) !important;
+		color: var(--color-success) !important;
+		opacity: 1 !important;
+	}
+
+	.daily-opt-wrong,
+	.daily-opt-wrong:hover {
+		border-color: var(--color-danger) !important;
+		color: var(--color-danger) !important;
+		opacity: 1 !important;
+	}
+
+	.daily-feedback {
+		padding: 10px 12px;
+		font-size: 13px;
+		line-height: 1.6;
+		border-radius: var(--radius-sm);
+		border: 1px solid;
+	}
+
+	.daily-feedback.ok {
+		color: var(--color-success);
+		background: rgba(45, 106, 79, 0.08);
+		border-color: rgba(45, 106, 79, 0.25);
+	}
+
+	.daily-feedback:not(.ok) {
+		color: var(--color-danger);
+		background: rgba(155, 34, 38, 0.06);
+		border-color: rgba(155, 34, 38, 0.25);
+	}
+
+	.daily-explain {
+		margin-left: 8px;
+		color: var(--color-ink-2);
 	}
 
 	/* 空状态（无学习记录） */

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { recordExercise } from '$lib/stores/progress';
 	import { resolve } from '$app/paths';
 	import { reveal } from '$lib/utils/motion';
@@ -18,10 +19,14 @@
 	let secondsLeft = $state(300); // 5 分钟
 	let timer: ReturnType<typeof setInterval> | null = null;
 
+	// 当前章节题池（文案与抽题共用同一来源，杜绝「承诺 8 题实给 3 题」，audit-3）
+	const chapterPool = $derived(BANK.filter((q) => q.chapter === chapter));
+	const quizSize = $derived(Math.min(8, chapterPool.length));
+
 	function startQuiz() {
-		const pool = BANK.filter((q) => q.chapter === chapter);
-		// 打乱取 8 题
-		const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, Math.min(8, pool.length));
+		const pool = [...chapterPool];
+		// 打乱取题（题量随章节池动态决定）
+		const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, quizSize);
 		questions = shuffled;
 		idx = 0;
 		answers = [];
@@ -63,6 +68,12 @@
 	}
 
 	const score = $derived(questions.filter((q, i) => answers[i] === q.answer).length);
+
+	// 离开页面即清理计时器（audit-4：防止路由离开后 interval 泄漏并在已销毁组件上交卷）
+	onDestroy(() => {
+		if (timer !== null) clearInterval(timer);
+		timer = null;
+	});
 </script>
 
 <div class="mx-auto max-w-3xl p-8">
@@ -75,7 +86,7 @@
 		章节自测
 	</h1>
 	<p class="mb-8" style="color: var(--color-ink-2);" use:reveal={{ delay: 160 }}>
-		选一个章节，8 道题 5 分钟限时。成绩计入对应知识点的掌握度。
+		选一个章节，随机抽题限时作答。成绩计入对应知识点的掌握度。
 	</p>
 
 	{#if !started && !finished}
@@ -89,7 +100,7 @@
 			</div>
 			<div class="quiz-start-row">
 				<span style="color: var(--color-ink-3); font-size: 13px;">
-					{BANK.filter((q) => q.chapter === chapter).length} 道题可用 · 8 题随机 · 5 分钟限时
+					{chapterPool.length} 道题可用 · 随机 {quizSize} 题 · 5 分钟限时
 				</span>
 				<button class="btn btn-accent" onclick={startQuiz}>开始自测</button>
 			</div>

@@ -7,6 +7,9 @@
 	const topicTotal = dsTopics.length + dbTopics.length;
 	const RACE_ENGINES = 30;
 	const FUN_ENGINES = 9;
+
+	// 赞赏入口（与根 README 徽章共用；替换为你的爱发电主页或 GitHub Sponsors）
+	const SPONSOR_URL = 'https://afdian.net/a/zep4yrs';
 </script>
 
 <div class="mx-auto max-w-7xl px-8 py-16">
@@ -148,6 +151,24 @@
 
 	<section class="mb-16">
 		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
+			支持项目
+		</h2>
+		<p class="mb-5 max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
+			StructVis
+			的全部学习功能永久免费。如果你觉得它帮到了你，欢迎请作者喝杯咖啡——服务器、题库更新与新课程开发都靠这份支持续命。
+		</p>
+		<a class="sponsor-btn" href={SPONSOR_URL} target="_blank" rel="noopener noreferrer" use:reveal>
+			<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+				<path
+					d="M12 21s-7.5-4.9-9.7-9.2C.6 8.4 2.3 5 5.6 5c1.9 0 3.3 1 4.1 2.4L12 10l2.3-2.6C15.1 6 16.5 5 18.4 5c3.3 0 5 3.4 3.3 6.8C19.5 16.1 12 21 12 21z"
+				/>
+			</svg>
+			爱发电 · 请作者喝杯咖啡
+		</a>
+	</section>
+
+	<section class="mb-16">
+		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
 			开源协议
 		</h2>
 		<p class="max-w-3xl text-base leading-relaxed" style="color: var(--color-ink-2);">
@@ -232,6 +253,34 @@
 		left: 2px;
 		color: var(--color-accent-text);
 		font-weight: 700;
+	}
+
+	.sponsor-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 24px;
+		border-radius: var(--radius-md);
+		background: var(--color-ink);
+		color: var(--color-ink-inverse);
+		font-size: 15px;
+		font-weight: 500;
+		text-decoration: none;
+		transition:
+			transform 0.2s var(--ease-out),
+			box-shadow 0.2s var(--ease-out),
+			background-color 0.2s var(--ease-out);
+	}
+
+	.sponsor-btn:hover {
+		background: #b45309;
+		color: #fff;
+		transform: translateY(-2px);
+		box-shadow: 0 12px 28px -12px rgba(180, 83, 9, 0.55);
+	}
+
+	.sponsor-btn svg {
+		color: currentColor;
 	}
 
 	@media (max-width: 860px) {

@@ -122,15 +122,6 @@ export class LRUEngine extends EngineBase<number[]> {
 
 		const snapshot = () => list.map((x) => x.key);
 
-		this._emit(
-			'init',
-			`LRU 缓存（容量 ${cap}）：数组视图 = 双向链表顺序，左端 MRU / 右端 LRU。`,
-			snapshot(),
-			0,
-			[],
-			'空缓存'
-		);
-
 		for (const op of OPS) {
 			if (op.op === 'get') {
 				const idx = list.findIndex((x) => x.key === op.key);

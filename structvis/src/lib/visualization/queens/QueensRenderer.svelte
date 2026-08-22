@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { browser } from '$app/environment';
-	import type { AlgorithmStep, QueensData } from '$lib/engines/algorithm/types';
+	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
 	import { resolveCSSVar } from '../visualization-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
@@ -48,7 +48,7 @@
 		};
 	}
 
-	const FONT = "600 18px ui-monospace, SFMono-Regular, Menlo, monospace";
+	const FONT = '600 18px ui-monospace, SFMono-Regular, Menlo, monospace';
 
 	function draw() {
 		if (!ctx || steps.length === 0) return;
@@ -123,7 +123,7 @@
 
 		// 状态文字
 		ctx.fillStyle = colors.ink3;
-		ctx.font = "11px ui-monospace, monospace";
+		ctx.font = '11px ui-monospace, monospace';
 		ctx.textAlign = 'left';
 		ctx.textBaseline = 'top';
 		const statusText =

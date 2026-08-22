@@ -304,6 +304,15 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 图 / [current]Tarjan[/current]'
 	},
 	{
+		title: '割点检测',
+		description: 'low ≥ dfn · 连通性关键点',
+		href: '/ds/cut-vertices',
+		topicId: 'cut-vertices',
+		badge: '交互式',
+		group: '图结构',
+		crumb: '数据结构 / 图 / [current]割点检测[/current]'
+	},
+	{
 		title: '最大流 Edmonds-Karp',
 		description: '增广路 · 瓶颈推流',
 		href: '/ds/max-flow',
@@ -383,6 +392,42 @@ export const dsTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '动态规划',
 		crumb: '数据结构 / 动态规划 / [current]LCS[/current]'
+	},
+	{
+		title: '最长递增子序列 LIS',
+		description: 'DP 前驱扫描 · 可二分优化',
+		href: '/ds/lis',
+		topicId: 'lis',
+		badge: '交互式',
+		group: '动态规划',
+		crumb: '数据结构 / 动态规划 / [current]LIS[/current]'
+	},
+	{
+		title: '编辑距离',
+		description: '插入删除替换 · 相似度度量',
+		href: '/ds/edit-distance',
+		topicId: 'edit-distance',
+		badge: '交互式',
+		group: '动态规划',
+		crumb: '数据结构 / 动态规划 / [current]编辑距离[/current]'
+	},
+	{
+		title: '矩阵链乘法',
+		description: '区间 DP · 最优切分',
+		href: '/ds/matrix-chain',
+		topicId: 'matrix-chain',
+		badge: '交互式',
+		group: '动态规划',
+		crumb: '数据结构 / 动态规划 / [current]矩阵链乘法[/current]'
+	},
+	{
+		title: '完全背包',
+		description: '无限件选取 · 同行转移',
+		href: '/ds/complete-knapsack',
+		topicId: 'complete-knapsack',
+		badge: '交互式',
+		group: '动态规划',
+		crumb: '数据结构 / 动态规划 / [current]完全背包[/current]'
 	}
 ];
 

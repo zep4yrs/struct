@@ -3,6 +3,9 @@ node_modules
 # SparkSkillsHub 设计链路工作区产物（audit/brief/journey/stories/sitemap/flow 报告与面板）
 spark-output/
 
+# 本地审计临时脚本（README 体检 / DOM 走查用）
+.audit-tmp/
+
 # Output
 .output
 .vercel
@@ -27,5 +30,3 @@ vite.config.ts.timestamp-*
 
 # Build output (adapter-static) — committed to repo for GitHub Pages
 # /docs
-# 本地审计临时脚本
-.audit-tmp/

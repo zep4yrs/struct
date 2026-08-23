@@ -40,7 +40,11 @@
 		if (topicCrumb) return topicCrumb;
 		if (path.startsWith('/catalog')) return '[current]课程目录[/current]';
 		if (path.startsWith('/progress')) return '[current]学习进度[/current]';
-		if (path.startsWith('/settings')) return '设置';
+		if (path.startsWith('/race')) return '[current]竞速实验室[/current]';
+		if (path.startsWith('/map')) return '[current]技能图谱[/current]';
+		if (path.startsWith('/quiz')) return '[current]章节自测[/current]';
+		if (path.startsWith('/report')) return '[current]学习报告[/current]';
+		if (path.startsWith('/settings')) return '[current]设置[/current]';
 		if (path.startsWith('/about')) return '[current]关于[/current]';
 		return '';
 	}

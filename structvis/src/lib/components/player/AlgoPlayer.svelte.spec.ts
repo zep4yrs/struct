@@ -5,67 +5,82 @@ import AlgoPlayer from './AlgoPlayer.svelte';
 import { BubbleSortEngine } from '$lib/engines/algorithm/basicsort/BubbleSortEngine';
 import { recordExercise, addMistake } from '$lib/stores/progress';
 
-// GSAP 隔离 mock：timeline() 返回稳定 tl 对象；tl.to 捕获 renderProxy 与 onUpdate，
-// 以便测试通过 advanceTo(n) 模拟 timeline 推进（真实环境下 playbackPos 由动画驱动）。
-const gsapState = vi.hoisted(() => {
-	const pendingTos: { opts: Record<string, unknown> }[] = [];
-	const tlTos: { target: Record<string, number>; onUpdate?: () => void; duration?: number }[] = [];
-	const tl = {
-		kill: vi.fn(),
-		paused: true,
-		to: vi.fn((target: Record<string, number>, cfg: Record<string, unknown>) => {
-			tlTos.push({
-				target,
-				onUpdate: cfg.onUpdate as (() => void) | undefined,
-				duration: cfg.duration as number
-			});
-			return { kill: vi.fn() };
-		}),
-		eventCallback: vi.fn(),
-		pause: vi.fn(),
-		play: vi.fn(),
-		seek: vi.fn(),
-		tweenTo: vi.fn(),
-		getTweensOf: vi.fn(() => []),
-		timeScale: vi.fn()
-	};
-	return {
-		tl,
-		pendingTos,
-		tlTos,
-		timeline: vi.fn(() => tl),
-		killTweensOf: vi.fn(),
-		to: vi.fn((target: unknown, opts: Record<string, unknown>) => {
-			pendingTos.push({ opts });
-			return { kill: vi.fn() };
-		}),
-		firePendingTos(): void {
-			while (pendingTos.length) {
-				const { opts } = pendingTos.shift()!;
-				(opts.onComplete as (() => void) | undefined)?.();
-			}
+// TimelineController 隔离 mock：Fake 控制器记录调用面，
+// 并提供 dispatch(pos) 模拟播放头推进（组件经 onProgress/onStep 接收）。
+const tcState = vi.hoisted(() => {
+	class FakeController {
+		static instances: FakeController[] = [];
+		callbacks: {
+			onProgress: (p: number) => void;
+			onStep: (i: number) => void;
+			onFinished: () => void;
+			onTweenStart: () => void;
+			onTweenEnd: () => void;
+		};
+		hasTimeline = true;
+		built = 0;
+		destroyed = 0;
+		playCalls: number[] = [];
+		pauseCalls = 0;
+		seeks: number[] = [];
+		tweens: number[] = [];
+		kills = 0;
+		startSeeks = 0;
+		pos = 0;
+
+		constructor(_engine: unknown, callbacks: FakeController['callbacks']) {
+			this.callbacks = callbacks;
+			FakeController.instances.push(this);
 		}
-	};
+		build() {
+			this.built++;
+		}
+		destroy() {
+			this.destroyed++;
+		}
+		play(speed: number) {
+			this.playCalls.push(speed);
+		}
+		pause() {
+			this.pauseCalls++;
+		}
+		seekToStep(step: number) {
+			this.seeks.push(step);
+			this.dispatch(step);
+		}
+		tweenToStep(step: number) {
+			this.tweens.push(step);
+			this.dispatch(step); // 与真实实现一致：控制 tween 的 onUpdate 会推进到位
+		}
+		killControlTweens() {
+			this.kills++;
+		}
+		seekStart() {
+			this.startSeeks++;
+			this.seekToStep(0);
+		}
+		dispatch(pos: number) {
+			this.pos = pos;
+			this.callbacks.onProgress(pos);
+			this.callbacks.onStep(Math.round(pos));
+		}
+	}
+	return { FakeController, instances: FakeController.instances };
 });
 
-vi.mock('gsap', () => ({ default: gsapState }));
+vi.mock('./TimelineController', () => ({
+	TimelineController: tcState.FakeController,
+	STEP_DURATIONS: { default: 1 }
+}));
 vi.mock('$lib/stores/progress', () => ({
 	recordExercise: vi.fn(),
 	addMistake: vi.fn()
 }));
 
-// 模拟 timeline 动画推进到 step n：更新 renderProxy.pos 并触发 onUpdate
-//（组件 onUpdate 内 playbackPos = renderProxy.pos，之后 next() 才能以新位置计算目标）
+// 模拟播放头推进到 pos=n（触发组件的 onProgress/onStep 回调）
 function advanceTo(n: number): void {
-	for (const t of gsapState.tlTos) {
-		t.target.pos = n;
-		t.onUpdate?.();
-	}
-}
-
-// 播放头到达 pos=idx 的秒数（与组件 stepEndSeconds 同口径）
-function stepEnd(idx: number): number {
-	return gsapState.tlTos.slice(0, idx).reduce((s, t) => s + (t.duration ?? 0), 0);
+	const inst = tcState.instances.at(-1);
+	inst?.dispatch(n);
 }
 
 function createEngine(): BubbleSortEngine {
@@ -107,8 +122,7 @@ async function reachQuestion(container: HTMLElement) {
 
 beforeEach(() => {
 	vi.clearAllMocks();
-	gsapState.pendingTos.length = 0;
-	gsapState.tlTos.length = 0;
+	tcState.instances.length = 0;
 });
 
 afterEach(() => cleanup());
@@ -193,33 +207,26 @@ describe('AlgoPlayer 模式与练习流程', () => {
 });
 
 describe('AlgoPlayer 播放控制', () => {
-	it('播放/暂停切换 isPlaying 并驱动 GSAP timeline', async () => {
+	it('播放/暂停切换 isPlaying 并驱动控制器 play/pause', async () => {
 		const { container } = await mountPlayer();
 		const playBtn = container.querySelector('[title="播放 (Space)"]') as HTMLButtonElement;
 		await fireEvent.click(playBtn);
-		expect(gsapState.tl.play).toHaveBeenCalledOnce();
+		expect(tcState.instances.at(-1)?.playCalls).toEqual([1]);
 		expect(container.querySelector('[title="暂停 (Space)"]')).not.toBeNull();
 
 		await fireEvent.click(container.querySelector('[title="暂停 (Space)"]')!);
-		expect(gsapState.tl.pause).toHaveBeenCalledOnce();
+		expect(tcState.instances.at(-1)?.pauseCalls).toBe(1);
 		expect(container.querySelector('[title="播放 (Space)"]')).not.toBeNull();
 	});
 
-	it('键盘 ←/→ 步进：tweenTo 目标（秒数）与步骤编号更新', async () => {
+	it('键盘 ←/→ 步进：tweenToStep 目标步序号与步骤编号更新', async () => {
 		const { container } = await mountPlayer();
 		await fireEvent.keyDown(window, { key: 'ArrowRight' });
-		// 第二个参数为 { onComplete } 控制 tween 忙闲信号回调
-		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(
-			stepEnd(1),
-			expect.objectContaining({ onComplete: expect.any(Function) })
-		);
+		expect(tcState.instances.at(-1)?.tweens).toEqual([1]);
 		expect(container.querySelector('.current-num')?.textContent).toBe('02');
 
 		await fireEvent.keyDown(window, { key: 'ArrowLeft' });
-		expect(gsapState.tl.tweenTo).toHaveBeenCalledWith(
-			stepEnd(0),
-			expect.objectContaining({ onComplete: expect.any(Function) })
-		);
+		expect(tcState.instances.at(-1)?.tweens).toEqual([1, 0]);
 		expect(container.querySelector('.current-num')?.textContent).toBe('01');
 	});
 
@@ -227,11 +234,12 @@ describe('AlgoPlayer 播放控制', () => {
 		const { container, engine } = await mountPlayer();
 		await fireEvent.keyDown(window, { key: 'ArrowRight' });
 		await fireEvent.keyDown(window, { key: 'Home' });
-		expect(gsapState.tl.seek).toHaveBeenCalledWith(0);
+		const ctl = tcState.instances.at(-1)!;
+		expect(ctl.startSeeks).toBeGreaterThanOrEqual(1);
 		expect(engine.playbackPos).toBe(0);
 
 		await fireEvent.keyDown(window, { key: 'End' });
-		expect(gsapState.tl.seek).toHaveBeenCalledWith(stepEnd(engine.totalSteps - 1));
+		expect(ctl.seeks).toContain(engine.totalSteps - 1);
 		expect(container.querySelector('.current-num')?.textContent).toBe(
 			String(engine.totalSteps).padStart(2, '0')
 		);
@@ -254,8 +262,6 @@ describe('AlgoPlayer 演示数据弹窗', () => {
 		await waitFor(() => expect(container.querySelector('[role="dialog"]')).toBeNull());
 		expect(container.querySelector('.title-btn')?.textContent).toContain('示例 B');
 
-		await tick();
-		gsapState.firePendingTos();
 		await waitFor(() =>
 			expect(container.querySelector('.status-text')?.textContent).toContain('3 7 1 9 4 6')
 		);
@@ -289,8 +295,6 @@ describe('AlgoPlayer 自定义输入弹窗', () => {
 		);
 
 		await waitFor(() => expect(container.querySelector('[role="dialog"]')).toBeNull());
-		await tick();
-		gsapState.firePendingTos();
 		await waitFor(() =>
 			expect(container.querySelector('.status-text')?.textContent).toContain('9 4 6 2')
 		);
@@ -335,7 +339,7 @@ describe('AlgoPlayer 投影模式', () => {
 		expect(container.querySelector('.projector')).toBeNull();
 	});
 
-	it('投影内播放按钮驱动 timeline', async () => {
+	it('投影内播放按钮驱动控制器播放', async () => {
 		const { container } = await mountPlayer();
 		await fireEvent.click(
 			[...container.querySelectorAll('button')].find((b) => b.textContent === '投影')!
@@ -343,7 +347,7 @@ describe('AlgoPlayer 投影模式', () => {
 		const pjPlay = container.querySelector('.pj-play') as HTMLButtonElement;
 		expect(pjPlay.querySelector('svg')).not.toBeNull();
 		await fireEvent.click(pjPlay);
-		expect(gsapState.tl.play).toHaveBeenCalledOnce();
+		expect(tcState.instances.at(-1)?.playCalls.length).toBeGreaterThanOrEqual(1);
 		expect(container.querySelector('.pj-play')?.querySelector('svg')).not.toBeNull();
 	});
 });

@@ -2,7 +2,7 @@
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import { expoOut } from 'svelte/easing';
-	import gsap from 'gsap';
+	import { animate } from 'animejs';
 	import type { AlgorithmEngine, PracticeQuestion } from '$lib/engines/algorithm/types';
 	import { settings } from '$lib/stores/settings';
 	import { TimelineController } from './TimelineController';
@@ -599,34 +599,32 @@
 			practice.reset();
 			activeQuestion = null;
 			tick().then(() => {
-				// 旧 timeline 若带未完成的 tweenTo 控制 tween，重建后其 onComplete 仍会
-				// 触发并改写 currentStepIdx（预设/自定义重建后步骤漂移的根因），必须先销毁；
-				// 初始挂载（revision 0）时时间线已由 onMount 创建，不可销毁
-				if (engineRevision > 0 && timeline.hasTimeline) {
-					timeline.destroy();
-				}
+				// 销毁延后到淡出完成——避免「无时间线空窗」吞掉用户操作
+				//（anime onComplete 走 Engine tick，冷启动时空窗可达秒级）
 				if (engineRevision === 0 || !canvasBodyRef || prefersReducedMotion()) {
+					if (engineRevision > 0 && timeline.hasTimeline) timeline.destroy();
 					timeline.build();
 					currentStepIdx = 0;
 					playbackPos = 0;
 					applyPendingRestore();
 					return;
 				}
-				gsap.killTweensOf(canvasBodyRef);
-				gsap.to(canvasBodyRef, {
-					opacity: 0,
-					duration: 0.12,
-					ease: 'power1.in',
+				const fadeEl = canvasBodyRef;
+				animate(fadeEl, {
+					opacity: [1, 0],
+					duration: 120,
+					ease: 'inQuad',
 					onComplete: () => {
+						if (timeline.hasTimeline) timeline.destroy();
 						timeline.build();
 						currentStepIdx = 0;
 						playbackPos = 0;
 						applyPendingRestore();
-						gsap.to(canvasBodyRef, {
-							opacity: 1,
-							duration: 0.24,
-							ease: 'power2.out',
-							clearProps: 'opacity'
+						animate(fadeEl, {
+							opacity: [0, 1],
+							duration: 240,
+							ease: 'outQuad',
+							onComplete: () => fadeEl?.style.removeProperty('opacity')
 						});
 					}
 				});
@@ -651,9 +649,6 @@
 		timeline?.destroy();
 		stopNarration();
 		if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
-		if (canvasBodyRef) {
-			gsap.killTweensOf(canvasBodyRef);
-		}
 	});
 
 	// 依赖 engineRevision：重建引擎后 steps 引用变化，即使 currentStepIdx 数值不变，

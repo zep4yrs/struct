@@ -6,6 +6,7 @@
 	import { page } from '$app/stores';
 	import { base, resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
+	import { configureAnimEngine } from '$lib/utils/animEngine';
 
 	interface Props {
 		children: import('svelte').Snippet;
@@ -56,6 +57,7 @@
 
 	// 监听持久层写失败事件：会话内只提示一次（persistent.ts 保证派发频率）
 	onMount(() => {
+		configureAnimEngine();
 		const onStorageWarning = () => (storageWarning = true);
 		window.addEventListener('structvis:storage-warning', onStorageWarning);
 		return () => window.removeEventListener('structvis:storage-warning', onStorageWarning);

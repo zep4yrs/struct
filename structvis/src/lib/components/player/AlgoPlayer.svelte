@@ -642,6 +642,8 @@
 		}
 		// 分享链接恢复：读 ?s= 参数（输入变化会走 revision effect 重建）
 		restoreFromShareUrl();
+		// 水合完成信号（e2e waitForSelector 锚点，替代 click-and-pray 探测）
+		canvasBodyRef?.closest('.algo-player')?.setAttribute('data-ready', '1');
 	});
 
 	onDestroy(() => {

@@ -8,17 +8,10 @@ test.beforeEach(async ({ page }) => {
 	});
 });
 
-// vite dev 冷启动首编时模块图尚未就绪，页面已 SSR 渲染但事件系统未水合。
-// 通过功能探测等待水合完成：点击「下一步」直到步骤编号响应，随后 Home 复位。
+// 等待播放器水合完成：AlgoPlayer onMount 末尾在 .algo-player 上标记 data-ready='1'，
+// 该信号仅在客户端水合+onMount 完整执行后出现——比 click-and-pray 探测确定性强。
 async function waitForHydrated(page: Page) {
-	const next = page.getByTitle('下一步 (→)');
-	await expect(async () => {
-		await next.click();
-		const n = await page.locator('.current-num').first().textContent();
-		if (n !== '02') throw new Error('尚未水合');
-	}).toPass({ timeout: 30000 });
-	await page.keyboard.press('Home');
-	await expect(page.locator('.current-num')).toHaveText('01');
+	await page.waitForSelector('.algo-player[data-ready="1"]', { timeout: 30000 });
 }
 
 // 无播放器页面（首页/进度页）：用主题开关探测水合，探测后恢复亮色

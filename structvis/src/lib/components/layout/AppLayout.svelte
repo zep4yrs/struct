@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import TopBar from '$lib/components/layout/TopBar.svelte';
 	import Sidebar from '$lib/components/layout/Sidebar.svelte';
+	import BottomNav from '$lib/components/layout/BottomNav.svelte';
 	import { page } from '$app/stores';
 	import { base, resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
@@ -61,7 +62,7 @@
 	});
 </script>
 
-<div class="flex min-h-screen flex-col">
+<div class="app-root flex min-h-screen flex-col">
 	<a href="#main-content" class="skip-link">跳到主要内容</a>
 
 	{#if storageWarning}
@@ -94,6 +95,9 @@
 			{@render children()}
 		</main>
 	</div>
+
+	<!-- 移动端底部导航（<768px） -->
+	<BottomNav />
 </div>
 
 <style>
@@ -151,5 +155,12 @@
 		font-size: 13px;
 		cursor: pointer;
 		padding: 2px 4px;
+	}
+
+	/* 底部导航占位：防止固定底栏遮挡页面末尾内容（<768px） */
+	@media (max-width: 767px) {
+		.app-root {
+			padding-bottom: calc(54px + env(safe-area-inset-bottom));
+		}
 	}
 </style>

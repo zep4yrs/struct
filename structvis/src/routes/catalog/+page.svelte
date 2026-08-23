@@ -5,7 +5,7 @@
 	import { reveal } from '$lib/utils/motion';
 </script>
 
-<div class="mx-auto max-w-7xl px-8 py-16">
+<div class="mx-auto max-w-7xl px-8 py-16 min-[1856px]:max-w-[1856px] 2xl:max-w-[1600px]">
 	<!-- 目录头 -->
 	<section class="mb-20 border-b pb-12" style="border-color: var(--color-line-hair);">
 		<div class="mb-8 flex items-end gap-6" use:reveal>

@@ -513,7 +513,7 @@
 	}
 </script>
 
-<div class="mx-auto max-w-6xl p-8">
+<div class="mx-auto max-w-6xl p-8 min-[1856px]:max-w-[1856px] 2xl:max-w-[1600px]">
 	<div class="section-label mb-4" use:reveal>竞速实验室 · RACE LAB</div>
 	<h1
 		class="mb-2 font-display text-5xl font-medium"
@@ -852,7 +852,8 @@
 		margin-bottom: 20px;
 	}
 
-	/* 全屏（≥1440px）4 列；1024–1439 3 列；640–1023 2 列 */
+	/* 全屏（≥1536px，容器已拓宽至 1600）4 列；1024–1535 3 列；640–1023 2 列
+	   —— 列数随容器拓宽而增加，单卡宽度始终 ≈370px，不牺牲可读性 */
 	@media (min-width: 640px) {
 		.race-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -865,7 +866,7 @@
 		}
 	}
 
-	@media (min-width: 1440px) {
+	@media (min-width: 1536px) {
 		.race-grid {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}

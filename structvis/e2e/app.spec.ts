@@ -8,10 +8,9 @@ test.beforeEach(async ({ page }) => {
 	});
 });
 
-// 等待播放器水合完成：AlgoPlayer onMount 末尾在 .algo-player 上标记 data-ready='1'，
-// 该信号仅在客户端水合+onMount 完整执行后出现——比 click-and-pray 探测确定性强。
+// 等待播放器水合完成：AlgoPlayer onMount 在 body 上标记 data-player-ready='1'（Svelte 不会重建 body）
 async function waitForHydrated(page: Page) {
-	await page.waitForSelector('.algo-player[data-ready="1"]', { timeout: 30000 });
+	await page.waitForSelector('body[data-player-ready="1"]', { timeout: 30000 });
 }
 
 // 无播放器页面（首页/进度页）：用主题开关探测水合，探测后恢复亮色
@@ -93,8 +92,10 @@ test.describe('播放器交互', () => {
 
 	test('播放/暂停：按钮图标切换且步骤自动推进', async ({ page }) => {
 		await openBubbleSort(page);
+		// anime.js Engine 冷启动稳定窗口（首次 tick 前的初始化延迟）
+		await page.waitForTimeout(300);
 		await page.getByTitle('播放 (Space)').click();
-		await expect(page.getByTitle('暂停 (Space)')).toBeVisible();
+		await expect(page.getByTitle('暂停 (Space)')).toBeVisible({ timeout: 10000 });
 		await expect(page.locator('.current-num')).not.toHaveText('01', { timeout: 5000 });
 		await page.getByTitle('暂停 (Space)').click();
 		await expect(page.getByTitle('播放 (Space)')).toBeVisible();

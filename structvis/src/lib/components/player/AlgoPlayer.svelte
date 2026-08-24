@@ -518,6 +518,8 @@
 	}
 
 	function play() {
+		// 防御：水合竞态可能错过 build——缺线则立即补建
+		if (!timeline.hasTimeline && engine.steps.length >= 2) timeline.build();
 		if (!timeline.hasTimeline || engine.steps.length < 2) return;
 		if (activeQuestion !== null) return;
 		if (currentStepIdx >= engine.totalSteps - 1) {
@@ -561,6 +563,8 @@
 	}
 
 	function next() {
+		// 防御：水合竞态保护
+		if (!timeline.hasTimeline && engine.steps.length >= 2) timeline.build();
 		if (!timeline.hasTimeline) return;
 		if (activeQuestion !== null) return;
 		pause();
@@ -651,8 +655,8 @@
 		}
 		// 分享链接恢复：读 ?s= 参数（输入变化会走 revision effect 重建）
 		restoreFromShareUrl();
-		// 水合完成信号（e2e waitForSelector 锚点，替代 click-and-pray 探测）
-		canvasBodyRef?.closest('.algo-player')?.setAttribute('data-ready', '1');
+		// 水合完成信号：挂在 body（Svelte 不会重建 body，信号永不丢失）
+		document.body.setAttribute('data-player-ready', '1');
 	});
 
 	onDestroy(() => {

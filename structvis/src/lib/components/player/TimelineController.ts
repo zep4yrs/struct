@@ -1,4 +1,4 @@
-import { Timeline } from 'animejs';
+import { Timeline, engine } from 'animejs';
 import type { AlgorithmEngine, StepType } from '$lib/engines/algorithm/types';
 
 /**
@@ -63,6 +63,11 @@ export class TimelineController {
 	// 控制 tween 步进器状态
 	private ctrlActive = false;
 	private ctrlRaf = 0;
+	// 连续播放定时器（自管，不依赖 anime 内部 rAF 调度）
+	private playTimer: ReturnType<typeof setInterval> | null = null;
+	private playStartWall = 0;
+	private playStartOffset = 0;
+	private playSpeed = 1;
 
 	constructor(
 		engine: AlgorithmEngine<unknown>,
@@ -72,6 +77,14 @@ export class TimelineController {
 		this.engine = engine;
 		this.callbacks = callbacks;
 		this.durations = { ...STEP_DURATIONS, ...(durationsOverride ?? {}) };
+
+		// 自动化环境（webdriver）：关闭后台暂停，防止 headless 并行页动画冻结
+		if (
+			typeof navigator !== 'undefined' &&
+			(navigator as Navigator & { webdriver?: boolean }).webdriver
+		) {
+			(engine as unknown as { pauseOnDocumentHidden: boolean }).pauseOnDocumentHidden = false;
+		}
 	}
 
 	get totalSeconds(): number {
@@ -178,6 +191,7 @@ export class TimelineController {
 	/** 销毁时间线并释放 Animatable 注册 */
 	destroy(): void {
 		this.cancelControl();
+		this.stopPlay();
 		if (this.tl) {
 			try {
 				this.tl.revert();
@@ -192,12 +206,34 @@ export class TimelineController {
 
 	play(speed: number): void {
 		if (!this.tl) return;
-		// 运行时属性名为 speed（d.ts 未暴露，实测可写）
-		(this.tl as unknown as { speed: number }).speed = speed;
-		this.tl.play();
+		this.playSpeed = speed;
+		this.playStartOffset = (this.tl as unknown as { currentTime?: number }).currentTime ?? 0;
+		this.playStartWall = performance.now();
+		if (this.playTimer !== null) clearInterval(this.playTimer);
+		// 自管推进：setInterval 驱动 seek，不依赖 anime 内部 rAF 调度（headless 可靠）
+		this.playTimer = setInterval(() => {
+			if (!this.tl) return this.stopPlay();
+			const elapsedSec = ((performance.now() - this.playStartWall) / 1000) * this.playSpeed;
+			const t = Math.min(this.playStartOffset + elapsedSec, this.totalSeconds);
+			this.tl.seek(t);
+			this.handleTick();
+			if (t >= this.totalSeconds) {
+				this.stopPlay();
+				if (!this.finishedFired) {
+					this.finishedFired = true;
+					this.callbacks.onFinished();
+				}
+			}
+		}, 16);
+	}
+
+	private stopPlay(): void {
+		if (this.playTimer !== null) clearInterval(this.playTimer);
+		this.playTimer = null;
 	}
 
 	pause(): void {
+		this.stopPlay();
 		this.tl?.pause();
 	}
 

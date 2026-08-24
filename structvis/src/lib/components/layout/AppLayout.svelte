@@ -6,7 +6,6 @@
 	import { page } from '$app/stores';
 	import { base, resolve } from '$app/paths';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
-	import { configureAnimEngine } from '$lib/utils/animEngine';
 
 	interface Props {
 		children: import('svelte').Snippet;

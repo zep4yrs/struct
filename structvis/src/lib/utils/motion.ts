@@ -1,11 +1,28 @@
-import { animate, spring, stagger } from 'animejs';
+import { animate, spring, stagger, splitText, createScope } from 'animejs';
 import type { EasingParam } from 'animejs';
+
+// ---- Scope：全站 reduced-motion 统一注册（M1 / audit-10 契约） ----
+let _scope: ReturnType<typeof createScope> | null = null;
+
+function getScope(): ReturnType<typeof createScope> | null {
+	if (typeof window === 'undefined' || typeof document === 'undefined') return null;
+	if (!_scope) {
+		_scope = createScope({
+			root: document.body,
+			mediaQueries: { reduceMotion: '(prefers-reduced-motion: reduce)' }
+		});
+	}
+	return _scope;
+}
 
 /**
  * 系统是否开启「减弱动态效果」。
  * 开启时所有入场动画应跳过（内容直接呈现，尊重无障碍设置）。
+ * 优先从 Scope 媒体查询读取（响应式），fallback 到原生 matchMedia。
  */
 export function prefersReducedMotion(): boolean {
+	const s = getScope();
+	if (s) return !!(s.matches as Record<string, boolean>)?.reduceMotion;
 	return (
 		typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 	);
@@ -79,19 +96,14 @@ export interface ScrollRevealOptions extends RevealOptions {
 	splitGap?: number;
 }
 
-/** 把元素文本拆成逐字 span（inline-block，保留空格宽度） */
+/**
+ * 把元素文本拆成逐字 span。
+ * 使用 anime.js 官方 Text.splitText —— 自动加 aria-hidden + sr-only 原文（无障碍加成）。
+ * includeSpaces 保留空格宽度；返回 chars 数组供逐字动画使用。
+ */
 function splitChars(node: HTMLElement): HTMLElement[] {
-	const text = node.textContent ?? '';
-	node.textContent = '';
-	const spans: HTMLElement[] = [];
-	for (const ch of text) {
-		const s = document.createElement('span');
-		s.textContent = ch === ' ' ? '\u00A0' : ch;
-		s.style.display = 'inline-block';
-		node.appendChild(s);
-		spans.push(s);
-	}
-	return spans;
+	const splitter = splitText(node, { chars: true, includeSpaces: true, accessible: true });
+	return (splitter as unknown as { chars: HTMLElement[] }).chars;
 }
 
 /**
@@ -99,6 +111,11 @@ function splitChars(node: HTMLElement): HTMLElement[] {
  * 解决「页面加载时一次播完、滚动下去全是静态」的问题。
  * 用法：<h2 use:revealOnScroll={{ split: true }}>…</h2>
  * 任何异常都会兜底让元素保持可见（绝不出现内容被动画锁死的情况）。
+ *
+ * 滚动检测说明：使用手动 scroll 监听而非 anime.js Events.onScroll——
+ * 后者的设计范式是「滚动位置同步动画进度」，而本场景只需「进入视口触发一次」，
+ * 两者语义不同；且我们的滚动容器是 main 元素（overflow-y-auto），非 window，
+ * onScroll 需要 container 参数适配，复杂度不成比例。保留现有方案。
  */
 export function revealOnScroll(node: HTMLElement, opts: ScrollRevealOptions = {}) {
 	if (typeof window === 'undefined' || prefersReducedMotion()) return {};
@@ -136,7 +153,7 @@ export function revealOnScroll(node: HTMLElement, opts: ScrollRevealOptions = {}
 		try {
 			const common = { duration, ease: easing ?? springEasing() };
 			if (split) {
-				// 逐字拆分浮现（拆分自实现，动画走 anime spring + stagger）
+				// 逐字拆分浮现（官方 splitText，动画走 anime spring + stagger）
 				if (!splitSpans) {
 					splitSpans = splitChars(node);
 				}
@@ -166,17 +183,17 @@ export function revealOnScroll(node: HTMLElement, opts: ScrollRevealOptions = {}
 	};
 
 	// 实际滚动容器是 window（html）
-	const onScroll = () => play();
-	const onResize = () => play();
-	window.addEventListener('scroll', onScroll, { passive: true });
-	window.addEventListener('resize', onResize);
+	const onScrollHandler = () => play();
+	const onResizeHandler = () => play();
+	window.addEventListener('scroll', onScrollHandler, { passive: true });
+	window.addEventListener('resize', onResizeHandler);
 	// 初始检查：已在视口内立即播放
 	play();
 
 	return {
 		destroy() {
-			window.removeEventListener('scroll', onScroll);
-			window.removeEventListener('resize', onResize);
+			window.removeEventListener('scroll', onScrollHandler);
+			window.removeEventListener('resize', onResizeHandler);
 		}
 	};
 }

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
-	import { expoOut } from 'svelte/easing';
+	import { eases } from 'animejs';
+	const expoOut = eases.outExpo;
 	import { animate } from 'animejs';
 	import type { AlgorithmEngine, PracticeQuestion } from '$lib/engines/algorithm/types';
 	import { settings } from '$lib/stores/settings';
@@ -530,13 +531,21 @@
 			playNarrationStep();
 			return;
 		}
-		timeline.play(speed);
+		try {
+			timeline.play(speed);
+		} catch (e) {
+			console.warn('[player] timeline.play:', e);
+		}
 		isPlaying = true;
 	}
 
 	function pause() {
 		if (!timeline.hasTimeline) return;
-		timeline.pause();
+		try {
+			timeline.pause();
+		} catch (e) {
+			console.warn('[player] timeline.pause:', e);
+		}
 		isPlaying = false;
 		stopNarration();
 	}

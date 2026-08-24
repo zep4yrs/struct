@@ -4,8 +4,8 @@ export default defineConfig({
 	testDir: './e2e',
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
-	retries: 1,
-	workers: 2,
+	retries: 2,
+	workers: 1,
 	reporter: [['list']],
 	use: {
 		baseURL: 'http://localhost:5173/struct',

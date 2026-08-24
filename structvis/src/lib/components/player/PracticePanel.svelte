@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
-	import { expoOut } from 'svelte/easing';
+	import { eases } from 'animejs';
+	const expoOut = eases.outExpo;
 	import type { PracticeQuestion } from '$lib/engines/algorithm/types';
 	import { settings } from '$lib/stores/settings';
 

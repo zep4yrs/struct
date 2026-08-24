@@ -9,7 +9,8 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
-	import { expoOut } from 'svelte/easing';
+	import { eases } from 'animejs';
+	const expoOut = eases.outExpo;
 
 	/** 功能速查面板（Story-1 / audit-12）：? 按钮唤起，移动端唯一的功能说明通道 */
 	interface Props {

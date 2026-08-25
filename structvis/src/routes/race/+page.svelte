@@ -34,12 +34,12 @@
 	import { STEP_DURATIONS } from '$lib/components/player/TimelineController';
 	import type { AlgorithmEngine } from '$lib/engines/algorithm/types';
 	import { reveal } from '$lib/utils/motion';
-	import { page } from '$app/stores';
 
-	// 分类过滤：?cat=classic | ?cat=fun | 无=全部（URL 驱动，可收藏/分享）
-	const cat = $derived($page.url.searchParams.get('cat'));
+	// 分类过滤：纯本地状态切换（无路由依赖，即时响应）
+	type CatFilter = 'classic' | 'fun' | null;
+	let cat: CatFilter = $state(null);
 	const showClassic = $derived(cat !== 'fun');
-	const showFun = $derived(cat === 'fun' || !cat);
+	const showFun = $derived(cat !== 'classic');
 	const catTitle = $derived(
 		cat === 'classic' ? '经典算法竞速' : cat === 'fun' ? '娱乐算法竞速' : '排序算法竞速'
 	);
@@ -529,8 +529,20 @@
 		style="letter-spacing: -0.03em;"
 		use:reveal={{ delay: 90 }}
 	>
-		排序算法竞速
+		{catTitle}
 	</h1>
+
+	<!-- 分类导航 -->
+	<div class="race-cat-nav mb-8 flex gap-2" use:reveal={{ delay: 120 }}>
+		<button class="race-tab" class:on={cat === 'classic'} onclick={() => (cat = 'classic')}
+			>经典算法</button
+		>
+		<button class="race-tab" class:on={cat === 'fun'} onclick={() => (cat = 'fun')}>
+			娱乐算法</button
+		>
+		<button class="race-tab" class:on={!cat} onclick={() => (cat = null)}>全部</button>
+	</div>
+
 	<p class="mb-8" style="color: var(--color-ink-2); max-width: 560px;" use:reveal={{ delay: 160 }}>
 		同一份乱序数组，五个排序算法同时开跑。每步节奏相同——步数少的先冲线。看谁先跑完，复杂度一目了然。
 	</p>
@@ -605,21 +617,25 @@
 	{/snippet}
 
 	<div class="race-grid">
-		<div class="race-group-head">
-			<span class="section-label">经典算法</span>
-			<span class="chapter-count">{classicRacers.length} 条跑道 · 教材标准实现</span>
-		</div>
-		{#each classicRacers as r (r.id)}
-			{@render lane(r)}
-		{/each}
+		{#if showClassic}
+			<div class="race-group-head">
+				<span class="section-label">经典算法</span>
+				<span class="chapter-count">{classicRacers.length} 条跑道 · 教材标准实现</span>
+			</div>
+			{#each classicRacers as r (r.id)}
+				{@render lane(r)}
+			{/each}
+		{/if}
 
-		<div class="race-group-head">
-			<span class="section-label">娱乐算法</span>
-			<span class="chapter-count">{funRacers.length} 条跑道 · 玩梗与思想实验，图一乐</span>
-		</div>
-		{#each funRacers as r (r.id)}
-			{@render lane(r)}
-		{/each}
+		{#if showFun}
+			<div class="race-group-head">
+				<span class="section-label">娱乐算法</span>
+				<span class="chapter-count">{funRacers.length} 条跑道 · 玩梗与思想实验，图一乐</span>
+			</div>
+			{#each funRacers as r (r.id)}
+				{@render lane(r)}
+			{/each}
+		{/if}
 	</div>
 
 	<!-- 复杂度曲线 -->
@@ -879,6 +895,39 @@
 		.race-grid {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
+	}
+
+	/* 分类导航标签 */
+	.race-cat-nav {
+		gap: 8px;
+	}
+
+	.race-tab {
+		padding: 6px 18px;
+		border-radius: var(--radius-full);
+		font-size: 13px;
+		color: var(--color-ink-2);
+		text-decoration: none;
+		border: 1px solid var(--color-line-regular);
+		cursor: pointer;
+		background: transparent;
+		font-family: var(--font-body);
+		transition:
+			border-color 120ms var(--ease-out),
+			color 120ms var(--ease-out),
+			background 120ms var(--ease-out);
+	}
+
+	.race-tab:hover {
+		border-color: var(--color-ink);
+		color: var(--color-ink);
+	}
+
+	.race-tab.on {
+		background: var(--color-accent);
+		border-color: var(--color-accent);
+		color: #fff;
+		font-weight: 500;
 	}
 
 	/* 组标题行：横跨整行 */

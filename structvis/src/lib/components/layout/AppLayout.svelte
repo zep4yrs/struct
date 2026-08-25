@@ -90,7 +90,7 @@
 
 	<TopBar
 		{crumb}
-		showSidebarBtn={showSidebarBtn}
+		{showSidebarBtn}
 		{sidebarOpen}
 		onToggleSidebar={() => (sidebarOpen = !sidebarOpen)}
 	/>

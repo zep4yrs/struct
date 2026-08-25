@@ -54,6 +54,13 @@
 	const crumb = $derived(getCrumb(stripBase($page.url.pathname)));
 	const isHome = $derived(stripBase($page.url.pathname) === '/');
 
+	// 非课程工具页（竞速/图谱/自测/报告/设置/关于）不显示侧栏——这些页面不属于课程体系
+	const p = $derived(stripBase($page.url.pathname));
+	const isCoursePage = $derived(
+		p === '/' || p === '/catalog' || p.startsWith('/ds/') || p.startsWith('/db/')
+	);
+	const showSidebarBtn = $derived(!isHome && isCoursePage);
+
 	// 监听持久层写失败事件：会话内只提示一次（persistent.ts 保证派发频率）
 	onMount(() => {
 		const onStorageWarning = () => (storageWarning = true);
@@ -83,13 +90,19 @@
 
 	<TopBar
 		{crumb}
-		showSidebarBtn={!isHome}
+		showSidebarBtn={showSidebarBtn}
 		{sidebarOpen}
 		onToggleSidebar={() => (sidebarOpen = !sidebarOpen)}
 	/>
 
 	<div class="flex min-h-0 flex-1">
-		<Sidebar {activeSection} open={!isHome && sidebarOpen} onClose={() => (sidebarOpen = false)} />
+		{#if isCoursePage}
+			<Sidebar
+				{activeSection}
+				open={!isHome && sidebarOpen}
+				onClose={() => (sidebarOpen = false)}
+			/>
+		{/if}
 
 		<main id="main-content" tabindex="-1" class="flex-1 overflow-y-auto">
 			{@render children()}

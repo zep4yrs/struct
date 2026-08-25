@@ -520,12 +520,12 @@
 		'数据库 · 运维'
 	];
 
-	const NODE_W = 108;
+	const NODE_W = 128;
 	const NODE_H = 46;
-	const COL_GAP = 16;
+	const COL_GAP = 20;
 	const ROW_GAP = 50;
 	const PAD_Y = 36;
-	const W = 964;
+	const W = 1500;
 
 	const layout = $derived.by(() => {
 		const pos: Record<string, { x: number; y: number }> = {};
@@ -589,7 +589,7 @@
 	}
 </script>
 
-<div class="mx-auto max-w-5xl p-8">
+<div class="mx-auto max-w-[1600px] px-8 py-16">
 	<div class="section-label mb-4" use:reveal>技能图谱 · SKILL MAP</div>
 	<h1
 		class="mb-2 font-display text-5xl font-medium"

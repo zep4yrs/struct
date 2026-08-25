@@ -34,6 +34,15 @@
 	import { STEP_DURATIONS } from '$lib/components/player/TimelineController';
 	import type { AlgorithmEngine } from '$lib/engines/algorithm/types';
 	import { reveal } from '$lib/utils/motion';
+	import { page } from '$app/stores';
+
+	// 分类过滤：?cat=classic | ?cat=fun | 无=全部（URL 驱动，可收藏/分享）
+	const cat = $derived($page.url.searchParams.get('cat'));
+	const showClassic = $derived(cat !== 'fun');
+	const showFun = $derived(cat === 'fun' || !cat);
+	const catTitle = $derived(
+		cat === 'classic' ? '经典算法竞速' : cat === 'fun' ? '娱乐算法竞速' : '排序算法竞速'
+	);
 
 	interface Racer {
 		id: string;

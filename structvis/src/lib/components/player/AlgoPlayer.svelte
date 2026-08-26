@@ -3,7 +3,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import { eases } from 'animejs';
 	const expoOut = eases.outExpo;
-	import { animate } from 'animejs';
+	import { animate, engine as animEngine } from 'animejs';
 	import type { AlgorithmEngine, PracticeQuestion } from '$lib/engines/algorithm/types';
 	import { settings } from '$lib/stores/settings';
 	import { TimelineController } from './TimelineController';
@@ -650,6 +650,10 @@
 	}
 
 	onMount(() => {
+		// 自动化环境（webdriver/headless）：关闭后台暂停，确保动画正常推进
+		if ((navigator as Navigator & { webdriver?: boolean }).webdriver) {
+			animEngine.pauseOnDocumentHidden = false;
+		}
 		if (engine.steps.length > 0) {
 			timeline.build();
 		}

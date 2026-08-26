@@ -1,4 +1,4 @@
-import { Timeline, engine } from 'animejs';
+import { Timeline } from 'animejs';
 import type { AlgorithmEngine, StepType } from '$lib/engines/algorithm/types';
 
 /**
@@ -77,14 +77,6 @@ export class TimelineController {
 		this.engine = engine;
 		this.callbacks = callbacks;
 		this.durations = { ...STEP_DURATIONS, ...(durationsOverride ?? {}) };
-
-		// 自动化环境（webdriver）：关闭后台暂停，防止 headless 并行页动画冻结
-		if (
-			typeof navigator !== 'undefined' &&
-			(navigator as Navigator & { webdriver?: boolean }).webdriver
-		) {
-			(engine as unknown as { pauseOnDocumentHidden: boolean }).pauseOnDocumentHidden = false;
-		}
 	}
 
 	get totalSeconds(): number {

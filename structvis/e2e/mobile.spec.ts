@@ -20,9 +20,9 @@ test.describe('播放器移动端适配（375×667）', () => {
 		await openBubbleSortMobile(page);
 		const sizes = await page.evaluate(() => {
 			const cb = document.querySelector('.control-bar')!.getBoundingClientRect();
-			const btns = [...document.querySelectorAll('.control-bar .icon-btn, .control-bar .play-btn')].map(
-				(b) => b.getBoundingClientRect().width
-			);
+			const btns = [
+				...document.querySelectorAll('.control-bar .icon-btn, .control-bar .play-btn')
+			].map((b) => b.getBoundingClientRect().width);
 			return {
 				cbRight: Math.round(cb.right),
 				vw: window.innerWidth,

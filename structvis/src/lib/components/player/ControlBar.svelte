@@ -72,7 +72,10 @@
 		window.removeEventListener('mouseup', handleProgressMouseUp);
 	}
 
-	// 键盘快捷键
+	// 键盘快捷键（audit-5 语义说明：键盘控制按模式分治——本监听拥有「普通模式」的
+	// 空格/方向键/Home/End；投影模式的同名按键由 AlgoPlayer 的 svelte:window 接管，
+	// 且投影时本组件被 disabled={activeQuestion !== null || projector} 整体关闭，
+	// 两者不存在重复响应。请勿在两处同时放开同一按键。）
 	function handleKeyDown(e: KeyboardEvent) {
 		if (disabled) return;
 		const target = e.target as HTMLElement;

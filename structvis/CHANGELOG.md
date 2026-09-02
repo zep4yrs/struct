@@ -2,6 +2,19 @@
 
 ## [未发布]
 
+### 新增（M3/M4 · 数据库课程补齐）
+
+- **M3.1 高流量页迁移**：sql / join / left-join / group-by / subquery 五页改为剧本引擎，教学语义沿用原教材数据；退役删除 JoinEngine / LeftJoinEngine / GroupByEngine / SubQueryEngine；ScriptEngine 支持自定义 SQL 单帧真实执行（仅 sql.js 活跃时开放）
+- **M4 过程型主题×3**（概念状态机演示，专用 Canvas 渲染器）：索引查询与回表（二级索引→主键回表全链路）、锁等待与死锁甘特图（持有/等待/回滚三态时间线 + victim 解环）、可串行化调度（冲突对识别 → 等价串行化）
+- **M5.1**：counting-sort 孤儿路由入册；单源一致性治理（图谱/章节/别名/面包屑守卫 + 修复 9 处既有漂移）
+- **防漂移闭环**：scripts/check-docs.mjs 接入 npm run lint——README 课题/页面数字与源码不一致时直接红
+
+### 修复（audit 收尾）
+
+- audit-8：自定义弹窗空字段禁用「应用」（原提交后才报错）；IsolationEngine 空 customConfig 导致的空弹窗按钮移除
+- audit-5：键盘控制「模式分治」语义以注释固化（ControlBar 普通模式 / AlgoPlayer 投影模式，无重复响应）
+- M3.6：保留者 IsolationEngine 补特征 spec（原为零测试）
+
 ### 新增（M2 · SQL 剧本站）
 
 - **M2.0 骨架**：`ScriptEngine` 剧本引擎（帧 = SQL + 文案 + 行标签标注，伪代码面板随播放头展示本帧 SQL 与逻辑阶段）+ `sql-executor` 可选依赖加载器——安装 sql.js 并执行 `node scripts/setup-sqljs.mjs` 后逐帧真实执行；未安装时回落帧内静态演示数据（单测校验），页面功能完整

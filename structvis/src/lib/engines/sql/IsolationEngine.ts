@@ -9,7 +9,6 @@
 
 import type {
 	DemoScriptItem,
-	EngineCustomConfig,
 	EnginePreset,
 	Highlight,
 	PracticeQuestion,
@@ -88,7 +87,7 @@ export class IsolationEngine extends EngineBase<SqlTableData> {
 
 	presets: EnginePreset[] = [{ name: '脏读演示', description: '读未提交级别下的交错读写' }];
 
-	customConfig: EngineCustomConfig = { title: '并发演示', fields: [] };
+	// 注：不设置 customConfig——空 fields 会让播放器渲染一个空弹窗的「自定义」按钮
 
 	applyPreset(_name: string): void {
 		this.init();

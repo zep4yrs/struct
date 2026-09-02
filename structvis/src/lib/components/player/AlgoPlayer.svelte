@@ -199,6 +199,13 @@
 		rebuildAfterEngineChange();
 	}
 
+	// audit-8：空字段禁用「应用」（文本/多行字段非空才允许提交；下拉恒有值）
+	let canApplyCustom = $derived(
+		(engine.customConfig?.fields ?? [])
+			.filter((f) => f.type !== 'select')
+			.every((f) => (customValues[f.key] ?? '').trim().length > 0)
+	);
+
 	function applyCustom() {
 		try {
 			engine.applyCustom?.(customValues);
@@ -1153,7 +1160,10 @@
 				{/if}
 				<div class="modal-actions">
 					<button class="btn btn-ghost" onclick={() => (showCustomModal = false)}>取消</button>
-					<button class="btn btn-primary" onclick={applyCustom}>应用</button>
+					<!-- audit-8：空字段直接禁用提交（此前提交后才报错） -->
+					<button class="btn btn-primary" onclick={applyCustom} disabled={!canApplyCustom}
+						>应用</button
+					>
 				</div>
 			</div>
 		</div>

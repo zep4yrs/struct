@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep } from '$lib/engines/algorithm/types';
-	import { resolveCSSVar, stepProgress } from '../visualization-utils';
+	import { resolveCSSVar } from '../visualization-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -55,10 +55,6 @@
 		const d = step.indexQuery;
 		if (!d) return;
 		ctx.clearRect(0, 0, W, H);
-		const { fromIdx, toIdx, t } = stepProgress(playbackPos, steps.length);
-		const eased = t * (2 - t);
-		const fromD = steps[fromIdx]?.indexQuery;
-		const toD = steps[toIdx]?.indexQuery;
 
 		// 坐标换算：树逻辑宽 720 → 画布自适应
 		const sx = W / 760;
@@ -66,12 +62,7 @@
 		const NW = 150 * sx;
 		const NH = 34;
 		const active = new Set(d.activeNodes ?? []);
-		const fromActive = new Set(fromD?.activeNodes ?? []);
-		const isActive = (id: string) => toActiveCheck(id);
-		function toActiveCheck(id: string) {
-			return active.has(id);
-		}
-		const wasActive = (id: string) => fromActive.has(id);
+		const isActive = (id: string) => active.has(id);
 
 		// 树边（定位路径高亮）
 		const pathSet = new Set((d.pathEdges ?? []).map((e) => e.from + '>' + e.to));
@@ -162,8 +153,6 @@
 			ctx.textAlign = 'right';
 			ctx.fillText(d.note, W - 12, H - 10);
 		}
-		void wasActive;
-		void eased;
 	}
 
 	$effect(() => {

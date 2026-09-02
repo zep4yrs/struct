@@ -466,7 +466,7 @@ export interface AlgorithmEngine<TInput = number[]> {
 	/** 获取当前浮点进度 */
 	getProgress(): number;
 
-	/** 设置浮点进度（用于 GSAP 驱动） */
+	/** 设置浮点进度（用于时间线驱动） */
 	setProgress(pos: number): void;
 
 	/** 重置到第 0 步 */

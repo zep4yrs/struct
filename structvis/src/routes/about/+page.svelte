@@ -131,10 +131,12 @@
 		<ul class="max-w-3xl list-disc space-y-2 pl-6 text-base" style="color: var(--color-ink-2);">
 			<li>Svelte 5 + SvelteKit（adapter-static 纯静态部署，GitHub Pages）</li>
 			<li>Tailwind v4 + 自研设计 token（亮 / 暗双主题，AA 对比度基线）</li>
-			<li>Canvas 渲染器插件体系 + GSAP 时间线动画</li>
-			<li>three.js 全站粒子背景（可在设置中关闭）· anime.js 数据动效 · sql.js 浏览器内 SQL 执行</li>
+			<li>Canvas 渲染器插件体系 + anime.js v4 时间线动画与数据动效</li>
+			<li>
+				three.js 全站粒子背景（可在设置中关闭）· 自研 SQL 步进模拟引擎（sql.js 真实执行已立项）
+			</li>
 			<li>Web Speech API 讲授朗读（含预录神经语音回落）</li>
-			<li>Vitest（480+ 单测）+ Playwright（42 条端到端，含视觉截图基线）</li>
+			<li>Vitest（488 单测）+ Playwright（48 条端到端，含视觉截图基线）</li>
 		</ul>
 	</section>
 

@@ -12,6 +12,9 @@ import { HAVING_DEEP_SPEC } from './having-deep';
 import { DISTINCT_PAGING_SPEC } from './distinct-paging';
 import { JOIN_VARIANTS_SPEC } from './join-variants';
 import { VIEW_UPDATE_SPEC } from './view-update';
+import { INDEX_FAIL_SPEC } from './index-fail';
+import { EXPLAIN_DETAIL_SPEC } from './explain-detail';
+import { CONSTRAINTS_SPEC } from './constraints';
 import { ScriptedResultEngine, type ScriptSpec } from '../ScriptEngine';
 
 const SPECS: ScriptSpec[] = [
@@ -21,7 +24,10 @@ const SPECS: ScriptSpec[] = [
 	HAVING_DEEP_SPEC,
 	DISTINCT_PAGING_SPEC,
 	JOIN_VARIANTS_SPEC,
-	VIEW_UPDATE_SPEC
+	VIEW_UPDATE_SPEC,
+	INDEX_FAIL_SPEC,
+	EXPLAIN_DETAIL_SPEC,
+	CONSTRAINTS_SPEC
 ];
 
 function staticEngine(spec: ScriptSpec): ScriptedResultEngine {
@@ -123,5 +129,30 @@ describe('M2 各主题关键预期值抽查', () => {
 			[2, '英语', 60],
 			[3, '数学', 95]
 		]);
+	});
+
+	it('index-fail：基线 SEARCH 命中索引，四个失效场景全为 SCAN', () => {
+		const engine = staticEngine(INDEX_FAIL_SPEC);
+		engine.setProgress(0);
+		expect(engine.getCurrentStep().table?.rows[0][3]).toContain('SEARCH');
+		for (let i = 1; i <= 4; i++) {
+			engine.setProgress(i);
+			expect(engine.getCurrentStep().table?.rows[0][3]).toContain('SCAN');
+		}
+	});
+
+	it('constraints：PK/UNIQUE/CHECK 违规均 0 行写入；外键插入生效；CASCADE 后清零', () => {
+		const engine = staticEngine(CONSTRAINTS_SPEC);
+		const wants: [number, unknown[]][] = [
+			[1, [0]],
+			[2, [0]],
+			[3, [0]],
+			[4, [1]],
+			[5, [0]]
+		];
+		for (const [idx, want] of wants) {
+			engine.setProgress(idx);
+			expect(engine.getCurrentStep().table?.rows, `约束帧 ${idx} 结果不符`).toEqual([want]);
+		}
 	});
 });

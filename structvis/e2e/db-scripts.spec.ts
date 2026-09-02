@@ -12,7 +12,10 @@ const SCRIPT_TOPICS: { slug: string; title: string; frames: number }[] = [
 	{ slug: 'having-deep', title: 'WHERE 与 HAVING', frames: 4 },
 	{ slug: 'distinct-paging', title: 'DISTINCT 与分页', frames: 5 },
 	{ slug: 'join-variants', title: 'JOIN 家族', frames: 6 },
-	{ slug: 'view-update', title: '视图更新限制', frames: 6 }
+	{ slug: 'view-update', title: '视图更新限制', frames: 6 },
+	{ slug: 'index-fail', title: '索引失效实验', frames: 6 },
+	{ slug: 'explain-detail', title: 'EXPLAIN 详解', frames: 6 },
+	{ slug: 'constraints', title: '约束体系', frames: 6 }
 ];
 
 for (const { slug, title } of SCRIPT_TOPICS) {

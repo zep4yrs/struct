@@ -756,6 +756,33 @@ export const dbTopics: TopicCard[] = [
 		badge: '真实执行',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]视图更新限制[/current]'
+	},
+	{
+		title: '索引失效实验',
+		description: 'EXPLAIN 实证 · 五种失效场景',
+		href: '/db/index-fail',
+		topicId: 'index-fail',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]索引失效实验[/current]'
+	},
+	{
+		title: 'EXPLAIN 详解',
+		description: 'SCAN/SEARCH · 连接内外层 · 层级树',
+		href: '/db/explain-detail',
+		topicId: 'explain-detail',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]EXPLAIN 详解[/current]'
+	},
+	{
+		title: '约束体系',
+		description: 'PK · UNIQUE · CHECK · 外键级联',
+		href: '/db/constraints',
+		topicId: 'constraints',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]约束体系[/current]'
 	}
 ];
 
@@ -817,5 +844,8 @@ export const TOPIC_ALIASES: Record<string, string[]> = {
 	'/db/having-deep': ['having', '分组过滤', '聚合筛选'],
 	'/db/distinct-paging': ['distinct', '去重', 'limit', 'offset', '分页'],
 	'/db/join-variants': ['right join', 'full join', 'cross join', '自连接', '笛卡尔积'],
-	'/db/view-update': ['可更新视图', 'instead of', 'with check option', '视图写入']
+	'/db/view-update': ['可更新视图', 'instead of', 'with check option', '视图写入'],
+	'/db/index-fail': ['索引失效', '最左前缀', 'like 优化', '函数包裹'],
+	'/db/explain-detail': ['query plan', '执行计划解读', 'scan', 'search'],
+	'/db/constraints': ['主键', '外键', 'check', 'unique', '级联删除']
 };

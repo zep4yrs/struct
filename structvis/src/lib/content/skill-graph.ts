@@ -550,6 +550,30 @@ export const SKILL_NODES: SkillNode[] = [
 		topicId: 'view-update',
 		group: '数据库 · 实验',
 		desc: '只读视图 · INSTEAD OF'
+	},
+	{
+		id: 'index-fail',
+		title: '索引失效实验',
+		href: '/db/index-fail',
+		topicId: 'index-fail',
+		group: '数据库 · 实验',
+		desc: 'EXPLAIN 实证五场景'
+	},
+	{
+		id: 'explain-detail',
+		title: 'EXPLAIN 详解',
+		href: '/db/explain-detail',
+		topicId: 'explain-detail',
+		group: '数据库 · 实验',
+		desc: '计划层级树'
+	},
+	{
+		id: 'constraints',
+		title: '约束体系',
+		href: '/db/constraints',
+		topicId: 'constraints',
+		group: '数据库 · 实验',
+		desc: '五大约束操作台'
 	}
 ];
 
@@ -606,5 +630,8 @@ export const SKILL_EDGES: SkillEdge[] = [
 	{ from: 'group-by', to: 'having-deep' },
 	{ from: 'sql', to: 'distinct-paging' },
 	{ from: 'join', to: 'join-variants' },
-	{ from: 'view', to: 'view-update' }
+	{ from: 'view', to: 'view-update' },
+	{ from: 'index', to: 'index-fail' },
+	{ from: 'index-fail', to: 'explain-detail' },
+	{ from: 'tables', to: 'constraints' }
 ];

@@ -133,10 +133,10 @@
 			<li>Tailwind v4 + 自研设计 token（亮 / 暗双主题，AA 对比度基线）</li>
 			<li>Canvas 渲染器插件体系 + anime.js v4 时间线动画与数据动效</li>
 			<li>
-				three.js 全站粒子背景（可在设置中关闭）· 自研 SQL 步进模拟引擎（sql.js 真实执行已立项）
+				three.js 全站粒子背景（可在设置中关闭）· SQL 剧本引擎（sql.js 逐帧真实执行，可选依赖）
 			</li>
 			<li>Web Speech API 讲授朗读（含预录神经语音回落）</li>
-			<li>Vitest（498 单测）+ Playwright（48 条端到端，含视觉截图基线）</li>
+			<li>Vitest（503 单测）+ Playwright（49 条端到端，含视觉截图基线）</li>
 		</ul>
 	</section>
 

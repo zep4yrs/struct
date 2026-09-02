@@ -2,6 +2,12 @@
 
 ## [未发布]
 
+### 新增（M2 · SQL 剧本站）
+
+- **M2.0 骨架**：`ScriptEngine` 剧本引擎（帧 = SQL + 文案 + 行标签标注，伪代码面板随播放头展示本帧 SQL 与逻辑阶段）+ `sql-executor` 可选依赖加载器——安装 sql.js 并执行 `node scripts/setup-sqljs.mjs` 后逐帧真实执行；未安装时回落帧内静态演示数据（单测校验），页面功能完整
+- **M2.3 集合运算**（/db/union-set）：UNION 并 / INTERSECT 交 / EXCEPT 差三结果对照 + 计数小结，行标签标注来源（仅Python/共有/仅C班）；sql-table 渲染器新增行标签徽标
+- M2.13 e2e 剧本冒烟规格（db-scripts.spec.ts，新主题登记一行即可）
+
 ### 新增（产品）
 
 - **首页开屏动画**：SVG 吸附拼装 + 物理变形 + 爆炸退场，Web Audio 合成音效（零音频资源）；设置开关 + 回访门控（仅首访播放）

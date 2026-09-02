@@ -35,7 +35,8 @@ export const SKILL_GROUP_ORDER = [
 	'数据库 · 查询',
 	'数据库 · 设计',
 	'数据库 · 进阶',
-	'数据库 · 运维'
+	'数据库 · 运维',
+	'数据库 · 实验'
 ] as const;
 
 export const SKILL_NODES: SkillNode[] = [
@@ -493,6 +494,14 @@ export const SKILL_NODES: SkillNode[] = [
 		topicId: 'users',
 		group: '数据库 · 运维',
 		desc: 'GRANT / REVOKE'
+	},
+	{
+		id: 'union-set',
+		title: '集合运算',
+		href: '/db/union-set',
+		topicId: 'union-set',
+		group: '数据库 · 实验',
+		desc: 'UNION · INTERSECT · EXCEPT'
 	}
 ];
 
@@ -542,5 +551,6 @@ export const SKILL_EDGES: SkillEdge[] = [
 	{ from: 'tables', to: 'index' },
 	{ from: 'index', to: 'explain-plan' },
 	{ from: 'hash-table', to: 'counting-sort' },
-	{ from: 'stack-queue', to: 'n-queens' }
+	{ from: 'stack-queue', to: 'n-queens' },
+	{ from: 'sql', to: 'union-set' }
 ];

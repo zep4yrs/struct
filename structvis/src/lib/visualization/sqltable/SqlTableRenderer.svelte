@@ -39,6 +39,7 @@
 		ink3: '#9A9A9A',
 		current: '#D97706',
 		compare: '#1B4965',
+		success: '#2D6A4F',
 		rowBg: '#FFFFFF',
 		rowHighlight: 'rgba(217, 119, 6, 0.12)'
 	});
@@ -54,6 +55,7 @@
 			ink3: resolveCSSVar('--color-ink-3'),
 			current: resolveCSSVar('--color-accent'),
 			compare: resolveCSSVar('--color-academic'),
+			success: resolveCSSVar('--color-success'),
 			rowBg: resolveCSSVar('--color-surface'),
 			rowHighlight: hexToRgba(resolveCSSVar('--color-accent'), 0.14)
 		};
@@ -170,6 +172,34 @@
 			ctx.fillStyle = colors.rowHighlight;
 			ctx.fillRect(x0 + 1, y + 1, totalW - 2, ROW_H - 1);
 			ctx.globalAlpha = 1;
+		}
+
+		// 行标签徽标（M2 结果演化标注：'仅A'/'共有' 等，颜色按标签哈希稳定取色）
+		const tagEntries = Object.entries(table.rowTags ?? {});
+		if (tagEntries.length > 0) {
+			const palette = [colors.current, colors.compare, colors.success];
+			ctx.font = "600 10px 'JetBrains Mono', Consolas, monospace";
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
+			for (const [k, tag] of tagEntries) {
+				const idx = Number(k);
+				if (idx >= visibleRows) continue;
+				const color =
+					palette[[...tag].reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % palette.length];
+				const y = HEADER_H + idx * ROW_H;
+				const tw = ctx.measureText(tag).width + 12;
+				const cx = x0 + totalW - tw - 6;
+				ctx.fillStyle = color;
+				ctx.beginPath();
+				if (typeof ctx.roundRect === 'function') {
+					ctx.roundRect(cx, y + 8, tw, ROW_H - 16, (ROW_H - 16) / 2);
+				} else {
+					ctx.rect(cx, y + 8, tw, ROW_H - 16);
+				}
+				ctx.fill();
+				ctx.fillStyle = colors.rowBg;
+				ctx?.fillText(tag, cx + tw / 2, y + ROW_H / 2 + 1);
+			}
 		}
 
 		// 行号标注

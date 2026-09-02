@@ -200,6 +200,11 @@ export interface QueensData {
 export interface SqlTableData {
 	columns: string[];
 	rows: (string | number)[][];
+	/**
+	 * 行标签（M2 剧本站结果演化标注）：行号 → 标签文本（如 '仅A'/'共有'/'NULL'）。
+	 * 渲染器在行尾绘制彩色徽标；同一标签 token 颜色稳定（按哈希取调色板）。
+	 */
+	rowTags?: Record<number, string>;
 }
 
 /** E-R 图节点类型 */

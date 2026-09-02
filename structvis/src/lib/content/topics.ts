@@ -31,7 +31,7 @@ export const DS_GROUP_ORDER = [
 	'动态规划',
 	'回溯算法'
 ] as const;
-export const DB_GROUP_ORDER = ['基础', '进阶', '设计', '运维'] as const;
+export const DB_GROUP_ORDER = ['基础', '进阶', '设计', '运维', '实验'] as const;
 
 export const dsTopics: TopicCard[] = [
 	{
@@ -693,6 +693,15 @@ export const dbTopics: TopicCard[] = [
 		badge: '交互式',
 		group: '运维',
 		crumb: '数据库 / [current]用户与权限管理[/current]'
+	},
+	{
+		title: 'SQL 集合运算',
+		description: 'UNION · INTERSECT · EXCEPT',
+		href: '/db/union-set',
+		topicId: 'union-set',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]SQL 集合运算[/current]'
 	}
 ];
 
@@ -747,5 +756,6 @@ export const TOPIC_ALIASES: Record<string, string[]> = {
 	'/db/view': ['视图', 'view'],
 	'/db/triggers': ['触发器', 'trigger'],
 	'/db/procedures': ['存储过程', 'procedure'],
-	'/db/users': ['grant', 'revoke', '权限']
+	'/db/users': ['grant', 'revoke', '权限'],
+	'/db/union-set': ['union', 'intersect', 'except', '并集', '交集', '差集']
 };

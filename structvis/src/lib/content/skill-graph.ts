@@ -526,6 +526,30 @@ export const SKILL_NODES: SkillNode[] = [
 		topicId: 'having-deep',
 		group: '数据库 · 实验',
 		desc: '筛行 vs 筛组'
+	},
+	{
+		id: 'distinct-paging',
+		title: '去重与分页',
+		href: '/db/distinct-paging',
+		topicId: 'distinct-paging',
+		group: '数据库 · 实验',
+		desc: 'DISTINCT · LIMIT/OFFSET'
+	},
+	{
+		id: 'join-variants',
+		title: 'JOIN 家族',
+		href: '/db/join-variants',
+		topicId: 'join-variants',
+		group: '数据库 · 实验',
+		desc: 'RIGHT/FULL/CROSS/SELF'
+	},
+	{
+		id: 'view-update',
+		title: '视图更新限制',
+		href: '/db/view-update',
+		topicId: 'view-update',
+		group: '数据库 · 实验',
+		desc: '只读视图 · INSTEAD OF'
 	}
 ];
 
@@ -579,5 +603,8 @@ export const SKILL_EDGES: SkillEdge[] = [
 	{ from: 'sql', to: 'union-set' },
 	{ from: 'sql', to: 'case-expr' },
 	{ from: 'sql', to: 'sql-functions' },
-	{ from: 'group-by', to: 'having-deep' }
+	{ from: 'group-by', to: 'having-deep' },
+	{ from: 'sql', to: 'distinct-paging' },
+	{ from: 'join', to: 'join-variants' },
+	{ from: 'view', to: 'view-update' }
 ];

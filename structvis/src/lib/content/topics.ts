@@ -729,6 +729,33 @@ export const dbTopics: TopicCard[] = [
 		badge: '真实执行',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]WHERE 与 HAVING[/current]'
+	},
+	{
+		title: 'DISTINCT 与分页',
+		description: '去重 · LIMIT/OFFSET · 深分页',
+		href: '/db/distinct-paging',
+		topicId: 'distinct-paging',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]DISTINCT 与分页[/current]'
+	},
+	{
+		title: 'JOIN 家族',
+		description: 'RIGHT · FULL · CROSS · 自连接',
+		href: '/db/join-variants',
+		topicId: 'join-variants',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]JOIN 家族[/current]'
+	},
+	{
+		title: '视图更新限制',
+		description: '只读视图 · INSTEAD OF · CHECK OPTION',
+		href: '/db/view-update',
+		topicId: 'view-update',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]视图更新限制[/current]'
 	}
 ];
 
@@ -787,5 +814,8 @@ export const TOPIC_ALIASES: Record<string, string[]> = {
 	'/db/union-set': ['union', 'intersect', 'except', '并集', '交集', '差集'],
 	'/db/case-expr': ['case when', '分支', '条件表达式'],
 	'/db/sql-functions': ['函数', 'substr', 'strftime', 'coalesce', '日期函数'],
-	'/db/having-deep': ['having', '分组过滤', '聚合筛选']
+	'/db/having-deep': ['having', '分组过滤', '聚合筛选'],
+	'/db/distinct-paging': ['distinct', '去重', 'limit', 'offset', '分页'],
+	'/db/join-variants': ['right join', 'full join', 'cross join', '自连接', '笛卡尔积'],
+	'/db/view-update': ['可更新视图', 'instead of', 'with check option', '视图写入']
 };

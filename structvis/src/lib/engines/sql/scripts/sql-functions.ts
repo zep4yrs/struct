@@ -14,7 +14,7 @@ export const SQL_FUNCTIONS_SPEC: ScriptSpec = {
 			sql: `SELECT 姓名, 邮箱,\n  UPPER(邮箱) AS 邮箱大写,\n  SUBSTR(邮箱, 1, INSTR(邮箱, '@') - 1) AS 账号名,\n  LENGTH(邮箱) AS 长度\nFROM "员工" ORDER BY 工号;`,
 			description: '字符串函数：UPPER / INSTR 定位 @ / SUBSTR 截取账号 / LENGTH',
 			detail:
-				'INSTR(邮箱,\'@\') 返回 @ 的位置（1-based），减 1 得账号长度——配合 SUBSTR 拆出登录名，是字符串函数的经典组合拳。',
+				"INSTR(邮箱,'@') 返回 @ 的位置（1-based），减 1 得账号长度——配合 SUBSTR 拆出登录名，是字符串函数的经典组合拳。",
 			stage: 1,
 			type: 'init',
 			expected: {
@@ -103,7 +103,8 @@ export const SQL_FUNCTIONS_SPEC: ScriptSpec = {
 			options: ['lisi', 'lisi@', 'corp.com', 'lisi@corp'],
 			correctAnswer: 'lisi',
 			hint: 'INSTR 找到 @ 在第 5 位',
-			explanation: "INSTR 返回 @ 的位置 5，减 1 得截取长度 4，SUBSTR 从第 1 位取 4 个字符 → 'lisi'。"
+			explanation:
+				"INSTR 返回 @ 的位置 5，减 1 得截取长度 4，SUBSTR 从第 1 位取 4 个字符 → 'lisi'。"
 		}
 	]
 };

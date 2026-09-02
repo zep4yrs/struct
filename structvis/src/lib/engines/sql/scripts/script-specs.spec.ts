@@ -9,9 +9,20 @@ import { UNION_SET_SPEC } from './union-set';
 import { CASE_EXPR_SPEC } from './case-expr';
 import { SQL_FUNCTIONS_SPEC } from './sql-functions';
 import { HAVING_DEEP_SPEC } from './having-deep';
+import { DISTINCT_PAGING_SPEC } from './distinct-paging';
+import { JOIN_VARIANTS_SPEC } from './join-variants';
+import { VIEW_UPDATE_SPEC } from './view-update';
 import { ScriptedResultEngine, type ScriptSpec } from '../ScriptEngine';
 
-const SPECS: ScriptSpec[] = [UNION_SET_SPEC, CASE_EXPR_SPEC, SQL_FUNCTIONS_SPEC, HAVING_DEEP_SPEC];
+const SPECS: ScriptSpec[] = [
+	UNION_SET_SPEC,
+	CASE_EXPR_SPEC,
+	SQL_FUNCTIONS_SPEC,
+	HAVING_DEEP_SPEC,
+	DISTINCT_PAGING_SPEC,
+	JOIN_VARIANTS_SPEC,
+	VIEW_UPDATE_SPEC
+];
 
 function staticEngine(spec: ScriptSpec): ScriptedResultEngine {
 	const tables = spec.frames.map(
@@ -86,6 +97,31 @@ describe('M2 各主题关键预期值抽查', () => {
 		expect(engine.getCurrentStep().table?.rows).toEqual([
 			['华东', 850],
 			['华南', 850]
+		]);
+	});
+
+	it('join-variants：FULL 5 行（交集2 + 仅员工2 + 仅部门1）；自连接拼出汇报链', () => {
+		const engine = staticEngine(JOIN_VARIANTS_SPEC);
+		engine.setProgress(3);
+		expect(engine.getCurrentStep().table?.rows).toHaveLength(5);
+		engine.setProgress(5);
+		expect(engine.getCurrentStep().table?.rows).toEqual([
+			['张三', '—'],
+			['李四', '张三'],
+			['王五', '张三'],
+			['赵六', '李四']
+		]);
+	});
+
+	it('view-update：经视图写入落到基础表（5 行）', () => {
+		const engine = staticEngine(VIEW_UPDATE_SPEC);
+		engine.setProgress(5);
+		expect(engine.getCurrentStep().table?.rows).toEqual([
+			[1, '数学', 90],
+			[1, '英语', 85],
+			[2, '数学', 75],
+			[2, '英语', 60],
+			[3, '数学', 95]
 		]);
 	});
 });

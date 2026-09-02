@@ -9,7 +9,10 @@ const SCRIPT_TOPICS: { slug: string; title: string; frames: number }[] = [
 	{ slug: 'union-set', title: 'SQL 集合运算', frames: 5 },
 	{ slug: 'case-expr', title: 'CASE 表达式', frames: 4 },
 	{ slug: 'sql-functions', title: 'SQL 函数演练', frames: 4 },
-	{ slug: 'having-deep', title: 'WHERE 与 HAVING', frames: 4 }
+	{ slug: 'having-deep', title: 'WHERE 与 HAVING', frames: 4 },
+	{ slug: 'distinct-paging', title: 'DISTINCT 与分页', frames: 5 },
+	{ slug: 'join-variants', title: 'JOIN 家族', frames: 6 },
+	{ slug: 'view-update', title: '视图更新限制', frames: 6 }
 ];
 
 for (const { slug, title } of SCRIPT_TOPICS) {

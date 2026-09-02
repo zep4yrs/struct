@@ -12,6 +12,7 @@
 import type {
 	AlgorithmStep,
 	DemoScriptItem,
+	EngineCustomConfig,
 	PracticeQuestion,
 	SqlTableData,
 	StepType
@@ -46,7 +47,11 @@ export interface ScriptSpec {
 	frames: ScriptFrame[];
 	practiceQuestions?: PracticeQuestion[];
 	demoScript?: DemoScriptItem[];
-	/** 投影模式演示剧本（缺省由 frames 生成） */
+	/**
+	 * 自定义 SQL（架构定调 §3：用户输入 → 直接执行 → 单帧真实结果）。
+	 * 仅在 sql.js 可用时由工厂挂到引擎——静态回落模式没有执行能力，不展示入口。
+	 */
+	customConfig?: EngineCustomConfig;
 }
 
 export class ScriptedResultEngine extends EngineBase<void> {
@@ -55,12 +60,20 @@ export class ScriptedResultEngine extends EngineBase<void> {
 	readonly practiceQuestions: PracticeQuestion[];
 	readonly demoScript?: DemoScriptItem[];
 	readonly name: string;
+	/** sql.js 可用时才存在（AlgoPlayer 据此显示「自定义」按钮） */
+	customConfig?: EngineCustomConfig;
+
+	/** 自定义 SQL 的执行结果（applyCustom 后 init 走单帧模式） */
+	private customTable: SqlTableData | null = null;
+	private customSql = '';
 
 	constructor(
 		private spec: ScriptSpec,
 		private tables: SqlTableData[],
 		/** sql.js 是否真实执行（页面据此标注「真实执行/静态演示帧」） */
-		readonly liveSql: boolean
+		readonly liveSql: boolean,
+		/** 真实执行器（applyCustom 用；静态模式下为 null） */
+		private executor: SqlExecutor | null = null
 	) {
 		super();
 		this.name = spec.name;
@@ -72,6 +85,26 @@ export class ScriptedResultEngine extends EngineBase<void> {
 
 	init(): void {
 		this._stepId = 0;
+		// 自定义 SQL 单帧模式（架构定调 §3）：真实执行结果直接成为唯一一帧
+		if (this.customTable) {
+			this.steps = [
+				{
+					id: this._stepId++,
+					type: 'complete',
+					description: `自定义 SQL 执行结果（${this.customTable.rows.length} 行）`,
+					detail: 'SQL: ' + (this.customSql ?? ''),
+					data: [],
+					highlights: [],
+					pseudocodeLine: 0,
+					presenterNote: '自定义 SQL 每次实时执行，结果即真实数据。',
+					table: this.customTable
+				}
+			];
+			this.totalSteps = this.steps.length;
+			this.playbackPos = 0;
+			this.refreshPseudocode();
+			return;
+		}
 		this.steps = this.spec.frames.map((f, i) => {
 			const table = { ...this.tables[i] };
 			if (f.rowTags) table.rowTags = f.rowTags;
@@ -93,8 +126,32 @@ export class ScriptedResultEngine extends EngineBase<void> {
 		this.refreshPseudocode();
 	}
 
+	/**
+	 * 自定义输入（仅 sql.js 活跃时可用）：执行用户 SQL → 单帧模式。
+	 * 校验失败抛 Error（AlgoPlayer 弹窗内展示，不关弹窗）。
+	 */
+	applyCustom(values: Record<string, string>): void {
+		if (!this.executor || !this.spec.customConfig) {
+			throw new Error('自定义 SQL 需要 sql.js 真实执行环境（未启用静态演示入口）');
+		}
+		const sql = (values.sql ?? '').trim();
+		if (!sql) throw new Error('请输入 SQL 语句');
+		const r = this.executor.query(sql);
+		if (r.error) throw new Error(r.error);
+		this.customTable = { columns: r.columns, rows: r.rows };
+		this.customSql = sql;
+		this.init();
+	}
+
 	/** 伪代码面板 = 本帧 SQL + 逻辑阶段表（当前阶段 ▶ 标记），随播放头刷新 */
 	private refreshPseudocode(): void {
+		if (this.customTable) {
+			this.pseudocode = [
+				'-- 自定义 SQL（已真实执行）',
+				...this.customSql.split('\n').map((l) => l.trimEnd())
+			];
+			return;
+		}
 		const idx = Math.min(this.spec.frames.length - 1, Math.floor(this.playbackPos));
 		const f = this.spec.frames[idx];
 		if (!f) {
@@ -142,5 +199,8 @@ export async function createScriptedEngine(spec: ScriptSpec): Promise<ScriptedRe
 		}
 		return { columns: r.columns, rows: r.rows } as SqlTableData;
 	});
-	return new ScriptedResultEngine(spec, tables, true);
+	const engine = new ScriptedResultEngine(spec, tables, true, executor);
+	// 自定义 SQL 需要 sqlite 执行器，仅在真实环境开放入口
+	engine.customConfig = spec.customConfig;
+	return engine;
 }

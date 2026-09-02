@@ -1,22 +1,15 @@
 <script lang="ts">
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
-	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
-	import { JoinEngine } from '$lib/engines/sql/JoinEngine';
-
-	function createEngine(): JoinEngine {
-		const e = new JoinEngine();
-		e.init();
-		return e;
-	}
-
-	let engine = $state(createEngine());
+	import ScriptPlayer from '$lib/components/player/ScriptPlayer.svelte';
+	import { createJoinFlowEngine } from '$lib/engines/sql/scripts/join';
 </script>
 
 <AlgoPage sectionNum="§02" sectionName="数据库查询" title="SQL 内连接 JOIN">
 	{#snippet desc()}
-		拿左表每一行去右表匹配连接条件，匹配成功的行对合并进结果表——这就是嵌套循环连接。 观察 <span
-			class="mono">结果表</span
-		> 如何逐行生长，不匹配的行如何被丢弃。
+		拿左表每一行去右表匹配连接条件，匹配成功的行对合并进结果表——这就是<b>嵌套循环连接</b>。
+		观察结果表如何生长、不匹配的行（赵六、周八）如何被丢弃。 每帧都是真实执行的 SQL（<span
+			class="mono">SQLite 方言演示</span
+		>）。
 	{/snippet}
-	<AlgoPlayer {engine} topicId="join" topicName="SQL 内连接 JOIN" />
+	<ScriptPlayer load={createJoinFlowEngine} topicId="join" topicName="SQL 内连接 JOIN" />
 </AlgoPage>

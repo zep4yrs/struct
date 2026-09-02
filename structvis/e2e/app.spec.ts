@@ -587,29 +587,26 @@ test.describe('回归与覆盖补充', () => {
 		await expect(page.getByRole('heading', { name: '建表练习' })).toBeVisible();
 	});
 
-	test('SQL 页：自定义 SQL 重建并逐步执行', async ({ page }) => {
+	test('SQL 页：自定义 SQL 单帧真实执行（按 sql.js 能力门控）', async ({ page }) => {
 		await page.goto('/struct/db/sql');
 		await expect(page.getByRole('heading', { name: /数据查询/ })).toBeVisible();
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await waitForHydrated(page);
 
-		await page.locator('.title-btn', { hasText: '自定义' }).click();
+		// 自定义 SQL 依赖 sql.js 真实执行器（架构定调 §3）：未安装时入口不存在，跳过
+		const customBtn = page.locator('.title-btn', { hasText: '自定义' });
+		if ((await customBtn.count()) === 0) {
+			test.skip(true, 'sql.js 未安装：剧本页走静态演示帧，无自定义入口');
+		}
+		await customBtn.click();
 		await page
 			.locator('textarea.custom-control')
 			.fill('SELECT 姓名, 成绩 FROM 学生 WHERE 成绩 >= 90');
 		await page.getByRole('button', { name: '应用' }).click();
 		await expect(page.getByRole('dialog', { name: /自定义/ })).toBeHidden();
-		// 重建后回到第 0 步（FROM 扫描）
-		await expect(page.locator('.status-text')).toContainText('FROM 学生');
-
-		// 下一步 → WHERE 逐行判定（timeline 重建含 fade，用轮询等待可点击）
-		await expect(async () => {
-			await page.getByTitle('下一步 (→)').click();
-			await expect(page.locator('.current-num').first()).toHaveText('02', { timeout: 1000 });
-		}).toPass({ timeout: 10000 });
-		await expect(page.locator('.status-text')).toContainText('WHERE');
-		await page.keyboard.press('End');
-		await expect(page.locator('.status-text')).toContainText('查询完成');
+		// 单帧模式：直接给出真实执行结果
+		await expect(page.locator('.status-text')).toContainText('自定义 SQL 执行结果');
+		await expect(page.locator('.step-count .current')).toHaveText('01');
 	});
 
 	test('图的存储页：演示数据预设切换重建', async ({ page }) => {

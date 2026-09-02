@@ -18,7 +18,7 @@ export const INDEX_FAIL_SPEC: ScriptSpec = {
 	],
 	frames: [
 		{
-			sql: "EXPLAIN QUERY PLAN SELECT * FROM \"订单\" WHERE 区域 = '华东';",
+			sql: 'EXPLAIN QUERY PLAN SELECT * FROM "订单" WHERE 区域 = \'华东\';',
 			description: '基线：区域 = 常量 → SEARCH USING INDEX（索引命中）',
 			detail:
 				'EXPLAIN QUERY PLAN 是判别索引命中的唯一权威：看到 SEARCH = 按索引定位；看到 SCAN = 全表扫描。MySQL 的 EXPLAIN type 列（ref/range/ALL）是同一件事的另一种表述。',
@@ -31,7 +31,7 @@ export const INDEX_FAIL_SPEC: ScriptSpec = {
 			rowTags: { 0: '命中索引' }
 		},
 		{
-			sql: "EXPLAIN QUERY PLAN SELECT * FROM \"订单\" WHERE UPPER(区域) = '华东';",
+			sql: 'EXPLAIN QUERY PLAN SELECT * FROM "订单" WHERE UPPER(区域) = \'华东\';',
 			description: '失效① 函数包裹列：UPPER(区域) 让索引失效 → SCAN',
 			detail:
 				'索引存的是「区域」原值，对列套函数后必须逐行计算再比较，索引无从下手。解法：改为对常量做函数（区域 = LOWER(‘华东’) 的反向思路）或建函数索引（MySQL 8 函数索引）。',
@@ -41,7 +41,7 @@ export const INDEX_FAIL_SPEC: ScriptSpec = {
 			rowTags: { 0: '全表扫描' }
 		},
 		{
-			sql: "EXPLAIN QUERY PLAN SELECT * FROM \"订单\" WHERE 区域 LIKE '%东';",
+			sql: 'EXPLAIN QUERY PLAN SELECT * FROM "订单" WHERE 区域 LIKE \'%东\';',
 			description: '失效② LIKE 前导 %：通配符打头 → SCAN',
 			detail:
 				'B+ 树按前缀有序组织，「%开头」意味着任意前缀都可能命中，只能全表扫。改成前缀匹配「华%」即可重新命中索引。',
@@ -51,7 +51,7 @@ export const INDEX_FAIL_SPEC: ScriptSpec = {
 			rowTags: { 0: '全表扫描' }
 		},
 		{
-			sql: "EXPLAIN QUERY PLAN SELECT * FROM \"订单\"\nWHERE 区域 = '华东' OR 金额 > 800;",
+			sql: 'EXPLAIN QUERY PLAN SELECT * FROM "订单"\nWHERE 区域 = \'华东\' OR 金额 > 800;',
 			description: '失效③ OR 另一侧无索引：整体退化为 SCAN',
 			detail:
 				'OR 要两侧都能走索引优化器才可能用 index merging；金额列没有索引，直接全表扫更划算。为 OR 两侧分别建索引（或改写为 UNION）才能救回。',
@@ -107,7 +107,8 @@ export const INDEX_FAIL_SPEC: ScriptSpec = {
 			options: ['金额是数字列', '违反最左前缀法则', '行数太少', '金额没有 WHERE 条件'],
 			correctAnswer: '违反最左前缀法则',
 			hint: '索引先按区域排序，再按金额排',
-			explanation: '联合索引的排序键是（区域, 金额）：区域不同时金额无序。跳过区域列单独查金额，等于对无序数据做查找，只能全表扫描。'
+			explanation:
+				'联合索引的排序键是（区域, 金额）：区域不同时金额无序。跳过区域列单独查金额，等于对无序数据做查找，只能全表扫描。'
 		}
 	]
 };

@@ -15,6 +15,11 @@ import { VIEW_UPDATE_SPEC } from './view-update';
 import { INDEX_FAIL_SPEC } from './index-fail';
 import { EXPLAIN_DETAIL_SPEC } from './explain-detail';
 import { CONSTRAINTS_SPEC } from './constraints';
+import { SELECT_FLOW_SPEC } from './sql';
+import { JOIN_FLOW_SPEC } from './join';
+import { LEFT_JOIN_FLOW_SPEC } from './left-join';
+import { GROUP_BY_FLOW_SPEC } from './group-by';
+import { SUBQUERY_FLOW_SPEC } from './subquery';
 import { ScriptedResultEngine, type ScriptSpec } from '../ScriptEngine';
 
 const SPECS: ScriptSpec[] = [
@@ -27,7 +32,12 @@ const SPECS: ScriptSpec[] = [
 	VIEW_UPDATE_SPEC,
 	INDEX_FAIL_SPEC,
 	EXPLAIN_DETAIL_SPEC,
-	CONSTRAINTS_SPEC
+	CONSTRAINTS_SPEC,
+	SELECT_FLOW_SPEC,
+	JOIN_FLOW_SPEC,
+	LEFT_JOIN_FLOW_SPEC,
+	GROUP_BY_FLOW_SPEC,
+	SUBQUERY_FLOW_SPEC
 ];
 
 function staticEngine(spec: ScriptSpec): ScriptedResultEngine {

@@ -28,7 +28,8 @@ export const DS_GROUP_ORDER = [
 	'图结构',
 	'排序算法',
 	'查找',
-	'动态规划'
+	'动态规划',
+	'回溯算法'
 ] as const;
 export const DB_GROUP_ORDER = ['基础', '进阶', '设计', '运维'] as const;
 
@@ -133,6 +134,15 @@ export const dsTopics: TopicCard[] = [
 		crumb: '数据结构 / 排序 / [current]基数排序[/current]'
 	},
 	{
+		title: '计数排序',
+		description: '频次统计按序回填 · 稳定 · O(n+k)',
+		href: '/ds/counting-sort',
+		topicId: 'counting-sort',
+		badge: '交互式',
+		group: '排序算法',
+		crumb: '数据结构 / 排序 / [current]计数排序[/current]'
+	},
+	{
 		title: '图的存储',
 		description: '邻接矩阵 · 邻接表 · 空间对比',
 		href: '/ds/graph-storage',
@@ -202,7 +212,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'sunday',
 		badge: '交互式',
 		group: '线性结构',
-		crumb: '数据结构 / 线性表 / [current]Sunday[/current]'
+		crumb: '数据结构 / 线性表 / [current]Sunday 匹配[/current]'
 	},
 	{
 		title: '最长回文子串',
@@ -282,7 +292,7 @@ export const dsTopics: TopicCard[] = [
 		href: '/ds/trie',
 		topicId: 'trie',
 		badge: '交互式',
-		group: '串与数组',
+		group: '线性结构',
 		crumb: '数据结构 / 串 / [current]Trie 字典树[/current]'
 	},
 	{
@@ -310,7 +320,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'tarjan',
 		badge: '交互式',
 		group: '图结构',
-		crumb: '数据结构 / 图 / [current]Tarjan[/current]'
+		crumb: '数据结构 / 图 / [current]Tarjan 强连通分量[/current]'
 	},
 	{
 		title: '割点检测',
@@ -328,7 +338,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'lca',
 		badge: '交互式',
 		group: '图结构',
-		crumb: '数据结构 / 图 / [current]LCA[/current]'
+		crumb: '数据结构 / 图 / [current]LCA 最近公共祖先[/current]'
 	},
 	{
 		title: 'Bellman-Ford 最短路',
@@ -337,7 +347,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'bellman-ford',
 		badge: '交互式',
 		group: '图结构',
-		crumb: '数据结构 / 图 / [current]Bellman-Ford[/current]'
+		crumb: '数据结构 / 图 / [current]Bellman-Ford 最短路[/current]'
 	},
 	{
 		title: '最大流 Edmonds-Karp',
@@ -346,7 +356,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'max-flow',
 		badge: '交互式',
 		group: '图结构',
-		crumb: '数据结构 / 图 / [current]最大流[/current]'
+		crumb: '数据结构 / 图 / [current]最大流 Edmonds-Karp[/current]'
 	},
 	{
 		title: '二分图判定',
@@ -382,7 +392,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'skip-list',
 		badge: '交互式',
 		group: '线性结构',
-		crumb: '数据结构 / 线性表 / [current]跳表[/current]'
+		crumb: '数据结构 / 线性表 / [current]跳表 Skip List[/current]'
 	},
 	{
 		title: '树状数组 Fenwick Tree',
@@ -391,7 +401,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'fenwick-tree',
 		badge: '交互式',
 		group: '线性结构',
-		crumb: '数据结构 / 线性表 / [current]树状数组[/current]'
+		crumb: '数据结构 / 线性表 / [current]树状数组 Fenwick Tree[/current]'
 	},
 	{
 		title: 'LRU 缓存',
@@ -409,7 +419,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'n-queens',
 		badge: '交互式',
 		group: '回溯算法',
-		crumb: '数据结构 / 回溯 / [current]N 皇后[/current]'
+		crumb: '数据结构 / 回溯 / [current]N 皇后回溯[/current]'
 	},
 	{
 		title: '0-1 背包',
@@ -427,7 +437,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'lcs',
 		badge: '交互式',
 		group: '动态规划',
-		crumb: '数据结构 / 动态规划 / [current]LCS[/current]'
+		crumb: '数据结构 / 动态规划 / [current]最长公共子序列 LCS[/current]'
 	},
 	{
 		title: '最长递增子序列 LIS',
@@ -436,7 +446,7 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'lis',
 		badge: '交互式',
 		group: '动态规划',
-		crumb: '数据结构 / 动态规划 / [current]LIS[/current]'
+		crumb: '数据结构 / 动态规划 / [current]最长递增子序列 LIS[/current]'
 	},
 	{
 		title: '编辑距离',

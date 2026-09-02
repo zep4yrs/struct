@@ -3,7 +3,7 @@
 > 看见数据结构与数据库的每一步跳动。
 
 [![Build & Deploy](https://github.com/zep4yrs/struct/actions/workflows/deploy.yml/badge.svg?branch=master)](https://github.com/zep4yrs/struct/actions/workflows/deploy.yml)
-![Tests](https://img.shields.io/badge/tests-488%20unit%20%2B%2048%20e2e-3fb96f)
+![Tests](https://img.shields.io/badge/tests-498%20unit%20%2B%2048%20e2e-3fb96f)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
 [![在线体验](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%93%E9%AA%8C-GitHub%20Pages-4c8dff)](https://zep4yrs.github.io/struct/)
 [![赞赏支持](https://img.shields.io/badge/%E8%B5%9E%E8%B5%8F%E6%94%AF%E6%8C%81-%E7%88%B1%E5%8F%91%E7%94%9F-946ce6?logo=coffee)](https://afdian.net/a/zep4yrs)
@@ -30,7 +30,7 @@ StructVis 是一款面向自学者的交互式可视化学习工具，覆盖**�
 
 ### 学习 · 可视化
 
-- **72 个知识点**：数据结构 48 讲（排序 / 树 / 图 / 线性结构 / 查找 / 动态规划）+ 数据库 24 讲（查询 / 窗口函数 / 执行计划 / 建表 / 数据更新 / 视图 / 索引 / 触发器 / 存储过程 / E-R 模型 / 范式 / 事务并发 / 用户权限）
+- **73 个知识点**：数据结构 49 讲（排序 / 树 / 图 / 线性结构 / 查找 / 动态规划）+ 数据库 24 讲（查询 / 窗口函数 / 执行计划 / 建表 / 数据更新 / 视图 / 索引 / 触发器 / 存储过程 / E-R 模型 / 范式 / 事务并发 / 用户权限）
 - **步进可视化播放器**：逐帧、回放、调速、直接跳步、伪代码断点；19 类渲染器按引擎插件化
 - **动手模式**：先预测下一步会发生什么，再亲手点选画布验证
 - **自定义数据**：输入自己的数据集（如 `9,4,6,2`），播放器实时重建动画
@@ -67,7 +67,7 @@ npm run dev        # http://localhost:5173/struct/
 常用命令：
 
 ```bash
-npm run test        # 单元测试（488）
+npm run test        # 单元测试（498）
 npm run test:e2e    # 端到端测试（48 条，含视觉截图基线）
 npm run check       # svelte-check 类型检查
 npm run build       # 生产构建（输出到仓库根 docs/）
@@ -89,7 +89,7 @@ structvis/
 │   │   ├── content/          # topics.ts（72 课题单源）+ quiz-bank.ts（自测题库）
 │   │   ├── stores/           # progress / settings（localStorage 持久化，带版本信封迁移）
 │   │   └── styles/           # app.css 设计 token（亮/暗双主题）
-│   └── routes/               # 84 个页面（/、/catalog、ds×48、db×24、/progress、/quiz、/race、/map、/report、/settings、/about）
+│   └── routes/               # 85 个页面（/、/catalog、ds×49、db×24、/progress、/quiz、/race、/map、/report、/settings、/about）
 ├── e2e/                      # Playwright 端到端测试（含视觉基线）
 └── docs → ../docs            # 构建产物由 CI 自动提交，用于 GitHub Pages
 ```

@@ -6,6 +6,9 @@ spark-output/
 # 本地审计临时脚本（README 体检 / DOM 走查用）
 .audit-tmp/
 
+# Mimosa 本地安全扫描工作区（scan 历史/封印缓存）
+.mimosa/
+
 # Output
 .output
 .vercel

@@ -12,7 +12,11 @@
 ### 变更（工程）
 
 - **GSAP 归零**：TimelineController 迁移至 anime.js v4 Timeline + 显式泵循环（自管 setInterval seek，headless 可靠）；motion.ts 迁移官方 splitText / Scope 统一 reduced-motion；运行时依赖仅剩 animejs + three
-- 测试：单测 488 条 / 48 条 E2E（新增 mobile.spec 移动端断言）
+- 测试：单测 498 条 / 48 条 E2E（新增 mobile.spec 移动端断言）
+
+### 修复
+
+- **内容单源一致性治理（Story 5 / audit-6）**：新增 content.spec.ts 守卫——图谱节点 topicId/href 与课题表强一致、章节全量覆盖、别名表无孤儿、面包屑含完整标题。据此修复既有漂移：图谱 advanced-query/update 节点的 topicId 与页面真实值（sql-advanced/dml）不符导致掌握度永不点亮；Trie（串与数组）与 N 皇后（回溯算法）分组不在 DS_GROUP_ORDER 内，侧边栏/图谱/章节三处不可见；9 个课题面包屑使用短名与标题不一致
 
 ## [2.0.0] — 2026-08
 

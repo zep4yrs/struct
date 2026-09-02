@@ -3,57 +3,10 @@
 	import { resolve } from '$app/paths';
 	import { reveal } from '$lib/utils/motion';
 	import RadarChart from '$lib/components/ui/RadarChart.svelte';
+	import { chapterAverages } from '$lib/content/chapters';
 
-	// 章节 → topicId 映射（雷达图分组）
-	const CHAPTER_MAP: Record<string, string[]> = {
-		线性结构: ['linear-list', 'stack-queue', 'kmp'],
-		树形结构: ['binary-tree', 'bst', 'avl', 'rbtree', 'huffman'],
-		图结构: [
-			'graph-storage',
-			'graph-traversal',
-			'mst',
-			'shortest-path',
-			'topo-sort',
-			'critical-path',
-			'astar'
-		],
-		排序算法: [
-			'bubble-sort',
-			'insertion-sort',
-			'selection-sort',
-			'quick-sort',
-			'merge-sort',
-			'heap-sort',
-			'shell-sort',
-			'radix-sort'
-		],
-		查找: ['binary-search', 'hash-table', 'hash-probing'],
-		SQL: [
-			'sql',
-			'join',
-			'left-join',
-			'group-by',
-			'subquery',
-			'update',
-			'index',
-			'view',
-			'triggers',
-			'procedures',
-			'transaction',
-			'isolation',
-			'er',
-			'normalize'
-		]
-	};
-
-	const chapterMastery = $derived.by(() => {
-		const out: Record<string, number> = {};
-		for (const [ch, ids] of Object.entries(CHAPTER_MAP)) {
-			const vals = ids.map((id) => $progress.topics[id]?.mastery ?? 0).filter((v) => v > 0);
-			out[ch] = vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
-		}
-		return out;
-	});
+	// 章节分组与平均掌握度均从 content/chapters.ts 派生（单源，随课题自动更新）
+	const chapterMastery = $derived(chapterAverages($progress.topics));
 
 	// === 报告数据 ===
 	const topics = $derived(Object.entries($progress.topics));

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { dsTopics, dbTopics } from '../src/lib/content/topics';
 
 // 全站粒子背景（three.js WebGL）在无 GPU 的 headless 环境走软件渲染，拖慢每个页面。
 // 测试前注入禁用标志，让 Scene3D 静默跳过（功能断言不受影响）。
@@ -123,9 +124,11 @@ test.describe('播放器交互', () => {
 		for (const t of ['伪代码同步高亮', '自定义数据', '朗读与快捷键']) {
 			expect(await page.locator('.home-feature-title').allTextContents()).toContain(t);
 		}
-		// 课程计数徽标
-		await expect(page.locator('.home-course-count').first()).toHaveText('48 知识点');
-		await expect(page.locator('.home-course-count').nth(1)).toHaveText('24 知识点');
+		// 课程计数徽标（数字从课题单源派生，新课程入册自动跟上）
+		await expect(page.locator('.home-course-count').first()).toHaveText(
+			`${dsTopics.length} 知识点`
+		);
+		await expect(page.locator('.home-course-count').nth(1)).toHaveText(`${dbTopics.length} 知识点`);
 		// hero 副标语提及 SQL
 		await expect(page.locator('.hero-sub')).toContainText('SQL');
 	});

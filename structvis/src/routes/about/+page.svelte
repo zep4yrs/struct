@@ -136,7 +136,7 @@
 				three.js 全站粒子背景（可在设置中关闭）· 自研 SQL 步进模拟引擎（sql.js 真实执行已立项）
 			</li>
 			<li>Web Speech API 讲授朗读（含预录神经语音回落）</li>
-			<li>Vitest（488 单测）+ Playwright（48 条端到端，含视觉截图基线）</li>
+			<li>Vitest（498 单测）+ Playwright（48 条端到端，含视觉截图基线）</li>
 		</ul>
 	</section>
 

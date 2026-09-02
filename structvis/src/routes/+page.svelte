@@ -2,12 +2,14 @@
 	import { onMount } from 'svelte';
 	import { animate, stagger, spring } from 'animejs';
 	import { resolve } from '$app/paths';
-	import { dsTopics, dbTopics } from '$lib/content/topics';
+	import { dsTopics, dbTopics, TOPIC_ALIASES } from '$lib/content/topics';
 	import { QUIZ_BANK } from '$lib/content/quiz-bank';
 	import { reveal, revealOnScroll, prefersReducedMotion } from '$lib/utils/motion';
 	import SplashOverlay from '$lib/components/splash/SplashOverlay.svelte';
 
 	const topicTotal = dsTopics.length + dbTopics.length;
+	// 别名组数从搜索别名单源派生（避免文案硬编码漂移）
+	const aliasCount = Object.keys(TOPIC_ALIASES).length;
 
 	let titleLine1: HTMLSpanElement | undefined = $state();
 	let titleLine2: HTMLSpanElement | undefined = $state();
@@ -249,7 +251,7 @@
 				>
 				<h3 class="home-feature-title">全局搜索</h3>
 			</div>
-			<p>Ctrl+K 一键直达任意知识点——{topicTotal} 个主题 + 47 组惯用别名。</p>
+			<p>Ctrl+K 一键直达任意知识点——{topicTotal} 个主题 + {aliasCount} 组惯用别名。</p>
 		</a>
 	</div>
 </section>

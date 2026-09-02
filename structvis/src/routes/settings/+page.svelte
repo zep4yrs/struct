@@ -5,6 +5,8 @@
 	let speed = $state($settings.animationSpeed);
 	let showHints = $state($settings.showHints);
 	let particles = $state($settings.particleBackground);
+	let openingAnim = $state($settings.openingAnimation);
+	let openingSnd = $state($settings.openingSound);
 	// 通知权限状态（用于模板判断；授权后刷新显示）
 	let notifPermission = $state(
 		typeof Notification !== 'undefined' ? Notification.permission : 'unsupported'
@@ -24,7 +26,9 @@
 			...s,
 			animationSpeed: speed,
 			showHints,
-			particleBackground: particles
+			particleBackground: particles,
+			openingAnimation: openingAnim,
+			openingSound: openingSnd
 		}));
 	}
 
@@ -76,6 +80,34 @@
 			<div class="setting-control">
 				<label class="toggle">
 					<input type="checkbox" bind:checked={particles} />
+					<span class="toggle-slider"></span>
+				</label>
+			</div>
+		</div>
+
+		<div class="setting-item">
+			<div class="setting-info">
+				<div class="setting-label">开屏动画</div>
+				<div class="setting-desc">首次访问首页的品牌开场动画（可跳过）；回访不再播放</div>
+			</div>
+			<div class="setting-control">
+				<label class="toggle">
+					<input type="checkbox" bind:checked={openingAnim} />
+					<span class="toggle-slider"></span>
+				</label>
+			</div>
+		</div>
+
+		<div class="setting-item">
+			<div class="setting-info">
+				<div class="setting-label">开屏音效</div>
+				<div class="setting-desc">
+					开屏动画的合成音效（无声卡/低电量场景可关；浏览器首次访问需点击解锁）
+				</div>
+			</div>
+			<div class="setting-control">
+				<label class="toggle">
+					<input type="checkbox" bind:checked={openingSnd} />
 					<span class="toggle-slider"></span>
 				</label>
 			</div>

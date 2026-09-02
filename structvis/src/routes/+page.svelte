@@ -5,14 +5,16 @@
 	import { dsTopics, dbTopics } from '$lib/content/topics';
 	import { QUIZ_BANK } from '$lib/content/quiz-bank';
 	import { reveal, revealOnScroll, prefersReducedMotion } from '$lib/utils/motion';
+	import SplashOverlay from '$lib/components/splash/SplashOverlay.svelte';
 
 	const topicTotal = dsTopics.length + dbTopics.length;
 
 	let titleLine1: HTMLSpanElement | undefined = $state();
 	let titleLine2: HTMLSpanElement | undefined = $state();
 	let scrollHint: HTMLDivElement | undefined = $state();
+	let splashDone = $state(false);
 
-	onMount(() => {
+	function heroPlay() {
 		if (prefersReducedMotion()) return;
 		const s = spring({ stiffness: 170, damping: 19 });
 		// hero 时间线编排：两行标题依次浮现（弹簧），CTA 交错弹入，滚动提示最后
@@ -37,8 +39,20 @@
 		if (scrollHint) {
 			animate(scrollHint, { opacity: [0, 1], delay: 1250, duration: 500, ease: 'easeOutQuad' });
 		}
+	}
+
+	// 开屏播完（或被跳过/门控跳过）后再启动 hero 入场动画，避免动画在开屏下空转
+	$effect(() => {
+		if (splashDone) heroPlay();
+	});
+
+	onMount(() => {
+		// hero 入场改为等开屏完成；若开屏已门控跳过，splashDone 会立刻为 true
 	});
 </script>
+
+<!-- ══════════ 开屏动画（首次访问，可跳过/设置关闭） ══════════ -->
+<SplashOverlay onfinished={() => (splashDone = true)} />
 
 <!-- ══════════ 首屏 Hero：整屏电影海报 ══════════ -->
 <section class="hero">

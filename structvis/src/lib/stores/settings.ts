@@ -6,6 +6,8 @@ export interface Settings {
 	animationSpeed: number; // 动画速度 0.5 ~ 2
 	showHints: boolean; // 是否默认显示提示
 	particleBackground: boolean; // 全站 three.js 粒子背景（低端设备可关，audit-14）
+	openingAnimation: boolean; // 首页开屏动画（首次访问播放，可跳过）
+	openingSound: boolean; // 开屏动画音效（Web Audio 合成）
 }
 
 const defaultSettings: Settings = {
@@ -13,7 +15,9 @@ const defaultSettings: Settings = {
 	sqlEngine: 'sqljs',
 	animationSpeed: 1,
 	showHints: true,
-	particleBackground: true
+	particleBackground: true,
+	openingAnimation: true,
+	openingSound: true
 };
 
 export const settings = persistentStore<Settings>('structvis:settings', defaultSettings);

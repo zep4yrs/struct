@@ -1011,6 +1011,8 @@
 					onReset={reset}
 					onJump={jumpTo}
 					onSpeedChange={changeSpeed}
+					onNarrate={toggleNarration}
+					onHelp={() => (helpOpen = true)}
 				/>
 			</div>
 		</div>
@@ -2044,10 +2046,22 @@
 		color: var(--color-ink-2);
 	}
 
+	/* 移动端底部导航避让（M0.2）：内容底部留出 BottomNav 高度 */
+	@media (max-width: 768px) {
+		.algo-player {
+			padding-bottom: calc(72px + env(safe-area-inset-bottom));
+		}
+	}
+
 	@media (max-width: 900px) {
 		.workspace {
 			grid-template-columns: 1fr;
 			height: auto;
+		}
+
+		/* grid item 防 min-content 撑爆轨道（M0.1：右面板 532px 溢出根因） */
+		.workspace > * {
+			min-width: 0;
 		}
 
 		/* 竖屏：画布优先（62vh），伪代码 38vh 可横滚 */

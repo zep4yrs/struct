@@ -13,6 +13,9 @@
 		onReset: () => void;
 		onJump: (step: number) => void;
 		onSpeedChange: (speed: number) => void;
+		/** 副控抽屉里的可选动作（朗读/帮助等，由宿主传入） */
+		onNarrate?: () => void;
+		onHelp?: () => void;
 		disabled?: boolean;
 	}
 
@@ -28,11 +31,14 @@
 		onReset,
 		onJump,
 		onSpeedChange,
+		onNarrate,
+		onHelp,
 		disabled = false
 	}: Props = $props();
 
 	let progressRef: HTMLDivElement | undefined;
 	let isDragging = false;
+	let moreOpen = $state(false);
 
 	const speedOptions = [0.5, 1, 1.5, 2];
 
@@ -100,8 +106,17 @@
 		}
 	}
 
+	// 点击抽屉外部关闭
+	function closeOnOutside(e: MouseEvent) {
+		const btn = e.target as HTMLElement;
+		if (moreOpen && !btn.closest('.more-drawer') && !btn.closest('.more-btn')) {
+			moreOpen = false;
+		}
+	}
+
 	onMount(() => {
 		window.addEventListener('keydown', handleKeyDown);
+		window.addEventListener('mousedown', closeOnOutside);
 	});
 
 	onDestroy(() => {
@@ -109,6 +124,7 @@
 		window.removeEventListener('keydown', handleKeyDown);
 		window.removeEventListener('mousemove', handleProgressMouseMove);
 		window.removeEventListener('mouseup', handleProgressMouseUp);
+		window.removeEventListener('mousedown', closeOnOutside);
 	});
 
 	let progressPercent = $derived(totalSteps > 1 ? (currentStep / (totalSteps - 1)) * 100 : 0);
@@ -147,7 +163,7 @@
 		</span>
 	</div>
 
-	<!-- 控制按钮 + 速度 -->
+	<!-- 控制按钮 + 速度 + 更多 -->
 	<div class="controls-row">
 		<div class="ctrl-buttons">
 			<button class="icon-btn" onclick={onReset} title="重置 (Home)" aria-label="重置 (Home)">
@@ -197,19 +213,77 @@
 			</button>
 		</div>
 
-		<div class="speed-group" role="group" aria-label="播放速度">
-			<span class="speed-label" id="speed-label">速度</span>
-			<div class="speed-opts" role="radiogroup" aria-labelledby="speed-label">
-				{#each speedOptions as s (s)}
-					<button
-						class="speed-opt {speed === s ? 'active' : ''}"
-						role="radio"
-						aria-checked={speed === s}
-						onclick={() => onSpeedChange(s)}
-					>
-						{s}x
-					</button>
-				{/each}
+		<div class="right-controls">
+			<div class="speed-group" role="group" aria-label="播放速度">
+				<span class="speed-label" id="speed-label">速度</span>
+				<div class="speed-opts" role="radiogroup" aria-labelledby="speed-label">
+					{#each speedOptions as s (s)}
+						<button
+							class="speed-opt {speed === s ? 'active' : ''}"
+							role="radio"
+							aria-checked={speed === s}
+							onclick={() => onSpeedChange(s)}
+						>
+							{s}x
+						</button>
+					{/each}
+				</div>
+			</div>
+
+			<!-- 「⋯」更多：重置 / 朗读 / 帮助（窄屏主通道，桌面隐藏） -->
+			<div class="more-wrap">
+				<button
+					class="icon-btn more-btn"
+					onclick={() => (moreOpen = !moreOpen)}
+					title="更多操作"
+					aria-label="更多操作"
+					aria-expanded={moreOpen}
+				>
+					<svg viewBox="0 0 16 16" fill="currentColor">
+						<circle cx="8" cy="3.5" r="1.5"></circle>
+						<circle cx="8" cy="8" r="1.5"></circle>
+						<circle cx="8" cy="12.5" r="1.5"></circle>
+					</svg>
+				</button>
+
+				{#if moreOpen}
+					<div class="more-drawer" role="menu" aria-label="更多操作">
+						<button
+							class="more-item"
+							role="menuitem"
+							onclick={() => {
+								moreOpen = false;
+								onReset();
+							}}
+						>
+							重置
+						</button>
+						{#if onNarrate}
+							<button
+								class="more-item"
+								role="menuitem"
+								onclick={() => {
+									moreOpen = false;
+									onNarrate();
+								}}
+							>
+								朗读
+							</button>
+						{/if}
+						{#if onHelp}
+							<button
+								class="more-item"
+								role="menuitem"
+								onclick={() => {
+									moreOpen = false;
+									onHelp();
+								}}
+							>
+								帮助
+							</button>
+						{/if}
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -222,6 +296,11 @@
 		gap: 10px;
 		padding: 14px 20px;
 		background: var(--color-surface);
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		box-sizing: border-box;
+		overflow: hidden; /* 防 min-content 击穿（M0.1：532px→375px 溢出止血） */
 	}
 
 	/* 进度条行 */
@@ -229,10 +308,12 @@
 		display: flex;
 		align-items: center;
 		gap: 10px;
+		min-width: 0;
 	}
 
 	.progress-track {
 		flex: 1;
+		min-width: 0; /* 允许收缩 */
 		position: relative;
 		height: 3px;
 		background: var(--color-subtle);
@@ -283,28 +364,41 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 8px;
+		min-width: 0;
+		flex-wrap: wrap;
+	}
+
+	.right-controls {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin-left: auto;
+		min-width: 0;
 	}
 
 	.ctrl-buttons {
 		display: flex;
 		align-items: center;
-		gap: 2px;
+		gap: 4px;
+		min-width: 0;
 	}
 
+	/* 触控热区：44×44（M0.3） */
 	.icon-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 28px;
-		height: 28px;
+		width: 44px;
+		height: 44px;
 		border: 1px solid var(--color-line-regular);
-		border-radius: 4px;
+		border-radius: 6px;
 		background: var(--color-surface);
 		color: var(--color-ink-2);
 		cursor: pointer;
 		transition:
 			border-color 120ms ease-out,
 			color 120ms ease-out;
+		flex-shrink: 0;
 	}
 
 	.icon-btn:hover {
@@ -313,16 +407,16 @@
 	}
 
 	.icon-btn svg {
-		width: 13px;
-		height: 13px;
+		width: 16px;
+		height: 16px;
 	}
 
 	.play-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 34px;
-		height: 34px;
+		width: 44px;
+		height: 44px;
 		border: none;
 		border-radius: 50%;
 		background: var(--color-ink);
@@ -332,6 +426,7 @@
 			background-color 150ms ease-out,
 			transform 150ms ease-out;
 		margin: 0 2px;
+		flex-shrink: 0;
 	}
 
 	.play-btn:hover {
@@ -344,8 +439,8 @@
 	}
 
 	.play-btn svg {
-		width: 14px;
-		height: 14px;
+		width: 16px;
+		height: 16px;
 	}
 
 	/* 速度 */
@@ -354,6 +449,7 @@
 		flex-direction: column;
 		gap: 4px;
 		align-items: flex-end;
+		flex-shrink: 0;
 	}
 
 	.speed-label {
@@ -373,7 +469,7 @@
 	}
 
 	.speed-opt {
-		padding: 2px 6px;
+		padding: 4px 8px;
 		font-family: var(--font-mono);
 		font-size: 10px;
 		border: none;
@@ -382,6 +478,7 @@
 		color: var(--color-ink-2);
 		cursor: pointer;
 		transition: color 120ms ease-out;
+		min-height: 30px;
 	}
 
 	.speed-opt:hover {
@@ -393,5 +490,93 @@
 		color: var(--color-ink);
 		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 		font-weight: 500;
+	}
+
+	/* 「⋯」更多抽屉 */
+	.more-wrap {
+		position: relative;
+		flex-shrink: 0;
+	}
+
+	.more-btn {
+		display: none; /* 桌面隐藏：按钮全部直接可见 */
+	}
+
+	.more-drawer {
+		position: absolute;
+		top: calc(100% + 8px);
+		right: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 120px;
+		padding: 6px;
+		background: var(--color-surface);
+		border: 1px solid var(--color-line-regular);
+		border-radius: 8px;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+		z-index: 60;
+	}
+
+	.more-item {
+		display: flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 0 14px;
+		border: none;
+		border-radius: 6px;
+		background: transparent;
+		color: var(--color-ink-2);
+		font-size: 14px;
+		font-family: var(--font-body);
+		cursor: pointer;
+		text-align: left;
+	}
+
+	.more-item:hover {
+		background: var(--color-subtle);
+		color: var(--color-ink);
+	}
+
+	/* 窄屏（≤700px）：显示「⋯」；速度组换行独占一行（44px 热区全档达标） */
+	@media (max-width: 700px) {
+		.control-bar {
+			padding: 10px 12px;
+			gap: 8px;
+		}
+
+		.ctrl-buttons {
+			gap: 2px;
+		}
+
+		.more-btn {
+			display: flex;
+		}
+
+		.right-controls {
+			flex-basis: 100%;
+			justify-content: flex-end;
+		}
+	}
+
+	/* 超窄屏（≤430px）：速度标签隐藏，速度与更多按钮合并行更省 */
+	@media (max-width: 430px) {
+		.speed-label {
+			display: none;
+		}
+
+		.speed-group {
+			flex-direction: row;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.progress-row {
+			gap: 6px;
+		}
+
+		.step-count {
+			font-size: 10px;
+		}
 	}
 </style>

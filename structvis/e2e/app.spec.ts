@@ -52,8 +52,8 @@ test.describe('页面加载', () => {
 		await expect(page.getByRole('heading', { name: /StructVis/ })).toBeVisible();
 		await expect(page.getByText('看见数据结构与数据库的每一步跳动')).toBeVisible();
 		await expect(page.getByText('进入课程目录')).toBeVisible();
-		await expect(page.getByText('数据结构与算法', { exact: true })).toBeVisible();
-		await expect(page.getByText('MySQL 数据库', { exact: true })).toBeVisible();
+		await expect(page.locator('.home-course-title', { hasText: '数据结构与算法' })).toBeVisible();
+		await expect(page.locator('.home-course-title', { hasText: 'MySQL 数据库' })).toBeVisible();
 	});
 
 	test('课程目录页：两门课程区块', async ({ page }) => {
@@ -99,6 +99,35 @@ test.describe('播放器交互', () => {
 		await expect(page.locator('.current-num')).not.toHaveText('01', { timeout: 5000 });
 		await page.getByTitle('暂停 (Space)').click();
 		await expect(page.getByTitle('播放 (Space)')).toBeVisible();
+	});
+
+	test('首页：功能全景（6 特性 + 5 入口 + 上课时三卡 + 课程计数）', async ({ page }) => {
+		await page.goto('/struct/');
+		await page.getByRole('heading', { name: 'StructVis' }).first().waitFor();
+		// 01 区：6 个特性卡
+		const featureTitles = await page.locator('.home-feature-title').allTextContents();
+		for (const t of ['步进可视化', '即时练习反馈', '错题本', '本地进度', '每日一题', '全局搜索']) {
+			expect(featureTitles).toContain(t);
+		}
+		// 02 区：5 入口且学习进度置首
+		const toolTitles = await page.locator('.home-tool-title').allTextContents();
+		expect(toolTitles[0]).toBe('学习进度');
+		for (const t of ['章节自测', '竞速实验室', '技能图谱', '学习报告']) {
+			expect(toolTitles).toContain(t);
+		}
+		// 每日一题卡片本身是链接，指向进度页
+		const daily = page.locator('.home-feature', { hasText: '每日一题' }).first();
+		await expect(daily).toHaveAttribute('href', /progress/);
+		// 04 区「上课时」三卡
+		await expect(page.getByText('上课时', { exact: true })).toBeVisible();
+		for (const t of ['伪代码同步高亮', '自定义数据', '朗读与快捷键']) {
+			expect(await page.locator('.home-feature-title').allTextContents()).toContain(t);
+		}
+		// 课程计数徽标
+		await expect(page.locator('.home-course-count').first()).toHaveText('48 知识点');
+		await expect(page.locator('.home-course-count').nth(1)).toHaveText('24 知识点');
+		// hero 副标语提及 SQL
+		await expect(page.locator('.hero-sub')).toContainText('SQL');
 	});
 
 	test('演示数据弹窗：选择示例 B 后数据与编号重建', async ({ page }) => {

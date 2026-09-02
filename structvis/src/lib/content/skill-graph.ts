@@ -448,6 +448,14 @@ export const SKILL_NODES: SkillNode[] = [
 		desc: '并发异常演示'
 	},
 	{
+		id: 'lock-deadlock',
+		title: '锁机制与死锁',
+		href: '/db/lock-deadlock',
+		topicId: 'lock-deadlock',
+		group: '数据库 · 进阶',
+		desc: '行锁 · 等待图检测'
+	},
+	{
 		id: 'view',
 		title: '视图',
 		href: '/db/view',
@@ -574,6 +582,30 @@ export const SKILL_NODES: SkillNode[] = [
 		topicId: 'constraints',
 		group: '数据库 · 实验',
 		desc: '五大约束操作台'
+	},
+	{
+		id: 'index-query',
+		title: '索引查询回表',
+		href: '/db/index-query',
+		topicId: 'index-query',
+		group: '数据库 · 实验',
+		desc: '二级索引 → 主键回表'
+	},
+	{
+		id: 'lock-gantt',
+		title: '锁甘特图',
+		href: '/db/lock-gantt',
+		topicId: 'lock-gantt',
+		group: '数据库 · 实验',
+		desc: '循环等待 · 死锁检测'
+	},
+	{
+		id: 'serial-schedule',
+		title: '可串行化调度',
+		href: '/db/serial-schedule',
+		topicId: 'serial-schedule',
+		group: '数据库 · 实验',
+		desc: '冲突对 · 等价串行'
 	}
 ];
 
@@ -633,5 +665,8 @@ export const SKILL_EDGES: SkillEdge[] = [
 	{ from: 'view', to: 'view-update' },
 	{ from: 'index', to: 'index-fail' },
 	{ from: 'index-fail', to: 'explain-detail' },
-	{ from: 'tables', to: 'constraints' }
+	{ from: 'tables', to: 'constraints' },
+	{ from: 'index', to: 'index-query' },
+	{ from: 'lock-deadlock', to: 'lock-gantt' },
+	{ from: 'transaction', to: 'serial-schedule' }
 ];

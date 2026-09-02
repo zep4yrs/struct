@@ -18,6 +18,9 @@
 	import SkipListRenderer from '$lib/visualization/skiplist/SkipListRenderer.svelte';
 	import SundayRenderer from '$lib/visualization/sunday/SundayRenderer.svelte';
 	import QueensRenderer from '$lib/visualization/queens/QueensRenderer.svelte';
+	import IndexQueryRenderer from '$lib/visualization/indexquery/IndexQueryRenderer.svelte';
+	import GanttRenderer from '$lib/visualization/gantt/GanttRenderer.svelte';
+	import ScheduleRenderer from '$lib/visualization/schedule/ScheduleRenderer.svelte';
 
 	interface Props {
 		engine: AlgorithmEngine<unknown>;
@@ -66,4 +69,10 @@
 	<SundayRenderer steps={engine.steps} {playbackPos} />
 {:else if engine.renderType === 'queens'}
 	<QueensRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'index-query'}
+	<IndexQueryRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'gantt'}
+	<GanttRenderer steps={engine.steps} {playbackPos} />
+{:else if engine.renderType === 'schedule'}
+	<ScheduleRenderer steps={engine.steps} {playbackPos} />
 {/if}

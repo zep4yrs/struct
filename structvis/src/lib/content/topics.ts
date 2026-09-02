@@ -783,6 +783,33 @@ export const dbTopics: TopicCard[] = [
 		badge: '真实执行',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]约束体系[/current]'
+	},
+	{
+		title: '索引查询与回表',
+		description: '二级索引 · 主键回表 · 覆盖索引',
+		href: '/db/index-query',
+		topicId: 'index-query',
+		badge: '概念演示',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]索引查询与回表[/current]'
+	},
+	{
+		title: '锁等待与死锁甘特图',
+		description: '循环等待 · 死锁检测 · victim',
+		href: '/db/lock-gantt',
+		topicId: 'lock-gantt',
+		badge: '概念演示',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]锁等待与死锁甘特图[/current]'
+	},
+	{
+		title: '可串行化调度',
+		description: '冲突对 · 等价串行序列',
+		href: '/db/serial-schedule',
+		topicId: 'serial-schedule',
+		badge: '概念演示',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]可串行化调度[/current]'
 	}
 ];
 
@@ -847,5 +874,8 @@ export const TOPIC_ALIASES: Record<string, string[]> = {
 	'/db/view-update': ['可更新视图', 'instead of', 'with check option', '视图写入'],
 	'/db/index-fail': ['索引失效', '最左前缀', 'like 优化', '函数包裹'],
 	'/db/explain-detail': ['query plan', '执行计划解读', 'scan', 'search'],
-	'/db/constraints': ['主键', '外键', 'check', 'unique', '级联删除']
+	'/db/constraints': ['主键', '外键', 'check', 'unique', '级联删除'],
+	'/db/index-query': ['回表', '聚簇索引', '二级索引', '覆盖索引'],
+	'/db/lock-gantt': ['锁等待', '死锁检测', 'gantt', 'victim'],
+	'/db/serial-schedule': ['串行化', '冲突可串行', '调度', '并发理论']
 };

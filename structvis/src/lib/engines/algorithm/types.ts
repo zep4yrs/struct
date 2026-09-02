@@ -86,6 +86,63 @@ export interface AlgorithmStep {
 	sunday?: SundayData;
 	/** 八皇后棋盘快照（仅 queens 渲染器使用） */
 	queens?: QueensData;
+	/** 索引查询回表快照（仅 index-query 渲染器使用，M4.1） */
+	indexQuery?: IndexQueryData;
+	/** 锁等待甘特图快照（仅 gantt 渲染器使用，M4.2） */
+	gantt?: LockGanttData;
+	/** 调度可串行化快照（仅 schedule 渲染器使用，M4.3） */
+	schedule?: ScheduleData;
+}
+
+/** 索引查询回表数据（index-query 渲染器）：二级索引树 + 聚簇表 + 定位/回表路径 */
+export interface IndexQueryData {
+	/** 二级索引 B+ 树节点（逻辑坐标） */
+	nodes: { id: string; label: string; x: number; y: number; kind: 'root' | 'leaf' }[];
+	edges: { from: string; to: string }[];
+	/** 聚簇表行（主键 → 行摘要） */
+	rows: { id: number; label: string }[];
+	activeNodes?: string[];
+	pathEdges?: { from: string; to: string }[];
+	activeRow?: number;
+	/** 回表箭头：从该叶子节点指向聚簇行 */
+	backFromNode?: string;
+	phase: 'idle' | 'descend' | 'leaf' | 'back' | 'done';
+	note?: string;
+}
+
+/** 锁等待甘特图数据（gantt 渲染器）：两事务时间线 + 资源持有态 */
+export interface LockGanttData {
+	/** 时间轴总刻度（逻辑秒） */
+	total: number;
+	/** 甘特条带：每事务一条 lane */
+	lanes: {
+		name: string;
+		spans: { from: number; to: number; kind: 'grant' | 'wait' | 'rollback' }[];
+	}[];
+	cursor: number;
+	/** 资源（锁）当前持有者 */
+	resources: { name: string; holder?: string }[];
+	deadlock?: boolean;
+	note?: string;
+}
+
+/** 调度可串行化数据（schedule 渲染器）：操作序列 + 冲突对 + 等价串行序 */
+export interface ScheduleData {
+	ops: {
+		id: number;
+		label: string;
+		tx: number;
+		state: 'normal' | 'active' | 'conflict';
+	}[];
+	/** 冲突对（同资源、不同事务、至少一个写） */
+	conflicts: [number, number][];
+	activeId?: number;
+	/** 当前帧强调的冲突对 */
+	activeConflict?: [number, number];
+	/** 等价串行顺序（op id 序列，完成帧展示） */
+	serialOrder?: number[];
+	phase: 'run' | 'conflict' | 'serial';
+	note?: string;
 }
 
 /** Trie 字典树数据 */
@@ -377,6 +434,9 @@ export type RenderType =
 	| 'skiplist'
 	| 'sunday'
 	| 'queens'
+	| 'index-query'
+	| 'gantt'
+	| 'schedule'
 	| 'pseudocode';
 
 /**

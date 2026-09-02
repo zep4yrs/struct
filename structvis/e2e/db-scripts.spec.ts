@@ -15,7 +15,10 @@ const SCRIPT_TOPICS: { slug: string; title: string; frames: number }[] = [
 	{ slug: 'view-update', title: '视图更新限制', frames: 6 },
 	{ slug: 'index-fail', title: '索引失效实验', frames: 6 },
 	{ slug: 'explain-detail', title: 'EXPLAIN 详解', frames: 6 },
-	{ slug: 'constraints', title: '约束体系', frames: 6 }
+	{ slug: 'constraints', title: '约束体系', frames: 6 },
+	{ slug: 'index-query', title: '索引查询与回表', frames: 6 },
+	{ slug: 'lock-gantt', title: '锁等待与死锁甘特图', frames: 6 },
+	{ slug: 'serial-schedule', title: '可串行化调度', frames: 12 }
 ];
 
 for (const { slug, title } of SCRIPT_TOPICS) {

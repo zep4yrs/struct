@@ -702,6 +702,33 @@ export const dbTopics: TopicCard[] = [
 		badge: '真实执行',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]SQL 集合运算[/current]'
+	},
+	{
+		title: 'CASE 表达式',
+		description: '搜索 CASE · 简单 CASE · 分类统计',
+		href: '/db/case-expr',
+		topicId: 'case-expr',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]CASE 表达式[/current]'
+	},
+	{
+		title: 'SQL 函数演练',
+		description: '字符串 · 数值 · 日期 · NULL 处理',
+		href: '/db/sql-functions',
+		topicId: 'sql-functions',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]SQL 函数演练[/current]'
+	},
+	{
+		title: 'WHERE 与 HAVING',
+		description: '筛行 vs 筛组 · 执行顺序',
+		href: '/db/having-deep',
+		topicId: 'having-deep',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]WHERE 与 HAVING[/current]'
 	}
 ];
 
@@ -757,5 +784,8 @@ export const TOPIC_ALIASES: Record<string, string[]> = {
 	'/db/triggers': ['触发器', 'trigger'],
 	'/db/procedures': ['存储过程', 'procedure'],
 	'/db/users': ['grant', 'revoke', '权限'],
-	'/db/union-set': ['union', 'intersect', 'except', '并集', '交集', '差集']
+	'/db/union-set': ['union', 'intersect', 'except', '并集', '交集', '差集'],
+	'/db/case-expr': ['case when', '分支', '条件表达式'],
+	'/db/sql-functions': ['函数', 'substr', 'strftime', 'coalesce', '日期函数'],
+	'/db/having-deep': ['having', '分组过滤', '聚合筛选']
 };

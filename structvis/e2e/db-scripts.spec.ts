@@ -6,7 +6,10 @@ import { test, expect } from '@playwright/test';
  * 注：sql.js 未安装时页面走静态演示帧，冒烟同样应通过（架构要求双模式行为一致）。
  */
 const SCRIPT_TOPICS: { slug: string; title: string; frames: number }[] = [
-	{ slug: 'union-set', title: 'SQL 集合运算', frames: 5 }
+	{ slug: 'union-set', title: 'SQL 集合运算', frames: 5 },
+	{ slug: 'case-expr', title: 'CASE 表达式', frames: 4 },
+	{ slug: 'sql-functions', title: 'SQL 函数演练', frames: 4 },
+	{ slug: 'having-deep', title: 'WHERE 与 HAVING', frames: 4 }
 ];
 
 for (const { slug, title } of SCRIPT_TOPICS) {

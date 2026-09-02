@@ -502,6 +502,30 @@ export const SKILL_NODES: SkillNode[] = [
 		topicId: 'union-set',
 		group: '数据库 · 实验',
 		desc: 'UNION · INTERSECT · EXCEPT'
+	},
+	{
+		id: 'case-expr',
+		title: 'CASE 表达式',
+		href: '/db/case-expr',
+		topicId: 'case-expr',
+		group: '数据库 · 实验',
+		desc: '行内分支 · 分类统计'
+	},
+	{
+		id: 'sql-functions',
+		title: '函数演练',
+		href: '/db/sql-functions',
+		topicId: 'sql-functions',
+		group: '数据库 · 实验',
+		desc: '字符串/数值/日期/NULL'
+	},
+	{
+		id: 'having-deep',
+		title: 'WHERE vs HAVING',
+		href: '/db/having-deep',
+		topicId: 'having-deep',
+		group: '数据库 · 实验',
+		desc: '筛行 vs 筛组'
 	}
 ];
 
@@ -552,5 +576,8 @@ export const SKILL_EDGES: SkillEdge[] = [
 	{ from: 'index', to: 'explain-plan' },
 	{ from: 'hash-table', to: 'counting-sort' },
 	{ from: 'stack-queue', to: 'n-queens' },
-	{ from: 'sql', to: 'union-set' }
+	{ from: 'sql', to: 'union-set' },
+	{ from: 'sql', to: 'case-expr' },
+	{ from: 'sql', to: 'sql-functions' },
+	{ from: 'group-by', to: 'having-deep' }
 ];

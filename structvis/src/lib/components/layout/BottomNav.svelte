@@ -108,27 +108,56 @@
 		pointer-events: none; /* 胶囊外区域不拦截点击 */
 	}
 
+	/* ═══ 3D 液态玻璃胶囊 ═══
+	   磨砂基底（blur+saturate+grain）+ 三层立体光影：顶缘镜面高光 /
+	   底缘内暗边（厚度）/ 悬浮投影（脱离感）；::before 沿顶缘的
+	   液态高光带让玻璃「湿润」。 */
 	.nav-inner {
 		pointer-events: auto;
+		position: relative;
 		display: flex;
 		align-items: stretch;
 		gap: 4px;
 		width: 100%;
-		background: var(--color-surface);
+		background: color-mix(in srgb, var(--color-surface) 62%, transparent);
 		border-top: 1px solid var(--color-line-hair);
-		-webkit-backdrop-filter: blur(24px) saturate(1.4);
-		backdrop-filter: blur(24px) saturate(1.4);
-		animation: nav-enter 320ms var(--ease-out) both;
+		-webkit-backdrop-filter: blur(24px) saturate(1.6);
+		backdrop-filter: blur(24px) saturate(1.6);
+		box-shadow:
+			inset 0 1px 0 var(--glass-hi),
+			inset 0 -1px 0 rgb(0 0 0 / 0.06);
+		animation: nav-enter 420ms var(--ease-out) both;
+	}
+
+	/* 顶缘液态高光带（磨砂面上的镜面流光） */
+	.nav-inner::before {
+		content: '';
+		position: absolute;
+		inset: 1px;
+		border-radius: inherit;
+		pointer-events: none;
+		background: linear-gradient(180deg, rgb(255 255 255 / 0.18), transparent 42%);
+	}
+
+	/* 磨砂噪点肌理（feTurbulence 5%） */
+	.nav-inner::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		pointer-events: none;
+		opacity: 0.05;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 	}
 
 	@keyframes nav-enter {
 		from {
 			opacity: 0;
-			transform: translateY(14px);
+			transform: translateY(16px) scale(0.97);
 		}
 		to {
 			opacity: 1;
-			transform: translateY(0);
+			transform: translateY(0) scale(1);
 		}
 	}
 
@@ -138,7 +167,7 @@
 		}
 	}
 
-	/* 桌面 ≥768px：居中悬浮胶囊（顶缘镜面高光 = 液态玻璃质感） */
+	/* 桌面 ≥768px：居中悬浮胶囊（完全体 3D 玻璃） */
 	@media (min-width: 768px) {
 		.nav-inner {
 			width: auto;
@@ -148,12 +177,16 @@
 			border-radius: 999px;
 			box-shadow:
 				inset 0 1px 0 var(--glass-hi),
-				0 10px 32px rgba(0, 0, 0, 0.14);
+				inset 0 -1px 0 rgb(0 0 0 / 0.06),
+				0 4px 10px rgb(0 0 0 / 0.08),
+				0 14px 40px rgb(0 0 0 / 0.18);
 		}
 	}
 
 	.tab {
 		flex: 1;
+		position: relative;
+		z-index: 1; /* 浮于 ::before/::after 光影层之上 */
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -168,41 +201,64 @@
 		color: var(--color-ink-2);
 		text-decoration: none;
 		transition:
-			color 120ms var(--ease-out),
-			background-color 120ms var(--ease-out);
+			color 150ms var(--ease-out),
+			background-color 150ms var(--ease-out),
+			transform 150ms var(--ease-out),
+			box-shadow 150ms var(--ease-out);
 	}
 
 	.tab svg {
 		width: 21px;
 		height: 21px;
+		transition: transform 150ms var(--ease-out);
 	}
 
 	.tab:hover {
 		color: var(--color-ink);
+		background: color-mix(in srgb, var(--color-ink) 5%, transparent);
 	}
 
+	.tab:hover svg {
+		transform: translateY(-1px) scale(1.06);
+	}
+
+	/* 激活态：玻璃凸起按钮（3D 浮粒）+ accent 光晕 */
 	.tab.active {
 		color: var(--color-accent-text);
 		font-weight: 600;
-		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+		background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.22),
+			0 2px 8px color-mix(in srgb, var(--color-accent) 26%, transparent);
 	}
 
+	.tab.active svg {
+		filter: drop-shadow(0 1px 4px color-mix(in srgb, var(--color-accent) 40%, transparent));
+	}
+
+	/* 按压回弹（iOS tactile） */
 	.tab:active {
-		transform: scale(0.96);
+		transform: scale(0.94);
 	}
 
-	/* 移动态：胶囊退为通栏 */
+	/* 移动态：胶囊退为通栏（保留磨砂 + 光影，去圆角与外投影） */
 	@media (max-width: 767px) {
 		.nav-inner {
 			border-left: none;
 			border-right: none;
 			border-bottom: none;
 			border-radius: 0;
-			box-shadow: none;
+			box-shadow:
+				inset 0 1px 0 var(--glass-hi),
+				0 -6px 24px rgb(0 0 0 / 0.06);
 		}
 
 		.tab {
 			border-radius: 0;
+		}
+
+		.tab.active {
+			border-radius: 12px 12px 0 0;
 		}
 	}
 </style>

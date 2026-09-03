@@ -253,7 +253,7 @@
 	</div>
 
 	<!-- 每日一题 -->
-	<div class="glass daily-card mb-8 rounded-lg border p-4" use:reveal>
+	<div class="glass frost frost-grain daily-card mb-8 rounded-lg border p-4" use:reveal>
 		<div class="daily-head">
 			<span class="tag tag-accent">今日一题</span>
 			<span class="daily-chapter">{daily.q.chapter}</span>

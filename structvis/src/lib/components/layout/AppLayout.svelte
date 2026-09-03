@@ -200,8 +200,8 @@
 		background: color-mix(in srgb, var(--color-surface) 72%, transparent);
 		border: 1px solid var(--color-line-hair);
 		border-radius: 999px;
-		-webkit-backdrop-filter: blur(14px) saturate(1.5);
-		backdrop-filter: blur(14px) saturate(1.5);
+		-webkit-backdrop-filter: blur(24px) saturate(1.4);
+		backdrop-filter: blur(24px) saturate(1.4);
 		box-shadow:
 			inset 0 1px 0 var(--glass-hi),
 			0 4px 16px rgba(0, 0, 0, 0.08);

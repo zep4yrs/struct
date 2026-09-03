@@ -254,6 +254,24 @@ pre,
 	backdrop-filter: blur(14px) saturate(1.5);
 }
 
+/* ═══ 磨砂玻璃 (Frosted) ═══
+   更强的漫射模糊 + 微噪点肌理（SVG feTurbulence 5% 叠加），
+   用于大面积极块（播放器卡 / 每日一题 / 悬浮胶囊）。 */
+.frost {
+	-webkit-backdrop-filter: blur(24px) saturate(1.4);
+	backdrop-filter: blur(24px) saturate(1.4);
+}
+
+.frost-grain::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	opacity: 0.05;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 /* ═══ iOS 液态玻璃 (Liquid Glass) ═══
    半透明玻璃面 + 顶部镜面高光 + 悬停抬升 + 按压回弹。
    --glass-hi 为镜面高光 token（亮/暗主题各自定义）。

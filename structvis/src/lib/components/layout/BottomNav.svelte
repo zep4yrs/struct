@@ -116,8 +116,8 @@
 		width: 100%;
 		background: var(--color-surface);
 		border-top: 1px solid var(--color-line-hair);
-		-webkit-backdrop-filter: blur(14px) saturate(1.5);
-		backdrop-filter: blur(14px) saturate(1.5);
+		-webkit-backdrop-filter: blur(24px) saturate(1.4);
+		backdrop-filter: blur(24px) saturate(1.4);
 		animation: nav-enter 320ms var(--ease-out) both;
 	}
 

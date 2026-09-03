@@ -795,7 +795,7 @@
 	});
 </script>
 
-<div class="algo-player">
+<div class="algo-player frost frost-grain">
 	<!-- 主工作区 -->
 	<div class="workspace">
 		<!-- 中间：可视化区 -->
@@ -1348,12 +1348,12 @@
 <style>
 	.algo-player {
 		width: 100%;
-		background: var(--color-surface);
+		background: color-mix(in srgb, var(--color-surface) 82%, transparent);
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-lg);
 		overflow: hidden;
-		-webkit-backdrop-filter: blur(14px) saturate(1.5);
-		backdrop-filter: blur(14px) saturate(1.5);
+		-webkit-backdrop-filter: blur(24px) saturate(1.4);
+		backdrop-filter: blur(24px) saturate(1.4);
 		box-shadow:
 			0 1px 2px rgba(0, 0, 0, 0.04),
 			0 8px 32px rgba(0, 0, 0, 0.04);

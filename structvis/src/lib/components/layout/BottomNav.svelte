@@ -111,7 +111,9 @@
 	/* ═══ 3D 液态玻璃胶囊 ═══
 	   磨砂基底（blur+saturate+grain）+ 三层立体光影：顶缘镜面高光 /
 	   底缘内暗边（厚度）/ 悬浮投影（脱离感）；::before 沿顶缘的
-	   液态高光带让玻璃「湿润」。 */
+	   液态高光带让玻璃「湿润」。
+	   透度关键：底色 alpha 压到 ~0.55，让方格衬底与页面内容真实
+	   透过磨砂层（否则半透明退化为纯色板）。 */
 	.nav-inner {
 		pointer-events: auto;
 		position: relative;
@@ -119,10 +121,10 @@
 		align-items: stretch;
 		gap: 4px;
 		width: 100%;
-		background: color-mix(in srgb, var(--color-surface) 62%, transparent);
+		background: color-mix(in srgb, var(--color-surface) 46%, transparent);
 		border-top: 1px solid var(--color-line-hair);
-		-webkit-backdrop-filter: blur(24px) saturate(1.6);
-		backdrop-filter: blur(24px) saturate(1.6);
+		-webkit-backdrop-filter: blur(14px) saturate(1.7);
+		backdrop-filter: blur(14px) saturate(1.7);
 		box-shadow:
 			inset 0 1px 0 var(--glass-hi),
 			inset 0 -1px 0 rgb(0 0 0 / 0.06);

@@ -171,7 +171,8 @@ body::before {
 }
 
 /* 全局方格底纹（开屏方格提升为全局） — 粒子层之上、内容之下：
-   给玻璃/磨砂面提供可折射的衬底。顶部轻微淡出避免与页头冲突 */
+   给玻璃/磨砂面提供可折射的衬底。透明度需可感知（磨砂模糊的
+   对比来源），顶部轻微淡出避免与页头冲突 */
 body::after {
 	content: '';
 	position: fixed;
@@ -181,7 +182,7 @@ body::after {
 		linear-gradient(to right, var(--color-line-hair) 1px, transparent 1px),
 		linear-gradient(to bottom, var(--color-line-hair) 1px, transparent 1px);
 	background-size: 56px 56px;
-	opacity: 0.3;
+	opacity: 0.55;
 	z-index: 0;
 }
 

@@ -9,6 +9,7 @@
 	} from '$lib/content/topics';
 	import type { TopicCard } from '$lib/content/topics';
 	import { progress } from '$lib/stores/progress';
+	import { reveal, revealOnScroll } from '$lib/utils/motion';
 
 	/**
 	 * v3 课程目录 — 通讯录形态（底部导航「课程」tab 的落点）：
@@ -66,11 +67,52 @@
 	}
 </script>
 
-<div class="mx-auto max-w-3xl px-5 pb-28">
+<div class="mx-auto max-w-6xl px-5 pb-28">
 	<!-- 头部：标题 + 搜索条（通讯录形态的固定入口） -->
 	<header class="catalog-head">
-		<h1 class="catalog-title">课程</h1>
-		<p class="catalog-sub">{dsTopics.length} 数据结构 + {dbTopics.length} 数据库 · 跟教材章节走</p>
+		<div class="catalog-head-row">
+			<div>
+				<h1 class="catalog-title">课程</h1>
+				<p class="catalog-sub">
+					{dsTopics.length} 数据结构 + {dbTopics.length} 数据库 · 跟教材章节走
+				</p>
+			</div>
+			<!-- 学习工具入口（技能图谱 / 竞速实验室） -->
+			<nav class="tool-links" aria-label="学习工具">
+				<a class="tool-link" href={resolve('/map')}>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<circle cx="12" cy="5" r="3" />
+						<circle cx="5" cy="19" r="3" />
+						<circle cx="19" cy="19" r="3" />
+						<line x1="12" y1="8" x2="5" y2="16" />
+						<line x1="12" y1="8" x2="19" y2="16" />
+					</svg>
+					技能图谱
+				</a>
+				<a class="tool-link" href={resolve('/race')}>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+					</svg>
+					竞速实验室
+				</a>
+			</nav>
+		</div>
 		<div class="search-wrap">
 			<svg
 				viewBox="0 0 24 24"
@@ -104,12 +146,12 @@
 
 	<!-- 分组列表 -->
 	{#each filtered as g (g.id)}
-		<section id="group-{g.id}" class="group">
+		<section id="group-{g.id}" class="group" use:revealOnScroll={{ delay: 60, y: 18 }}>
 			<h2 class="group-label">{g.label}</h2>
 			<ul class="topic-list">
-				{#each g.topics as t (t.href)}
+				{#each g.topics as t, ti (t.href)}
 					{@const m = masteryOf(t)}
-					<li>
+					<li use:reveal={{ delay: Math.min(ti * 40, 320), y: 10 }}>
 						<a class="topic-row" href={resolve(t.href as '/ds/quick-sort')}>
 							<div class="topic-main">
 								<span class="topic-title">{t.title}</span>
@@ -150,6 +192,49 @@
 		padding: 20px 0 12px;
 		-webkit-backdrop-filter: blur(14px) saturate(1.5);
 		backdrop-filter: blur(14px) saturate(1.5);
+	}
+
+	.catalog-head-row {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
+	}
+
+	/* 学习工具入口：技能图谱 / 竞速实验室 */
+	.tool-links {
+		display: flex;
+		gap: 8px;
+	}
+
+	.tool-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		padding: 9px 14px;
+		border: 1px solid var(--color-line-regular);
+		border-radius: 999px;
+		background: var(--color-surface);
+		font-size: 12.5px;
+		font-weight: 500;
+		color: var(--color-ink-2);
+		text-decoration: none;
+		transition:
+			color 150ms var(--ease-out),
+			border-color 150ms var(--ease-out),
+			box-shadow 150ms var(--ease-out);
+	}
+
+	.tool-link svg {
+		width: 15px;
+		height: 15px;
+	}
+
+	.tool-link:hover {
+		color: var(--color-accent-text);
+		border-color: var(--color-accent);
+		box-shadow: 0 4px 14px rgba(217, 119, 6, 0.12);
 	}
 
 	.catalog-title {
@@ -247,14 +332,13 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		border: 1px solid var(--color-line-hair);
-		border-radius: var(--radius-lg, 14px);
-		background: var(--color-surface);
-		overflow: hidden;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+		gap: 10px;
 	}
 
 	.topic-list li + li .topic-row {
-		border-top: 1px solid var(--color-line-hair);
+		border-top: none;
 	}
 
 	.topic-row {
@@ -262,9 +346,21 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 12px;
+		height: 100%;
 		padding: 13px 16px;
+		border: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-md, 12px);
+		background: var(--color-surface);
 		text-decoration: none;
-		transition: background-color 120ms var(--ease-out);
+		transition:
+			background-color 120ms var(--ease-out),
+			border-color 120ms var(--ease-out),
+			box-shadow 120ms var(--ease-out);
+	}
+
+	.topic-row:hover {
+		border-color: var(--color-accent);
+		box-shadow: 0 4px 14px rgba(217, 119, 6, 0.1);
 	}
 
 	.topic-row:hover {

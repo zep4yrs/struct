@@ -1460,6 +1460,7 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
+		white-space: nowrap;
 		color: var(--color-accent-text);
 		background: transparent;
 		border: 1px solid var(--color-accent);
@@ -1563,6 +1564,7 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
+		white-space: nowrap;
 		color: var(--color-ink-2);
 		background: transparent;
 		border: none;
@@ -2077,6 +2079,34 @@
 	@media (max-width: 768px) {
 		.algo-player {
 			padding-bottom: calc(72px + env(safe-area-inset-bottom));
+		}
+	}
+
+	/* 窄屏头部（≤640px）：标题行与动作行分两行排布，标题禁止逐字竖排折行
+		（375px 观察到的缺陷：flex 挤压下 CJK 标题每字一行） */
+	@media (max-width: 640px) {
+		.canvas-header {
+			flex-wrap: wrap;
+			row-gap: 10px;
+			padding: 12px 14px;
+		}
+
+		.title-area {
+			flex: 1 1 100%;
+			flex-wrap: wrap;
+			row-gap: 6px;
+		}
+
+		.canvas-title {
+			white-space: nowrap;
+		}
+
+		/* 动作行独立成行并允许内部换行，避免超宽溢出视口 */
+		.header-right {
+			flex: 1 1 100%;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+			row-gap: 8px;
 		}
 	}
 

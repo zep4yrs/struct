@@ -77,7 +77,7 @@
 	</div>
 
 	{#if topicIndex >= 0}
-		<div class="pager">
+		<div class="pager" use:reveal={{ delay: 120, y: 12 }}>
 			{#if prevTopic}
 				<a class="pager-item" href={resolve(prevTopic.href as '/ds/quick-sort')}>
 					<span class="pager-dir">← 上一课</span>

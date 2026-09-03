@@ -115,6 +115,24 @@
 		border-top: 1px solid var(--color-line-hair);
 		-webkit-backdrop-filter: blur(14px) saturate(1.5);
 		backdrop-filter: blur(14px) saturate(1.5);
+		animation: nav-enter 320ms var(--ease-out) both;
+	}
+
+	@keyframes nav-enter {
+		from {
+			opacity: 0;
+			transform: translateY(14px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.nav-inner {
+			animation: none;
+		}
 	}
 
 	/* 桌面 ≥768px：居中悬浮胶囊 */

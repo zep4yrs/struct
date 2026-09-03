@@ -199,7 +199,10 @@ export async function createScriptedEngine(spec: ScriptSpec): Promise<ScriptedRe
 			console.warn('[script-engine] 帧执行失败，回落静态帧:', r.error);
 			return { columns: f.expected?.columns ?? [], rows: f.expected?.rows ?? [] } as SqlTableData;
 		}
-		return { columns: r.columns, rows: r.rows } as SqlTableData;
+		// sql.js 对零行 SELECT 可能省略结果对象（columns 为空）：
+		// 此时结构用剧本声明的列，行数忠实保留为 0（如触发器首帧的空日志表）
+		const columns = r.columns.length > 0 ? r.columns : (f.expected?.columns ?? []);
+		return { columns, rows: r.rows } as SqlTableData;
 	});
 	const engine = new ScriptedResultEngine(spec, tables, true, executor);
 	// 自定义 SQL 需要 sqlite 执行器，仅在真实环境开放入口

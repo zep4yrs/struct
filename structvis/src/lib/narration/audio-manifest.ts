@@ -497,45 +497,6 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"hash": "b8270698b815"
 		}
 	},
-	"sql": {
-		"compare": {
-			"file": "compare.mp3",
-			"text": "扫描 / 条件判定：逐行处理，判断是否满足条件。匹配的行保留，不匹配的剔除。",
-			"hash": "7ec7403114ee"
-		},
-		"recurse-exit": {
-			"file": "recurse-exit.mp3",
-			"text": "当前阶段完成，结果集合变小/变形，进入到下一个 SQL 执行阶段。",
-			"hash": "dde8bacc805f"
-		},
-		"recurse-enter": {
-			"file": "recurse-enter.mp3",
-			"text": "进入下一个执行阶段：分组、投影、去重、排序或截断，逐步逼近最终结果。",
-			"hash": "beca6ee385c2"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "查询执行完毕。SELECT 按 FROM → WHERE → GROUP BY → SELECT 投影 → DISTINCT → ORDER BY → LIMIT 的顺序执行。",
-			"hash": "9f70934e4c89"
-		}
-	},
-	"advanced-query": {
-		"compare": {
-			"file": "compare.mp3",
-			"text": "高级子句的执行时机与 WHERE 不同：HAVING 在分组后筛组、外连接保留主表全部行。",
-			"hash": "a470a10f662e"
-		},
-		"recurse-enter": {
-			"file": "recurse-enter.mp3",
-			"text": "逐个处理：或逐组判定 HAVING、或逐行找右表匹配、或逐行执行相关子查询。",
-			"hash": "07c0845a24e9"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "查询执行完毕。记住：HAVING 筛组、LEFT JOIN 留左、UNION 并集去重、EXISTS 逐行判存在。",
-			"hash": "9d597c18fdc9"
-		}
-	},
 	"transaction": {
 		"compare": {
 			"file": "compare.mp3",
@@ -551,79 +512,6 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"file": "complete.mp3",
 			"text": "ACID：原子性要么全做要么全不做、一致性守恒、隔离性互不干扰、持久性提交即永存。",
 			"hash": "9d81cf6511ec"
-		}
-	},
-	"procedures": {
-		"init": {
-			"file": "init.mp3",
-			"text": "存储过程（Stored Procedure）是预编译的 SQL 语句集，带参数、变量、控制流，可重复调用。",
-			"hash": "5fd52d590fee"
-		},
-		"compare": {
-			"file": "compare.mp3",
-			"text": "调用存储过程时，数据库执行过程体：先声明变量，再逐语句执行，分支和循环改变执行顺序。",
-			"hash": "a16f5587f63f"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "存储过程把业务逻辑封装在数据库层，减少网络往返，但调试比应用层代码复杂。",
-			"hash": "68f2d4172c41"
-		}
-	},
-	"triggers": {
-		"init": {
-			"file": "init.mp3",
-			"text": "触发器（Trigger）是数据库自动执行的存储程序，当 DML 事件（INSERT/UPDATE/DELETE）发生时自动调用。",
-			"hash": "6babd6a78ea9"
-		},
-		"compare": {
-			"file": "compare.mp3",
-			"text": "触发器分 BEFORE 和 AFTER 两种：BEFORE 在 DML 执行前触发（可修改数据），AFTER 在 DML 执行后触发（常用于日志）。",
-			"hash": "39f003a12614"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "触发器保证业务规则自动执行，但过度使用会增加维护复杂度，需权衡利弊。",
-			"hash": "aebd8a8a88ab"
-		}
-	},
-	"window-function": {
-		"init": {
-			"file": "init.mp3",
-			"text": "窗口函数在\"分组 + 组内排序\"的基础上逐行计算，是 SQL 高级查询的核心工具。",
-			"hash": "2978d3d32fd4"
-		},
-		"compare": {
-			"file": "compare.mp3",
-			"text": "按 PARTITION BY 列把行分组：每个分组拥有独立的计算窗口。",
-			"hash": "10948b40c77a"
-		},
-		"recurse-enter": {
-			"file": "recurse-enter.mp3",
-			"text": "组内按 ORDER BY 排序，随后逐行计算窗口函数值。",
-			"hash": "adb25be7d0c7"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "窗口函数计算完成：每行得到组内序号/排名/累计值，且不折叠行数（与 GROUP BY 不同）。",
-			"hash": "9a24ba1a91ae"
-		}
-	},
-	"view": {
-		"compare": {
-			"file": "compare.mp3",
-			"text": "视图定义只保存查询语句，不保存数据。查询视图时，数据库实时执行这条 SELECT。",
-			"hash": "70447249acb7"
-		},
-		"recurse-enter": {
-			"file": "recurse-enter.mp3",
-			"text": "底层 SELECT 按 FROM → WHERE → SELECT 投影的顺序执行，逐步得到视图的结果集。",
-			"hash": "c07f41ffdf00"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "视图完成：基表数据变化会自动反映到视图结果中。视图用于简化查询、隐藏敏感列、提供逻辑独立性。",
-			"hash": "f74ff990963f"
 		}
 	},
 	"explain-plan": {
@@ -791,97 +679,6 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"hash": "1a1002f9167b"
 		}
 	},
-	"join": {
-		"init": {
-			"file": "init.mp3",
-			"text": "内连接（INNER JOIN）：拿左表 student 的每一行，去右表 sc 中找学号相同的行，匹配成功的行对合并为结果的一行。",
-			"hash": "181686114048"
-		},
-		"compare": {
-			"file": "compare.mp3",
-			"text": "取出左表的一行，准备与右表的每一行比较连接条件。",
-			"hash": "45f9b5e31fa1"
-		},
-		"edge-candidate": {
-			"file": "edge-candidate.mp3",
-			"text": "拿右表的一行做匹配：比较学号是否相等。",
-			"hash": "2a80fd2ece36"
-		},
-		"edge-select": {
-			"file": "edge-select.mp3",
-			"text": "匹配成功！左右两行合并，追加到结果表中。",
-			"hash": "05b5c3bc9d37"
-		},
-		"edge-reject": {
-			"file": "edge-reject.mp3",
-			"text": "不匹配，跳过这一行，继续比较右表的下一行。",
-			"hash": "dec352d4123d"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "内连接完成：结果集包含所有匹配成功的行对。注意赵强的学号 20105 没有选课记录，而 sc 中的 20105 在 student 中不存在——两边不匹配的行都被丢弃。",
-			"hash": "eba38ac75ecd"
-		}
-	},
-	"left-join": {
-		"init": {
-			"file": "init.mp3",
-			"text": "左外连接：以左表 student 为主，每一行都保留。右表 sc 匹配不到时，结果行的右半部分填 NULL。",
-			"hash": "8efce10fe470"
-		},
-		"compare": {
-			"file": "compare.mp3",
-			"text": "取出左表的一行，去右表找匹配。",
-			"hash": "bbb377f48cf9"
-		},
-		"edge-candidate": {
-			"file": "edge-candidate.mp3",
-			"text": "比较右表一行的连接条件。",
-			"hash": "5a87c23227f6"
-		},
-		"edge-select": {
-			"file": "edge-select.mp3",
-			"text": "匹配成功：合并进结果表。",
-			"hash": "267623c8c205"
-		},
-		"edge-reject": {
-			"file": "edge-reject.mp3",
-			"text": "右表没有匹配：左表行保留，右半部分填 NULL——这是与内连接最大的区别。",
-			"hash": "ea132275435d"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "左外连接完成：左表 4 行全部在结果中。和内连接对比，赵强虽然没有选课记录，但他的行仍然出现，只是课程和分数为 NULL。",
-			"hash": "79e709e41716"
-		}
-	},
-	"group-by": {
-		"init": {
-			"file": "init.mp3",
-			"text": "分组聚合：把 student 表按院系分组，统计每个院系的人数。分组后每个组输出一行：分组列 + 聚合函数结果。",
-			"hash": "696c90251b4e"
-		},
-		"compare": {
-			"file": "compare.mp3",
-			"text": "扫描一行记录，看它属于哪个分组。",
-			"hash": "eb29741a8e16"
-		},
-		"edge-candidate": {
-			"file": "edge-candidate.mp3",
-			"text": "该院系已存在分组：组内人数加一。",
-			"hash": "1a645ed9126b"
-		},
-		"edge-select": {
-			"file": "edge-select.mp3",
-			"text": "新院系：创建新分组，人数从 1 开始。",
-			"hash": "8dd2323ab167"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "分组完成：每个院系一行，显示人数。注意分组后只能输出分组列和聚合结果——这是 GROUP BY 的语法约束。",
-			"hash": "6ea3c426e996"
-		}
-	},
 	"hash-probing": {
 		"init": {
 			"file": "init.mp3",
@@ -1005,38 +802,6 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"hash": "54e61a7cb1cb"
 		}
 	},
-	"subquery": {
-		"init": {
-			"file": "init.mp3",
-			"text": "子查询：先执行括号里的查询得到平均值，外层查询再用它过滤——分数大于平均分的同学。",
-			"hash": "c84ac6ecc1b5"
-		},
-		"compare": {
-			"file": "compare.mp3",
-			"text": "执行子查询：计算所有分数的平均值。",
-			"hash": "819624c2c77f"
-		},
-		"edge-candidate": {
-			"file": "edge-candidate.mp3",
-			"text": "外层逐行比较：该行分数是否大于平均分？",
-			"hash": "1cb831141399"
-		},
-		"edge-select": {
-			"file": "edge-select.mp3",
-			"text": "大于平均分：该行进入结果集。",
-			"hash": "25b0e12d921c"
-		},
-		"edge-reject": {
-			"file": "edge-reject.mp3",
-			"text": "不大于平均分：该行被过滤掉。",
-			"hash": "e62aab04b6a8"
-		},
-		"complete": {
-			"file": "complete.mp3",
-			"text": "查询完成。子查询先执行（得到 AVG = 83.2），外层 SELECT 用这个常量过滤——这是非相关子查询的标准执行顺序。",
-			"hash": "f251b4b4870e"
-		}
-	},
 	"isolation": {
 		"init": {
 			"file": "init.mp3",
@@ -1067,6 +832,578 @@ export const audioManifest: Record<string, Record<string, NarrationAudioEntry>> 
 			"file": "complete.mp3",
 			"text": "演示结束。读未提交会产生脏读；读已提交每次读最新已提交值（不可重复读）；可重复读（MySQL 默认）事务内快照一致；串行化彻底隔离但并发度最低。",
 			"hash": "f6ca0343ede9"
+		}
+	},
+	"union-set": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "集合运算的操作对象是「行集合」——先备好两张结构相同（列数与类型一致）的表。",
+			"hash": "7382b7dd3627"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "UNION = A ∪ B。李四、王五两班都报，只出现一次；要保留重复需用 UNION ALL。SQLite 对 UNION 隐式排序以保证去重，这里再显式 ORDER BY 稳定输出。",
+			"hash": "e6764430273e"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "INTERSECT = A ∩ B，只保留同时出现在两个结果集中的行，同样自动去重。",
+			"hash": "1221aacd974d"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "A EXCEPT B = A − B，方向很重要：交换两张表会得到完全不同的结果（C 班独报是孙七、周八）。",
+			"hash": "decb60854a5a"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "4 + 4 − 2（重复）= 6，验证容斥思想；差集是单向的——「A 独有」与「B 独有」要分别计算。",
+			"hash": "5d171ab3e904"
+		}
+	},
+	"case-expr": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "CASE 是 SQL 里的「行内 if-else」，在 SELECT 阶段对每一行独立求值。",
+			"hash": "38d44839a1d6"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "WHEN 自上而下短路求值：12000 命中第一条即停。ELSE 可省略，省略时未命中为 NULL。",
+			"hash": "a82256295926"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "CASE 的输出可以当普通列用：先逐行归档，再按档位分组计数——「先分类、后聚合」是报表最常用套路。",
+			"hash": "e8b08b9a6c55"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "简单 CASE 在 CASE 后写列名，WHEN 只给值（等值比较）；能写简单 CASE 就不要用搜索 CASE 拼等式——语义更清晰。",
+			"hash": "0c5dfa1a9a19"
+		}
+	},
+	"sql-functions": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "INSTR(邮箱,'@') 返回 @ 的位置（1-based），减 1 得账号长度——配合 SUBSTR 拆出登录名，是字符串函数的经典组合拳。",
+			"hash": "f03b4f6faafb"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "ROUND(x, 1) 保留 1 位小数；ABS 把「差多少」变成非负数，适合做偏差展示。",
+			"hash": "d500917f04ec"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "SQLite 把 ISO 日期存为 TEXT，strftime(「%Y」, 列) 提取年份；前 7 位用 SUBSTR 就是「年-月」。MySQL 对应 DATE_FORMAT，注意方言差异。",
+			"hash": "53ee66dd125b"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "任何值与 NULL 运算结果都是 NULL（李四直接 工资+奖金 会得 NULL）；COALESCE 返回第一个非 NULL 参数，是 NULL 兜底的标准写法。",
+			"hash": "e1e261a98c44"
+		}
+	},
+	"having-deep": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "WHERE 作用于「原始行」，此时还没有分组，因此不能使用聚合函数（SUM/COUNT 等）——写了就报错。",
+			"hash": "2c187efba341"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "没写 WHERE 时所有行都进分组。中文列的 ORDER BY 按字符编码排序（华东→华北→华南），与拼音无关。",
+			"hash": "fd8a3f297447"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "HAVING 作用于「组」，聚合函数只能出现在这里（或 SELECT）。华南 800 被整组过滤掉，一行都不剩。",
+			"hash": "e93c8393558f"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "执行顺序 FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY。小单 150 先被 WHERE 丢掉，华北组因此只有 450，过不了 HAVING 的 800 门槛。",
+			"hash": "294e4460f6e2"
+		}
+	},
+	"distinct-paging": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "去重与分页都建立在「确定的行序」上——先 ORDER BY，后面的帧才有稳定的窗口。",
+			"hash": "05a009a622b6"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "DISTINCT 作用于 SELECT 的全部列组合——只有整行完全相同才会被合并。",
+			"hash": "6e44ab55e711"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "聚合函数里嵌 DISTINCT 是「统计有多少不同值」的标准写法，报表里出镜率极高。",
+			"hash": "dfeb53809993"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "OFFSET 是「跳过的行数」。稳定分页的前提是 ORDER BY 的键唯一或近唯一，否则页与页可能重复/漏行。",
+			"hash": "5511f811acd9"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "OFFSET N 要先扫过并丢弃前 N 行——大偏移（如 OFFSET 100000）正是深分页慢查询的根源，改用「游标/键集分页」（WHERE 最后一行键 > 上页末行）可根治。",
+			"hash": "6a8edd3daa45"
+		}
+	},
+	"join-variants": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "王五(30) 和 财务部(40) 在对方表中没有匹配，被 INNER JOIN 丢弃——这是后面 OUTER 连接的对照基线。",
+			"hash": "3fa2c43a7ab2"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "LEFT JOIN = 匹配行 + 左表无匹配行（右侧补 NULL）。「找没有部门的员工」这类问题的标准工具。",
+			"hash": "1329bf79ee88"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "RIGHT JOIN = LEFT JOIN 的镜像。MySQL 支持；SQLite 3.39 起才支持，老教程常说「SQLite 没有 RIGHT JOIN」已过时。",
+			"hash": "3ddebe6ba846"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "FULL = LEFT ∪ RIGHT：匹配 2 行 + 仅员工 2 行 + 仅部门 1 行。注意 NULL 在 ORDER BY 升序时排最前（「—财务部」行在最上）。",
+			"hash": "7488431c1929"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "INNER JOIN 本质是「CROSS JOIN + ON 过滤」。漏写 ON 条件的连接会退化成笛卡尔积，行数爆炸是经典事故现场。",
+			"hash": "931227dfe12a"
+		},
+		"frame-5": {
+			"file": "frame-5.mp3",
+			"text": "自连接 = 同一张表 Join 自己。别名 e/m 是两个独立的行集合；「谁的上级是谁」这类层级关系全靠它。",
+			"hash": "0aedcb2a3807"
+		}
+	},
+	"view-update": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "视图是「存起来的 SELECT」：不占存储，每次查询实时计算。WHERE 课程=数学 AND 分数>=80 是它的过滤基因。",
+			"hash": "d736e3922de8"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "查 sqlite_master 可见视图本质：一条 CREATE VIEW 语句 + 名字。MySQL 里对应 information_schema.views。",
+			"hash": "93cb14b00ddb"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "SQLite 中视图默认只读——INSERT INTO 视图 会报「cannot modify 视图 because it is a view」。MySQL 的简单视图可直接更新，且用 WITH CHECK OPTION 保证写入行仍在视图可见范围内（SQLite 无此子句，属方言差异）。",
+			"hash": "d0e1eeaf4dee"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "INSTEAD OF 的语义是「代替」：对视图的 INSERT 不再被拒绝，而是执行触发器体里的语句。怎么写、写到哪里，完全由触发器定义决定。",
+			"hash": "d89f20532b98"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "95 >= 80 满足视图的 WHERE，所以插入后立刻可见；若经视图写入 60 分（MySQL WITH CHECK OPTION 会拒绝），SQLite 只要不写检查逻辑就会插进基础表却永远看不见——这正是「可更新视图」的核心考点。",
+			"hash": "8501f29aa4db"
+		},
+		"frame-5": {
+			"file": "frame-5.mp3",
+			"text": "视图本身永远不存数据：经视图写入的行落在基础表里。这就是「视图是虚表」的完整闭环。",
+			"hash": "c63e973cc898"
+		}
+	},
+	"index-fail": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "EXPLAIN QUERY PLAN 是判别索引命中的唯一权威：看到 SEARCH = 按索引定位；看到 SCAN = 全表扫描。MySQL 的 EXPLAIN type 列（ref/range/ALL）是同一件事的另一种表述。",
+			"hash": "a38cdf68b009"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "索引存的是「区域」原值，对列套函数后必须逐行计算再比较，索引无从下手。解法：改为对常量做函数（区域 = LOWER(‘华东’) 的反向思路）或建函数索引（MySQL 8 函数索引）。",
+			"hash": "22fea16c08b5"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "B+ 树按前缀有序组织，「%开头」意味着任意前缀都可能命中，只能全表扫。改成前缀匹配「华%」即可重新命中索引。",
+			"hash": "2e927f7e36c0"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "OR 要两侧都能走索引优化器才可能用 index merging；金额列没有索引，直接全表扫更划算。为 OR 两侧分别建索引（或改写为 UNION）才能救回。",
+			"hash": "12611d555c66"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "联合索引 (区域, 金额) 按「区域→金额」排序，跳过区域直接查金额等于查一本没有目录的书的第二章——最左前缀法则。需要建 (金额) 单列索引。",
+			"hash": "c1c3dde08024"
+		},
+		"frame-5": {
+			"file": "frame-5.mp3",
+			"text": "写完 SQL 别猜，跑一下 EXPLAIN QUERY PLAN（SQLite）/ EXPLAIN（MySQL）看计划。ORDER BY 场景让小结顺序稳定（按编码序）。",
+			"hash": "cf9733feb28b"
+		}
+	},
+	"explain-detail": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "EQP 每行是一个「计划节点」。单表查询只有一个节点：SCAN（扫描）或 SEARCH（按索引定位）。",
+			"hash": "1dd24857f9cc"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "INTEGER PRIMARY KEY 即 rowid，查找直接走 B 树定位——这是 SQLite 里最快的访问路径。MySQL InnoDB 的主键即聚簇索引，异曲同工。",
+			"hash": "baad50072a43"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "先记住语义：客户 1 有两单（300、260），只有 300 入选；客户 2 的 450、客户 3 的 520 入选。",
+			"hash": "51f2ad22aa1f"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "两个节点同属一个查询块——嵌套循环：外层逐行扫订单，内层用主键直接定位客户。优化器选了行数少的做内层 SEARCH，这正是「小表驱动大表」的体现。",
+			"hash": "92b0de212ca4"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "相关子查询对客户表的每一行执行一次。计划里 SCALAR SUBQUERY 1 是一个子块，其内部的 SCAN 订单 通过 id/parent 挂在子块下——层级树就是读复杂计划的地图。",
+			"hash": "6475e295d15f"
+		},
+		"frame-5": {
+			"file": "frame-5.mp3",
+			"text": "计划不会撒谎：EXPLAIN QUERY PLAN（SQLite）/ EXPLAIN + EXPLAIN ANALYZE（MySQL）是调优的起点，而不是「感觉慢就加索引」。",
+			"hash": "ddc265de0b19"
+		}
+	},
+	"constraints": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "学号 pk=1（主键）、姓名 notnull=1（非空）、邮箱 UNIQUE、分数 CHECK——约束写在 DDL 里，之后所有写入自动被检查。",
+			"hash": "f84a979cdf10"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "INSERT OR IGNORE 把「违反约束」从报错变成静默跳过，changes() 返回 0 即可观察约束是否生效。生产上应显式捕获冲突（如 ON CONFLICT 子句）。",
+			"hash": "e765d231ff4b"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "UNIQUE 约束列里 NULL 之间互不冲突（SQL 标准「NULL ≠ NULL」）——上一帧张三的邮箱就是 NULL。这是面试高频细节。",
+			"hash": "8c3eea9909aa"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "CHECK(分数 BETWEEN 0 AND 100) 让数据库成为「最后防线」——应用层漏判的脏数据在这里被拦下。MySQL 8.0.16 之前 CHECK 只解析不执行，注意版本。",
+			"hash": "199136cc01e0"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "SQLite 默认关闭外键检查，必须每连接执行 PRAGMA foreign_keys=ON；MySQL InnoDB 默认开启。这是两大数据库最易踩的方言差异之一。",
+			"hash": "511526c2921c"
+		},
+		"frame-5": {
+			"file": "frame-5.mp3",
+			"text": "外键 ON DELETE CASCADE 把「先删子表再删父表」的手工顺序交给数据库。换成 RESTRICT 则父表删除被直接拒绝——按业务语义选择级联策略。",
+			"hash": "a66a96257eb0"
+		}
+	},
+	"sql": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "逻辑执行顺序的第一步——FROM 先确定数据来自哪张表，此刻还没有任何筛选。",
+			"hash": "bdcdd9a2c732"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "两表按 ON 条件逐对匹配：赵六、周八没有选课记录，因此不出现。",
+			"hash": "dfe8471063a9"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "WHERE 逐行判定，王五(78)、孙七(60) 被过滤——只保留满足条件的行。",
+			"hash": "0e12900df9a7"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "分组后 SELECT 只能出现「分组列 + 聚合函数」。ORDER BY 选课门数 DESC, 姓名 保证并列时顺序稳定。",
+			"hash": "6fdf90163aed"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "投影后再排序：SELECT 决定「有哪些列」，ORDER BY 决定「什么顺序看」。",
+			"hash": "ca96ff239d8e"
+		},
+		"frame-5": {
+			"file": "frame-5.mp3",
+			"text": "LIMIT 是最后一步截断。完整顺序：FROM → JOIN → WHERE → GROUP BY → SELECT → ORDER BY → LIMIT。",
+			"hash": "011307edbfb6"
+		}
+	},
+	"join": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "连接是「两张表的行配对游戏」——先认识两位参与者。",
+			"hash": "c5dfcb647d08"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "右表只含「发生过选课」的学生——20104、20106 不在其中。",
+			"hash": "270a090e5684"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "嵌套循环：右表每一行去左表找 ON 条件成立的搭档，找到才合并输出。每个学号最多匹配一个学生，所以结果行数 = 选课行数。",
+			"hash": "83c41b1f28c5"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "内连接只保留「两边都有」的行。想把无匹配的一侧也保留（补 NULL），需要外连接——见 LEFT JOIN 页。",
+			"hash": "39f256592fef"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "连接产出中间结果后，WHERE/GROUP BY/ORDER BY 照常作用于这个结果集。",
+			"hash": "63a8bebd4d88"
+		}
+	},
+	"left-join": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "赵六、周八没有选课记录，在内连接中直接消失——这是对照的起点。",
+			"hash": "e4ee9d596254"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "LEFT JOIN = 匹配成功的行 + 左表无匹配的行（右半部填 NULL）。「每个学生 + 其选课（可能没有）」这类问题必须用它。",
+			"hash": "8cec9130e71f"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "补进来的 NULL 正是「无匹配」的标志。IS NULL 过滤后剩下的就是左表独有行——「找没下过单的用户」全是这个模式。",
+			"hash": "41ca78832584"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "数行数要用 COUNT(选课.课程号) 而不是 COUNT(*)——NULL 不被计数，赵六/周八才能得到 0；COUNT(*) 会把他们数成 1。",
+			"hash": "811d904a1f34"
+		}
+	},
+	"group-by": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "分组聚合回答「每一类有多少/多大」的问题——先看清未分组的明细。",
+			"hash": "7af2425670e4"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "分组把同值行收进一组，聚合函数把每组收敛成一行。GROUP BY 后 SELECT 只能出现分组列和聚合函数。",
+			"hash": "b69415d7f570"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "AVG/MAX/MIN 在组内计算。网络工程只有赵六一人，三个值相同——单成员组是理解聚合的特例。",
+			"hash": "c00ab1f0611f"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "对聚合结果筛选用 HAVING——它作用在「组」上，与作用在「行」上的 WHERE 分工明确。",
+			"hash": "8129b48aee5c"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "聚合函数只有配着 GROUP BY（或整表一组）才有意义——这就是「分组聚合」这个名字的由来。",
+			"hash": "23ac84531947"
+		}
+	},
+	"subquery": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "非相关子查询的执行顺序是「先内后外」——外层的每一行都用子查询算好的值来比较。",
+			"hash": "cab081dd6cd0"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "子查询单独就能执行——把它当「先跑出来的一张小结果表」理解最直观。",
+			"hash": "28f3e1a2a9fb"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "外层每一行的成绩与子查询结果比较：88、92、85、95 过线；76、63 被过滤。标量子查询的结果必须恰好一行一列。",
+			"hash": "5474187ca386"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "子查询返回多行时用 IN 判断成员关系。学号 20104（赵六）、20106（周八）不在选课集合中，被排除。",
+			"hash": "848613e026f3"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "能写 JOIN 的场景优先 JOIN（优化器更友好）；子查询胜在语义直观，尤其是「先算再比」的思路。",
+			"hash": "cb34ed8538b7"
+		}
+	},
+	"advanced-query": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "最基础的行级过滤——后面的子句都叠加在这种结果之上。",
+			"hash": "925c30fe1ecd"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "「没有选课记录」无法用 WHERE 成绩=NULL 表达——NULL 判等必须用 IS NULL，配合外连接的补 NULL 行为。",
+			"hash": "3b80f9ddde69"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "两个查询的列结构必须一致；UNION 自动去重（同名的行只留一条），要保留重复用 UNION ALL。",
+			"hash": "186cd9b3f80a"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "EXISTS 只判断子查询「有没有结果行」，返回 true/false——与 IN 的区别在于对 NULL 的处理和短路特性，相关子查询随外层行反复执行。",
+			"hash": "6377489d5255"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "子查询先圈定「选过课」的学号集合，外层再分组统计——多个子句各司其职的完整闭环。",
+			"hash": "f417b42cb28f"
+		}
+	},
+	"window-function": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "与 GROUP BY「一组一行」不同，窗口函数保留每一行，在行旁边附加计算列。",
+			"hash": "2227d5fb64ed"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "PARTITION BY 专业 把行分成三个窗口，各自独立排名——周八/张三/王五是计算机系的 1/2/3 名，与其他专业无关。",
+			"hash": "5dcc61c717ba"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "RANK 在并列时给相同名次并跳过后续（1,1,3）；DENSE_RANK 不跳号（1,1,2）。本例数据无并列，正是对照两者语义的基线。",
+			"hash": "ef2d206efd1b"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "窗口版的 SUM 不分组、只按学号顺序「滚动累加」——这就是移动平均、累计销售一类报表的实现原理。",
+			"hash": "1899568f4d53"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "需要「每行都带排名/累计/移动值」时用窗口函数；需要「每类一个汇总值」时用 GROUP BY。",
+			"hash": "57a2408e30a6"
+		}
+	},
+	"update": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "DML 的每一步都会真实改变数据——先记住初始快照，逐帧对照演化。",
+			"hash": "7facc1926698"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "UPDATE 逐行检查 WHERE：命中 2 行各加 5。漏写 WHERE 会更新全表——DML 三大事故之首。",
+			"hash": "ff13deebc344"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "按列序提供全部值时可省略列名清单；生产上建议显式写列名，防止表结构变更后错位。",
+			"hash": "d3cfc47c9ee7"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "DELETE 同样逐行判 WHERE。注意与 TRUNCATE/DROP 的层级差异：删行 / 清空表 / 连结构删。",
+			"hash": "c278dca6a19e"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "所有 DML 都可以被事务包裹：BEGIN 后一切可 ROLLBACK，COMMIT 后才持久——见事务页。",
+			"hash": "04395f08de90"
+		}
+	},
+	"view": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "视图是「存起来的 SELECT」——不占数据存储，只存一条查询定义。",
+			"hash": "3254e3c50fea"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "创建视图没有任何数据被复制——数据库只是记下了「好成绩 = 这条 SELECT」。MySQL 语法完全一致。",
+			"hash": "a9d6383672ea"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "每次查询视图都现场执行保存的 SELECT——所以基表一变，视图结果立刻变化，这正是「虚表」的含义。",
+			"hash": "9861ce0814e9"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "sqlite_master 是 SQLite 的数据字典；MySQL 对应 information_schema.views——视图的本质就是字典里的一行 SQL 文本。",
+			"hash": "a4b8a79510b2"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "删视图不影响基表；删基表（DROP TABLE）则视图失效。视图的安全价值：给不同角色暴露不同列/行的「窗口」。",
+			"hash": "872073dd9bb2"
+		}
+	},
+	"triggers": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "触发器的价值就在「自动」：应用层不写一行代码，数据库在 DML 时刻自动执行挂载的逻辑。",
+			"hash": "f68ac7dce5a5"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "NEW.列 引用「正在插入的新行」；AFTER 表示在插入成功之后执行（BEFORE 则在之前，可用于校验/改写）。FOR EACH ROW = 每受影响行触发一次。",
+			"hash": "2b900fb149e2"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "这就是 AFTER INSERT 触发器在工作：对选课表的插入成功后，数据库自动执行了 BEGIN…END 里的日志写入。",
+			"hash": "217041fb36ef"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "每条 INSERT 命中的每一行都触发一次——批量插入 100 行就会有 100 条日志，这就是「行级触发器」的粒度。",
+			"hash": "18b6217f161c"
+		},
+		"frame-4": {
+			"file": "frame-4.mp3",
+			"text": "MySQL 对应 information_schema.triggers。触发器适合审计日志/级联维护这类「必须跟着数据走」的逻辑；复杂业务请放应用层。",
+			"hash": "74842a8fdb43"
+		}
+	},
+	"procedures": {
+		"frame-0": {
+			"file": "frame-0.mp3",
+			"text": "存储过程 = 存在数据库里的预编译 SQL 程序。收益：调用方零 SQL 注入面、网络往返少、逻辑集中。SQLite 无此能力（语法演示帧）。",
+			"hash": "6352d64572d1"
+		},
+		"frame-1": {
+			"file": "frame-1.mp3",
+			"text": "CALL 像函数调用。对比应用层拼 SQL：权限可精确到「只能 CALL 这个过程」，而不必放开 UPDATE 表权限。",
+			"hash": "eecff3c1afe2"
+		},
+		"frame-2": {
+			"file": "frame-2.mp3",
+			"text": "IN 进、OUT 出、INOUT 双向。SELECT … INTO 变量 把查询结果写入 OUT 参数——过程最重要的「返回值」通道之一。",
+			"hash": "8d6761a228f4"
+		},
+		"frame-3": {
+			"file": "frame-3.mp3",
+			"text": "能不用游标就不用——集合化 SQL（一条 UPDATE）几乎总比逐行游标快。游标是「必须逐行处理」时的兜底工具。",
+			"hash": "4340ee946e58"
 		}
 	}
 };

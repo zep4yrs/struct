@@ -80,9 +80,12 @@
 		return effectiveScript?.find((m) => m.type === s.type)?.narration ?? '';
 	}
 
-	/** 预录音频：manifest 存在且旁白文本未变（防止文案改了音频过期） */
-	function audioUrlFor(type: string, text: string): string | null {
-		const entry = audioManifest[topicId]?.[type];
+	/** 预录音频：manifest 存在且旁白文本未变（防止文案改了音频过期）。
+	 *  查找顺序：剧本帧（frame-<步骤号>，M2 剧本主题逐帧音频）→ 步骤类型（传统引擎）。 */
+	function audioUrlFor(s: { id: number; type: string }, text: string): string | null {
+		const topicManifest = audioManifest[topicId];
+		if (!topicManifest) return null;
+		const entry = topicManifest['frame-' + s.id] ?? topicManifest[s.type];
 		if (!entry || entry.text !== text) return null;
 		return `${base}/audio/${topicId}/${entry.file}`;
 	}
@@ -113,8 +116,8 @@
 			speechUtterance = null;
 			advanceAfterNarration();
 		};
-		// 优先预录音频（MiMo 神经语音）
-		const url = audioUrlFor(s.type, text);
+		// 优先预录音频（MiMo 神经语音；剧本主题按帧、传统引擎按步骤类型）
+		const url = audioUrlFor(s, text);
 		if (url) {
 			const a = new Audio(url);
 			currentAudio = a;
@@ -206,7 +209,19 @@
 			.every((f) => (customValues[f.key] ?? '').trim().length > 0)
 	);
 
+	// 输入长度上限（UI 入口层统一防护）：超长输入会拖慢解析/执行并占住主线程
+	const CUSTOM_FIELD_MAX = 10_000;
+	let customTooLong = $derived(
+		(engine.customConfig?.fields ?? []).some(
+			(f) => (customValues[f.key] ?? '').length > CUSTOM_FIELD_MAX
+		)
+	);
+
 	function applyCustom() {
+		if (customTooLong) {
+			customError = `输入过长（单字段上限 ${CUSTOM_FIELD_MAX} 字符）`;
+			return;
+		}
 		try {
 			engine.applyCustom?.(customValues);
 			engineError = '';
@@ -1160,9 +1175,11 @@
 				{/if}
 				<div class="modal-actions">
 					<button class="btn btn-ghost" onclick={() => (showCustomModal = false)}>取消</button>
-					<!-- audit-8：空字段直接禁用提交（此前提交后才报错） -->
-					<button class="btn btn-primary" onclick={applyCustom} disabled={!canApplyCustom}
-						>应用</button
+					<!-- audit-8：空字段/超长输入直接禁用提交（此前提交后才报错） -->
+					<button
+						class="btn btn-primary"
+						onclick={applyCustom}
+						disabled={!canApplyCustom || customTooLong}>应用</button
 					>
 				</div>
 			</div>

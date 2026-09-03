@@ -91,6 +91,54 @@ const ENGINE_MAP: { topicId: string; make: () => EngineLike }[] = [
 	{ topicId: 'isolation', make: () => new IsolationEngine() }
 ];
 
+// === M2/M3 剧本主题：按帧生成旁白（frame-<index> 键，与 AlgoPlayer 按帧查找约定一致） ===
+import { UNION_SET_SPEC } from '../src/lib/engines/sql/scripts/union-set';
+import { CASE_EXPR_SPEC } from '../src/lib/engines/sql/scripts/case-expr';
+import { SQL_FUNCTIONS_SPEC } from '../src/lib/engines/sql/scripts/sql-functions';
+import { HAVING_DEEP_SPEC } from '../src/lib/engines/sql/scripts/having-deep';
+import { DISTINCT_PAGING_SPEC } from '../src/lib/engines/sql/scripts/distinct-paging';
+import { JOIN_VARIANTS_SPEC } from '../src/lib/engines/sql/scripts/join-variants';
+import { VIEW_UPDATE_SPEC } from '../src/lib/engines/sql/scripts/view-update';
+import { INDEX_FAIL_SPEC } from '../src/lib/engines/sql/scripts/index-fail';
+import { EXPLAIN_DETAIL_SPEC } from '../src/lib/engines/sql/scripts/explain-detail';
+import { CONSTRAINTS_SPEC } from '../src/lib/engines/sql/scripts/constraints';
+import { SELECT_FLOW_SPEC } from '../src/lib/engines/sql/scripts/sql';
+import { JOIN_FLOW_SPEC } from '../src/lib/engines/sql/scripts/join';
+import { LEFT_JOIN_FLOW_SPEC } from '../src/lib/engines/sql/scripts/left-join';
+import { GROUP_BY_FLOW_SPEC } from '../src/lib/engines/sql/scripts/group-by';
+import { SUBQUERY_FLOW_SPEC } from '../src/lib/engines/sql/scripts/subquery';
+import { ADVANCED_QUERY_SPEC } from '../src/lib/engines/sql/scripts/advanced-query';
+import { WINDOW_FUNCTION_SPEC } from '../src/lib/engines/sql/scripts/window-function';
+import { DML_FLOW_SPEC } from '../src/lib/engines/sql/scripts/update';
+import { VIEW_FLOW_SPEC } from '../src/lib/engines/sql/scripts/view';
+import { TRIGGER_FLOW_SPEC } from '../src/lib/engines/sql/scripts/triggers';
+import { PROCEDURE_FLOW_SPEC } from '../src/lib/engines/sql/scripts/procedures';
+import type { ScriptSpec } from '../src/lib/engines/sql/ScriptEngine';
+
+const SCRIPT_MAP: { topicId: string; spec: ScriptSpec }[] = [
+	{ topicId: 'union-set', spec: UNION_SET_SPEC },
+	{ topicId: 'case-expr', spec: CASE_EXPR_SPEC },
+	{ topicId: 'sql-functions', spec: SQL_FUNCTIONS_SPEC },
+	{ topicId: 'having-deep', spec: HAVING_DEEP_SPEC },
+	{ topicId: 'distinct-paging', spec: DISTINCT_PAGING_SPEC },
+	{ topicId: 'join-variants', spec: JOIN_VARIANTS_SPEC },
+	{ topicId: 'view-update', spec: VIEW_UPDATE_SPEC },
+	{ topicId: 'index-fail', spec: INDEX_FAIL_SPEC },
+	{ topicId: 'explain-detail', spec: EXPLAIN_DETAIL_SPEC },
+	{ topicId: 'constraints', spec: CONSTRAINTS_SPEC },
+	{ topicId: 'sql', spec: SELECT_FLOW_SPEC },
+	{ topicId: 'join', spec: JOIN_FLOW_SPEC },
+	{ topicId: 'left-join', spec: LEFT_JOIN_FLOW_SPEC },
+	{ topicId: 'group-by', spec: GROUP_BY_FLOW_SPEC },
+	{ topicId: 'subquery', spec: SUBQUERY_FLOW_SPEC },
+	{ topicId: 'advanced-query', spec: ADVANCED_QUERY_SPEC },
+	{ topicId: 'window-function', spec: WINDOW_FUNCTION_SPEC },
+	{ topicId: 'update', spec: DML_FLOW_SPEC },
+	{ topicId: 'view', spec: VIEW_FLOW_SPEC },
+	{ topicId: 'triggers', spec: TRIGGER_FLOW_SPEC },
+	{ topicId: 'procedures', spec: PROCEDURE_FLOW_SPEC }
+];
+
 // === 工具 ===
 const ROOT = path.resolve(import.meta.dirname, '..');
 const AUDIO_DIR = path.join(ROOT, 'static', 'audio');
@@ -199,6 +247,19 @@ describe('旁白音频生成（MiMo-V2.5-TTS）', () => {
 					hash: hashText(item.narration)
 				});
 			}
+		}
+		// 剧本主题：每帧一段（presenterNote 缺省回落帧文案）
+		for (const { topicId, spec } of SCRIPT_MAP) {
+			spec.frames.forEach((f, i) => {
+				const narration = f.presenterNote ?? f.detail ?? f.description;
+				tasks.push({
+					topicId,
+					type: 'frame-' + i,
+					narration,
+					file: path.join(AUDIO_DIR, topicId, 'frame-' + i + '.mp3'),
+					hash: hashText(narration)
+				});
+			});
 		}
 
 		let generated = 0;

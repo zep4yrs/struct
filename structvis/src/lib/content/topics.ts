@@ -695,13 +695,13 @@ export const dbTopics: TopicCard[] = [
 		crumb: '数据库 / [current]用户与权限管理[/current]'
 	},
 	{
-		title: 'SQL 集合运算',
-		description: 'UNION · INTERSECT · EXCEPT',
-		href: '/db/union-set',
-		topicId: 'union-set',
+		title: 'SQL 函数演练',
+		description: '字符串 · 数值 · 日期 · NULL 处理',
+		href: '/db/sql-functions',
+		topicId: 'sql-functions',
 		badge: '真实执行',
 		group: '实验',
-		crumb: '数据库 / 实验 / [current]SQL 集合运算[/current]'
+		crumb: '数据库 / 实验 / [current]SQL 函数演练[/current]'
 	},
 	{
 		title: 'CASE 表达式',
@@ -711,15 +711,6 @@ export const dbTopics: TopicCard[] = [
 		badge: '真实执行',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]CASE 表达式[/current]'
-	},
-	{
-		title: 'SQL 函数演练',
-		description: '字符串 · 数值 · 日期 · NULL 处理',
-		href: '/db/sql-functions',
-		topicId: 'sql-functions',
-		badge: '真实执行',
-		group: '实验',
-		crumb: '数据库 / 实验 / [current]SQL 函数演练[/current]'
 	},
 	{
 		title: 'WHERE 与 HAVING',
@@ -740,6 +731,15 @@ export const dbTopics: TopicCard[] = [
 		crumb: '数据库 / 实验 / [current]DISTINCT 与分页[/current]'
 	},
 	{
+		title: 'SQL 集合运算',
+		description: 'UNION · INTERSECT · EXCEPT',
+		href: '/db/union-set',
+		topicId: 'union-set',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]SQL 集合运算[/current]'
+	},
+	{
 		title: 'JOIN 家族',
 		description: 'RIGHT · FULL · CROSS · 自连接',
 		href: '/db/join-variants',
@@ -758,24 +758,6 @@ export const dbTopics: TopicCard[] = [
 		crumb: '数据库 / 实验 / [current]视图更新限制[/current]'
 	},
 	{
-		title: '索引失效实验',
-		description: 'EXPLAIN 实证 · 五种失效场景',
-		href: '/db/index-fail',
-		topicId: 'index-fail',
-		badge: '真实执行',
-		group: '实验',
-		crumb: '数据库 / 实验 / [current]索引失效实验[/current]'
-	},
-	{
-		title: 'EXPLAIN 详解',
-		description: 'SCAN/SEARCH · 连接内外层 · 层级树',
-		href: '/db/explain-detail',
-		topicId: 'explain-detail',
-		badge: '真实执行',
-		group: '实验',
-		crumb: '数据库 / 实验 / [current]EXPLAIN 详解[/current]'
-	},
-	{
 		title: '约束体系',
 		description: 'PK · UNIQUE · CHECK · 外键级联',
 		href: '/db/constraints',
@@ -792,6 +774,24 @@ export const dbTopics: TopicCard[] = [
 		badge: '概念演示',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]索引查询与回表[/current]'
+	},
+	{
+		title: '索引失效实验',
+		description: 'EXPLAIN 实证 · 五种失效场景',
+		href: '/db/index-fail',
+		topicId: 'index-fail',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]索引失效实验[/current]'
+	},
+	{
+		title: 'EXPLAIN 详解',
+		description: 'SCAN/SEARCH · 连接内外层 · 层级树',
+		href: '/db/explain-detail',
+		topicId: 'explain-detail',
+		badge: '真实执行',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]EXPLAIN 详解[/current]'
 	},
 	{
 		title: '锁等待与死锁甘特图',

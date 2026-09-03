@@ -3,7 +3,7 @@
 > 看见数据结构与数据库的每一步跳动。
 
 [![Build & Deploy](https://github.com/zep4yrs/struct/actions/workflows/deploy.yml/badge.svg?branch=master)](https://github.com/zep4yrs/struct/actions/workflows/deploy.yml)
-![Tests](https://img.shields.io/badge/tests-481%20unit%20%2B%2067%20e2e-3fb96f)
+![Tests](https://img.shields.io/badge/tests-491%20unit%20%2B%2071%20e2e-3fb96f)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
 [![在线体验](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%93%E9%AA%8C-GitHub%20Pages-4c8dff)](https://zep4yrs.github.io/struct/)
 [![赞赏支持](https://img.shields.io/badge/%E8%B5%9E%E8%B5%8F%E6%94%AF%E6%8C%81-%E7%88%B1%E5%8F%91%E7%94%9F-946ce6?logo=coffee)](https://afdian.net/a/zep4yrs)

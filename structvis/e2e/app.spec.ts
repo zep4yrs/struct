@@ -52,15 +52,19 @@ test.describe('页面加载', () => {
 		await expect(page.locator('.home-course-title', { hasText: 'MySQL 数据库' })).toBeVisible();
 	});
 
-	test('工作台首页：问候、继续学习空态与快捷入口', async ({ page }) => {
+	test('工作台首页：问候、继续学习空态与门面全景', async ({ page }) => {
 		await page.goto('/struct/home');
 		await waitForHydratedGlobal(page);
-		await expect(page.locator('.home-title')).toBeVisible();
+		await expect(page.locator('.dash-title')).toBeVisible();
 		// 全新存储：继续学习显示空态引导
-		await expect(page.getByText('从课程目录选择你的第一课')).toBeVisible();
-		// 数据概览四格 + 快捷入口四卡
-		await expect(page.locator('.stat-card')).toHaveCount(4);
-		await expect(page.locator('.quick-card')).toHaveCount(4);
+		await expect(page.getByText('从第一课开始')).toBeVisible();
+		// 门面区：产品全景四卡 + 两门课程卡（滚动入场后可见）
+		await expect(page.getByText('一个学习台，四件兵器')).toBeVisible();
+		const facadeTitles = await page.locator('.facade-title').allTextContents();
+		for (const t of ['步进可视化', '练习闭环', '实验竞技场', '路径导航']) {
+			expect(facadeTitles).toContain(t);
+		}
+		await expect(page.locator('.course-card')).toHaveCount(2);
 		// 底导首页 tab 高亮
 		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/首页/);
 	});

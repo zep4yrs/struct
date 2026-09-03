@@ -16,14 +16,17 @@
 
 	function stripBase(path: string): string {
 		if (!base || base === '/') return path;
-		return path.startsWith(base) ? path.slice(base.length) || '/' : path;
+		if (!path.startsWith(base)) return path;
+		// 归一化尾部斜杠：dev/Pages 以目录 URL（…/home/）服务，tab 精确匹配需无尾斜杠
+		const stripped = (path.slice(base.length) || '/').replace(/\/+$/, '');
+		return stripped === '' ? '/' : stripped;
 	}
 
 	const TABS: TabItem[] = [
 		{
-			href: '/',
+			href: '/home',
 			label: '首页',
-			activeMatch: (p) => p === '/',
+			activeMatch: (p) => p === '/' || p === '/home',
 			icon: 'M3 10.5 12 3l9 7.5M5 9.5V21h5v-6h4v6h5V9.5'
 		},
 		{

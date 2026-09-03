@@ -42,7 +42,7 @@ async function clickNext(page: Page) {
 }
 
 test.describe('页面加载', () => {
-	test('首页：标题、口号与课程入口', async ({ page }) => {
+	test('介绍页：标题、口号与课程入口', async ({ page }) => {
 		await page.goto('/');
 		await waitForHydratedGlobal(page);
 		await expect(page.getByRole('heading', { name: /StructVis/ })).toBeVisible();
@@ -50,6 +50,19 @@ test.describe('页面加载', () => {
 		await expect(page.getByText('进入课程目录')).toBeVisible();
 		await expect(page.locator('.home-course-title', { hasText: '数据结构与算法' })).toBeVisible();
 		await expect(page.locator('.home-course-title', { hasText: 'MySQL 数据库' })).toBeVisible();
+	});
+
+	test('工作台首页：问候、继续学习空态与快捷入口', async ({ page }) => {
+		await page.goto('/struct/home');
+		await waitForHydratedGlobal(page);
+		await expect(page.locator('.home-title')).toBeVisible();
+		// 全新存储：继续学习显示空态引导
+		await expect(page.getByText('从课程目录选择你的第一课')).toBeVisible();
+		// 数据概览四格 + 快捷入口四卡
+		await expect(page.locator('.stat-card')).toHaveCount(4);
+		await expect(page.locator('.quick-card')).toHaveCount(4);
+		// 底导首页 tab 高亮
+		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/首页/);
 	});
 
 	test('课程目录页：通讯录形态（搜索 + 分组 + 掌握度）', async ({ page }) => {

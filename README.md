@@ -89,7 +89,7 @@ structvis/
 │   │   ├── content/          # topics.ts（72 课题单源）+ quiz-bank.ts（自测题库）
 │   │   ├── stores/           # progress / settings（localStorage 持久化，带版本信封迁移）
 │   │   └── styles/           # app.css 设计 token（亮/暗双主题）
-│   └── routes/               # 97 个页面（/、/catalog、ds×49、db×37、/progress、/quiz、/race、/map、/report、/settings、/about）
+│   └── routes/               # 98 个页面（/、/home、/catalog、ds×49、db×37、/progress、/quiz、/race、/map、/report、/settings、/about）
 ├── e2e/                      # Playwright 端到端测试（含视觉基线）
 └── docs → ../docs            # 构建产物由 CI 自动提交，用于 GitHub Pages
 ```

@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { base, resolve } from '$app/paths';
 
 	/** 全端统一底部导航（v3 布局：hub + 底导，顶栏移除）
 	 *  - 五个一级目的地：首页 / 课程 / 实验 / 复习 / 我的
 	 *  - 桌面 ≥768px：居中悬浮胶囊；移动 <768px：通栏贴底（安全区适配）
 	 *  - 课程内容页（/ds/*、/db/* 深页）沉浸隐藏——路径线由 AlgoPage 的返回+pager 承担
+	 *  - 指针/触摸拖拽：按住滑块水平拖动，跨过 tab 中线释放即切换（drag-to-switch）
 	 */
 	interface TabItem {
 		href: string;
@@ -67,16 +69,112 @@
 
 	/** 滑块：active tab 下标 → transform 平移（CSS 过渡产生滑动） */
 	const activeIndex = $derived(TABS.findIndex((t) => t.activeMatch(current)));
+
+	// === 指针/触摸拖拽滑切（drag-to-switch） ===
+	// 拖动时滑块跟手（无过渡），释放时按停留位置吸附到最近 tab：
+	// 跨过目标 tab 中线才算切换（不足则弹回原 tab）。
+	let navEl = $state<HTMLDivElement | null>(null);
+	let sliderEl = $state<HTMLDivElement | null>(null);
+	let dragState: {
+		startX: number;
+		baseOffset: number;
+		moved: boolean;
+		pointerId: number;
+	} | null = null;
+	/** 拖拽中的瞬时索引（浮点，滑块跟手）；非拖拽时为 null */
+	let dragPos = $state<number | null>(null);
+
+	function segWidth(): number {
+		if (!navEl) return 1;
+		const inner = navEl.clientWidth - 8; // 与 slider 的 left:4px / calc((100%-8px)/n) 对齐
+		return inner / TABS.length;
+	}
+
+	function onPointerDown(e: PointerEvent) {
+		if (activeIndex < 0 || !navEl) return;
+		dragState = {
+			startX: e.clientX,
+			baseOffset: activeIndex,
+			moved: false,
+			pointerId: e.pointerId
+		};
+		// 注意：不在 down 时立即 capture——否则会吞掉 <a> 的原生 click 导航。
+		// capture 延迟到确认拖动（moved）后再补，纯点击路径零干预。
+	}
+
+	function onPointerMove(e: PointerEvent) {
+		if (!dragState || !navEl) return;
+		const dx = e.clientX - dragState.startX;
+		if (!dragState.moved) {
+			if (Math.abs(dx) <= 4) return;
+			dragState.moved = true;
+			try {
+				navEl.setPointerCapture(dragState.pointerId);
+			} catch {
+				/* 指针已释放等边缘，忽略 */
+			}
+		}
+		const w = segWidth();
+		// 拖拽跟手：限制在 [0, n-1]
+		dragPos = Math.max(0, Math.min(TABS.length - 1, dragState.baseOffset + dx / w));
+	}
+
+	function onPointerUp() {
+		if (!dragState) return;
+		const wasDrag = dragState.moved;
+		const pos = dragPos;
+		dragState = null;
+		if (!wasDrag || pos === null) return;
+		// 拖动释放后：拦截紧随的 click（释放落点可能在某 tab 内触发原生导航，
+		// 与吸附 goto 双跳；真实指针有 capture 兜底，合成/降级路径靠此窗口）
+		suppressUntil = performance.now() + 350;
+		// 跨过目标 tab 中线（四舍五入）才切换；否则弹回
+		const target = Math.round(pos);
+		dragPos = null;
+		if (target !== activeIndex) {
+			goto(resolve(TABS[target].href as '/'));
+		}
+	}
+
+	function onPointerCancel() {
+		dragState = null;
+		dragPos = null;
+	}
+
+	/** 拖动释放后的短窗口内吞掉 nav 上的 click（防双跳） */
+	let suppressUntil = 0;
+	function onClickCapture(e: MouseEvent) {
+		if (performance.now() < suppressUntil) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	}
+
+	// 滑块渲染位置：拖拽中用跟手浮点值，否则用 activeIndex（CSS 过渡滑动）
+	const sliderIndex = $derived(dragPos !== null ? dragPos : activeIndex < 0 ? 0 : activeIndex);
 </script>
 
 {#if !immersive}
 	<nav class="bottom-nav" aria-label="底部导航">
-		<div class="nav-inner">
-			<!-- 滑块（玻璃凸块）：随 active tab 平移；z-0 在 tab 内容之下 -->
+		<div
+			class="nav-inner"
+			bind:this={navEl}
+			role="tablist"
+			aria-label="主导航"
+			tabindex="-1"
+			onpointerdown={onPointerDown}
+			onpointermove={onPointerMove}
+			onpointerup={onPointerUp}
+			onpointercancel={onPointerCancel}
+			onclickcapture={onClickCapture}
+		>
+			<!-- 滑块（玻璃凸块）：随 active tab 平移；拖拽中跟手（无过渡）；z-0 在 tab 内容之下 -->
 			<div
 				class="nav-slider"
 				class:ready={activeIndex >= 0}
-				style="--slider-index:{activeIndex < 0 ? 0 : activeIndex}; --slider-count:{TABS.length};"
+				class:dragging={dragPos !== null}
+				bind:this={sliderEl}
+				style="--slider-index:{sliderIndex}; --slider-count:{TABS.length};"
 				aria-hidden="true"
 			></div>
 			{#each TABS as item (item.href)}
@@ -205,13 +303,16 @@
 		justify-content: center;
 		gap: 3px;
 		min-height: 54px;
-		min-width: 58px;
-		padding: 4px 10px;
+		min-width: 74px; /* 左右留白加宽（原 58px，拖拽热区更从容） */
+		padding: 4px 18px;
 		border-radius: 14px;
 		font-size: 10px;
 		line-height: 1;
 		color: var(--color-ink-2);
 		text-decoration: none;
+		touch-action: pan-y; /* 水平拖拽归滑切，垂直滚动不拦截 */
+		user-select: none;
+		-webkit-user-select: none;
 		transition:
 			color 150ms var(--ease-out),
 			background-color 150ms var(--ease-out),
@@ -236,7 +337,8 @@
 	/* ═══ 滑块（玻璃凸块）═══
 	   绝对定位在 nav 底层，按 --slider-index 平移；激活凸起的光影
 	   全部由滑块承担（tab 本体只变色），滑动 = transform 过渡。
-	   初始（ready 前）隐藏，避免首帧从 0 位滑入的跳变。 */
+	   初始（ready 前）隐藏，避免首帧从 0 位滑入的跳变；
+	   拖拽中（dragging）关闭过渡 → 跟手。 */
 	.nav-slider {
 		position: absolute;
 		top: 4px;
@@ -252,6 +354,15 @@
 		transition: transform 320ms var(--ease-out);
 		opacity: 0;
 		pointer-events: none;
+	}
+
+	.nav-slider.dragging {
+		transition: none;
+		/* 拖拽中轻微放大 + 光晕增强：玻璃被「捏住」的手感 */
+		scale: 1.05;
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.28),
+			0 4px 16px color-mix(in srgb, var(--color-accent) 36%, transparent);
 	}
 
 	.nav-slider.ready {

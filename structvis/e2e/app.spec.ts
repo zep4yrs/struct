@@ -341,6 +341,63 @@ test.describe('主题与导航', () => {
 		await expect(page.getByRole('heading', { name: /排序算法竞速|竞速/ }).first()).toBeVisible();
 	});
 
+	test('底导拖拽滑切：pointer 序列拖过中线切换 tab', async ({ page }) => {
+		await page.goto('/struct/home');
+		await waitForHydratedGlobal(page);
+		// 等底导挂载 + 入场动画结束（420ms + 缓冲）
+		await expect(page.locator('.nav-inner')).toBeVisible();
+		await page.waitForTimeout(700);
+		// Chromium 下 Playwright mouse API 派发的是 MouseEvent（无 pointer 前缀），
+		// 用合成 PointerEvent 直驱（真实浏览器为原生 PointerEvent，行为一致）。
+		// 拖拽落点用 tab 元素的真实中心（而非公式段宽，免疫任何布局差异）。
+		const dragToTab = (tabText: string) =>
+			page.evaluate((label) => {
+				const nav = document.querySelector('.nav-inner')!;
+				const tabs = [...nav.querySelectorAll('.tab')];
+				const target = tabs.find((t) => t.textContent?.trim() === label)!;
+				const targetCx = target.getBoundingClientRect().left + target.clientWidth / 2;
+				const firstCx = tabs[0].getBoundingClientRect().left + tabs[0].clientWidth / 2;
+				const y = nav.getBoundingClientRect().top + nav.clientHeight / 2;
+				const opts = (x: number) => ({
+					clientX: x,
+					clientY: y,
+					bubbles: true,
+					pointerId: 1,
+					isPrimary: true
+				});
+				nav.dispatchEvent(new PointerEvent('pointerdown', opts(firstCx)));
+				nav.dispatchEvent(new PointerEvent('pointermove', opts(targetCx)));
+				nav.dispatchEvent(new PointerEvent('pointerup', opts(targetCx)));
+			}, tabText);
+
+		// 拖到「实验」tab 中心 → 切换 race
+		await dragToTab('实验');
+		await expect(page).toHaveURL(/race/, { timeout: 5000 });
+
+		// 弹回：从实验向课程方向拖到两者之间的中缝（未过课程中心）
+		await page.evaluate(() => {
+			const nav = document.querySelector('.nav-inner')!;
+			const tabs = [...nav.querySelectorAll('.tab')];
+			const exp = tabs.find((t) => t.textContent?.trim() === '实验')!;
+			const course = tabs.find((t) => t.textContent?.trim() === '课程')!;
+			const expCx = exp.getBoundingClientRect().left + exp.clientWidth / 2;
+			const courseCx = course.getBoundingClientRect().left + course.clientWidth / 2;
+			const y = nav.getBoundingClientRect().top + nav.clientHeight / 2;
+			const opts = (x: number) => ({
+				clientX: x,
+				clientY: y,
+				bubbles: true,
+				pointerId: 1,
+				isPrimary: true
+			});
+			nav.dispatchEvent(new PointerEvent('pointerdown', opts(expCx)));
+			nav.dispatchEvent(new PointerEvent('pointermove', opts((expCx + courseCx) / 2 + 10)));
+			nav.dispatchEvent(new PointerEvent('pointerup', opts((expCx + courseCx) / 2 + 10)));
+		});
+		await page.waitForTimeout(600);
+		await expect(page).toHaveURL(/race/);
+	});
+
 	test('进度页：空状态与学习记录入口', async ({ page }) => {
 		await page.goto('/struct/progress');
 		await waitForHydratedGlobal(page);

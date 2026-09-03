@@ -549,7 +549,7 @@
 	</p>
 
 	<!-- 控制条 -->
-	<div class="race-controls glass" use:reveal>
+	<div class="race-controls glass liquid" use:reveal>
 		<button class="btn btn-accent" onclick={togglePlay}
 			>{playing ? '暂停' : allFinished ? '重跑' : '开跑'}</button
 		>

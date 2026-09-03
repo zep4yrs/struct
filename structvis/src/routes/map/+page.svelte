@@ -109,7 +109,7 @@
 		每个知识点是一块基石，箭头指向它的进阶方向。已掌握的节点点亮，学习中的节点半亮——看看你走到了哪一步。
 	</p>
 
-	<div class="map-legend glass" use:reveal>
+	<div class="map-legend glass liquid" use:reveal>
 		<span class="map-legend-item"><i class="map-dot done"></i>已掌握（≥80%）</span>
 		<span class="map-legend-item"><i class="map-dot learning"></i>学习中</span>
 		<span class="map-legend-item"><i class="map-dot todo"></i>未开始</span>
@@ -134,7 +134,7 @@
 		{/each}
 	</div>
 
-	<div class="map-panel glass" use:reveal>
+	<div class="map-panel glass liquid" use:reveal>
 		<svg width="100%" viewBox="0 0 {W} {H}" role="img" aria-label="知识依赖图谱">
 			{#each EDGES as edge (edge.from + edge.to)}
 				{@const fromNode = NODES.find((n) => n.id === edge.from)}

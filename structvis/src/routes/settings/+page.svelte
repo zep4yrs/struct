@@ -70,7 +70,7 @@
 
 	<h2 class="prefs-label">偏好设置</h2>
 	<div class="settings-list">
-		<div class="setting-item">
+		<div class="setting-item liquid">
 			<div class="setting-info">
 				<div class="setting-label">动画速度</div>
 				<div class="setting-desc">播放器步进动画的播放速率（0.5× ~ 2×）</div>
@@ -81,7 +81,7 @@
 			</div>
 		</div>
 
-		<div class="setting-item">
+		<div class="setting-item liquid">
 			<div class="setting-info">
 				<div class="setting-label">显示提示</div>
 				<div class="setting-desc">练习模式默认显示 hint 按钮</div>
@@ -94,7 +94,7 @@
 			</div>
 		</div>
 
-		<div class="setting-item">
+		<div class="setting-item liquid">
 			<div class="setting-info">
 				<div class="setting-label">粒子背景</div>
 				<div class="setting-desc">全站 3D 粒子动效背景；低配设备或省电场景建议关闭</div>
@@ -107,7 +107,7 @@
 			</div>
 		</div>
 
-		<div class="setting-item">
+		<div class="setting-item liquid">
 			<div class="setting-info">
 				<div class="setting-label">开屏动画</div>
 				<div class="setting-desc">首次访问首页的品牌开场动画（可跳过）；回访不再播放</div>
@@ -120,7 +120,7 @@
 			</div>
 		</div>
 
-		<div class="setting-item">
+		<div class="setting-item liquid">
 			<div class="setting-info">
 				<div class="setting-label">开屏音效</div>
 				<div class="setting-desc">
@@ -135,7 +135,7 @@
 			</div>
 		</div>
 
-		<div class="setting-item">
+		<div class="setting-item liquid">
 			<div class="setting-info">
 				<div class="setting-label">主题</div>
 				<div class="setting-desc">当前主题：{$settings.theme === 'dark' ? '暗色' : '亮色'}</div>
@@ -147,7 +147,7 @@
 			</div>
 		</div>
 
-		<div class="setting-item">
+		<div class="setting-item liquid">
 			<div class="setting-info">
 				<div class="setting-label">学习提醒</div>
 				<div class="setting-desc">错题到期时发送浏览器通知（每天一次）</div>
@@ -294,10 +294,8 @@
 		gap: 24px;
 		padding: 20px 24px;
 		border-radius: var(--radius-md);
-		background: var(--color-surface);
-		border: 1px solid var(--color-line-hair);
-		-webkit-backdrop-filter: blur(12px) saturate(1.4);
-		backdrop-filter: blur(12px) saturate(1.4);
+		background: transparent; /* 磨砂底交给 .liquid（--glass-tint） */
+		border: none; /* 边框由 .liquid 承担（重复边框会加粗） */
 	}
 
 	.setting-info {

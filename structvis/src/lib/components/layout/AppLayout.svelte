@@ -224,14 +224,27 @@
 		display: flex;
 		gap: 4px;
 		padding: 4px;
-		background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+		/* 与底导胶囊同款 3D 磨砂：半透磨砂底 + 顶缘镜面 + 底缘暗边 + 双层悬浮投影 */
+		background: color-mix(in srgb, var(--color-surface) 46%, transparent);
 		border: 1px solid var(--color-line-hair);
 		border-radius: 999px;
-		-webkit-backdrop-filter: blur(24px) saturate(1.4);
-		backdrop-filter: blur(24px) saturate(1.4);
+		-webkit-backdrop-filter: blur(14px) saturate(1.7);
+		backdrop-filter: blur(14px) saturate(1.7);
 		box-shadow:
 			inset 0 1px 0 var(--glass-hi),
-			0 4px 16px rgba(0, 0, 0, 0.08);
+			inset 0 -1px 0 rgb(0 0 0 / 0.06),
+			0 4px 10px rgb(0 0 0 / 0.08),
+			0 10px 32px rgb(0 0 0 / 0.16);
+	}
+
+	/* 顶缘液态流光带（与底导一致） */
+	.fab-cluster::before {
+		content: '';
+		position: absolute;
+		inset: 1px;
+		border-radius: inherit;
+		pointer-events: none;
+		background: linear-gradient(180deg, rgb(255 255 255 / 0.18), transparent 42%);
 	}
 
 	.fab-btn:active {
@@ -309,7 +322,7 @@
 		}
 	}
 
-	/* SW 更新提示条（悬浮于底部导航上方） */
+	/* SW 更新提示条（悬浮于底部导航上方，底导同款 3D 磨砂胶囊） */
 	.update-toast {
 		position: fixed;
 		bottom: calc(84px + env(safe-area-inset-bottom));
@@ -322,10 +335,16 @@
 		padding: 10px 16px;
 		font-size: 13px;
 		color: var(--color-ink);
-		background: var(--color-surface);
-		border: 1px solid var(--color-line-regular);
+		background: color-mix(in srgb, var(--color-surface) 46%, transparent);
+		border: 1px solid var(--color-line-hair);
 		border-radius: 999px;
-		box-shadow: 0 10px 32px rgba(0, 0, 0, 0.16);
+		-webkit-backdrop-filter: blur(14px) saturate(1.7);
+		backdrop-filter: blur(14px) saturate(1.7);
+		box-shadow:
+			inset 0 1px 0 var(--glass-hi),
+			inset 0 -1px 0 rgb(0 0 0 / 0.06),
+			0 4px 10px rgb(0 0 0 / 0.08),
+			0 10px 32px rgb(0 0 0 / 0.16);
 		animation: toast-in 260ms var(--ease-out) both;
 	}
 

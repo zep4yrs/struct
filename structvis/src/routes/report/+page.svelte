@@ -214,7 +214,7 @@
 	</div>
 
 	<!-- 章节弱项雷达图 -->
-	<div class="glass report-radar" use:reveal>
+	<div class="glass liquid report-radar" use:reveal>
 		<div class="chapter-head">
 			<div class="section-label">章节掌握度雷达</div>
 			<span class="chapter-count">六维能力画像</span>

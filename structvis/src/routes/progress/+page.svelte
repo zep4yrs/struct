@@ -293,7 +293,7 @@
 	<!-- SRS 到期提醒 -->
 	{#if pendingMistakes > 0}
 		<div
-			class="glass srs-banner mb-8 flex flex-wrap items-center gap-3 rounded-lg border p-4"
+			class="glass liquid srs-banner mb-8 flex flex-wrap items-center gap-3 rounded-lg border p-4"
 			use:reveal
 		>
 			<span class="tag tag-accent">复习提醒</span>
@@ -309,7 +309,7 @@
 	<!-- 学习路径：下一步学什么 -->
 	{#if hasData && nextTopic}
 		<div
-			class="glass mb-8 flex flex-wrap items-center gap-3 rounded-lg border p-4"
+			class="glass liquid mb-8 flex flex-wrap items-center gap-3 rounded-lg border p-4"
 			style="border-color: var(--color-line-hair); background: var(--color-surface);"
 			use:reveal
 		>
@@ -349,7 +349,7 @@
 				<span class="overview-hint">鼠标移动可旋转视角</span>
 			</div>
 			<div
-				class="glass relative overflow-hidden rounded-lg border"
+				class="glass liquid relative overflow-hidden rounded-lg border"
 				style="border-color: var(--color-line-hair); background: var(--color-surface); height: 300px;"
 			>
 				<Mastery3D topics={masteryData} avg={avgMastery} />

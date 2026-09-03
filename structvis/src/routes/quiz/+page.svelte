@@ -90,7 +90,7 @@
 	</p>
 
 	{#if !started && !finished}
-		<div class="glass quiz-panel" use:reveal>
+		<div class="glass liquid quiz-panel" use:reveal>
 			<div class="quiz-chapters">
 				{#each CHAPTERS as c (c)}
 					<button class="quiz-chapter-btn" class:on={chapter === c} onclick={() => (chapter = c)}>
@@ -108,7 +108,7 @@
 	{/if}
 
 	{#if started && questions.length > 0}
-		<div class="glass quiz-panel" use:reveal>
+		<div class="glass liquid quiz-panel" use:reveal>
 			<div class="quiz-top">
 				<span class="quiz-progress">第 {idx + 1} / {questions.length} 题</span>
 				<span class="quiz-timer" class:urgent={secondsLeft <= 60}

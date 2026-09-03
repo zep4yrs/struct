@@ -96,7 +96,7 @@
 			</ul>
 		</article>
 	</section>
-	<ConceptQuiz items={QUIZ} />
+	<ConceptQuiz items={QUIZ} topicId="overview" />
 </div>
 
 <style>

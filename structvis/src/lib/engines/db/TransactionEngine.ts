@@ -20,13 +20,12 @@ import type {
 	StepType
 } from '../algorithm/types';
 import { EngineBase } from '../algorithm/EngineBase';
-import type { SqlTable } from '../sql/SelectEngine';
 
 export interface TransactionInput {
 	/** 演示模式名：commit（转账提交）/ rollback（失败回滚）/ lost-update（丢失更新） */
 	mode: string;
 	/** 账户初始余额表 */
-	tables: Record<string, SqlTable>;
+	tables: Record<string, SqlTableData>;
 }
 
 const PRACTICE_QUESTIONS: PracticeQuestion[] = [
@@ -100,7 +99,7 @@ export class TransactionEngine extends EngineBase<TransactionInput> {
 		}
 	];
 
-	private _tables: Record<string, SqlTable> = {};
+	private _tables: Record<string, SqlTableData> = {};
 
 	presets: EnginePreset[] = TX_PRESETS.map((p) => ({
 		name: p.name,
@@ -158,7 +157,7 @@ export class TransactionEngine extends EngineBase<TransactionInput> {
 
 	// === 转账提交：原子性 + 一致性 ===
 
-	private _buildCommit(account: SqlTable): void {
+	private _buildCommit(account: SqlTableData): void {
 		this.pseudocode = [
 			`BEGIN TRANSACTION`,
 			`UPDATE A SET 余额 = 余额 - 100`,
@@ -239,7 +238,7 @@ export class TransactionEngine extends EngineBase<TransactionInput> {
 
 	// === 转账失败回滚：原子性 ===
 
-	private _buildRollback(account: SqlTable): void {
+	private _buildRollback(account: SqlTableData): void {
 		this.pseudocode = [
 			`BEGIN TRANSACTION`,
 			`UPDATE A SET 余额 = 余额 - 100`,
@@ -312,7 +311,7 @@ export class TransactionEngine extends EngineBase<TransactionInput> {
 
 	// === 并发丢失更新：隔离性 ===
 
-	private _buildLostUpdate(account: SqlTable): void {
+	private _buildLostUpdate(account: SqlTableData): void {
 		this.pseudocode = [
 			`T1: BEGIN; 读 A = 1000`,
 			`T2: BEGIN; 读 A = 1000`,

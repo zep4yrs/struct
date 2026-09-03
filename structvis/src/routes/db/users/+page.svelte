@@ -102,7 +102,7 @@
 		</article>
 	</section>
 
-	<ConceptQuiz items={QUIZ} />
+	<ConceptQuiz items={QUIZ} topicId="users" />
 </div>
 
 <style>

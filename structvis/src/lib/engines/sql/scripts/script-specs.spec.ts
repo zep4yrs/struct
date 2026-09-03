@@ -20,6 +20,12 @@ import { JOIN_FLOW_SPEC } from './join';
 import { LEFT_JOIN_FLOW_SPEC } from './left-join';
 import { GROUP_BY_FLOW_SPEC } from './group-by';
 import { SUBQUERY_FLOW_SPEC } from './subquery';
+import { ADVANCED_QUERY_SPEC } from './advanced-query';
+import { WINDOW_FUNCTION_SPEC } from './window-function';
+import { DML_FLOW_SPEC } from './update';
+import { VIEW_FLOW_SPEC } from './view';
+import { TRIGGER_FLOW_SPEC } from './triggers';
+import { PROCEDURE_FLOW_SPEC } from './procedures';
 import { ScriptedResultEngine, type ScriptSpec } from '../ScriptEngine';
 
 const SPECS: ScriptSpec[] = [
@@ -37,7 +43,13 @@ const SPECS: ScriptSpec[] = [
 	JOIN_FLOW_SPEC,
 	LEFT_JOIN_FLOW_SPEC,
 	GROUP_BY_FLOW_SPEC,
-	SUBQUERY_FLOW_SPEC
+	SUBQUERY_FLOW_SPEC,
+	ADVANCED_QUERY_SPEC,
+	WINDOW_FUNCTION_SPEC,
+	DML_FLOW_SPEC,
+	VIEW_FLOW_SPEC,
+	TRIGGER_FLOW_SPEC,
+	PROCEDURE_FLOW_SPEC
 ];
 
 function staticEngine(spec: ScriptSpec): ScriptedResultEngine {
@@ -50,16 +62,28 @@ function staticEngine(spec: ScriptSpec): ScriptedResultEngine {
 describe('M2 剧本守卫（全主题）', () => {
 	for (const spec of SPECS) {
 		it(`「${spec.name}」帧结构与教学完整性`, () => {
-			expect(spec.seedSql.toUpperCase()).toContain('CREATE TABLE');
+			// staticOnly（语法演示帧，如存储过程）没有真实建库脚本
+			if (!spec.staticOnly) {
+				expect(spec.seedSql.toUpperCase()).toContain('CREATE TABLE');
+			}
 			expect(spec.stages.length).toBeGreaterThan(0);
 			expect(spec.frames.length).toBeGreaterThanOrEqual(3);
 			for (const f of spec.frames) {
 				expect(f.sql.trim().length, `帧「${f.description}」缺 SQL`).toBeGreaterThan(0);
 				expect(f.description.length, '帧缺文案').toBeGreaterThan(0);
 				expect(f.stage, `帧「${f.description}」stage 越界`).toBeLessThan(spec.stages.length);
-				expect(f.expected?.rows.length, `帧「${f.description}」expected 无数据`).toBeGreaterThan(0);
-				expect(f.expected?.columns.length).toBeGreaterThan(0);
+				// 行数可为 0（如触发器演示的「初始空日志表」），但列定义与数据结构必须就绪
+				expect(f.expected?.columns.length, `帧「${f.description}」缺列定义`).toBeGreaterThan(0);
+				expect(
+					f.expected?.rows.length,
+					`帧「${f.description}」缺 rows 数组`
+				).toBeGreaterThanOrEqual(0);
 			}
+			// 全剧本至少一帧有数据（杜绝纯空壳）
+			expect(
+				spec.frames.some((f) => (f.expected?.rows.length ?? 0) > 0),
+				`「${spec.name}」所有帧均为空表`
+			).toBe(true);
 			// 收尾帧用 complete 步型（播放节奏收束）
 			expect(spec.frames[spec.frames.length - 1].type).toBe('complete');
 			for (const q of spec.practiceQuestions ?? []) {

@@ -407,39 +407,29 @@ test.describe('数据库 · 概述', () => {
 });
 
 test.describe('数据库 · 高级查询', () => {
-	test('高级查询页：播放器渲染、演示数据切换四种子句、搜索可定位', async ({ page }) => {
+	test('高级查询页：剧本渲染与帧步进', async ({ page }) => {
 		await page.goto('/struct/db/advanced-query');
 		await expect(page.getByRole('heading', { name: '高级查询' })).toBeVisible();
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await expect(page.locator('.canvas-title')).toHaveText('高级查询');
-		await expect(page.locator('.pseudocode .line')).toHaveCount(5);
 		await waitForHydrated(page);
-
-		await page.locator('.title-btn', { hasText: '演示数据' }).click();
-		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeVisible();
-		await page.locator('.preset-item', { hasText: '左连接保留全部学生' }).click();
-		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeHidden();
-		await expect(page.locator('.title-btn', { hasText: '左连接保留全部学生' })).toContainText(
-			'左连接保留全部学生'
-		);
+		// 剧本帧：WHERE → LEFT JOIN 反查 → UNION → EXISTS → 综合
+		const nextBtn = page.getByTitle('下一步 (→)');
+		await nextBtn.click();
+		await expect(page.locator('.canvas-body')).toHaveAttribute('data-tween-busy', 'false', {
+			timeout: 5000
+		});
+		await expect(page.locator('.status-text')).toContainText('LEFT JOIN');
 	});
 
-	test('高级查询页：HAVING 预设逐步执行至完成', async ({ page }) => {
+	test('高级查询页：逐步执行至综合小结', async ({ page }) => {
 		await page.goto('/struct/db/advanced-query');
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await waitForHydrated(page);
 		await page.keyboard.press('Home');
 		await expect(page.locator('.current-num')).toHaveText('01');
-
-		await page.getByTitle('下一步 (→)').click();
-		await expect(page.locator('.current-num')).toHaveText('02');
-		for (let i = 0; i < 40; i++) {
-			const status = await page.locator('.status-text').textContent();
-			if (status?.includes('查询完成')) break;
-			await page.getByTitle('下一步 (→)').click();
-			await page.waitForTimeout(250);
-		}
-		await expect(page.locator('.status-text')).toContainText('查询完成');
+		await page.keyboard.press('End');
+		await expect(page.locator('.status-text')).toContainText('综合', { timeout: 5000 });
 	});
 
 	test('高级查询页：练习模式弹题', async ({ page }) => {
@@ -451,12 +441,15 @@ test.describe('数据库 · 高级查询', () => {
 
 		await page.getByRole('tab', { name: '练习' }).click();
 		await page.getByTitle('下一步 (→)').click();
+		await expect(page.locator('.canvas-body')).toHaveAttribute('data-tween-busy', 'false', {
+			timeout: 5000
+		});
 		await expect(page.locator('.current-num')).toHaveText('02');
 
 		const dialog = page.getByRole('dialog', { name: '练习题目' });
 		await expect(dialog).toBeVisible();
-		await expect(dialog.locator('.question-title')).toContainText('WHERE 与 HAVING 的过滤时机');
-		await dialog.locator('.option', { hasText: 'WHERE 筛行，HAVING 筛分组' }).click();
+		await expect(dialog.locator('.question-title')).toContainText('LEFT JOIN 后 WHERE');
+		await dialog.locator('.option', { hasText: '没有选课的学生' }).click();
 		await dialog.getByRole('button', { name: '提交答案' }).click();
 		await expect(dialog.locator('.feedback')).toContainText('回答正确');
 	});
@@ -509,22 +502,25 @@ test.describe('数据库 · 事务与权限', () => {
 });
 
 test.describe('数据库 · 视图', () => {
-	test('视图页：播放器渲染、演示数据切换、搜索可定位', async ({ page }) => {
+	test('视图页：剧本渲染与基表更新帧', async ({ page }) => {
 		await page.goto('/struct/db/view');
 		await expect(page.getByRole('heading', { name: '视图创建与使用' })).toBeVisible();
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await expect(page.locator('.canvas-title')).toHaveText('视图创建与使用');
-		await expect(page.locator('.pseudocode .line')).toHaveCount(5);
 		await waitForHydrated(page);
-
-		await page.locator('.title-btn', { hasText: '演示数据' }).click();
-		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeVisible();
-		await page.locator('.preset-item', { hasText: '连接视图' }).click();
-		await expect(page.getByRole('dialog', { name: '演示数据' })).toBeHidden();
-		await expect(page.locator('.title-btn', { hasText: '连接视图' })).toContainText('连接视图');
+		// 第 3 帧：基表更新后视图自动反映
+		await page.getByTitle('下一步 (→)').click();
+		await expect(page.locator('.canvas-body')).toHaveAttribute('data-tween-busy', 'false', {
+			timeout: 5000
+		});
+		await page.getByTitle('下一步 (→)').click();
+		await expect(page.locator('.canvas-body')).toHaveAttribute('data-tween-busy', 'false', {
+			timeout: 5000
+		});
+		await expect(page.locator('.status-text')).toContainText('基表更新');
 	});
 
-	test('视图页：练习模式弹题', async ({ page }) => {
+	test('视图页：练习模式弹题（剧本帧练习题）', async ({ page }) => {
 		await page.goto('/struct/db/view');
 		await expect(page.getByRole('heading', { name: '视图创建与使用' })).toBeVisible();
 		await expect(page.locator('.algo-player')).toBeVisible();
@@ -533,15 +529,22 @@ test.describe('数据库 · 视图', () => {
 		await expect(page.locator('.current-num')).toHaveText('01');
 
 		await page.getByRole('tab', { name: '练习' }).click();
-		await page.getByTitle('下一步 (→)').click();
-		await expect(page.locator('.current-num')).toHaveText('02');
+		const nextBtn = page.getByTitle('下一步 (→)');
+		// 剧本第 3 帧（stepIndex 2，基表更新帧）挂练习题：走两步弹题
+		await nextBtn.click();
+		await expect(page.locator('.canvas-body')).toHaveAttribute('data-tween-busy', 'false', {
+			timeout: 5000
+		});
+		await nextBtn.click();
+		await expect(page.locator('.canvas-body')).toHaveAttribute('data-tween-busy', 'false', {
+			timeout: 5000
+		});
+		await expect(page.locator('.current-num')).toHaveText('03');
 
 		const dialog = page.getByRole('dialog', { name: '练习题目' });
 		await expect(dialog).toBeVisible();
-		await expect(dialog.locator('.question-title')).toContainText(
-			'视图（VIEW）在数据库中保存的是什么'
-		);
-		await dialog.locator('.option', { hasText: '一条 SELECT 查询定义' }).click();
+		await expect(dialog.locator('.question-title')).toContainText('王五成绩被 UPDATE');
+		await dialog.locator('.option', { hasText: '现场执行定义的 SELECT' }).click();
 		await dialog.getByRole('button', { name: '提交答案' }).click();
 		await expect(dialog.locator('.feedback')).toContainText('回答正确');
 	});
@@ -852,19 +855,21 @@ test.describe('v2.0 移动端体验', () => {
 });
 
 test.describe('v2.0 SQL 扩展', () => {
-	test('窗口函数页：渲染、预设切换、逐步执行', async ({ page }) => {
+	test('窗口函数页：剧本渲染、逐步执行到累计聚合', async ({ page }) => {
 		await page.goto('/struct/db/window-function');
 		await expect(page.getByRole('heading', { name: '窗口函数' })).toBeVisible();
 		await expect(page.locator('.algo-player')).toBeVisible();
 		await waitForHydrated(page);
-		await page.locator('.title-btn', { hasText: '演示数据' }).click();
-		await page.locator('.preset-item', { hasText: '并列名次（RANK）' }).click();
-		await expect(page.locator('.title-btn', { hasText: '并列名次' })).toContainText('RANK');
-		// 预设重建含 fade，End 在重建完成前无效——轮询重试
-		await expect(async () => {
-			await page.keyboard.press('End');
-			await expect(page.locator('.status-text')).toContainText('计算完成', { timeout: 1000 });
-		}).toPass({ timeout: 10000 });
+		// 剧本页：分区排名 → 累计聚合，逐帧推进后状态栏到达小结
+		const nextBtn = page.getByTitle('下一步 (→)');
+		for (let i = 0; i < 4; i++) {
+			await nextBtn.click();
+			await expect(page.locator('.canvas-body')).toHaveAttribute('data-tween-busy', 'false', {
+				timeout: 5000
+			});
+		}
+		await page.keyboard.press('End');
+		await expect(page.locator('.status-text')).toContainText('窗口函数', { timeout: 5000 });
 	});
 
 	test('执行计划页：渲染、索引胜出预设、结论可见', async ({ page }) => {

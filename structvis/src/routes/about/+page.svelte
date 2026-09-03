@@ -136,7 +136,7 @@
 				three.js 全站粒子背景（可在设置中关闭）· SQL 剧本引擎（sql.js 逐帧真实执行，可选依赖）
 			</li>
 			<li>Web Speech API 讲授朗读（含预录神经语音回落）</li>
-			<li>Vitest（553 单测）+ Playwright（61 条端到端，含视觉截图基线）</li>
+			<li>Vitest（481 单测）+ Playwright（67 条端到端，含视觉截图基线）</li>
 		</ul>
 	</section>
 

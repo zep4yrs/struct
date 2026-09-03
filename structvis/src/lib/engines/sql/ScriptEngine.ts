@@ -18,7 +18,7 @@ import type {
 	StepType
 } from '../algorithm/types';
 import { EngineBase } from '../algorithm/EngineBase';
-import { loadSqlExecutor, type SqlExecutor } from './sql-executor';
+import { createPageExecutor, type SqlExecutor } from './sql-executor';
 
 export interface ScriptFrame {
 	/** 本帧执行的 SQL（真实执行；静态回落时仅展示） */
@@ -52,6 +52,8 @@ export interface ScriptSpec {
 	 * 仅在 sql.js 可用时由工厂挂到引擎——静态回落模式没有执行能力，不展示入口。
 	 */
 	customConfig?: EngineCustomConfig;
+	/** 目标语法超出 SQLite 支持范围（如存储过程）：帧 SQL 仅展示，始终使用静态演示帧 */
+	staticOnly?: boolean;
 }
 
 export class ScriptedResultEngine extends EngineBase<void> {
@@ -182,7 +184,7 @@ export class ScriptedResultEngine extends EngineBase<void> {
  * sql.js 不可用时回落静态帧（liveSql=false）。
  */
 export async function createScriptedEngine(spec: ScriptSpec): Promise<ScriptedResultEngine> {
-	const executor: SqlExecutor | null = await loadSqlExecutor();
+	const executor: SqlExecutor | null = spec.staticOnly ? null : await createPageExecutor();
 	if (!executor) {
 		const tables = spec.frames.map(
 			(f) => ({ columns: f.expected?.columns ?? [], rows: f.expected?.rows ?? [] }) as SqlTableData

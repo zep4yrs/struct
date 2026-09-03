@@ -2,10 +2,9 @@
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
 	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import { TransactionEngine, TX_PRESETS } from '$lib/engines/db/TransactionEngine';
-	import type { SqlTable } from '$lib/engines/sql/SelectEngine';
 
 	// 账户余额表（事务演示数据）
-	const ACCOUNT_TABLE: SqlTable = {
+	const ACCOUNT_TABLE: SqlTableData = {
 		columns: ['账户', '余额'],
 		rows: [
 			['A', 1000],
@@ -13,7 +12,7 @@
 		]
 	};
 
-	const TABLES: Record<string, SqlTable> = { 账户: ACCOUNT_TABLE };
+	const TABLES: Record<string, SqlTableData> = { 账户: ACCOUNT_TABLE };
 
 	function createEngine(mode: string): TransactionEngine {
 		const e = new TransactionEngine();

@@ -4,8 +4,11 @@
 
 ### 新增（M3/M4 · 数据库课程补齐）
 
-- **M3.1 高流量页迁移**：sql / join / left-join / group-by / subquery 五页改为剧本引擎，教学语义沿用原教材数据；退役删除 JoinEngine / LeftJoinEngine / GroupByEngine / SubQueryEngine；ScriptEngine 支持自定义 SQL 单帧真实执行（仅 sql.js 活跃时开放）
+- **M3 全量迁移收官**：advanced-query / window-function / update / view / triggers / procedures 六页全部改为剧本引擎——SQLite 侧真实执行（窗口函数、视图、触发器为 SQLite 原生能力）；存储过程因 SQLite 不支持采用「语法演示帧」（staticOnly）；tables 表单页与 isolation/explain-plan 保留页维持现状
+- **M3.6 退役清理完成**：删除 SelectEngine / DmlEngine / AdvancedQueryEngine / WindowFunctionEngine / ViewEngine / TriggerEngine / ProcedureEngine 及 sql-utils 共 8 模块 + 7 份 spec；TransactionEngine 的 SqlTable 类型统一到 algorithm/types
 - **M4 过程型主题×3**（概念状态机演示，专用 Canvas 渲染器）：索引查询与回表（二级索引→主键回表全链路）、锁等待与死锁甘特图（持有/等待/回滚三态时间线 + victim 解环）、可串行化调度（冲突对识别 → 等价串行化）
+- **剧本引擎健壮性**：每页独立内存库（修复 SPA 内重复访问页面时 seed 撞表导致整页装载失败的 bug）；staticOnly 语法演示模式
+- **ConceptQuiz 掌握度回写**：overview / users 概念测验答对答错计入 progress（与播放器练习同一闭环，audit 遗留）
 - **M5.1**：counting-sort 孤儿路由入册；单源一致性治理（图谱/章节/别名/面包屑守卫 + 修复 9 处既有漂移）
 - **防漂移闭环**：scripts/check-docs.mjs 接入 npm run lint——README 课题/页面数字与源码不一致时直接红
 

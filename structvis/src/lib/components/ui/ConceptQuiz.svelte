@@ -1,5 +1,7 @@
 <script lang="ts">
-	/** 概念自测题（overview/users 概念页共用） */
+	/** 概念自测题（overview/users 概念页共用）；作答回写掌握度（recordExercise） */
+	import { recordExercise } from '$lib/stores/progress';
+
 	export interface QuizItem {
 		prompt: string;
 		options: string[];
@@ -9,9 +11,11 @@
 
 	interface Props {
 		items: QuizItem[];
+		/** 对应 progress.topics 的知识点（传入才回写掌握度） */
+		topicId?: string;
 	}
 
-	let { items }: Props = $props();
+	let { items, topicId }: Props = $props();
 
 	let answered = $state<number[]>([]);
 	let chosen = $state<(number | null)[]>([]);
@@ -30,6 +34,8 @@
 		if (answered.includes(qi)) return;
 		chosen[qi] = oi;
 		answered = [...answered, qi];
+		// 与播放器练习同一掌握度闭环：答对加分、答错扣分并记入统计
+		if (topicId) recordExercise(topicId, oi === items[qi].correct);
 		if (answered.length === items.length) finished = true;
 	}
 </script>

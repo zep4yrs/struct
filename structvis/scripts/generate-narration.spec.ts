@@ -38,14 +38,7 @@ import { HuffmanEngine } from '../src/lib/engines/algorithm/huffman/HuffmanEngin
 import { HashTableEngine } from '../src/lib/engines/algorithm/hash/HashTableEngine';
 import { SinglyLinkedListEngine } from '../src/lib/engines/algorithm/linkedlist/SinglyLinkedListEngine';
 import { StackQueueEngine } from '../src/lib/engines/algorithm/stackqueue/StackQueueEngine';
-import { SelectEngine } from '../src/lib/engines/sql/SelectEngine';
-import { AdvancedQueryEngine } from '../src/lib/engines/sql/AdvancedQueryEngine';
-import { DmlEngine } from '../src/lib/engines/sql/DmlEngine';
 import { TransactionEngine } from '../src/lib/engines/db/TransactionEngine';
-import { ProcedureEngine } from '../src/lib/engines/sql/ProcedureEngine';
-import { TriggerEngine } from '../src/lib/engines/sql/TriggerEngine';
-import { WindowFunctionEngine } from '../src/lib/engines/sql/WindowFunctionEngine';
-import { ViewEngine } from '../src/lib/engines/sql/ViewEngine';
 import { ExplainEngine } from '../src/lib/engines/sql/ExplainEngine';
 import { ErEngine } from '../src/lib/engines/db/ErEngine';
 import { IndexEngine } from '../src/lib/engines/db/IndexEngine';
@@ -82,14 +75,7 @@ const ENGINE_MAP: { topicId: string; make: () => EngineLike }[] = [
 	{ topicId: 'hash-table', make: () => new HashTableEngine() },
 	{ topicId: 'linear-list', make: () => new SinglyLinkedListEngine() },
 	{ topicId: 'stack-queue', make: () => new StackQueueEngine() },
-	{ topicId: 'sql', make: () => new SelectEngine() },
-	{ topicId: 'advanced-query', make: () => new AdvancedQueryEngine() },
-	{ topicId: 'update', make: () => new DmlEngine() },
 	{ topicId: 'transaction', make: () => new TransactionEngine() },
-	{ topicId: 'procedures', make: () => new ProcedureEngine() },
-	{ topicId: 'triggers', make: () => new TriggerEngine() },
-	{ topicId: 'window-function', make: () => new WindowFunctionEngine() },
-	{ topicId: 'view', make: () => new ViewEngine() },
 	{ topicId: 'explain-plan', make: () => new ExplainEngine() },
 	{ topicId: 'er', make: () => new ErEngine() },
 	{ topicId: 'index', make: () => new IndexEngine() },

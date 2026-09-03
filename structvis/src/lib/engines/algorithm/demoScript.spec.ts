@@ -16,20 +16,8 @@ import { KMPEngine } from './search/KMPEngine';
 import { BstEngine } from './bst/BstEngine';
 import { HuffmanEngine } from './huffman/HuffmanEngine';
 import { HashTableEngine } from './hash/HashTableEngine';
-import { SelectEngine, type SqlTable } from '../sql/SelectEngine';
 
 type EngineFactory = () => AlgorithmEngine<unknown>;
-
-const STUDENT_TABLE: SqlTable = {
-	columns: ['id', 'name', 'major', 'score'],
-	rows: [
-		[20101, 'zhang', 'cs', 88],
-		[20102, 'li', 'se', 92],
-		[20103, 'wang', 'cs', 76],
-		[20104, 'zhao', 'math', 85],
-		[20105, 'qian', 'se', 63]
-	]
-};
 
 function collectEmittedTypes(steps: AlgorithmStep[]): Set<string> {
 	return new Set(steps.map((s) => s.type));
@@ -204,17 +192,6 @@ describe('讲授剧本 demoScript', () => {
 				e.init({ keys: [22, 41, 53, 46, 30, 13, 1, 67], mode: 'construct', size: 11 });
 				return e;
 			}
-		],
-		[
-			'SelectEngine',
-			() => {
-				const e = new SelectEngine();
-				e.init({
-					sql: 'SELECT name FROM student WHERE score > 80',
-					tables: { student: STUDENT_TABLE }
-				});
-				return e;
-			}
 		]
 	];
 
@@ -229,18 +206,5 @@ describe('讲授剧本 demoScript', () => {
 				expect(covered, `${name} 缺步骤类型 ${t} 的旁白`).toContain(t);
 			}
 		}
-	});
-
-	it('步骤级 presenterNote 优先于类型级旁白：SelectEngine 关键步骤带专用旁白', () => {
-		const e = new SelectEngine();
-		e.init({
-			sql: 'SELECT name FROM student WHERE score > 80',
-			tables: { student: STUDENT_TABLE }
-		});
-		const withNote = e.steps.find((s) => s.presenterNote);
-		expect(withNote).toBeDefined();
-		// 注解内容应区别于类型级默认（compare 的通用旁白）
-		const defaultNote = e.demoScript!.find((m) => m.type === withNote!.type);
-		expect(withNote!.presenterNote).not.toBe(defaultNote?.narration);
 	});
 });

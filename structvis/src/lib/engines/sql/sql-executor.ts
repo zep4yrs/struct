@@ -2,12 +2,10 @@
  * sql.js 执行器加载器 — M2「结果演化」架构的唯一真实执行入口（架构定调见 spark-output/sqljs-viz-architecture.md）。
  *
  * 设计：
- * - sql.js 为可选依赖（wasm 需随站点分发）：`npm install sql.js && node scripts/setup-sqljs.mjs`
- *   会把 dist 产物复制到 static/sqljs/，此后所有剧本页自动切换为真实 SQL 执行；
- * - 未安装时加载器返回 null，剧本引擎回落到各帧的 `expected` 静态结果表
- *   （帧数据本身经过单测校验，页面功能完整可用，仅标题注明「静态演示帧」）；
- * - 加载方式为同源静态脚本 <script> 注入（sql.js UMD 产物挂到 window.initSqlJs），
- *   不使用动态 import 裸说明符——未安装依赖时构建与运行均零影响；
+ * - 加载顺序：同源 `static/sqljs/`（本地运行 `node scripts/setup-sqljs.mjs` 下载后可用，
+ *   兼容离线开发）→ 回退到版本锁定的 jsdelivr CDN（生产部署无需入库第三方产物，
+ *   js 脚本带 SRI 完整性校验）；两者都不可用时返回 null，剧本引擎回落静态演示帧；
+ * - sql.js 为可选能力：无网络且未下载 dist 时构建与运行均零影响；
  * - **每个剧本页调用 createPageExecutor 得到独立内存库**：SPA 内重复访问页面时
  *   seed 重建不会撞上旧表（全局单库会让第二次 CREATE TABLE 直接报错）。
  */
@@ -43,13 +41,42 @@ export interface SqlExecutor {
 	script(sql: string): void;
 }
 
-/** 等待同源 sql-wasm.js 加载完成（UMD → window.initSqlJs） */
-function injectScript(src: string): Promise<void> {
+/** 版本锁定的 CDN 源（与 setup-sqljs.mjs 下载的 dist 同一版本） */
+const CDN_BASE = 'https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist';
+/** CDN sql-wasm.js 的 SRI（sha384，与 pinned 版本一一对应） */
+const CDN_JS_SRI = 'sha384-DJiKBv+LC78e5InEB+MvFIAH079ynMK/ERTtFUCpDzXhH1Bht7aVfpg3yOVsuYl9';
+
+interface SqlSource {
+	js: string;
+	wasm: string;
+	/** CDN 源对 js 施加 SRI 校验；同源文件无需 */
+	sri?: string;
+}
+
+/** 探测同源 dist 是否可用（setup-sqljs.mjs 下载过 = 离线可用），否则回退 CDN */
+async function resolveSource(): Promise<SqlSource> {
+	try {
+		const probe = await fetch(`${base}/sqljs/sql-wasm.js`, { method: 'HEAD' });
+		if (probe.ok) {
+			return { js: `${base}/sqljs/sql-wasm.js`, wasm: `${base}/sqljs/sql-wasm.wasm` };
+		}
+	} catch {
+		/* 同源不存在 → CDN */
+	}
+	return { js: `${CDN_BASE}/sql-wasm.js`, wasm: `${CDN_BASE}/sql-wasm.wasm`, sri: CDN_JS_SRI };
+}
+
+/** 注入 <script> 加载 sql.js UMD 产物（SRI 可选）；失败可重试下一来源 */
+function injectScript(src: string, sri?: string): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const el = document.createElement('script');
 		el.src = src;
+		if (sri) {
+			el.integrity = sri;
+			el.crossOrigin = 'anonymous';
+		}
 		el.onload = () => resolve();
-		el.onerror = () => reject(new Error('sql-wasm.js 加载失败'));
+		el.onerror = () => reject(new Error(`sql.js 脚本加载失败: ${src}`));
 		document.head.appendChild(el);
 	});
 }
@@ -63,14 +90,40 @@ function loadModule(): Promise<SqlJsModule | null> {
 		try {
 			const w = window as unknown as { initSqlJs?: unknown };
 			if (!w.initSqlJs) {
-				await injectScript(`${base}/sqljs/sql-wasm.js`);
+				// 依序尝试来源：主源 SRI 校验失败或网络错误时回退另一源
+				const primary = await resolveSource();
+				const sources: SqlSource[] = [primary];
+				if (primary.js.startsWith(CDN_BASE)) {
+					sources.push({ js: `${base}/sqljs/sql-wasm.js`, wasm: `${base}/sqljs/sql-wasm.wasm` });
+				} else {
+					sources.push({
+						js: `${CDN_BASE}/sql-wasm.js`,
+						wasm: `${CDN_BASE}/sql-wasm.wasm`,
+						sri: CDN_JS_SRI
+					});
+				}
+				let loaded = false;
+				for (const s of sources) {
+					if (w.initSqlJs) break; // 前一来源已成功
+					try {
+						await injectScript(s.js, s.sri);
+						loaded = !!w.initSqlJs;
+					} catch {
+						loaded = false;
+					}
+				}
+				if (!loaded) return null;
 			}
 			const factory = w.initSqlJs as
 				((cfg: { locateFile: (f: string) => string }) => Promise<SqlJsModule>) | undefined;
 			if (!factory) return null;
-			return await factory({ locateFile: (f) => `${base}/sqljs/${f}` });
+			const source = await resolveSource();
+			const SQL = await factory({
+				locateFile: (f) => (f.endsWith('.wasm') ? source.wasm : `${base}/sqljs/${f}`)
+			});
+			return SQL;
 		} catch {
-			return null; // sql.js 未安装（static/sqljs/ 不存在）→ 剧本引擎走静态帧
+			return null; // sql.js 不可用 → 剧本引擎走静态演示帧
 		}
 	})();
 	return modulePromise;

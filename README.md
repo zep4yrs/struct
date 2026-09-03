@@ -53,7 +53,7 @@ StructVis 是一款面向自学者的交互式可视化学习工具，覆盖**�
 
 ## 技术栈
 
-Svelte 5 · SvelteKit · Tailwind v4 · Canvas 渲染器插件体系 · anime.js v4（时间线动画 + 数据动效）· three.js 粒子背景 · SQL 剧本引擎（sql.js 逐帧真实执行，未安装时静态演示帧兜底）· Web Speech API 朗读 · Vitest + Playwright · adapter-static 纯静态部署
+Svelte 5 · SvelteKit · Tailwind v4 · Canvas 渲染器插件体系 · anime.js v4（时间线动画 + 数据动效）· three.js 粒子背景 · SQL 剧本引擎（sql.js 逐帧真实执行 · SQLite 方言，19 个 SQL 主题 + 自定义 SQL 入口）· Web Speech API 朗读 · Vitest + Playwright · adapter-static 纯静态部署
 
 ## 快速开始
 

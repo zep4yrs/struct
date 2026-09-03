@@ -9,6 +9,9 @@ spark-output/
 # Mimosa 本地安全扫描工作区（scan 历史/封印缓存）
 .mimosa/
 
+# sql.js dist 产物（setup-sqljs.mjs 本地下载；不入库——生产由加载器回退 pinned CDN）
+structvis/static/sqljs/
+
 # Output
 .output
 .vercel

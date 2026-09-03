@@ -14,6 +14,9 @@
 	const EDGES: SkillEdge[] = SKILL_EDGES;
 	const GROUP_ORDER: readonly string[] = SKILL_GROUP_ORDER;
 
+	/** 轨道过滤器：all=全部 / course=课程系 / lab=实验区 */
+	let filter = $state<'all' | 'course' | 'lab'>('all');
+
 	const NODE_W = 128;
 	const NODE_H = 46;
 	const COL_GAP = 20;
@@ -43,6 +46,11 @@
 
 	const W = $derived(layout.w);
 	const H = $derived(GROUP_ORDER.length * (NODE_H + ROW_GAP) + PAD_Y + 24);
+
+	/** 节点轨道：课程系（教材主线）vs 实验区（动手实验室）——两类性质用颜色语义区分 */
+	function trackOf(group: string): 'course' | 'lab' {
+		return group.includes('实验') ? 'lab' : 'course';
+	}
 
 	function masteryOf(id: string): number {
 		const node = NODES.find((n) => n.id === id);
@@ -106,19 +114,47 @@
 		<span class="map-legend-item"><i class="map-dot learning"></i>学习中</span>
 		<span class="map-legend-item"><i class="map-dot todo"></i>未开始</span>
 		<span class="map-legend-item map-edge-sample">→ 前置依赖</span>
+		<span class="map-legend-sep"></span>
+		<span class="map-legend-item"><i class="map-track-chip course"></i>课程系 · 教材主线</span>
+		<span class="map-legend-item"><i class="map-track-chip lab"></i>实验区 · 动手实验室</span>
+	</div>
+
+	<!-- 轨道过滤器：全部 / 课程系 / 实验区 -->
+	<div class="map-filter" role="tablist" aria-label="轨道过滤" tabindex="-1">
+		{#each ['all', 'course', 'lab'] as f (f)}
+			<button
+				class="filter-chip"
+				class:active={filter === f}
+				role="tab"
+				aria-selected={filter === f}
+				onclick={() => (filter = f as 'all' | 'course' | 'lab')}
+			>
+				{f === 'all' ? '全部' : f === 'course' ? '课程系' : '实验区'}
+			</button>
+		{/each}
 	</div>
 
 	<div class="map-panel glass" use:reveal>
 		<svg width="100%" viewBox="0 0 {W} {H}" role="img" aria-label="知识依赖图谱">
 			{#each EDGES as edge (edge.from + edge.to)}
-				<path
-					d={edgePoints(edge)}
-					fill="none"
-					stroke="var(--color-line-regular)"
-					stroke-width="1.2"
-					opacity="0.55"
-					marker-end="url(#mapArrow)"
-				/>
+				{@const fromNode = NODES.find((n) => n.id === edge.from)}
+				{@const toNode = NODES.find((n) => n.id === edge.to)}
+				{@const hidden =
+					filter !== 'all' &&
+					(!fromNode ||
+						!toNode ||
+						trackOf(fromNode.group) !== filter ||
+						trackOf(toNode.group) !== filter)}
+				{#if !hidden}
+					<path
+						d={edgePoints(edge)}
+						fill="none"
+						stroke="var(--color-line-regular)"
+						stroke-width="1.2"
+						opacity="0.55"
+						marker-end="url(#mapArrow)"
+					/>
+				{/if}
 			{/each}
 			<defs>
 				<marker id="mapArrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
@@ -126,32 +162,40 @@
 				</marker>
 			</defs>
 			{#each NODES as n (n.id)}
-				<g
-					class="map-node"
-					class:map-done={nodeState(n.id) === 'done'}
-					class:map-learning={nodeState(n.id) === 'learning'}
-				>
-					<a href={resolve(n.href as '/ds/quick-sort')}>
-						<rect
-							x={layout.pos[n.id].x}
-							y={layout.pos[n.id].y}
-							width={NODE_W}
-							height={NODE_H}
-							rx="8"
-							fill="var(--color-surface)"
-							stroke="var(--color-line-hair)"
-						/>
-						<text
-							x={layout.pos[n.id].x + NODE_W / 2}
-							y={layout.pos[n.id].y + NODE_H / 2 + 4}
-							text-anchor="middle"
-							class="map-node-text"
-						>
-							{n.title}
-						</text>
-						<title>{n.title} — {n.desc}{nodeState(n.id) === 'done' ? '（已掌握）' : ''}</title>
-					</a>
-				</g>
+				{@const state = nodeState(n.id)}
+				{@const dim = filter !== 'all' && trackOf(n.group) !== filter}
+				{#if !dim}
+					<g
+						class="map-node"
+						class:map-done={state === 'done'}
+						class:map-learning={state === 'learning'}
+						class:map-lab={trackOf(n.group) === 'lab'}
+					>
+						<a href={resolve(n.href as '/ds/quick-sort')}>
+							<rect
+								x={layout.pos[n.id].x}
+								y={layout.pos[n.id].y}
+								width={NODE_W}
+								height={NODE_H}
+								rx="8"
+								fill="var(--color-surface)"
+								stroke={trackOf(n.group) === 'lab'
+									? 'color-mix(in srgb, var(--color-academic) 55%, var(--color-line-hair))'
+									: 'var(--color-line-hair)'}
+								stroke-dasharray={trackOf(n.group) === 'lab' ? '5 3' : undefined}
+							/>
+							<text
+								x={layout.pos[n.id].x + NODE_W / 2}
+								y={layout.pos[n.id].y + NODE_H / 2 + 4}
+								text-anchor="middle"
+								class="map-node-text"
+							>
+								{n.title}
+							</text>
+							<title>{n.title} — {n.desc}{state === 'done' ? '（已掌握）' : ''}</title>
+						</a>
+					</g>
+				{/if}
 			{/each}
 		</svg>
 	</div>
@@ -166,9 +210,61 @@
 		padding: 10px 16px;
 		border: 1px solid var(--color-line-hair);
 		border-radius: var(--radius-md);
-		margin-bottom: 16px;
+		margin-bottom: 12px;
 		font-size: 12px;
 		color: var(--color-ink-2);
+	}
+
+	.map-legend-sep {
+		width: 1px;
+		height: 16px;
+		background: var(--color-line-hair);
+	}
+
+	/* 轨道语义色卡：课程系=实线暖框 / 实验区=虚线学术蓝框 */
+	.map-track-chip {
+		width: 18px;
+		height: 11px;
+		border-radius: 3px;
+		display: inline-block;
+		border: 1.5px solid var(--color-line-hair);
+	}
+
+	.map-track-chip.lab {
+		border-color: color-mix(in srgb, var(--color-academic) 55%, var(--color-line-hair));
+		border-style: dashed;
+	}
+
+	/* 轨道过滤器 */
+	.map-filter {
+		display: flex;
+		gap: 8px;
+		margin-bottom: 16px;
+	}
+
+	.filter-chip {
+		padding: 7px 16px;
+		border: 1px solid var(--color-line-hair);
+		border-radius: 999px;
+		background: var(--color-surface);
+		font-size: 12.5px;
+		color: var(--color-ink-2);
+		cursor: pointer;
+		transition:
+			color 150ms var(--ease-out),
+			border-color 150ms var(--ease-out),
+			box-shadow 150ms var(--ease-out);
+	}
+
+	.filter-chip:hover {
+		color: var(--color-ink);
+	}
+
+	.filter-chip.active {
+		color: var(--color-accent-text);
+		font-weight: 600;
+		border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-line-hair));
+		box-shadow: 0 2px 8px color-mix(in srgb, var(--color-accent) 16%, transparent);
 	}
 
 	.map-legend-item {
@@ -233,6 +329,11 @@
 	.map-node.map-learning rect {
 		fill: rgba(217, 119, 6, 0.08);
 		stroke: var(--color-accent);
+	}
+
+	/* 实验区节点：学术蓝淡底 + 虚线框（未掌握态的课程/实验视觉区分） */
+	.map-node.map-lab:not(.map-done):not(.map-learning) rect {
+		fill: color-mix(in srgb, var(--color-academic) 6%, var(--color-surface));
 	}
 
 	.map-node-text {

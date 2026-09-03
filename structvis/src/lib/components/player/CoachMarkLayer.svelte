@@ -7,8 +7,22 @@
 	 * - tap 驱动（移动端可用），Esc / 点击遮罩推进，「跳过引导」随时退出
 	 * - 测试环境自动跳过：navigator.webdriver 或 __DSH_NO_SCENE__ 标志
 	 * - prefers-reduced-motion 下不播放脉冲动画
+	 *
+	 * 定位契约：本层必须挂在 document.body 下（portal action）——组件原挂载点
+	 * .algo-player 带 backdrop-filter，会把 position:fixed 后代的包含块劫持为
+	 * 播放器卡片自身，导致聚光环整体错位（偏移 = 卡片相对视口的偏移）。
+	 * 锚点用视口坐标测量，滚动/布局变化时重测（scroll 捕获 + 字体就绪后重测）。
 	 */
 	const STORAGE_KEY = 'structvis:onboarded:v1';
+
+	function portal(node: HTMLElement) {
+		document.body.appendChild(node);
+		return {
+			destroy() {
+				node.remove();
+			}
+		};
+	}
 
 	const STEPS = [
 		{ sel: 'preset', label: '演示数据', desc: '切换内置示例数据集，观察不同输入下的执行过程。' },
@@ -88,7 +102,8 @@
 			left = Math.min(Math.max(12, left), vw - bw - 12);
 			cardEl.style.top = `${top}px`;
 			cardEl.style.left = `${left}px`;
-			cardEl.querySelector<HTMLElement>('.coach-next')?.focus();
+			// preventScroll：聚焦引发的滚动会让视口坐标测量失效
+			cardEl.querySelector<HTMLElement>('.coach-next')?.focus({ preventScroll: true });
 		});
 	}
 
@@ -121,23 +136,27 @@
 
 	$effect(() => {
 		if (!shouldShow()) return;
-		// 等布局与字体稳定后再定位首个锚点
+		// 等布局与 webfont 稳定后再定位首个锚点（字体换行会改变按钮几何）
+		const onSettled = () => {
+			if (!shouldShow()) return;
+			if (!measure()) {
+				finish();
+				return;
+			}
+			active = true;
+			placeCard();
+		};
 		tick().then(() => {
-			requestAnimationFrame(() => {
-				if (!shouldShow()) return;
-				if (!measure()) {
-					finish();
-					return;
-				}
-				active = true;
-				placeCard();
-			});
+			const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
+			const ready = fonts ? fonts.ready : Promise.resolve();
+			ready.then(() => requestAnimationFrame(onSettled));
 		});
 	});
 </script>
 
 <svelte:window
 	onresize={() => active && measure()}
+	onscroll={() => active && measure()}
 	onkeydown={(e) => {
 		if (!active) return;
 		if (e.key === 'Escape') finish();
@@ -146,7 +165,7 @@
 />
 
 {#if active}
-	<div class="coach-root" role="dialog" aria-label="新手功能引导">
+	<div class="coach-root" role="dialog" aria-label="新手功能引导" use:portal>
 		<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 		<div class="coach-scrim" onclick={next}></div>
 		{#if box}

@@ -64,11 +64,21 @@
 	function isActive(item: TabItem): boolean {
 		return item.activeMatch(current);
 	}
+
+	/** 滑块：active tab 下标 → transform 平移（CSS 过渡产生滑动） */
+	const activeIndex = $derived(TABS.findIndex((t) => t.activeMatch(current)));
 </script>
 
 {#if !immersive}
 	<nav class="bottom-nav" aria-label="底部导航">
 		<div class="nav-inner">
+			<!-- 滑块（玻璃凸块）：随 active tab 平移；z-0 在 tab 内容之下 -->
+			<div
+				class="nav-slider"
+				class:ready={activeIndex >= 0}
+				style="--slider-index:{activeIndex < 0 ? 0 : activeIndex}; --slider-count:{TABS.length};"
+				aria-hidden="true"
+			></div>
 			{#each TABS as item (item.href)}
 				{@const active = isActive(item)}
 				<a
@@ -217,21 +227,41 @@
 
 	.tab:hover {
 		color: var(--color-ink);
-		background: color-mix(in srgb, var(--color-ink) 5%, transparent);
 	}
 
 	.tab:hover svg {
 		transform: translateY(-1px) scale(1.06);
 	}
 
-	/* 激活态：玻璃凸起按钮（3D 浮粒）+ accent 光晕 */
-	.tab.active {
-		color: var(--color-accent-text);
-		font-weight: 600;
+	/* ═══ 滑块（玻璃凸块）═══
+	   绝对定位在 nav 底层，按 --slider-index 平移；激活凸起的光影
+	   全部由滑块承担（tab 本体只变色），滑动 = transform 过渡。
+	   初始（ready 前）隐藏，避免首帧从 0 位滑入的跳变。 */
+	.nav-slider {
+		position: absolute;
+		top: 4px;
+		bottom: 4px;
+		left: 4px;
+		width: calc((100% - 8px) / var(--slider-count));
+		border-radius: 14px;
 		background: color-mix(in srgb, var(--color-accent) 12%, transparent);
 		box-shadow:
 			inset 0 1px 0 rgb(255 255 255 / 0.22),
 			0 2px 8px color-mix(in srgb, var(--color-accent) 26%, transparent);
+		transform: translateX(calc(100% * var(--slider-index)));
+		transition: transform 320ms var(--ease-out);
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.nav-slider.ready {
+		opacity: 1;
+	}
+
+	/* 激活态：凸块光影由滑块承担，tab 只负责文字/图标状态 */
+	.tab.active {
+		color: var(--color-accent-text);
+		font-weight: 600;
 	}
 
 	.tab.active svg {
@@ -259,7 +289,7 @@
 			border-radius: 0;
 		}
 
-		.tab.active {
+		.nav-slider {
 			border-radius: 12px 12px 0 0;
 		}
 	}

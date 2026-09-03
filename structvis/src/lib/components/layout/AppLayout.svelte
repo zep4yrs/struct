@@ -149,8 +149,13 @@
 		</div>
 	{/if}
 
+	<!-- 页面切换动画：路由 pathname 变化 → key 重建 → 入场上浮淡入 -->
 	<main id="main-content" tabindex="-1" class="flex-1">
-		{@render children()}
+		{#key $page.url.pathname}
+			<div class="page-transition">
+				{@render children()}
+			</div>
+		{/key}
 	</main>
 
 	<BottomNav />
@@ -186,6 +191,28 @@
 		top: 8px;
 		outline: 2px solid var(--color-accent);
 		outline-offset: 2px;
+	}
+
+	/* 页面切换动画：路由 key 重建时上浮淡入（reduced-motion 直出） */
+	.page-transition {
+		animation: page-in 300ms var(--ease-out) both;
+	}
+
+	@keyframes page-in {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.page-transition {
+			animation: none;
+		}
 	}
 
 	/* 右上浮动动作簇（v3：顶栏移除后的全局动作入口） */

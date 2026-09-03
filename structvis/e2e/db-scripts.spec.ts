@@ -19,6 +19,7 @@ const SCRIPT_TOPICS: { slug: string; title: string; frames: number }[] = [
 	{ slug: 'index-query', title: '索引查询与回表', frames: 6 },
 	{ slug: 'lock-gantt', title: '锁等待与死锁甘特图', frames: 6 },
 	{ slug: 'serial-schedule', title: '可串行化调度', frames: 12 },
+	{ slug: 'workbench', title: 'SQL 工作台', frames: -1 },
 	{ slug: 'advanced-query', title: '高级查询', frames: 5 },
 	{ slug: 'window-function', title: '窗口函数', frames: 5 },
 	{ slug: 'update', title: '数据更新', frames: 5 },
@@ -27,13 +28,22 @@ const SCRIPT_TOPICS: { slug: string; title: string; frames: number }[] = [
 	{ slug: 'procedures', title: '存储过程', frames: 4 }
 ];
 
-for (const { slug, title } of SCRIPT_TOPICS) {
+for (const { slug, title, frames } of SCRIPT_TOPICS) {
 	test(`DB 剧本冒烟：${slug}`, async ({ page }) => {
 		const errors: string[] = [];
 		page.on('pageerror', (e) => errors.push(String(e)));
 
 		await page.goto(`/struct/db/${slug}`);
 		await expect(page.getByRole('heading', { name: title })).toBeVisible();
+
+		if (frames < 0) {
+			// 工作台形态：三栏渲染 + 关卡列表就绪（非播放器页）
+			await expect(page.locator('.wb-grid')).toBeVisible({ timeout: 20000 });
+			await expect(page.locator('.level-item').first()).toBeVisible();
+			await expect(page.getByLabel('SQL 编辑器')).toBeVisible();
+			expect(errors, `页面 JS 错误: ${errors.join('; ')}`).toEqual([]);
+			return;
+		}
 
 		// 剧本装载（sql.js 或静态回落）→ 播放器就绪
 		await expect(page.locator('.algo-player')).toBeVisible({ timeout: 20000 });

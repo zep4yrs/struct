@@ -810,6 +810,15 @@ export const dbTopics: TopicCard[] = [
 		badge: '概念演示',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]可串行化调度[/current]'
+	},
+	{
+		title: 'SQL 工作台',
+		description: '亲手写 SQL · 关卡制 · 真实执行',
+		href: '/db/workbench',
+		topicId: 'sql-workbench',
+		badge: '关卡制',
+		group: '实验',
+		crumb: '数据库 / 实验 / [current]SQL 工作台[/current]'
 	}
 ];
 
@@ -877,5 +886,6 @@ export const TOPIC_ALIASES: Record<string, string[]> = {
 	'/db/constraints': ['主键', '外键', 'check', 'unique', '级联删除'],
 	'/db/index-query': ['回表', '聚簇索引', '二级索引', '覆盖索引'],
 	'/db/lock-gantt': ['锁等待', '死锁检测', 'gantt', 'victim'],
-	'/db/serial-schedule': ['串行化', '冲突可串行', '调度', '并发理论']
+	'/db/serial-schedule': ['串行化', '冲突可串行', '调度', '并发理论'],
+	'/db/workbench': ['工作台', '关卡', '练习场', '闯关']
 };

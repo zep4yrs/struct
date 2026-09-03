@@ -606,6 +606,14 @@ export const SKILL_NODES: SkillNode[] = [
 		topicId: 'serial-schedule',
 		group: '数据库 · 实验',
 		desc: '冲突对 · 等价串行'
+	},
+	{
+		id: 'sql-workbench',
+		title: 'SQL 工作台',
+		href: '/db/workbench',
+		topicId: 'sql-workbench',
+		group: '数据库 · 实验',
+		desc: '亲手写 SQL · 关卡制'
 	}
 ];
 
@@ -668,5 +676,6 @@ export const SKILL_EDGES: SkillEdge[] = [
 	{ from: 'tables', to: 'constraints' },
 	{ from: 'index', to: 'index-query' },
 	{ from: 'lock-deadlock', to: 'lock-gantt' },
-	{ from: 'transaction', to: 'serial-schedule' }
+	{ from: 'transaction', to: 'serial-schedule' },
+	{ from: 'union-set', to: 'sql-workbench' }
 ];

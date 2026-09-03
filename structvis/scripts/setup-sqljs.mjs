@@ -10,7 +10,7 @@ import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-const SQLJS_CDN = 'https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist';
+const SQLJS_CDN = 'https://cdn.jsdelivr.net/npm/sql.js@1.14.2/dist';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const src = path.join(root, 'node_modules', 'sql.js', 'dist');

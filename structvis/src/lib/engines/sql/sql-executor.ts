@@ -41,10 +41,10 @@ export interface SqlExecutor {
 	script(sql: string): void;
 }
 
-/** 版本锁定的 CDN 源（与 setup-sqljs.mjs 下载的 dist 同一版本） */
-const CDN_BASE = 'https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist';
+/** 版本锁定的 CDN 源（与 package.json 的 sql.js 依赖同一版本） */
+const CDN_BASE = 'https://cdn.jsdelivr.net/npm/sql.js@1.14.2/dist';
 /** CDN sql-wasm.js 的 SRI（sha384，与 pinned 版本一一对应） */
-const CDN_JS_SRI = 'sha384-DJiKBv+LC78e5InEB+MvFIAH079ynMK/ERTtFUCpDzXhH1Bht7aVfpg3yOVsuYl9';
+const CDN_JS_SRI = 'sha384-7Zym2PlgXfg8ap8cqJUwlZrLl+VEwt0NVbzYfhH28IWLnSpAgQOnSCY2+EXo5MtM';
 
 interface SqlSource {
 	js: string;

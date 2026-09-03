@@ -13,7 +13,7 @@
 
 ### 新增（M3/M4 · 数据库课程补齐）
 
-- **sql.js 已启用**：加载器「同源 dist 优先（setup-sqljs.mjs 本地下载，离线可用）→ 版本锁定 jsdelivr CDN 回退（js 带 SRI 校验）」双源策略——19 个 SQL 剧本主题逐帧真实执行，「自定义 SQL」入口全站生效（e2e 由 skip 转为真实执行验证）；dist 产物不入库（第三方压缩产物，本地 gitignored）
+- **sql.js 正式入册**：`sql.js@1.14.2` 进入 dependencies，build 自动携带 dist（docs/sqljs 同源直出，生产零外部依赖；加载器保留版本锁定 CDN + SRI 作兜底）——19 个 SQL 剧本主题逐帧真实执行，「自定义 SQL」入口全站生效（e2e 由 skip 转为真实执行验证）
 - **M3 全量迁移收官**：advanced-query / window-function / update / view / triggers / procedures 六页全部改为剧本引擎——SQLite 侧真实执行（窗口函数、视图、触发器为 SQLite 原生能力）；存储过程因 SQLite 不支持采用「语法演示帧」（staticOnly）；tables 表单页与 isolation/explain-plan 保留页维持现状
 - **M3.6 退役清理完成**：删除 SelectEngine / DmlEngine / AdvancedQueryEngine / WindowFunctionEngine / ViewEngine / TriggerEngine / ProcedureEngine 及 sql-utils 共 8 模块 + 7 份 spec；TransactionEngine 的 SqlTable 类型统一到 algorithm/types
 - **M4 过程型主题×3**（概念状态机演示，专用 Canvas 渲染器）：索引查询与回表（二级索引→主键回表全链路）、锁等待与死锁甘特图（持有/等待/回滚三态时间线 + victim 解环）、可串行化调度（冲突对识别 → 等价串行化）

@@ -69,7 +69,7 @@
 	<!-- 继续学习 -->
 	<section class="section">
 		{#if lastTopic}
-			<a class="resume-card" href={resolve(lastTopic.href as '/ds/quick-sort')}>
+			<a class="resume-card liquid" href={resolve(lastTopic.href as '/ds/quick-sort')}>
 				<div class="resume-info">
 					<span class="resume-kicker">继续学习</span>
 					<span class="resume-title">{lastTopic.title}</span>
@@ -95,14 +95,14 @@
 	<section class="section">
 		<h2 class="section-title">今日待办</h2>
 		<div class="todo-grid">
-			<a class="todo-card" href={resolve('/progress')}>
+			<a class="todo-card liquid" href={resolve('/progress')}>
 				<span class="todo-icon" style="color: var(--color-accent);">📝</span>
 				<span class="todo-name">每日一题</span>
 				<span class="todo-state" class:done={dailyDone}>
 					{dailyDone ? '今日已完成 ✓' : '待完成'}
 				</span>
 			</a>
-			<a class="todo-card" href={resolve('/progress')}>
+			<a class="todo-card liquid" href={resolve('/progress')}>
 				<span class="todo-icon" style="color: var(--color-danger);">⚡</span>
 				<span class="todo-name">错题复习</span>
 				<span class="todo-state" class:done={dueMistakes === 0}>
@@ -116,19 +116,19 @@
 	<section class="section">
 		<h2 class="section-title">学习概览</h2>
 		<div class="stats-grid">
-			<div class="stat-card">
+			<div class="stat-card liquid">
 				<span class="stat-num">{$progress.streakDays}</span>
 				<span class="stat-label">连续天数</span>
 			</div>
-			<div class="stat-card">
+			<div class="stat-card liquid">
 				<span class="stat-num">{avgMastery}%</span>
 				<span class="stat-label">平均掌握度</span>
 			</div>
-			<div class="stat-card">
+			<div class="stat-card liquid">
 				<span class="stat-num">{masteredCount}</span>
 				<span class="stat-label">已掌握课题</span>
 			</div>
-			<div class="stat-card">
+			<div class="stat-card liquid">
 				<span class="stat-num">{totalExercises}</span>
 				<span class="stat-label">累计练习</span>
 			</div>
@@ -139,19 +139,19 @@
 	<section class="section">
 		<h2 class="section-title">快捷入口</h2>
 		<div class="quick-grid">
-			<a class="quick-card" href={resolve('/catalog')}>
+			<a class="quick-card liquid" href={resolve('/catalog')}>
 				<span class="quick-title">课程目录</span>
 				<span class="quick-desc">{dsTopics.length + dbTopics.length} 个课题</span>
 			</a>
-			<a class="quick-card" href={resolve('/race')}>
+			<a class="quick-card liquid" href={resolve('/race')}>
 				<span class="quick-title">竞速实验室</span>
 				<span class="quick-desc">30 引擎同屏竞速</span>
 			</a>
-			<a class="quick-card" href={resolve('/map')}>
+			<a class="quick-card liquid" href={resolve('/map')}>
 				<span class="quick-title">技能图谱</span>
 				<span class="quick-desc">规划学习路径</span>
 			</a>
-			<a class="quick-card" href={resolve('/report')}>
+			<a class="quick-card liquid" href={resolve('/report')}>
 				<span class="quick-title">学习报告</span>
 				<span class="quick-desc">阶段总结一键生成</span>
 			</a>
@@ -204,26 +204,17 @@
 		justify-content: space-between;
 		gap: 14px;
 		padding: 20px 22px;
-		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-lg, 14px);
-		background: linear-gradient(
-			135deg,
-			color-mix(in srgb, var(--color-accent) 7%, var(--color-surface)),
-			var(--color-surface)
-		);
 		text-decoration: none;
-		transition:
-			border-color 150ms var(--ease-out),
-			box-shadow 150ms var(--ease-out);
 	}
 
-	.resume-card:hover {
-		border-color: var(--color-accent);
-		box-shadow: 0 8px 28px rgba(217, 119, 6, 0.14);
+	.resume-card:hover .resume-go {
+		transform: translateX(3px);
 	}
 
-	.resume-card.resume-empty {
-		background: var(--color-surface);
+	.resume-go {
+		display: inline-block;
+		transition: transform 150ms var(--ease-out);
 	}
 
 	.resume-info {

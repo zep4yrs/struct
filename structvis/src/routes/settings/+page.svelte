@@ -50,19 +50,19 @@
 
 	<!-- v3 聚合入口：报告 / 图谱 / 关于 -->
 	<nav class="me-links" aria-label="我的入口">
-		<a class="me-link" href={resolve('/progress')}>
+		<a class="me-link liquid" href={resolve('/progress')}>
 			<span class="me-link-title">学习进度</span>
 			<span class="me-link-desc">每日一题 · 错题本 · 热力图</span>
 		</a>
-		<a class="me-link" href={resolve('/report')}>
+		<a class="me-link liquid" href={resolve('/report')}>
 			<span class="me-link-title">学习报告</span>
 			<span class="me-link-desc">掌握度雷达 · 弱项分析 · 分享图</span>
 		</a>
-		<a class="me-link" href={resolve('/quiz')}>
+		<a class="me-link liquid" href={resolve('/quiz')}>
 			<span class="me-link-title">章节自测</span>
 			<span class="me-link-desc">随机抽题 · 限时作答</span>
 		</a>
-		<a class="me-link" href={resolve('/about')}>
+		<a class="me-link liquid" href={resolve('/about')}>
 			<span class="me-link-title">关于</span>
 			<span class="me-link-desc">产品说明 · 技术栈</span>
 		</a>

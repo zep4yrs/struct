@@ -138,7 +138,7 @@
 		}
 	}
 
-	/* 桌面 ≥768px：居中悬浮胶囊 */
+	/* 桌面 ≥768px：居中悬浮胶囊（顶缘镜面高光 = 液态玻璃质感） */
 	@media (min-width: 768px) {
 		.nav-inner {
 			width: auto;
@@ -146,7 +146,9 @@
 			padding: 6px 10px;
 			border: 1px solid var(--color-line-regular);
 			border-radius: 999px;
-			box-shadow: 0 10px 32px rgba(0, 0, 0, 0.14);
+			box-shadow:
+				inset 0 1px 0 var(--glass-hi),
+				0 10px 32px rgba(0, 0, 0, 0.14);
 		}
 	}
 

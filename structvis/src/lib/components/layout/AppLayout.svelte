@@ -202,7 +202,13 @@
 		border-radius: 999px;
 		-webkit-backdrop-filter: blur(14px) saturate(1.5);
 		backdrop-filter: blur(14px) saturate(1.5);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+		box-shadow:
+			inset 0 1px 0 var(--glass-hi),
+			0 4px 16px rgba(0, 0, 0, 0.08);
+	}
+
+	.fab-btn:active {
+		transform: scale(0.94);
 	}
 
 	.fab-btn {

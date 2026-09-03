@@ -152,7 +152,7 @@
 				{#each g.topics as t, ti (t.href)}
 					{@const m = masteryOf(t)}
 					<li use:reveal={{ delay: Math.min(ti * 40, 320), y: 10 }}>
-						<a class="topic-row" href={resolve(t.href as '/ds/quick-sort')}>
+						<a class="topic-row liquid" href={resolve(t.href as '/ds/quick-sort')}>
 							<div class="topic-main">
 								<span class="topic-title">{t.title}</span>
 								<span class="topic-desc">{t.description}</span>

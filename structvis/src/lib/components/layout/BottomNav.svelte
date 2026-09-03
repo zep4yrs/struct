@@ -102,6 +102,8 @@
 		};
 		// 注意：不在 down 时立即 capture——否则会吞掉 <a> 的原生 click 导航。
 		// capture 延迟到确认拖动（moved）后再补，纯点击路径零干预。
+		// 另：tab <a draggable="false">——浏览器对链接的原生拖放会在鼠标按住
+		// 拖动时劫持指针（后续 pointermove 停发），这是鼠标拖拽失效的根因。
 	}
 
 	function onPointerMove(e: PointerEvent) {
@@ -193,6 +195,7 @@
 					class="tab"
 					class:active
 					aria-current={active ? 'page' : undefined}
+					draggable="false"
 				>
 					<svg
 						viewBox="0 0 24 24"

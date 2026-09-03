@@ -2,6 +2,7 @@
 	import AlgoPage from '$lib/components/layout/AlgoPage.svelte';
 	import AlgoPlayer from '$lib/components/player/AlgoPlayer.svelte';
 	import { TransactionEngine, TX_PRESETS } from '$lib/engines/db/TransactionEngine';
+	import type { SqlTableData } from '$lib/engines/algorithm/types';
 
 	// 账户余额表（事务演示数据）
 	const ACCOUNT_TABLE: SqlTableData = {

@@ -15,6 +15,8 @@
 	// 存储写入失败横幅（audit-11：隐私模式/空间不足时提示导出备份）
 	let storageWarning = $state(false);
 	let searchOpen = $state(false);
+	// SW 更新提示：页面由旧 SW 控制时，新 SW 接管（controllerchange）→ 弹刷新提示
+	let updateReady = $state(false);
 
 	function stripBase(path: string): string {
 		if (!base || base === '/') return path;
@@ -42,10 +44,14 @@
 
 	// 监听持久层写失败事件：会话内只提示一次（persistent.ts 保证派发频率）
 	// 同时打全局水合信号：e2e 的 waitForHydratedGlobal 等它（不依赖任何具体按钮）
+	// SW 更新探测：仅当本页加载时已由 SW 控制（老访客），新 SW 接管才算「有更新」
 	onMount(() => {
 		const onStorageWarning = () => (storageWarning = true);
 		window.addEventListener('structvis:storage-warning', onStorageWarning);
 		document.body.setAttribute('data-app-ready', '1');
+		if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+			navigator.serviceWorker.addEventListener('controllerchange', () => (updateReady = true));
+		}
 		return () => window.removeEventListener('structvis:storage-warning', onStorageWarning);
 	});
 </script>
@@ -127,6 +133,23 @@
 					</svg>
 				{/if}
 			</button>
+			<a href={resolve('/map')} class="fab-btn" aria-label="技能图谱" title="技能图谱">
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<circle cx="12" cy="5" r="3" />
+					<circle cx="5" cy="19" r="3" />
+					<circle cx="19" cy="19" r="3" />
+					<line x1="12" y1="8" x2="5" y2="16" />
+					<line x1="12" y1="8" x2="19" y2="16" />
+				</svg>
+			</a>
 			<a href={resolve('/settings')} class="fab-btn" aria-label="我的" title="我的">
 				<svg
 					viewBox="0 0 24 24"
@@ -149,6 +172,16 @@
 
 	<BottomNav />
 </div>
+
+{#if updateReady}
+	<div class="update-toast" role="status">
+		<span>🔄 新版本已就绪</span>
+		<button class="update-reload" onclick={() => location.reload()}>立即刷新</button>
+		<button class="update-close" aria-label="关闭提示" onclick={() => (updateReady = false)}
+			>✕</button
+		>
+	</div>
+{/if}
 
 <SearchDialog open={searchOpen} onClose={() => (searchOpen = false)} />
 
@@ -258,5 +291,60 @@
 		.app-root:not(.immersive) {
 			padding-bottom: calc(54px + env(safe-area-inset-bottom));
 		}
+	}
+
+	/* SW 更新提示条（悬浮于底部导航上方） */
+	.update-toast {
+		position: fixed;
+		bottom: calc(84px + env(safe-area-inset-bottom));
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 160;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 10px 16px;
+		font-size: 13px;
+		color: var(--color-ink);
+		background: var(--color-surface);
+		border: 1px solid var(--color-line-regular);
+		border-radius: 999px;
+		box-shadow: 0 10px 32px rgba(0, 0, 0, 0.16);
+		animation: toast-in 260ms var(--ease-out) both;
+	}
+
+	@keyframes toast-in {
+		from {
+			opacity: 0;
+			transform: translateX(-50%) translateY(12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
+	}
+
+	.update-reload {
+		border: none;
+		border-radius: 999px;
+		background: var(--color-accent);
+		color: #fff;
+		font-size: 12.5px;
+		font-weight: 500;
+		padding: 6px 14px;
+		cursor: pointer;
+	}
+
+	.update-reload:hover {
+		filter: brightness(1.05);
+	}
+
+	.update-close {
+		border: none;
+		background: transparent;
+		color: var(--color-ink-3);
+		cursor: pointer;
+		font-size: 12px;
+		padding: 2px;
 	}
 </style>

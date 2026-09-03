@@ -30,6 +30,23 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 	const url = new URL(event.request.url);
 	if (url.origin !== self.location.origin) return;
 
+	// 页面导航：网络优先（部署后首次刷新即得新版），离线回落缓存
+	if (event.request.mode === 'navigate') {
+		event.respondWith(
+			fetch(event.request)
+				.then((res) => {
+					if (res.ok && url.pathname.startsWith('/struct/')) {
+						const copy = res.clone();
+						caches.open(CACHE).then((c) => c.put(event.request, copy));
+					}
+					return res;
+				})
+				.catch(() => caches.match(event.request).then((c) => c ?? caches.match('/struct/')))
+		);
+		return;
+	}
+
+	// 其余同源 GET（hash 指纹的不可变资源）：缓存优先
 	event.respondWith(
 		caches.match(event.request).then((cached) => {
 			if (cached) return cached;

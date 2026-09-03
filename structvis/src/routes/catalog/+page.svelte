@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import {
 		dsTopics,
 		dbTopics,
@@ -8,7 +9,6 @@
 	} from '$lib/content/topics';
 	import type { TopicCard } from '$lib/content/topics';
 	import { progress } from '$lib/stores/progress';
-	import { reveal } from '$lib/utils/motion';
 
 	/**
 	 * v3 课程目录 — 通讯录形态（底部导航「课程」tab 的落点）：
@@ -110,7 +110,7 @@
 				{#each g.topics as t (t.href)}
 					{@const m = masteryOf(t)}
 					<li>
-						<a class="topic-row" href={t.href}>
+						<a class="topic-row" href={resolve(t.href as '/ds/quick-sort')}>
 							<div class="topic-main">
 								<span class="topic-title">{t.title}</span>
 								<span class="topic-desc">{t.description}</span>

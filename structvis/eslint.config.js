@@ -10,6 +10,10 @@ const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
+	{
+		// vendored 第三方 dist（sql.js，gitignored 于仓库根 .gitignore）不参与 lint
+		ignores: ['static/sqljs/**']
+	},
 	js.configs.recommended,
 	ts.configs.recommended,
 	svelte.configs.recommended,

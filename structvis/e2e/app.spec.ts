@@ -15,15 +15,10 @@ async function waitForHydrated(page: Page) {
 }
 
 // 无播放器页面（首页/进度页）：用主题开关探测水合，探测后恢复亮色
+// 无播放器页面：等全局水合信号（AppLayout onMount 在 body 上打 data-app-ready='1'，
+// v3 布局移除顶栏后不再依赖具体按钮探测）
 async function waitForHydratedGlobal(page: Page) {
-	const btn = page.getByRole('button', { name: '切换到暗色主题' });
-	await expect(async () => {
-		await btn.click();
-		await expect(page.locator('html')).toHaveClass(/dark/, { timeout: 1000 });
-	}).toPass({ timeout: 30000 });
-	// 此时页面已变暗，按钮文案随之变化，需按新名字查找恢复
-	await page.getByRole('button', { name: '切换到亮色主题' }).click();
-	await expect(page.locator('html')).not.toHaveClass(/dark/);
+	await page.waitForSelector('body[data-app-ready="1"]', { timeout: 30000 });
 }
 
 // 等待播放器当前步骤的控制 tween 播完（AlgoPlayer 在 canvas-body 上暴露
@@ -57,15 +52,31 @@ test.describe('页面加载', () => {
 		await expect(page.locator('.home-course-title', { hasText: 'MySQL 数据库' })).toBeVisible();
 	});
 
-	test('课程目录页：两门课程区块', async ({ page }) => {
+	test('课程目录页：通讯录形态（搜索 + 分组 + 掌握度）', async ({ page }) => {
 		await page.goto('/struct/catalog');
 		await waitForHydratedGlobal(page);
-		await expect(page.getByRole('heading', { name: /课程目录/ })).toBeVisible();
-		await expect(page.getByRole('heading', { name: '数据结构与算法' })).toBeVisible();
-		await expect(page.getByRole('heading', { name: 'MySQL 数据库' })).toBeVisible();
+		await expect(page.getByRole('heading', { name: '课程', exact: true })).toBeVisible();
+		await expect(page.getByLabel('搜索课程')).toBeVisible();
+		// 分组锚点与分组标签（单源分组）
+		await expect(page.getByText('数据结构 · 排序算法')).toBeVisible();
+		await expect(page.getByText('数据库 · 实验')).toBeVisible();
 		const main = page.locator('main');
 		await expect(main.getByRole('link', { name: /快速排序/ })).toBeVisible();
 		await expect(main.getByRole('link', { name: /数据查询/ })).toBeVisible();
+		// 掌握度条（通讯录行内）
+		await expect(page.locator('.mastery').first()).toBeVisible();
+	});
+
+	test('目录页搜索过滤：别名命中 + 结果收敛', async ({ page }) => {
+		await page.goto('/struct/catalog');
+		await waitForHydratedGlobal(page);
+		const search = page.getByLabel('搜索课程');
+		await search.fill('BST');
+		// BST 别名命中二叉搜索树；未命中的课题（如快速排序）从列表消失
+		await expect(page.getByRole('link', { name: /二叉搜索树/ })).toBeVisible();
+		await expect(page.getByRole('link', { name: /快速排序/ })).toHaveCount(0);
+		await search.fill('');
+		await expect(page.getByRole('link', { name: /快速排序/ })).toBeVisible();
 	});
 
 	test('冒泡排序页：播放器渲染引擎名/总步数/伪代码', async ({ page }) => {
@@ -270,69 +281,47 @@ test.describe('主题与导航', () => {
 		await expect(page.locator('html')).not.toHaveClass(/dark/);
 	});
 
-	test('侧边栏导航与跳转链接', async ({ page }) => {
-		await page.goto('/struct/ds/binary-tree');
-		await waitForHydratedGlobal(page);
-		await page.getByRole('button', { name: '显示导航' }).click();
-		const nav = page.getByRole('navigation', { name: '课程目录' });
-		await nav.getByText('快速排序').click();
-		await expect(page.getByRole('heading', { name: '快速排序' })).toBeVisible();
-		await expect(page.locator('.canvas-title')).toHaveText('快速排序');
+	test('课程页路径线：返回课程 + 上一课/下一课 pager', async ({ page }) => {
+		await openBubbleSort(page);
+		// 路径线：返回课程目录
+		await expect(page.locator('.wayfind-back')).toBeVisible();
+		await page.locator('.wayfind-back').click();
+		await expect(page).toHaveURL(/catalog/);
+		await expect(page.getByRole('heading', { name: '课程', exact: true })).toBeVisible();
 
-		await page.goto('/struct/ds/binary-tree');
-		await waitForHydratedGlobal(page);
-		await page.getByRole('button', { name: '显示导航' }).click();
-		await page.getByRole('navigation', { name: '课程目录' }).getByText('图的遍历').click();
-		await expect(page.getByRole('heading', { name: '图的遍历' })).toBeVisible();
+		// pager：下一课（冒泡排序 → 直接插入排序，课题单源顺序）
+		await openBubbleSort(page);
+		await expect(page.locator('.pager-next .pager-title')).toHaveText('直接插入排序');
+		await page.locator('.pager-next').click();
+		await expect(page.getByRole('heading', { name: '直接插入排序' })).toBeVisible();
+		// 上一课回到冒泡排序
+		await page.locator('.pager-item', { hasText: '上一课' }).click();
+		await expect(page.getByRole('heading', { name: '冒泡排序' })).toBeVisible();
 	});
 
-	test('侧边栏分组跟随页面：数据库页显示数据库分组而非数据结构', async ({ page }) => {
-		await page.goto('/struct/db/sql');
+	test('沉浸：播放器页隐藏底部导航与动作簇，目录页恢复', async ({ page }) => {
+		await openBubbleSort(page);
+		// 课程内容页沉浸：底部导航与右上动作簇均隐藏
+		await expect(page.locator('.bottom-nav')).toHaveCount(0);
+		await expect(page.locator('.fab-cluster')).toHaveCount(0);
+
+		await page.goto('/struct/catalog');
 		await waitForHydratedGlobal(page);
-		await page.getByRole('button', { name: '显示导航' }).click();
-		const nav = page.getByRole('navigation', { name: '课程目录' });
-
-		// 应显示数据库分组（基础/进阶/设计/运维）
-		await expect(nav.getByText('基础')).toBeVisible();
-		await expect(nav.getByText('数据查询')).toBeVisible();
-		await expect(nav.getByText('进阶')).toBeVisible();
-		// 不应显示数据结构分组
-		await expect(nav.getByText('线性结构')).toBeHidden();
-		await expect(nav.getByText('排序算法')).toBeHidden();
-
-		// 当前项高亮（数据查询所在链接带 accent 左边框）
-		const activeLink = nav.locator('a', { hasText: '数据查询' });
-		await expect(activeLink).toHaveCSS('border-left-color', 'rgb(217, 119, 6)');
-
-		// 回到数据结构页应恢复数据结构分组
-		await page.goto('/struct/ds/quick-sort');
-		await waitForHydratedGlobal(page);
-		await page.getByRole('button', { name: '显示导航' }).click();
-		const nav2 = page.getByRole('navigation', { name: '课程目录' });
-		await expect(nav2.getByText('排序算法')).toBeVisible();
-		await expect(nav2.getByText('基础')).toBeHidden();
+		await expect(page.locator('.bottom-nav')).toBeVisible();
+		await expect(page.locator('.fab-cluster')).toBeVisible();
+		// 五 tab：首页/课程/实验/复习/我的
+		const tabs = await page.locator('.bottom-nav .tab').allTextContents();
+		expect(tabs).toEqual(['首页', '课程', '实验', '复习', '我的']);
+		// 当前 tab 高亮（课程）
+		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/课程/);
 	});
 
-	test('移动端：侧栏以抽屉呈现，遮罩可关闭', async ({ page }) => {
-		await page.setViewportSize({ width: 390, height: 844 });
-		await page.goto('/struct/ds/bubble-sort');
+	test('底导跳转：首页 → 实验竞速页', async ({ page }) => {
+		await page.goto('/');
 		await waitForHydratedGlobal(page);
-		const nav = page.getByRole('navigation', { name: '课程目录' });
-		await expect(nav).toBeHidden();
-
-		await page.getByRole('button', { name: '显示导航' }).click();
-		await expect(nav).toBeVisible();
-		await expect(page.locator('.drawer-backdrop')).toBeVisible();
-		await expect(nav.getByRole('button', { name: '关闭导航' })).toBeVisible();
-
-		await nav.getByRole('button', { name: '关闭导航' }).click();
-		await expect(nav).toBeHidden();
-
-		// 重新打开后通过遮罩关闭
-		await page.getByRole('button', { name: '显示导航' }).click();
-		await expect(nav).toBeVisible();
-		await page.locator('.drawer-backdrop').click({ position: { x: 340, y: 400 } });
-		await expect(nav).toBeHidden();
+		await page.locator('.bottom-nav .tab', { hasText: '实验' }).click();
+		await expect(page).toHaveURL(/race/);
+		await expect(page.getByRole('heading', { name: /排序算法竞速|竞速/ }).first()).toBeVisible();
 	});
 
 	test('进度页：空状态与学习记录入口', async ({ page }) => {

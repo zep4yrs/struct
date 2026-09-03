@@ -45,14 +45,20 @@ test.describe('播放器移动端适配（375×667）', () => {
 		expect(rows.subTop).toBeGreaterThanOrEqual(rows.mainBottom - 4);
 	});
 
-	test('控制条与底部导航无重叠（滚动到底）', async ({ page }) => {
+	test('沉浸：播放器页底部导航隐藏，无遮挡（v3 布局）', async ({ page }) => {
 		await openBubbleSortMobile(page);
-		const r = await page.evaluate(() => {
-			const cb = document.querySelector('.control-bar')!.getBoundingClientRect();
-			const nav = document.querySelector('.bottom-nav')!.getBoundingClientRect();
-			return { cbBottom: cb.bottom, navY: nav.y };
-		});
-		expect(r.cbBottom).toBeLessThanOrEqual(r.navY + 1);
+		// v3：课程内容页沉浸——底部导航整体隐藏（原避让问题的根治）
+		await expect(page.locator('.bottom-nav')).toHaveCount(0);
+		// 控制条完整可见（不被任何固定层遮挡）
+		const cb = await page.locator('.control-bar').boundingBox();
+		expect(cb).not.toBeNull();
+		expect(cb!.y).toBeGreaterThan(0);
+		// 首页底导恢复显示（五 tab）
+		await page.goto('/struct/');
+		await page.waitForSelector('body[data-app-ready="1"]');
+		await expect(page.locator('.bottom-nav')).toBeVisible();
+		const tabs = await page.locator('.bottom-nav .tab').allTextContents();
+		expect(tabs).toEqual(['首页', '课程', '实验', '复习', '我的']);
 	});
 
 	test('「⋯」抽屉：展开含重置/朗读/帮助并可用', async ({ page }) => {

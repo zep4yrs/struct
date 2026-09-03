@@ -40,13 +40,34 @@
 <div class="page">
 	<div class="section-header" use:reveal>
 		<div class="section-label">
-			<span class="section-num">设</span>
-			<span class="section-name">偏好</span>
+			<span class="section-num">我</span>
+			<span class="section-name">我的</span>
 		</div>
-		<h1 class="page-title">设置</h1>
-		<p class="page-desc">调整播放器行为与界面偏好，所有设置自动保存到浏览器本地存储。</p>
+		<h1 class="page-title">我的</h1>
+		<p class="page-desc">学习记录入口与界面偏好，所有数据自动保存到浏览器本地存储。</p>
 	</div>
 
+	<!-- v3 聚合入口：报告 / 图谱 / 关于 -->
+	<nav class="me-links" aria-label="我的入口">
+		<a class="me-link" href="/progress">
+			<span class="me-link-title">学习进度</span>
+			<span class="me-link-desc">每日一题 · 错题本 · 热力图</span>
+		</a>
+		<a class="me-link" href="/report">
+			<span class="me-link-title">学习报告</span>
+			<span class="me-link-desc">掌握度雷达 · 弱项分析 · 分享图</span>
+		</a>
+		<a class="me-link" href="/quiz">
+			<span class="me-link-title">章节自测</span>
+			<span class="me-link-desc">随机抽题 · 限时作答</span>
+		</a>
+		<a class="me-link" href="/about">
+			<span class="me-link-title">关于</span>
+			<span class="me-link-desc">产品说明 · 技术栈</span>
+		</a>
+	</nav>
+
+	<h2 class="prefs-label">偏好设置</h2>
 	<div class="settings-list">
 		<div class="setting-item">
 			<div class="setting-info">
@@ -199,6 +220,51 @@
 		color: var(--color-ink-2);
 		max-width: 560px;
 		margin: 0;
+	}
+
+	/* v3 我的聚合入口 */
+	.me-links {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 10px;
+		margin-bottom: 28px;
+	}
+
+	.me-link {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+		padding: 14px 16px;
+		border: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-md);
+		background: var(--color-surface);
+		text-decoration: none;
+		transition:
+			border-color 150ms var(--ease-out),
+			box-shadow 150ms var(--ease-out);
+	}
+
+	.me-link:hover {
+		border-color: var(--color-accent);
+		box-shadow: 0 4px 16px rgba(217, 119, 6, 0.1);
+	}
+
+	.me-link-title {
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--color-ink);
+	}
+
+	.me-link-desc {
+		font-size: 11.5px;
+		color: var(--color-ink-2);
+	}
+
+	.prefs-label {
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--color-ink);
+		margin: 0 0 14px;
 	}
 
 	.settings-list {

@@ -1,65 +1,333 @@
 <script lang="ts">
-	import Logo from '$lib/components/ui/Logo.svelte';
-	import TopicGrid from '$lib/components/ui/TopicGrid.svelte';
-	import { dsTopics, dbTopics } from '$lib/content/topics';
+	import {
+		dsTopics,
+		dbTopics,
+		TOPIC_ALIASES,
+		DS_GROUP_ORDER,
+		DB_GROUP_ORDER
+	} from '$lib/content/topics';
+	import type { TopicCard } from '$lib/content/topics';
+	import { progress } from '$lib/stores/progress';
 	import { reveal } from '$lib/utils/motion';
+
+	/**
+	 * v3 课程目录 — 通讯录形态（底部导航「课程」tab 的落点）：
+	 * 顶部常驻搜索条（标题/描述/别名实时过滤）+ 分组锚点 + 分组列表（掌握度条）。
+	 * 数据全部来自 topics.ts 单源 + progress 掌握度。
+	 */
+	interface Group {
+		id: string;
+		label: string;
+		topics: TopicCard[];
+	}
+
+	const GROUPS: Group[] = [
+		...DS_GROUP_ORDER.map((g) => ({
+			id: 'ds-' + g,
+			label: '数据结构 · ' + g,
+			topics: dsTopics.filter((t) => t.group === g)
+		})),
+		...DB_GROUP_ORDER.map((g) => ({
+			id: 'db-' + g,
+			label: '数据库 · ' + g,
+			topics: dbTopics.filter((t) => t.group === g)
+		}))
+	].filter((g) => g.topics.length > 0);
+
+	let query = $state('');
+
+	// 匹配文本与全站搜索同一口径：标题 + 描述 + 别名表
+	const haystack = new Map<string, string>(
+		[...dsTopics, ...dbTopics].map((t) => [
+			t.href,
+			(t.title + ' ' + t.description + ' ' + (TOPIC_ALIASES[t.href]?.join(' ') ?? '')).toLowerCase()
+		])
+	);
+
+	const filtered: Group[] = $derived.by(() => {
+		const q = query.trim().toLowerCase();
+		if (!q) return GROUPS;
+		return GROUPS.map((g) => ({
+			...g,
+			topics: g.topics.filter((t) => (haystack.get(t.href) ?? '').includes(q))
+		})).filter((g) => g.topics.length > 0);
+	});
+
+	const totalShown = $derived(filtered.reduce((n, g) => n + g.topics.length, 0));
+
+	function masteryOf(t: TopicCard): number {
+		return t.topicId ? ($progress.topics[t.topicId]?.mastery ?? 0) : 0;
+	}
+
+	function jump(groupId: string) {
+		document
+			.getElementById('group-' + groupId)
+			?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
 </script>
 
-<div class="mx-auto max-w-7xl px-8 py-16 min-[1856px]:max-w-[1856px] 2xl:max-w-[1600px]">
-	<!-- 目录头 -->
-	<section class="mb-20 border-b pb-12" style="border-color: var(--color-line-hair);">
-		<div class="mb-8 flex items-end gap-6" use:reveal>
-			<Logo size={56} />
-			<h1
-				class="font-display text-5xl leading-none font-medium"
-				style="letter-spacing: -0.03em; color: var(--color-ink);"
+<div class="mx-auto max-w-3xl px-5 pb-28">
+	<!-- 头部：标题 + 搜索条（通讯录形态的固定入口） -->
+	<header class="catalog-head">
+		<h1 class="catalog-title">课程</h1>
+		<p class="catalog-sub">{dsTopics.length} 数据结构 + {dbTopics.length} 数据库 · 跟教材章节走</p>
+		<div class="search-wrap">
+			<svg
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
 			>
-				课程目录<span style="color: var(--color-accent); font-weight: 400;">/</span>
-			</h1>
+				<circle cx="11" cy="11" r="8" />
+				<line x1="21" y1="21" x2="16.65" y2="16.65" />
+			</svg>
+			<input
+				type="search"
+				placeholder="搜索课题：名称 / 别名 / 关键词"
+				aria-label="搜索课程"
+				bind:value={query}
+			/>
+			{#if query}
+				<span class="search-count">{totalShown} 个结果</span>
+			{/if}
 		</div>
+		<!-- 分组锚点 -->
+		<nav class="anchor-row" aria-label="分组锚点">
+			{#each GROUPS as g (g.id)}
+				<button class="anchor-chip" onclick={() => jump(g.id)}>{g.label.split('· ')[1]}</button>
+			{/each}
+		</nav>
+	</header>
 
-		<p
-			class="max-w-xl font-display text-2xl font-normal italic"
-			style="line-height: 1.35; color: var(--color-ink-2);"
-			use:reveal={{ delay: 160 }}
-		>
-			看见数据结构与数据库的每一步跳动。<br />
-			<span style="font-size: 0.8em; opacity: 0.6;">
-				See every step of data structures &amp; databases, clearly.
-			</span>
-		</p>
-	</section>
+	<!-- 分组列表 -->
+	{#each filtered as g (g.id)}
+		<section id="group-{g.id}" class="group">
+			<h2 class="group-label">{g.label}</h2>
+			<ul class="topic-list">
+				{#each g.topics as t (t.href)}
+					{@const m = masteryOf(t)}
+					<li>
+						<a class="topic-row" href={t.href}>
+							<div class="topic-main">
+								<span class="topic-title">{t.title}</span>
+								<span class="topic-desc">{t.description}</span>
+							</div>
+							<div class="topic-side">
+								<span class="topic-badge">{t.badge}</span>
+								{#if t.topicId}
+									<span class="mastery" class:done={m >= 80} class:learning={m > 0 && m < 80}>
+										<i style="width:{m}%"></i>
+									</span>
+								{/if}
+							</div>
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</section>
+	{:else}
+		<p class="empty">没有匹配「{query}」的课题——试试别名，比如 BST、并查集、EXPLAIN。</p>
+	{/each}
 
-	<!-- 数据结构 -->
-	<section class="mb-16">
-		<div class="section-label mb-4" use:reveal>数据结构 · 李春葆《数据结构教程》第5版</div>
-		<h2
-			class="mb-6 font-display text-2xl font-medium"
-			style="letter-spacing: -0.01em;"
-			use:reveal={{ delay: 80 }}
-		>
-			数据结构与算法
-		</h2>
-
-		<TopicGrid topics={dsTopics} />
-	</section>
-
-	<!-- 数据库 -->
-	<section>
-		<div class="section-label mb-4">数据库 · 杨宏霞《数据库技术及应用（MySQL）》</div>
-		<h2 class="mb-6 font-display text-2xl font-medium" style="letter-spacing: -0.01em;">
-			MySQL 数据库
-		</h2>
-
-		<TopicGrid topics={dbTopics} />
-	</section>
-
-	<!-- Footer -->
 	<footer
-		class="mt-20 flex items-center justify-between border-t pt-8 font-mono text-[11px] tracking-wider uppercase"
+		class="mt-16 flex items-center justify-between border-t pt-8 font-mono text-[11px] tracking-wider uppercase"
 		style="border-color: var(--color-line-hair); color: var(--color-ink-3); letter-spacing: 0.08em;"
 	>
 		<span>StructVis</span>
 		<span>© 2026 zep4yrs</span>
 	</footer>
 </div>
+
+<style>
+	.catalog-head {
+		position: sticky;
+		top: 0;
+		z-index: 30;
+		background: color-mix(in srgb, var(--color-bg, #fcfaf6) 88%, transparent);
+		padding: 20px 0 12px;
+		-webkit-backdrop-filter: blur(14px) saturate(1.5);
+		backdrop-filter: blur(14px) saturate(1.5);
+	}
+
+	.catalog-title {
+		font-family: var(--font-display);
+		font-size: 34px;
+		font-weight: 500;
+		letter-spacing: -0.02em;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.catalog-sub {
+		font-size: 12.5px;
+		color: var(--color-ink-2);
+		margin: 4px 0 14px;
+	}
+
+	.search-wrap {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 10px 14px;
+		border: 1px solid var(--color-line-regular);
+		border-radius: 12px;
+		background: var(--color-surface);
+	}
+
+	.search-wrap:focus-within {
+		border-color: var(--color-accent);
+	}
+
+	.search-wrap svg {
+		width: 17px;
+		height: 17px;
+		color: var(--color-ink-3);
+		flex-shrink: 0;
+	}
+
+	.search-wrap input {
+		flex: 1;
+		border: none;
+		outline: none;
+		background: transparent;
+		font-size: 14px;
+		color: var(--color-ink);
+	}
+
+	.search-count {
+		flex-shrink: 0;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--color-ink-3);
+	}
+
+	.anchor-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-top: 12px;
+	}
+
+	.anchor-chip {
+		border: 1px solid var(--color-line-hair);
+		border-radius: 999px;
+		background: var(--color-surface);
+		padding: 4px 11px;
+		font-size: 11.5px;
+		color: var(--color-ink-2);
+		cursor: pointer;
+		transition:
+			color 120ms var(--ease-out),
+			border-color 120ms var(--ease-out);
+	}
+
+	.anchor-chip:hover {
+		color: var(--color-accent-text);
+		border-color: var(--color-accent);
+	}
+
+	.group {
+		margin-top: 28px;
+		scroll-margin-top: 130px;
+	}
+
+	.group-label {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-ink-3);
+		margin: 0 0 8px;
+	}
+
+	.topic-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-lg, 14px);
+		background: var(--color-surface);
+		overflow: hidden;
+	}
+
+	.topic-list li + li .topic-row {
+		border-top: 1px solid var(--color-line-hair);
+	}
+
+	.topic-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 13px 16px;
+		text-decoration: none;
+		transition: background-color 120ms var(--ease-out);
+	}
+
+	.topic-row:hover {
+		background: color-mix(in srgb, var(--color-accent) 5%, transparent);
+	}
+
+	.topic-main {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+
+	.topic-title {
+		font-size: 14.5px;
+		font-weight: 500;
+		color: var(--color-ink);
+	}
+
+	.topic-desc {
+		font-size: 12px;
+		color: var(--color-ink-2);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.topic-side {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		flex-shrink: 0;
+	}
+
+	.topic-badge {
+		font-family: var(--font-mono);
+		font-size: 10px;
+		color: var(--color-ink-3);
+	}
+
+	.mastery {
+		width: 56px;
+		height: 4px;
+		border-radius: 2px;
+		background: var(--color-line-hair);
+		overflow: hidden;
+		display: inline-block;
+	}
+
+	.mastery i {
+		display: block;
+		height: 100%;
+		background: var(--color-accent);
+	}
+
+	.mastery.done i {
+		background: var(--color-success);
+	}
+
+	.empty {
+		margin-top: 40px;
+		text-align: center;
+		font-size: 13.5px;
+		color: var(--color-ink-2);
+	}
+</style>

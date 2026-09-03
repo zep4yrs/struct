@@ -23,8 +23,13 @@ const ok = (label, n) => console.log(`  ✓ ${label}: ${n}`);
 const topicsTs = readFileSync(path.join(SRC, 'lib', 'content', 'topics.ts'), 'utf8');
 const dsCount = (topicsTs.match(/href: '\/ds\//g) ?? []).length;
 const dbCount = (topicsTs.match(/href: '\/db\//g) ?? []).length;
+// MySQL 课程（非实验组）与 SQL 实验台（实验组）拆分——与目录页三分段一致
+const dbLabCount = (topicsTs.match(/group: '实验'/g) ?? []).length;
+const mysqlCourseCount = dbCount - dbLabCount;
 ok('数据结构课题', dsCount);
-ok('数据库课题', dbCount);
+ok('数据库课题（课程+实验）', dbCount);
+ok('MySQL 课程课题', mysqlCourseCount);
+ok('SQL 实验台课题', dbLabCount);
 
 // --- 页面数（routes 下所有 +page.svelte） ---
 function countPages(dir) {
@@ -60,14 +65,20 @@ const expectReadme = (regex, label, actual) => {
 	}
 };
 
-// 功能特性行：「- **86 个知识点**：数据结构 49 讲（…）+ 数据库 37 讲（…）」
-expectReadme(/(\d+) 个知识点\*\*：数据结构 \d+ 讲/, '知识点总数（功能特性）', dsCount + dbCount);
-expectReadme(/数据结构 (\d+) 讲/, '数据结构讲数（功能特性）', dsCount);
-expectReadme(/\+ 数据库 (\d+) 讲/, '数据库讲数（功能特性）', dbCount);
-// 目录速览注释：「# 94 个页面（/、/catalog、ds×49、db×37、…）」
-expectReadme(/# (\d+) 个页面/, '页面数（目录速览）', pageCount);
-expectReadme(/ds×(\d+)/, 'ds×N（目录速览）', dsCount);
-expectReadme(/db×(\d+)/, 'db×N（目录速览）', dbCount);
+// 课程全景表：「87 个知识点」标题行 + 模块表数据结构 49 / MySQL 11+SQL 27（=db 总数）
+expectReadme(/\*\*(\d+) 个知识点\*\*/, '知识点总数（hero 行）', dsCount + dbCount);
+// Architecture 代码块：「# 99 个页面（/、/home、/catalog、ds×49、db×38…）」
+expectReadme(/# (\d+) 个页面/, '页面数（架构图）', pageCount);
+expectReadme(/ds×(\d+)/, 'ds×N（架构图）', dsCount);
+expectReadme(/db×(\d+)/, 'db×N（架构图）', dbCount);
+// 课程全景表：「| 数据结构   |   49   |」——prettier 会按列宽重排空格，用 \s* 容忍
+expectReadme(/\| 数据结构\s+\|\s+(\d+)\s+\|/, '数据结构课题（课程表）', dsCount);
+expectReadme(/\| MySQL 课程\s+\|\s+(\d+)\s+\|/, 'MySQL 课程课题（课程表）', mysqlCourseCount);
+expectReadme(
+	/\| SQL 实验台\s+\|\s+(\d+)\s+\|/,
+	'SQL 实验台课题（课程表）',
+	dbCount - mysqlCourseCount
+);
 
 if (problems.length) {
 	console.error('\n✗ 文档漂移检测失败：');

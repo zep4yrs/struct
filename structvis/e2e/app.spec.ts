@@ -69,17 +69,21 @@ test.describe('页面加载', () => {
 		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/首页/);
 	});
 
-	test('课程目录页：通讯录形态（搜索 + 分组 + 掌握度）', async ({ page }) => {
+	test('课程目录页：三分段（DS 默认 + 分段切换 + 实验分段隔离）', async ({ page }) => {
 		await page.goto('/struct/catalog');
 		await waitForHydratedGlobal(page);
 		await expect(page.getByRole('heading', { name: '课程', exact: true })).toBeVisible();
 		await expect(page.getByLabel('搜索课程')).toBeVisible();
-		// 分组锚点与分组标签（单源分组）
-		await expect(page.getByText('数据结构 · 排序算法')).toBeVisible();
-		await expect(page.getByText('数据库 · 实验')).toBeVisible();
-		const main = page.locator('main');
-		await expect(main.getByRole('link', { name: /快速排序/ })).toBeVisible();
-		await expect(main.getByRole('link', { name: /数据查询/ })).toBeVisible();
+		// 三分段 tab
+		const segs = await page.locator('.seg-chip .seg-name').allTextContents();
+		expect(segs).toEqual(['数据结构', 'MySQL 课程', 'SQL 实验']);
+		// 默认 DS 分段：数据结构课题可见、数据库课题不在
+		await expect(page.getByRole('link', { name: /快速排序/ }).first()).toBeVisible();
+		await expect(page.getByRole('link', { name: /^数据查询/ })).toHaveCount(0);
+		// 切到 SQL 实验分段：实验课题可见、DS 课题不在
+		await page.locator('.seg-chip', { hasText: 'SQL 实验' }).click();
+		await expect(page.getByRole('link', { name: /SQL 集合运算/ }).first()).toBeVisible();
+		await expect(page.getByRole('link', { name: /^快速排序/ })).toHaveCount(0);
 		// 掌握度条（通讯录行内）
 		await expect(page.locator('.mastery').first()).toBeVisible();
 	});

@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { TransactionEngine, TX_PRESETS } from './TransactionEngine';
-import type { SqlTable } from '../sql/SelectEngine';
+import type { SqlTableData } from '../algorithm/types';
 
-const ACCOUNT_TABLE: SqlTable = {
+const ACCOUNT_TABLE: SqlTableData = {
 	columns: ['账户', '余额'],
 	rows: [
 		['A', 1000],

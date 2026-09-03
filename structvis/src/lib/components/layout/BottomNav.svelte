@@ -77,6 +77,7 @@
 	let sliderEl = $state<HTMLDivElement | null>(null);
 	let dragState: {
 		startX: number;
+		startY: number;
 		baseOffset: number;
 		moved: boolean;
 		pointerId: number;
@@ -94,6 +95,7 @@
 		if (activeIndex < 0 || !navEl) return;
 		dragState = {
 			startX: e.clientX,
+			startY: e.clientY,
 			baseOffset: activeIndex,
 			moved: false,
 			pointerId: e.pointerId
@@ -105,8 +107,15 @@
 	function onPointerMove(e: PointerEvent) {
 		if (!dragState || !navEl) return;
 		const dx = e.clientX - dragState.startX;
+		const dy = e.clientY - dragState.startY;
 		if (!dragState.moved) {
-			if (Math.abs(dx) <= 4) return;
+			if (Math.abs(dx) <= 6) return;
+			// 轴线锁定：垂直意图（下拉通知/页面滚动）大于水平时放弃拖拽判定，
+			// 交还浏览器原生手势——触屏横滑可用的关键
+			if (Math.abs(dy) > Math.abs(dx)) {
+				dragState = null;
+				return;
+			}
 			dragState.moved = true;
 			try {
 				navEl.setPointerCapture(dragState.pointerId);

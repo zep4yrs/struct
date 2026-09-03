@@ -46,7 +46,10 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 		return;
 	}
 
-	// 其余同源 GET（hash 指纹的不可变资源）：缓存优先
+	// 其余同源 GET（hash 指纹的不可变资源）：缓存优先。
+	// 断裂防护：部署间隙页面（新 HTML）引用的新 hash 资源未入缓存时走网络；
+	// 网络失败则直接透传错误（hash 资源不存在时无可用回退），绝不能命中
+	// 旧缓存里其他资源——那会让 chunk 解析错乱（dynamic import TypeError 根因）。
 	event.respondWith(
 		caches.match(event.request).then((cached) => {
 			if (cached) return cached;

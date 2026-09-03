@@ -75,8 +75,8 @@
 		<div class="fab-cluster">
 			<button
 				class="fab-btn"
-				aria-label="搜索课程"
-				title="搜索课程 (/)"
+				aria-label="全局搜索"
+				title="全局搜索 (/)"
 				onclick={() => (searchOpen = true)}
 			>
 				<svg

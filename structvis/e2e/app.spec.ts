@@ -310,7 +310,7 @@ test.describe('主题与导航', () => {
 		await expect(page.locator('.bottom-nav')).toBeVisible();
 		await expect(page.locator('.fab-cluster')).toBeVisible();
 		// 五 tab：首页/课程/实验/复习/我的
-		const tabs = await page.locator('.bottom-nav .tab').allTextContents();
+		const tabs = (await page.locator('.bottom-nav .tab').allTextContents()).map((t) => t.trim());
 		expect(tabs).toEqual(['首页', '课程', '实验', '复习', '我的']);
 		// 当前 tab 高亮（课程）
 		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/课程/);
@@ -339,7 +339,7 @@ test.describe('搜索', () => {
 		await page.goto('/');
 		await waitForHydratedGlobal(page);
 
-		await page.getByRole('button', { name: '搜索课程' }).click();
+		await page.getByRole('button', { name: '全局搜索' }).click();
 		const dialog = page.getByRole('dialog', { name: '搜索课程' });
 		await expect(dialog).toBeVisible();
 

@@ -21,7 +21,10 @@
 
 	function stripBase(path: string): string {
 		if (!base || base === '/') return path;
-		return path.startsWith(base) ? path.slice(base.length) || '/' : path;
+		if (!path.startsWith(base)) return path;
+		// 归一化尾部斜杠：dev/Pages 会以目录 URL（…/bubble-sort/）服务，单源 href 无尾斜杠
+		const stripped = (path.slice(base.length) || '/').replace(/\/+$/, '');
+		return stripped === '' ? '/' : stripped;
 	}
 
 	// v3 布局路径线：侧栏移除后，课程页的路径线 = 「← 返回课程」+ 上一课/下一课 pager。

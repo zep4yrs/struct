@@ -57,7 +57,7 @@ test.describe('播放器移动端适配（375×667）', () => {
 		await page.goto('/struct/');
 		await page.waitForSelector('body[data-app-ready="1"]');
 		await expect(page.locator('.bottom-nav')).toBeVisible();
-		const tabs = await page.locator('.bottom-nav .tab').allTextContents();
+		const tabs = (await page.locator('.bottom-nav .tab').allTextContents()).map((t) => t.trim());
 		expect(tabs).toEqual(['首页', '课程', '实验', '复习', '我的']);
 	});
 

@@ -3,14 +3,16 @@
 
 	/**
 	 * 主题切换遮罩动画（狼人杀梗）：
-	 * 圆形遮罩从中心展开覆盖屏幕 → 遮盖瞬间落主题 → 日/月蚀变 morph + 字幕
-	 * 「天黑请闭眼」/「天亮请睁眼」→ 遮罩淡出揭幕新主题。
+	 * 反向聚光灯——屏幕中央留一个「洞」透出旧页面，洞随日⇄月蚀变同步收缩
+	 * （夜幕/晨光从四周合拢），洞闭合的瞬间才落主题（变换发生在动画过程中，
+	 * 旧内容已被遮没，无可见跳变）→ 字幕「天黑请闭眼/天亮请睁眼」→ 揭幕淡出。
 	 * 触发源 toggleTheme 已旁路 reduced-motion / webdriver / 单测，此处只管播。
 	 */
 	let active = $state(false);
 	let toDark = $state(true);
 
-	let bgEl: HTMLDivElement | undefined = $state();
+	let rootEl: HTMLDivElement | undefined = $state();
+	let hole: HTMLDivElement | undefined = $state(); // 反向遮罩：洞外是 veil 色
 	let sunDisc: SVGCircleElement | undefined = $state(); // 琥珀日轮
 	let moonDisc: SVGCircleElement | undefined = $state(); // 银白月轮
 	let bite: SVGCircleElement | undefined = $state(); // 咬出月牙的遮罩圆
@@ -18,6 +20,8 @@
 	let caption: HTMLParagraphElement | undefined = $state();
 
 	const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+	/** 洞最终收缩到的半径 = 图标聚焦圈 */
+	const HOLE_FINAL_R = 118;
 
 	$effect(() => {
 		const d = $themeVeil;
@@ -28,26 +32,27 @@
 	async function run(dark: boolean) {
 		toDark = dark;
 		active = true;
+		await wait(0); // 等 DOM 挂载
 		const veilColor = dark ? '#161514' : '#faf9f6';
-		if (bgEl) bgEl.style.background = veilColor;
-		const captionColor = dark ? '#e9e6e0' : '#1a1a1a';
-		if (caption) caption.style.color = captionColor;
+		if (caption) caption.style.color = dark ? '#e9e6e0' : '#1a1a1a';
+		const R = Math.hypot(window.innerWidth, window.innerHeight) / 2 + 40;
+		if (hole) {
+			hole.style.width = hole.style.height = `${R * 2}px`;
+			hole.style.boxShadow = `0 0 0 200vmax ${veilColor}`;
+		}
 
-		// ── 1. 圆形遮罩展开盖屏 ──
-		const clip = bgEl?.animate(
-			[{ clipPath: 'circle(0% at 50% 42%)' }, { clipPath: 'circle(142% at 50% 42%)' }],
-			{ duration: 520, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'forwards' }
+		const ease = 'cubic-bezier(.55,.06,.35,1)';
+		const opt = { duration: 1150, easing: ease, fill: 'forwards' } as const;
+
+		// ── 同步开始：洞收缩（日夜合拢）＋ 日⇄月蚀变 ＋ 字幕 ──
+		const shrink = hole?.animate(
+			[
+				{ transform: 'translate(-50%,-50%) scale(1)' },
+				{ transform: `translate(-50%,-50%) scale(${HOLE_FINAL_R / R})` }
+			],
+			opt
 		);
-		if (clip) await clip.finished.catch(() => {});
-
-		// ── 2. 全盖瞬间落主题（揭幕即新主题） ──
-		settleThemeVeil(dark ? 'dark' : 'light');
-
-		// ── 3. 日⇄月蚀变 + 字幕 ──
-		const ease = 'cubic-bezier(.6,0,.3,1)';
-		const opt = { duration: 950, easing: ease, fill: 'forwards' } as const;
 		if (bite) {
-			// 咬入（日→月）或退离（月→日）
 			bite.animate(
 				dark
 					? [{ transform: 'translate(84px,-58px)' }, { transform: 'translate(0,0)' }]
@@ -79,13 +84,25 @@
 					{ opacity: 0, transform: 'translateY(10px)', letterSpacing: '0.62em' },
 					{ opacity: 1, transform: 'translateY(0)', letterSpacing: '0.22em' }
 				],
-				{ duration: 800, delay: 180, easing: ease, fill: 'forwards' }
+				{ duration: 750, delay: 200, easing: ease, fill: 'forwards' }
 			);
 		}
-		await wait(1450);
+		if (shrink) await shrink.finished.catch(() => {});
 
-		// ── 4. 遮罩淡出揭幕 ──
-		const fade = bgEl?.animate([{ opacity: 1 }, { opacity: 0 }], {
+		// ── 洞收拢到图标圈后闭合并淡出 → 旧内容完全被遮没 → 此刻落主题 ──
+		const close = hole?.animate([{ opacity: 1 }, { opacity: 0 }], {
+			duration: 130,
+			easing: 'ease-in',
+			fill: 'forwards'
+		});
+		if (close) await close.finished.catch(() => {});
+		settleThemeVeil(dark ? 'dark' : 'light');
+
+		// ── 图标+字幕停驻 ──
+		await wait(1050);
+
+		// ── 揭幕淡出 ──
+		const fade = rootEl?.animate([{ opacity: 1 }, { opacity: 0 }], {
 			duration: 430,
 			easing: 'ease-out',
 			fill: 'forwards'
@@ -93,18 +110,14 @@
 		if (fade) await fade.finished.catch(() => {});
 
 		active = false;
-		// 复位 WAAPI fill 残留
-		if (bgEl) {
-			bgEl.getAnimations().forEach((a) => a.cancel());
-			bgEl.style.background = 'transparent';
-		}
+		hole?.getAnimations().forEach((a) => a.cancel());
 		endThemeVeil();
 	}
 </script>
 
 {#if active}
-	<div class="theme-veil" aria-hidden="true">
-		<div class="veil-bg" bind:this={bgEl}></div>
+	<div class="theme-veil" bind:this={rootEl} aria-hidden="true">
+		<div class="veil-hole" bind:this={hole}></div>
 		<div class="veil-stage">
 			<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<defs>
@@ -165,14 +178,18 @@
 		position: fixed;
 		inset: 0;
 		z-index: 10001; /* 高于开屏 9999 与 fab 60 */
+		overflow: hidden; /* 裁掉洞的巨大 box-shadow 视口外部分 */
 		pointer-events: all; /* 动画期吞点击防重复触发 */
 	}
 
-	.veil-bg {
+	/* 反向聚光灯：中央圆孔透出旧页面，box-shadow 实心环 = 四周涌入的夜幕/晨光 */
+	.veil-hole {
 		position: absolute;
-		inset: 0;
-		background: transparent;
-		will-change: clip-path, opacity;
+		left: 50%;
+		top: 42%;
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+		will-change: transform, opacity;
 	}
 
 	.veil-stage {

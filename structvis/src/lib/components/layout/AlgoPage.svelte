@@ -36,6 +36,7 @@
 	const nextTopic = $derived(
 		topicIndex >= 0 && topicIndex < allTopics.length - 1 ? allTopics[topicIndex + 1] : null
 	);
+	const topic = $derived(topicIndex >= 0 ? allTopics[topicIndex] : null);
 </script>
 
 <!-- 每课题页独立 title/description（预渲染进静态 HTML：SEO/多标签/分享抓取都依赖） -->
@@ -79,11 +80,37 @@
 		<h1 class="page-title" use:reveal={{ delay: 90 }}>{title}</h1>
 		<!-- 包装在组件内声明，.page-desc 作用域才有效（snippet 内容属于父组件作用域） -->
 		<p class="page-desc" use:reveal={{ delay: 180 }}>{@render desc()}</p>
+		{#if topic?.hook}
+			<p class="page-hook" use:reveal={{ delay: 240 }}>“{topic.hook}”</p>
+		{/if}
 	</div>
 
 	<div class="player-wrap" use:reveal={{ delay: 270 }}>
 		{@render children()}
 	</div>
+
+	{#if topic?.exam}
+		<aside class="exam-card liquid" use:reveal={{ delay: 60, y: 12 }} aria-label="考点卡">
+			<div class="exam-head">
+				<span class="exam-tag">考点卡</span>
+				<span class="exam-title">这一页在考试里怎么考</span>
+			</div>
+			<dl class="exam-body">
+				<div class="exam-row">
+					<dt>怎么考</dt>
+					<dd>{topic.exam.how}</dd>
+				</div>
+				<div class="exam-row">
+					<dt>答题要点</dt>
+					<dd>{topic.exam.points}</dd>
+				</div>
+				<div class="exam-row">
+					<dt>易丢分</dt>
+					<dd>{topic.exam.pitfalls}</dd>
+				</div>
+			</dl>
+		</aside>
+	{/if}
 
 	{#if topicIndex >= 0}
 		<div class="pager" use:reveal={{ delay: 120, y: 12 }}>
@@ -106,6 +133,81 @@
 </div>
 
 <style>
+	.page-hook {
+		margin: 10px 0 0;
+		font-family: var(--font-display);
+		font-size: 16.5px;
+		color: var(--color-ink-2);
+		letter-spacing: 0.01em;
+	}
+
+	.exam-card {
+		margin-top: 26px;
+		border-radius: var(--radius-md);
+		padding: 18px 22px;
+	}
+
+	.exam-head {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+		margin-bottom: 12px;
+	}
+
+	.exam-tag {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+		border-radius: 999px;
+		padding: 2px 10px;
+	}
+
+	.exam-title {
+		font-family: var(--font-display);
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--color-ink);
+	}
+
+	.exam-body {
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 9px;
+	}
+
+	.exam-row {
+		display: flex;
+		gap: 12px;
+		align-items: baseline;
+	}
+
+	.exam-row dt {
+		flex-shrink: 0;
+		width: 64px;
+		font-family: var(--font-mono);
+		font-size: 11.5px;
+		color: var(--color-ink-3);
+		letter-spacing: 0.08em;
+	}
+
+	.exam-row dd {
+		margin: 0;
+		font-size: 13.5px;
+		line-height: 1.7;
+		color: var(--color-ink-2);
+	}
+
+	@media (max-width: 640px) {
+		.exam-row {
+			flex-direction: column;
+			gap: 3px;
+		}
+	}
+
 	.page {
 		max-width: min(1440px, 100%);
 		margin: 0 auto;

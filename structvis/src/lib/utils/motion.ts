@@ -41,9 +41,14 @@ export interface RevealOptions {
 	loop?: 'float' | 'breathe';
 }
 
+/** 动画完成后清除 anime 写入的内联 transform——否则会以 inline 样式压死 CSS :hover 的 3D 悬浮 */
+function clearInlineTransform(node: HTMLElement) {
+	node.style.transform = '';
+}
+
 /** 入场完成后启用循环微动效（清除 anime 残留的内联 transform，交给 CSS 动画） */
 function applyLoop(node: HTMLElement, loop: 'float' | 'breathe', delay: number) {
-	node.style.transform = '';
+	clearInlineTransform(node);
 	if (loop === 'float') {
 		node.classList.add('loop-float');
 		// 错相位：基础延迟 + 随机偏移，避免全部同步浮动
@@ -76,6 +81,7 @@ export function reveal(node: HTMLElement, opts: RevealOptions = {}) {
 		delay,
 		ease: easing ?? springEasing(),
 		onComplete: () => {
+			clearInlineTransform(node);
 			if (loop) applyLoop(node, loop, delay);
 		}
 	});
@@ -172,6 +178,7 @@ export function revealOnScroll(node: HTMLElement, opts: ScrollRevealOptions = {}
 					...common,
 					delay,
 					onComplete: () => {
+						clearInlineTransform(node);
 						if (loop) applyLoop(node, loop, delay);
 					}
 				});

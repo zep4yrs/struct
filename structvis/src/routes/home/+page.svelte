@@ -69,6 +69,9 @@
 </script>
 
 <div class="dash">
+	<!-- 玻璃衬底：低透明度柔光斑（页面级 absolute，滚动全程伴随）——
+	     磨砂卡背后有可折射的色彩层次，玻璃透感才可见（纯纸底+方格 blur 后无对比） -->
+	<div class="aurora" aria-hidden="true"></div>
 	<!-- ═══ 首屏：问候 + 继续学习 hero + 今日待办 ═══ -->
 	<header class="dash-head" use:reveal>
 		<p class="dash-eyebrow">STRUCTVIS · 我的学习台</p>
@@ -294,9 +297,45 @@
 
 <style>
 	.dash {
+		position: relative;
 		max-width: 1080px;
 		margin: 0 auto;
 		padding: 0 24px 140px;
+	}
+
+	/* 柔光衬底：token 主题化（亮/暗自适应），浓度以「磨砂可见但不抢内容」为准 */
+	.aurora {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background:
+			radial-gradient(
+				40rem 26rem at 6% 3%,
+				color-mix(in srgb, var(--color-accent) 26%, transparent),
+				transparent 70%
+			),
+			radial-gradient(
+				44rem 30rem at 97% 14%,
+				color-mix(in srgb, var(--color-academic) 24%, transparent),
+				transparent 70%
+			),
+			radial-gradient(
+				38rem 26rem at 10% 48%,
+				color-mix(in srgb, var(--color-academic) 18%, transparent),
+				transparent 70%
+			),
+			radial-gradient(
+				40rem 28rem at 94% 76%,
+				color-mix(in srgb, var(--color-accent) 22%, transparent),
+				transparent 70%
+			);
+	}
+
+	/* 主页玻璃浓度覆盖：比全局 .liquid 更透一档（aurora 衬底下磨砂透感才可见），
+	   仅作用于本页，不动全局 token */
+	.dash :global(.liquid) {
+		background: color-mix(in srgb, var(--color-surface) 60%, transparent);
 	}
 
 	/* ═══ 首屏头部 ═══ */

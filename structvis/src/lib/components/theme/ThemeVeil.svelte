@@ -45,10 +45,12 @@
 		const opt = { duration: 1150, easing: ease, fill: 'forwards' } as const;
 
 		// ── 同步开始：洞收缩（日夜合拢）＋ 日⇄月蚀变 ＋ 字幕 ──
+		// 注意：洞只能动 width/height——box-shadow 随 transform 缩放，scale 收缩
+		// 后期阴影延伸不够到视口四角，旧页面会从边缘漏出（实测踩坑）
 		const shrink = hole?.animate(
 			[
-				{ transform: 'translate(-50%,-50%) scale(1)' },
-				{ transform: `translate(-50%,-50%) scale(${HOLE_FINAL_R / R})` }
+				{ width: `${R * 2}px`, height: `${R * 2}px` },
+				{ width: `${HOLE_FINAL_R * 2}px`, height: `${HOLE_FINAL_R * 2}px` }
 			],
 			opt
 		);
@@ -182,14 +184,15 @@
 		pointer-events: all; /* 动画期吞点击防重复触发 */
 	}
 
-	/* 反向聚光灯：中央圆孔透出旧页面，box-shadow 实心环 = 四周涌入的夜幕/晨光 */
+	/* 反向聚光灯：中央圆孔透出旧页面，box-shadow 实心环 = 四周涌入的夜幕/晨光。
+	   spread 200vmax 恒定（width/height 动画不缩放阴影），任何时刻都远超视口 */
 	.veil-hole {
 		position: absolute;
 		left: 50%;
 		top: 42%;
 		border-radius: 50%;
 		transform: translate(-50%, -50%);
-		will-change: transform, opacity;
+		will-change: width, height;
 	}
 
 	.veil-stage {

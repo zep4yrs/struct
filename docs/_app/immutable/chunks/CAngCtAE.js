@@ -1,1 +1,0 @@
-import{t as e}from"./DaOSkRID.js";var t=e(`structvis:settings`,{theme:`light`,sqlEngine:`sqljs`,animationSpeed:1,showHints:!0,particleBackground:!0,openingAnimation:!0,openingSound:!0});function n(){t.update(e=>({...e,theme:e.theme===`light`?`dark`:`light`}))}export{n,t};

@@ -12,6 +12,7 @@
 	let toDark = $state(true);
 
 	let rootEl: HTMLDivElement | undefined = $state();
+	let bgEl: HTMLDivElement | undefined = $state(); // 全屏 veil 色层：随收缩同步渐入（整页变暗，洞边界消融）
 	let hole: HTMLDivElement | undefined = $state(); // 反向遮罩：洞外是 veil 色
 	let sunDisc: SVGCircleElement | undefined = $state(); // 琥珀日轮
 	let moonDisc: SVGCircleElement | undefined = $state(); // 银白月轮
@@ -34,6 +35,7 @@
 		active = true;
 		await wait(0); // 等 DOM 挂载
 		const veilColor = dark ? '#161514' : '#faf9f6';
+		if (bgEl) bgEl.style.background = veilColor;
 		if (caption) caption.style.color = dark ? '#e9e6e0' : '#1a1a1a';
 		const R = Math.hypot(window.innerWidth, window.innerHeight) / 2 + 40;
 		if (hole) {
@@ -45,7 +47,10 @@
 		const ease = 'cubic-bezier(.25,.6,.3,1)';
 		const opt = { duration: 900, easing: ease, fill: 'forwards' } as const;
 
-		// ── 同步开始：洞收缩（日夜合拢）＋ 日⇄月蚀变 ＋ 字幕 ──
+		// ── 同步开始：整页渐暗（洞内同步变暗）＋ 洞收缩 ＋ 蚀变 ＋ 字幕 ──
+		// bg 层 opacity 0→1 与洞收缩同曲线：洞里透出的页面同步被「夜幕」压暗，
+		// 洞边界随内外色差减小而消融——末段慢速时不再有亮色小圆残留（一镜到底）
+		const dim = bgEl?.animate([{ opacity: 0 }, { opacity: 1 }], opt);
 		// 洞只能动 width/height——box-shadow 随 transform 缩放，scale 后期阴影够
 		// 不到视口四角会漏出旧页面（实测踩坑）。
 		// 收缩到位后不停顿：末段 25% 时长内同步渐隐（边收边灭，无「空白圆卡一下」）
@@ -98,6 +103,7 @@
 			);
 		}
 		if (shrink) await shrink.finished.catch(() => {});
+		if (dim) await dim.finished.catch(() => {});
 
 		// ── 洞已收拢并渐隐（旧内容完全被遮没）→ 此刻落主题 ──
 		settleThemeVeil(dark ? 'dark' : 'light');
@@ -115,12 +121,15 @@
 
 		active = false;
 		hole?.getAnimations().forEach((a) => a.cancel());
+		bgEl?.getAnimations().forEach((a) => a.cancel());
+		if (bgEl) bgEl.style.background = 'transparent';
 		endThemeVeil();
 	}
 </script>
 
 {#if active}
 	<div class="theme-veil" bind:this={rootEl} aria-hidden="true">
+		<div class="veil-bg" bind:this={bgEl}></div>
 		<div class="veil-hole" bind:this={hole}></div>
 		<div class="veil-stage">
 			<svg class="veil-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -186,6 +195,15 @@
 		z-index: 10001; /* 高于开屏 9999 与 fab 60 */
 		overflow: hidden; /* 裁掉洞的巨大 box-shadow 视口外部分 */
 		pointer-events: all; /* 动画期吞点击防重复触发 */
+	}
+
+	/* 全屏 veil 色层：与洞收缩同步渐入 → 洞内页面同步被压暗，洞边界消融 */
+	.veil-bg {
+		position: absolute;
+		inset: 0;
+		background: transparent;
+		opacity: 0;
+		will-change: opacity;
 	}
 
 	/* 反向聚光灯：中央圆孔透出旧页面，box-shadow 实心环 = 四周涌入的夜幕/晨光。

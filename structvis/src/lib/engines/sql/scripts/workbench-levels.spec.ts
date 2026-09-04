@@ -98,12 +98,79 @@ describe('关卡 judge 路径', () => {
 		expect(LEVELS[7].judge(mk(90)).ok).toBe(false);
 	});
 
-	it('全部关卡字段完整性', () => {
-		for (const l of LEVELS) {
+	it('第 9 关：子查询乱序通过，缺人拒绝', () => {
+		const rows = [
+			['周八', 95],
+			['张三', 88],
+			['李四', 92],
+			['赵六', 85]
+		];
+		expect(LEVELS[8].judge({ columns: [], rows, eqp: '', queryTable: noQuery }).ok).toBe(true);
+		expect(LEVELS[8].judge({ columns: [], rows: [rows[0]], eqp: '', queryTable: noQuery }).ok).toBe(
+			false
+		);
+	});
+
+	it('第 11 关：CASE 分档三行全对通过，漏档拒绝', () => {
+		const rows = [
+			['优秀', 2],
+			['良好', 2],
+			['待提高', 2]
+		];
+		expect(LEVELS[10].judge({ columns: [], rows, eqp: '', queryTable: noQuery }).ok).toBe(true);
+		expect(
+			LEVELS[10].judge({ columns: [], rows: rows.slice(0, 2), eqp: '', queryTable: noQuery }).ok
+		).toBe(false);
+	});
+
+	it('第 13 关：COUNT=4 通过，其他拒绝', () => {
+		const mk = (n: number) => ({
+			columns: [],
+			rows: [],
+			eqp: '',
+			queryTable: () => ({ columns: ['COUNT(*)'], rows: [[n]] })
+		});
+		expect(LEVELS[12].judge(mk(4)).ok).toBe(true);
+		expect(LEVELS[12].judge(mk(5)).ok).toBe(false);
+	});
+
+	it('第 16 关：5 行 + SEARCH 通过，无索引拒绝', () => {
+		const okV = LEVELS[15].judge({
+			columns: ['姓名', '成绩'],
+			rows: [
+				['张三', 90],
+				['张三', 85],
+				['李四', 95],
+				['王五', 78],
+				['孙七', 60]
+			],
+			eqp: 'SEARCH 选课 USING INDEX idx',
+			queryTable: noQuery
+		});
+		const badV = LEVELS[15].judge({
+			columns: ['姓名', '成绩'],
+			rows: [
+				['张三', 90],
+				['张三', 85],
+				['李四', 95],
+				['王五', 78],
+				['孙七', 60]
+			],
+			eqp: 'SCAN 选课',
+			queryTable: noQuery
+		});
+		expect(okV.ok).toBe(true);
+		expect(badV.ok).toBe(false);
+	});
+
+	it('全部 16 关编号连续且字段完整', () => {
+		expect(LEVELS.length).toBe(16);
+		LEVELS.forEach((l, i) => {
+			expect(l.id).toBe(i + 1);
 			expect(l.title.length).toBeGreaterThan(0);
 			expect(l.task.length).toBeGreaterThan(0);
 			expect(l.hint.length).toBeGreaterThan(0);
 			expect(l.topicId.length).toBeGreaterThan(0);
-		}
+		});
 	});
 });

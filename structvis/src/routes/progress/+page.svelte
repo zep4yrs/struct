@@ -523,6 +523,11 @@
 										<button class="btn btn-ghost btn-sm" onclick={() => startReview(mistake)}>
 											重新作答
 										</button>
+										{#if mistake.type === 'sql'}
+											<a href={resolve('/db/workbench')} class="btn btn-ghost btn-sm">
+												去工作台重练
+											</a>
+										{/if}
 										<button
 											class="btn btn-ghost btn-sm"
 											onclick={() => markMistakeMastered(mistake.id)}

@@ -200,5 +200,145 @@ export const LEVELS: Level[] = [
 				? { ok: true, reason: 'HAVING 过滤正确：计算机与网络工程达标。' }
 				: { ok: false, reason: '期望 计算机(≈86) / 网络工程(85)——HAVING 作用于分组后。' };
 		}
+	},
+	{
+		id: 9,
+		title: '第九关 · 高于平均分',
+		task: '用子查询查出成绩高于全体平均分的学生姓名与成绩（不限顺序）。',
+		hint: 'WHERE 成绩 > (SELECT AVG(成绩) FROM 学生)',
+		topicId: 'subquery',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals(
+				{ columns: [], rows },
+				[
+					['张三', 88],
+					['李四', 92],
+					['赵六', 85],
+					['周八', 95]
+				],
+				{ ordered: false }
+			);
+			return ok
+				? { ok: true, reason: '子查询正确：4 人高于全体平均（约 83.2）。' }
+				: { ok: false, reason: '应为 张三88 / 李四92 / 赵六85 / 周八95——平均分先在里层算出来。' };
+		}
+	},
+	{
+		id: 10,
+		title: '第十关 · 每门课几人选',
+		task: '统计每门课程的课程号与选课人数，按课程号升序。',
+		hint: '选课表 GROUP BY 课程号 + COUNT(*)',
+		topicId: 'join',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals({ columns: [], rows }, [
+				['C001', 3],
+				['C002', 2]
+			]);
+			return ok
+				? { ok: true, reason: '统计正确：C001 三人、C002 两人。' }
+				: { ok: false, reason: '期望 C001→3 人、C002→2 人——只统计选课表即可。' };
+		}
+	},
+	{
+		id: 11,
+		title: '第十一关 · 成绩分档',
+		task: '按成绩给学生分档：大于等于 90 优秀、大于等于 80 良好、其余待提高。输出档名与人数，不限顺序。',
+		hint: 'CASE WHEN 成绩>=90 THEN ... END AS 档次，再 GROUP BY 档次',
+		topicId: 'case-expr',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals(
+				{ columns: [], rows },
+				[
+					['优秀', 2],
+					['良好', 2],
+					['待提高', 2]
+				],
+				{ ordered: false }
+			);
+			return ok
+				? { ok: true, reason: '分档正确：优秀 2 · 良好 2 · 待提高 2。' }
+				: { ok: false, reason: '期望 优秀/良好/待提高 各 2 人——CASE 分段别漏 ELSE。' };
+		}
+	},
+	{
+		id: 12,
+		title: '第十二关 · 翻到第二页',
+		task: '查有选课记录的不同学号（升序），每页 2 条，取第二页。',
+		hint: 'SELECT DISTINCT 学号 ... ORDER BY 学号 LIMIT 2 OFFSET 2',
+		topicId: 'distinct-paging',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals({ columns: [], rows }, [[20103], [20105]]);
+			return ok
+				? { ok: true, reason: '分页正确：第二页是 20103、20105。' }
+				: { ok: false, reason: '应为 20103、20105——先 DISTINCT 去重排序，再 LIMIT 2 OFFSET 2。' };
+		}
+	},
+	{
+		id: 13,
+		title: '第十三关 · 清理低分记录',
+		task: '从选课表删除成绩低于 70 的选课记录，然后查剩余选课记录数。',
+		hint: 'DELETE FROM 选课 WHERE 成绩 < 70；再 SELECT COUNT(*)',
+		topicId: 'update',
+		judge: ({ queryTable }) => {
+			const r = queryTable('SELECT COUNT(*) FROM 选课');
+			const ok = resultSetEquals(r, [[4]]);
+			return ok
+				? { ok: true, reason: '删除成功：那条 60 分的选课记录已清理，剩 4 条。' }
+				: {
+						ok: false,
+						reason: `剩余应为 4 条（当前 ${JSON.stringify(r.rows)}）——条件是 成绩 < 70。`
+					};
+		}
+	},
+	{
+		id: 14,
+		title: '第十四关 · 优秀生视图',
+		task: '创建视图 v_good（成绩不低于 85 的学生姓名与成绩），再从视图查出全部行，按成绩降序。',
+		hint: 'CREATE VIEW v_good AS SELECT ...；再 SELECT * FROM v_good ORDER BY 成绩 DESC',
+		topicId: 'view',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals({ columns: [], rows }, [
+				['周八', 95],
+				['李四', 92],
+				['张三', 88],
+				['赵六', 85]
+			]);
+			return ok
+				? { ok: true, reason: '视图创建并查询成功——虚拟表用起来和真表一样。' }
+				: { ok: false, reason: '期望 4 行按成绩降序——视图里 WHERE 成绩 >= 85。' };
+		}
+	},
+	{
+		id: 15,
+		title: '第十五关 · 带约束建表',
+		task: '建一张「报名」表：考号 INTEGER PRIMARY KEY、姓名 TEXT NOT NULL；插入一行 (20107, 吴九)，然后查报名表全部行。',
+		hint: 'CREATE TABLE 报名(考号 INTEGER PRIMARY KEY, 姓名 TEXT NOT NULL)；INSERT 后 SELECT',
+		topicId: 'constraints',
+		judge: ({ queryTable }) => {
+			const r = queryTable('SELECT 考号, 姓名 FROM 报名');
+			const ok = resultSetEquals(r, [[20107, '吴九']]);
+			return ok
+				? { ok: true, reason: '建表与插入成功——主键与 NOT NULL 约束生效。' }
+				: {
+						ok: false,
+						reason: `报名表应为 20107/吴九（当前 ${JSON.stringify(r.rows)}）——先建表再插入。`
+					};
+		}
+	},
+	{
+		id: 16,
+		title: '第十六关 · 让连接走索引',
+		task: '为选课表的学号列建索引，然后连接查询每个学生的姓名与选课成绩。要求执行计划出现 SEARCH。',
+		hint: 'CREATE INDEX idx ON 选课(学号)；再 学生 JOIN 选课 ON 学号',
+		topicId: 'explain-detail',
+		judge: ({ rows, eqp }) => {
+			const ok = rows.length === 5 && eqp.includes('SEARCH');
+			return ok
+				? { ok: true, reason: '连接计划命中索引（SEARCH），5 条选课成绩全部取出。' }
+				: {
+						ok: false,
+						reason: `期望 5 行且计划含 SEARCH（当前 ${rows.length} 行）——先建索引再看右侧计划。`
+					};
+		}
 	}
 ];

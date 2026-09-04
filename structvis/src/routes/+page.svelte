@@ -5,7 +5,6 @@
 	import { dsTopics, dbTopics, TOPIC_ALIASES } from '$lib/content/topics';
 	import { QUIZ_BANK } from '$lib/content/quiz-bank';
 	import { reveal, revealOnScroll, prefersReducedMotion } from '$lib/utils/motion';
-	import SplashOverlay from '$lib/components/splash/SplashOverlay.svelte';
 
 	const topicTotal = dsTopics.length + dbTopics.length;
 	// 别名组数从搜索别名单源派生（避免文案硬编码漂移）
@@ -14,7 +13,6 @@
 	let titleLine1: HTMLSpanElement | undefined = $state();
 	let titleLine2: HTMLSpanElement | undefined = $state();
 	let scrollHint: HTMLDivElement | undefined = $state();
-	let splashDone = $state(false);
 
 	function heroPlay() {
 		if (prefersReducedMotion()) return;
@@ -43,18 +41,11 @@
 		}
 	}
 
-	// 开屏播完（或被跳过/门控跳过）后再启动 hero 入场动画，避免动画在开屏下空转
-	$effect(() => {
-		if (splashDone) heroPlay();
-	});
-
+	// 开屏动画已移至 /home（应用首页）；本页 hero 直接入场
 	onMount(() => {
-		// hero 入场改为等开屏完成；若开屏已门控跳过，splashDone 会立刻为 true
+		heroPlay();
 	});
 </script>
-
-<!-- ══════════ 开屏动画（首次访问，可跳过/设置关闭） ══════════ -->
-<SplashOverlay onfinished={() => (splashDone = true)} />
 
 <!-- ══════════ 首屏 Hero：整屏电影海报 ══════════ -->
 <section class="hero">

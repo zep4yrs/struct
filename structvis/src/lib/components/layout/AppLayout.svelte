@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import BottomNav from '$lib/components/layout/BottomNav.svelte';
 	import SearchDialog from '$lib/components/layout/SearchDialog.svelte';
+	import ThemeVeil from '$lib/components/theme/ThemeVeil.svelte';
 	import { settings, toggleTheme } from '$lib/stores/settings';
 	import { page } from '$app/stores';
 	import { base, resolve } from '$app/paths';
@@ -172,6 +173,7 @@
 {/if}
 
 <SearchDialog open={searchOpen} onClose={() => (searchOpen = false)} />
+<ThemeVeil />
 
 <style>
 	.skip-link {

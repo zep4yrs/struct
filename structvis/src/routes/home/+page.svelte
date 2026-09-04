@@ -4,6 +4,7 @@
 	import { dsTopics, dbTopics, TOPIC_ALIASES } from '$lib/content/topics';
 	import { QUIZ_BANK } from '$lib/content/quiz-bank';
 	import { reveal, revealOnScroll } from '$lib/utils/motion';
+	import SplashOverlay from '$lib/components/splash/SplashOverlay.svelte';
 
 	function greeting(): string {
 		const h = new Date().getHours();
@@ -291,6 +292,9 @@
 		<span>© 2026 zep4yrs</span>
 	</footer>
 </div>
+
+<!-- ═══ 开屏动画：归属应用首页（首次访问，可跳过/设置关闭/回访门控） ═══ -->
+<SplashOverlay />
 
 <style>
 	.dash {

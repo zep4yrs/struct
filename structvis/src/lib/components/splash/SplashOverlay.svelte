@@ -8,6 +8,18 @@
 
 	let { onfinished = () => {} }: Props = $props();
 
+	/* portal 到 body：开屏层必须以视口定位——页面切换容器（.page-transition）的
+	   入场动画带 transform 终态，会把 fixed 后代的定位基准劫持为整个页面容器，
+	   导致 splash 内容「居中到文档中部、要滚动才能看见」（与 CoachMarkLayer 同因） */
+	function portalToBody(node: HTMLElement) {
+		document.body.appendChild(node);
+		return {
+			destroy() {
+				node.remove();
+			}
+		};
+	}
+
 	/* ── 门控（跳过条件） ── */
 	let shown = $state(false);
 	const w = typeof window !== 'undefined' ? (window as unknown as Record<string, unknown>) : {};
@@ -321,7 +333,7 @@
 </script>
 
 {#if shown}
-	<div class="sv-splash" id="sv-splash" bind:this={splashEl}>
+	<div class="sv-splash" id="sv-splash" bind:this={splashEl} use:portalToBody>
 		<div class="sv-stage">
 			<div class="sv-logo" bind:this={logoWrap}>
 				<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -429,7 +441,7 @@
 			</p>
 		</div>
 	</div>
-	<button class="sv-skip" class:show={skipShown} onclick={skip}>跳过 →</button>
+	<button class="sv-skip" class:show={skipShown} use:portalToBody onclick={skip}>跳过 →</button>
 {/if}
 
 <style>

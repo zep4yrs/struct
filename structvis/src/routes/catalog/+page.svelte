@@ -113,7 +113,7 @@
 </script>
 
 <div class="mx-auto max-w-6xl px-5 pb-28 2xl:max-w-[1400px]">
-	<!-- 头部：标题 + 搜索条 -->
+	<!-- 标题区：与其他页一致的头结构（眉标 + 大标题），随滚动离开 -->
 	<header class="catalog-head">
 		<div class="catalog-head-row">
 			<div>
@@ -126,6 +126,10 @@
 				<a class="tool-link" href={resolve('/race')}>竞速实验室</a>
 			</nav>
 		</div>
+	</header>
+
+	<!-- 工具栏：搜索 + 分段 tab + 锚点保持 sticky（通讯录范式：标题滚走，功能常驻） -->
+	<div class="catalog-toolbar">
 		<div class="search-wrap">
 			<svg
 				viewBox="0 0 24 24"
@@ -177,7 +181,7 @@
 				{/each}
 			</nav>
 		{/if}
-	</header>
+	</div>
 
 	<!-- 段标识行 -->
 	{#if !searching}
@@ -227,14 +231,20 @@
 </div>
 
 <style>
+	/* 标题区：与其他页一致，普通流式（随滚动离开） */
 	.catalog-head {
+		padding: 20px 0 14px;
+	}
+
+	/* 工具栏：搜索 + tab + 锚点常驻（通讯录范式） */
+	.catalog-toolbar {
 		position: sticky;
 		top: 0;
 		z-index: 30;
 		background: color-mix(in srgb, var(--color-paper) 88%, transparent);
-		padding: 20px 0 12px;
 		-webkit-backdrop-filter: blur(14px) saturate(1.5);
 		backdrop-filter: blur(14px) saturate(1.5);
+		padding: 6px 0 12px;
 	}
 
 	.catalog-head-row {
@@ -424,7 +434,7 @@
 
 	.group {
 		margin-top: 24px;
-		scroll-margin-top: 200px;
+		scroll-margin-top: 150px;
 	}
 
 	.group-label {

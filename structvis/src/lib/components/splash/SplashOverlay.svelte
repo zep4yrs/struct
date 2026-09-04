@@ -338,14 +338,14 @@
 			<div class="sv-logo" bind:this={logoWrap}>
 				<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<g class="sv-part sv-trunk" style="--fx:0px;--fy:-300px;--fx2:0px;--fy2:-15px;--d:150ms"
-						><rect x="14" y="8" width="3" height="40" rx="1.5" fill="#1a1a1a" /></g
+						><rect x="14" y="8" width="3" height="40" rx="1.5" fill="var(--color-ink)" /></g
 					>
 					<g class="sv-part sv-branch" style="--fx:-380px;--fy:0px;--fx2:-19px;--fy2:0px;--d:320ms">
-						<rect x="8" y="16" width="8" height="2.5" rx="1.25" fill="#1a1a1a" />
-						<rect x="4" y="32" width="12" height="2.5" rx="1.25" fill="#1a1a1a" />
+						<rect x="8" y="16" width="8" height="2.5" rx="1.25" fill="var(--color-ink)" />
+						<rect x="4" y="32" width="12" height="2.5" rx="1.25" fill="var(--color-ink)" />
 					</g>
 					<g class="sv-part sv-rbranch" style="--fx:380px;--fy:0px;--fx2:19px;--fy2:0px;--d:490ms"
-						><rect x="15" y="24" width="8" height="2.5" rx="1.25" fill="#1a1a1a" /></g
+						><rect x="15" y="24" width="8" height="2.5" rx="1.25" fill="var(--color-ink)" /></g
 					>
 					<circle
 						class="sv-part sv-l-node"
@@ -392,7 +392,7 @@
 								width="22"
 								height="8"
 								rx="2"
-								fill="#1a1a1a"
+								fill="var(--color-ink)"
 								opacity="0.15"
 							/>
 							<rect
@@ -402,7 +402,7 @@
 								width="22"
 								height="8"
 								rx="2"
-								stroke="#1a1a1a"
+								stroke="var(--color-ink)"
 								stroke-width="1.5"
 								fill="none"
 							/>
@@ -412,7 +412,7 @@
 								y1={12 + ri * 12}
 								x2="48"
 								y2={12 + ri * 12}
-								stroke="#1a1a1a"
+								stroke="var(--color-ink)"
 								stroke-width="1.2"
 								stroke-linecap="round"
 							/>

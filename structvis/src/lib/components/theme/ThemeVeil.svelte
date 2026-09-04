@@ -45,12 +45,19 @@
 		const opt = { duration: 1150, easing: ease, fill: 'forwards' } as const;
 
 		// ── 同步开始：洞收缩（日夜合拢）＋ 日⇄月蚀变 ＋ 字幕 ──
-		// 注意：洞只能动 width/height——box-shadow 随 transform 缩放，scale 收缩
-		// 后期阴影延伸不够到视口四角，旧页面会从边缘漏出（实测踩坑）
+		// 洞只能动 width/height——box-shadow 随 transform 缩放，scale 后期阴影够
+		// 不到视口四角会漏出旧页面（实测踩坑）。
+		// 收缩到位后不停顿：末段 22% 时长内同步渐隐（边收边灭，无「空白圆卡一下」）
 		const shrink = hole?.animate(
 			[
-				{ width: `${R * 2}px`, height: `${R * 2}px` },
-				{ width: `${HOLE_FINAL_R * 2}px`, height: `${HOLE_FINAL_R * 2}px` }
+				{ width: `${R * 2}px`, height: `${R * 2}px`, opacity: 1 },
+				{
+					width: `${HOLE_FINAL_R * 2}px`,
+					height: `${HOLE_FINAL_R * 2}px`,
+					opacity: 1,
+					offset: 0.78
+				},
+				{ width: `${HOLE_FINAL_R * 2}px`, height: `${HOLE_FINAL_R * 2}px`, opacity: 0 }
 			],
 			opt
 		);
@@ -91,13 +98,7 @@
 		}
 		if (shrink) await shrink.finished.catch(() => {});
 
-		// ── 洞收拢到图标圈后闭合并淡出 → 旧内容完全被遮没 → 此刻落主题 ──
-		const close = hole?.animate([{ opacity: 1 }, { opacity: 0 }], {
-			duration: 130,
-			easing: 'ease-in',
-			fill: 'forwards'
-		});
-		if (close) await close.finished.catch(() => {});
+		// ── 洞已收拢并渐隐（旧内容完全被遮没）→ 此刻落主题 ──
 		settleThemeVeil(dark ? 'dark' : 'light');
 
 		// ── 图标+字幕停驻 ──
@@ -121,7 +122,7 @@
 	<div class="theme-veil" bind:this={rootEl} aria-hidden="true">
 		<div class="veil-hole" bind:this={hole}></div>
 		<div class="veil-stage">
-			<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<svg class="veil-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<defs>
 					<mask id="veil-bite-mask">
 						<rect x="0" y="0" width="120" height="120" fill="white" />
@@ -168,9 +169,11 @@
 					mask="url(#veil-bite-mask)"
 				/>
 			</svg>
-			<p class="veil-caption" bind:this={caption}>
-				{toDark ? '天黑请闭眼' : '天亮请睁眼'}
-			</p>
+			<div class="veil-caption-wrap">
+				<p class="veil-caption" bind:this={caption}>
+					{toDark ? '天黑请闭眼' : '天亮请睁眼'}
+				</p>
+			</div>
 		</div>
 	</div>
 {/if}
@@ -198,19 +201,27 @@
 	.veil-stage {
 		position: absolute;
 		inset: 0;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 26px;
 		pointer-events: none;
 	}
 
-	.veil-stage svg {
+	/* 图标严格居中于洞心（洞中心 50%/42%） */
+	.veil-stage svg.veil-icon {
+		position: absolute;
+		left: 50%;
+		top: 42%;
+		transform: translate(-50%, -50%);
 		width: 132px;
 		height: 132px;
 		overflow: visible;
 		filter: drop-shadow(0 4px 22px rgb(0 0 0 / 0.25));
+	}
+
+	.veil-caption-wrap {
+		position: absolute;
+		left: 50%;
+		top: calc(42% + 94px); /* 图标半径 66 + 间距 */
+		transform: translateX(-50%);
+		white-space: nowrap;
 	}
 
 	.veil-caption {

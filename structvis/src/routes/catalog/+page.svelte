@@ -230,7 +230,7 @@
 		position: sticky;
 		top: 0;
 		z-index: 30;
-		background: color-mix(in srgb, var(--color-bg, #fcfaf6) 88%, transparent);
+		background: color-mix(in srgb, var(--color-paper) 88%, transparent);
 		padding: 20px 0 12px;
 		-webkit-backdrop-filter: blur(14px) saturate(1.5);
 		backdrop-filter: blur(14px) saturate(1.5);

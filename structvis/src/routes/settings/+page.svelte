@@ -42,10 +42,7 @@
 
 <div class="page">
 	<div class="section-header" use:reveal>
-		<div class="section-label">
-			<span class="section-num">我</span>
-			<span class="section-name">我的</span>
-		</div>
+		<div class="section-label">设置 · SETTINGS</div>
 		<h1 class="page-title">我的</h1>
 		<p class="page-desc">学习记录入口与界面偏好，所有数据自动保存到浏览器本地存储。</p>
 	</div>
@@ -181,34 +178,7 @@
 		margin-bottom: 32px;
 	}
 
-	.section-label {
-		font-family: var(--font-mono);
-		font-size: 11px;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		color: var(--color-ink-3);
-		margin-bottom: 16px;
-		display: flex;
-		align-items: center;
-		gap: 8px;
-	}
-
-	.section-num {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 22px;
-		height: 22px;
-		border-radius: var(--radius-sm);
-		background: var(--color-academic);
-		color: #fff;
-		font-size: 11px;
-		font-weight: 600;
-	}
-
-	.section-name {
-		font-weight: 500;
-	}
+	/* 眉标走全局 .section-label（与全站一致），此处不再覆盖 */
 
 	.page-title {
 		font-size: 32px;

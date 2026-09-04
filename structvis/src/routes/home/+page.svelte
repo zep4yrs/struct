@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { progress, isMistakeDue } from '$lib/stores/progress';
-	import { dsTopics, dbTopics, TOPIC_ALIASES } from '$lib/content/topics';
-	import { QUIZ_BANK } from '$lib/content/quiz-bank';
+	import { dsTopics, dbTopics } from '$lib/content/topics';
 	import { reveal, revealOnScroll } from '$lib/utils/motion';
 	import SplashOverlay from '$lib/components/splash/SplashOverlay.svelte';
 

@@ -62,8 +62,9 @@
 		</h1>
 
 		<p class="hero-sub" use:reveal={{ delay: 380 }}>
-			把抽象的算法与 SQL 过程，变成可步进、可交互、可试错的实时可视化练习——SQL
-			语句本地执行，数据绝不离开浏览器。
+			排序到底是怎么一步步排出来的？每一条 SQL 执行时到底发生了什么？
+			这里把它们一帧一帧放给你看：随时停下来，换成你自己的数据再演一遍。
+			全程在你的浏览器里运行，不用注册登录。
 		</p>
 
 		<div class="hero-actions">
@@ -280,7 +281,7 @@
 		>
 			<span class="home-tool-num">02</span>
 			<h3 class="home-tool-title">章节自测</h3>
-			<p>{QUIZ_BANK.length} 道题库按章随机抽题，5 分钟限时，成绩直接写回掌握度。</p>
+			<p>{QUIZ_BANK.length} 道题库按章随机抽题，5 分钟限时，答完计入对应课题的掌握度。</p>
 			<span class="home-tool-meta">去自测 →</span>
 		</a>
 
@@ -291,7 +292,7 @@
 		>
 			<span class="home-tool-num">03</span>
 			<h3 class="home-tool-title">竞速实验室</h3>
-			<p>30 个排序引擎同屏竞速——21 条经典跑道对垒 9 条玩梗跑道，复杂度一目了然。</p>
+			<p>30 个排序实现同台竞速：21 条经典跑道加 9 条玩梗跑道，快慢一跑便知。</p>
 			<span class="home-tool-meta">开赛 →</span>
 		</a>
 

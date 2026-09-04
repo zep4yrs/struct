@@ -215,7 +215,7 @@
 				<span class="facade-num">01</span>
 				<h3 class="facade-title">步进可视化</h3>
 				<p class="facade-desc">
-					{allTopics.length} 个课题全部逐帧播放——排序、树、图、SQL，每一步可暂停、可回放、可改数据重演。
+					{allTopics.length} 个课题，一帧一帧放给你看。哪一步没看懂就停在哪一步，想换成自己的数据再演一遍也随你。
 				</p>
 			</a>
 			<a
@@ -226,7 +226,7 @@
 				<span class="facade-num">02</span>
 				<h3 class="facade-title">练习闭环</h3>
 				<p class="facade-desc">
-					{QUIZ_BANK.length} 题库 · 四类题型 · 答错即进错题本 SRS 复习——掌握度实时写回每个课题。
+					做错的题不会消失：隔几天它会回来找你，直到你真的会了。每答一题，对应课题的掌握度都会更新。
 				</p>
 			</a>
 			<a
@@ -237,7 +237,7 @@
 				<span class="facade-num">03</span>
 				<h3 class="facade-title">实验竞技场</h3>
 				<p class="facade-desc">
-					竞速实验室 30 引擎同屏对垒 · SQL 剧本站 19 主题真实执行（sql.js 本地跑，数据不出浏览器）。
+					同一个算法，30 种实现谁更快？跑一遍见分晓。SQL 也是真的在你浏览器里执行的——不是演的。
 				</p>
 			</a>
 			<a
@@ -248,8 +248,7 @@
 				<span class="facade-num">04</span>
 				<h3 class="facade-title">路径导航</h3>
 				<p class="facade-desc">
-					技能图谱点亮前置依赖 · 学习报告雷达定位弱项 · Ctrl+K 直达
-					{allTopics.length} 主题 + {Object.keys(TOPIC_ALIASES).length} 组别名。
+					不知道下一步学什么？图谱把依赖关系点亮；哪里薄弱，报告一看便知。Ctrl+K 随时跳到任意课题。
 				</p>
 			</a>
 		</div>

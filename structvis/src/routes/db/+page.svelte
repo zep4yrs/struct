@@ -4,7 +4,7 @@
 </script>
 
 <div class="mx-auto max-w-7xl px-8 py-16 min-[1856px]:max-w-[1856px] 2xl:max-w-[1600px]">
-	<div class="section-label mb-4">数据库</div>
+	<div class="section-label mb-4">数据库 · DATABASE</div>
 	<h1 class="mb-2 font-display text-3xl font-medium" style="letter-spacing: -0.02em;">
 		MySQL 数据库
 	</h1>

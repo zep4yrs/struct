@@ -236,7 +236,7 @@
 </script>
 
 <div class="mx-auto max-w-6xl p-8 2xl:max-w-[1400px]">
-	<div class="section-label mb-4" use:reveal>学习进度</div>
+	<div class="section-label mb-4" use:reveal>学习进度 · PROGRESS</div>
 	<h1
 		class="mb-2 font-display text-5xl font-medium"
 		style="letter-spacing: -0.03em;"

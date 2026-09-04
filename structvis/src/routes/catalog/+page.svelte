@@ -117,6 +117,7 @@
 	<header class="catalog-head">
 		<div class="catalog-head-row">
 			<div>
+				<div class="section-label">课程 · CATALOG</div>
 				<h1 class="catalog-title">课程</h1>
 				<p class="catalog-sub">{dsTopics.length + dbTopics.length} 个课题 · 一次专注一门</p>
 			</div>
@@ -250,7 +251,7 @@
 		font-weight: 500;
 		letter-spacing: -0.02em;
 		color: var(--color-ink);
-		margin: 0;
+		margin: 5px 0 0;
 	}
 
 	.catalog-sub {

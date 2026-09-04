@@ -72,7 +72,7 @@
 <div class="dash">
 	<!-- ═══ 首屏：问候 + 继续学习 hero + 今日待办 ═══ -->
 	<header class="dash-head" use:reveal>
-		<p class="dash-eyebrow">STRUCTVIS · 我的学习台</p>
+		<div class="section-label">我的学习台 · HOME</div>
 		<h1 class="dash-title">{greeting()}，继续吗？</h1>
 	</header>
 
@@ -308,22 +308,13 @@
 		padding: 34px 0 20px;
 	}
 
-	.dash-eyebrow {
-		font-family: var(--font-mono);
-		font-size: 11px;
-		letter-spacing: 0.22em;
-		text-transform: uppercase;
-		color: var(--color-ink-3);
-		margin: 0 0 8px;
-	}
-
 	.dash-title {
 		font-family: var(--font-display);
 		font-size: clamp(30px, 4.4vw, 44px);
 		font-weight: 500;
 		letter-spacing: -0.025em;
 		color: var(--color-ink);
-		margin: 0;
+		margin: 6px 0 0;
 	}
 
 	/* ═══ 首屏行：hero 大卡 + 待办竖列 ═══ */

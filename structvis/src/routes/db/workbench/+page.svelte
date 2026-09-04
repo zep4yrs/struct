@@ -134,6 +134,8 @@
 	}
 </script>
 
+<svelte:head><title>SQL 工作台 · StructVis</title></svelte:head>
+
 <svelte:window onkeydown={onKey} />
 
 <div class="mx-auto max-w-7xl px-5 pb-28">

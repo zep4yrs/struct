@@ -47,6 +47,8 @@
 	});
 </script>
 
+<svelte:head><title>StructVis — 数据结构与数据库可视化学习工具</title></svelte:head>
+
 <!-- ══════════ 首屏 Hero：整屏电影海报 ══════════ -->
 <section class="hero">
 	<div class="hero-inner">

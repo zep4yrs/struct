@@ -38,6 +38,8 @@
 	});
 </script>
 
+<svelte:head><title>设置 · StructVis</title></svelte:head>
+
 <div class="page">
 	<div class="section-header" use:reveal>
 		<div class="section-label">

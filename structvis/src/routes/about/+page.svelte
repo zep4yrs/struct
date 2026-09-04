@@ -12,6 +12,8 @@
 	const SPONSOR_URL = 'https://afdian.net/a/zep4yrs';
 </script>
 
+<svelte:head><title>关于 · StructVis</title></svelte:head>
+
 <div class="mx-auto max-w-7xl px-8 py-16">
 	<section class="mb-16 border-b pb-12" style="border-color: var(--color-line-hair);">
 		<div class="mb-8 flex items-end gap-6" use:reveal>

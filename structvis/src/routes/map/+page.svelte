@@ -94,7 +94,10 @@
 			by
 		);
 	}
+	import BackTop from '$lib/components/layout/BackTop.svelte';
 </script>
+
+<BackTop />
 
 <div class="mx-auto max-w-[1600px] px-8 py-16">
 	<div class="section-label mb-4" use:reveal>技能图谱 · SKILL MAP</div>

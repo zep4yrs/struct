@@ -201,6 +201,8 @@
 	let backupMsg = $state('');
 	let backupError = $state('');
 	let fileInputRef: HTMLInputElement | undefined = $state();
+	// 错题移除的两击确认：第一次点进入确认态，2.6 秒后自动复位
+	let confirmingRemove: string | null | undefined = $state();
 
 	function handleExport() {
 		const json = exportProgress();
@@ -234,6 +236,8 @@
 		if (fileInputRef) fileInputRef.value = '';
 	}
 </script>
+
+<svelte:head><title>学习进度 · StructVis</title></svelte:head>
 
 <div class="mx-auto max-w-6xl p-8 2xl:max-w-[1400px]">
 	<div class="section-label mb-4" use:reveal>学习进度 · PROGRESS</div>
@@ -526,8 +530,22 @@
 											标记已掌握
 										</button>
 									{/if}
-									<button class="btn btn-ghost btn-sm" onclick={() => removeMistake(mistake.id)}>
-										移除
+									<button
+										class="btn btn-ghost btn-sm remove-btn"
+										class:confirming={confirmingRemove === mistake.id}
+										onclick={() => {
+											if (confirmingRemove === mistake.id) {
+												removeMistake(mistake.id);
+												confirmingRemove = null;
+											} else {
+												confirmingRemove = mistake.id;
+												setTimeout(() => {
+													if (confirmingRemove === mistake.id) confirmingRemove = null;
+												}, 2600);
+											}
+										}}
+									>
+										{confirmingRemove === mistake.id ? '再点一次确认' : '移除'}
 									</button>
 								</div>
 							</div>
@@ -909,6 +927,13 @@
 		display: flex;
 		gap: 8px;
 		margin-top: 10px;
+	}
+
+	/* 移除两击确认：确认态红字提示 */
+	.remove-btn.confirming {
+		color: var(--color-danger);
+		border-color: color-mix(in srgb, var(--color-danger) 45%, transparent);
+		font-weight: 500;
 	}
 
 	.btn-sm {

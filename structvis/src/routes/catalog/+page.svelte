@@ -110,7 +110,12 @@
 			.getElementById('group-' + groupId)
 			?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}
+	import BackTop from '$lib/components/layout/BackTop.svelte';
 </script>
+
+<BackTop />
+
+<svelte:head><title>课程目录 · StructVis</title></svelte:head>
 
 <div class="mx-auto max-w-6xl px-5 pb-28 2xl:max-w-[1400px]">
 	<!-- 标题区：与其他页一致的头结构（眉标 + 大标题），随滚动离开 -->

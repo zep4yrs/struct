@@ -82,6 +82,8 @@
 	});
 </script>
 
+<svelte:head><title>章节自测 · StructVis</title></svelte:head>
+
 <div class="mx-auto max-w-6xl p-8 2xl:max-w-[1400px]">
 	<div class="section-label mb-4" use:reveal>章节自测 · QUIZ</div>
 	<h1

@@ -69,6 +69,8 @@
 	const ringOffset = $derived(RING_C * (1 - (lastTopic?.mastery ?? 0) / 100));
 </script>
 
+<svelte:head><title>我的学习台 · StructVis</title></svelte:head>
+
 <div class="dash">
 	<!-- ═══ 首屏：问候 + 继续学习 hero + 今日待办 ═══ -->
 	<header class="dash-head" use:reveal>

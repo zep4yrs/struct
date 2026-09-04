@@ -522,6 +522,8 @@
 	}
 </script>
 
+<svelte:head><title>竞速实验室 · StructVis</title></svelte:head>
+
 <div class="mx-auto max-w-6xl p-8 min-[1856px]:max-w-[1856px] 2xl:max-w-[1600px]">
 	<div class="section-label mb-4" use:reveal>竞速实验室 · RACE LAB</div>
 	<h1

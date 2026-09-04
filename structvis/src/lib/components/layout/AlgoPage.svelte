@@ -38,6 +38,15 @@
 	);
 </script>
 
+<!-- 每课题页独立 title/description（预渲染进静态 HTML：SEO/多标签/分享抓取都依赖） -->
+<svelte:head>
+	<title>{title} · StructVis</title>
+	<meta
+		name="description"
+		content="{sectionName} · {title}——逐帧可视化、可交互练习，本地免费使用。"
+	/>
+</svelte:head>
+
 <div class="page">
 	<div class="wayfind" use:reveal>
 		<a class="wayfind-back" href={resolve('/catalog')}>

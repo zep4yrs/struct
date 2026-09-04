@@ -68,6 +68,8 @@
 	}
 </script>
 
+<svelte:head><title>数据表管理 · StructVis</title></svelte:head>
+
 <div class="page">
 	<div class="section-header">
 		<div class="section-label">

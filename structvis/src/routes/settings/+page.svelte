@@ -169,7 +169,7 @@
 
 <style>
 	.page {
-		max-width: min(720px, 100%);
+		max-width: min(1100px, 100%);
 		margin: 0 auto;
 		padding: 48px 32px 64px;
 		min-height: calc(100vh - 48px);

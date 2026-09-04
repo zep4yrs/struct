@@ -235,7 +235,7 @@
 	}
 </script>
 
-<div class="mx-auto max-w-4xl p-8">
+<div class="mx-auto max-w-6xl p-8 2xl:max-w-[1400px]">
 	<div class="section-label mb-4" use:reveal>学习进度</div>
 	<h1
 		class="mb-2 font-display text-5xl font-medium"
@@ -434,105 +434,108 @@
 			<ActivityHeatmap activity={$progress.dailyActivity} />
 		</section>
 
-		<!-- 掌握度 -->
-		{#if topicEntries.length > 0}
-			<section class="mb-12" use:reveal>
-				<div class="chapter-head">
-					<div class="section-label">掌握度</div>
-					<span class="chapter-count">{masteredCount} / {topicEntries.length} 已掌握</span>
-				</div>
-				<div class="topic-list">
-					{#each topicEntries as [id, t] (id)}
-						<div class="topic-row">
-							<div class="topic-info">
-								<span class="topic-name">{topicName(id)}</span>
-								<span class="topic-exercises">
-									{t.correctExercises} / {t.totalExercises} 题正确
-								</span>
-							</div>
-							<div class="topic-right">
-								<div class="topic-bar">
-									<div
-										class="topic-bar-fill"
-										style="width: 0%;"
-										data-target="{t.mastery}%"
-										class:done={t.completed}
-									></div>
+		<!-- 两大列表：宽屏并排双列（掌握度 | 错题本），窄屏单列 -->
+		<div class="progress-columns">
+			<!-- 掌握度 -->
+			{#if topicEntries.length > 0}
+				<section class="mb-12" use:reveal>
+					<div class="chapter-head">
+						<div class="section-label">掌握度</div>
+						<span class="chapter-count">{masteredCount} / {topicEntries.length} 已掌握</span>
+					</div>
+					<div class="topic-list">
+						{#each topicEntries as [id, t] (id)}
+							<div class="topic-row">
+								<div class="topic-info">
+									<span class="topic-name">{topicName(id)}</span>
+									<span class="topic-exercises">
+										{t.correctExercises} / {t.totalExercises} 题正确
+									</span>
 								</div>
-								<span class="topic-pct">{t.mastery}%</span>
-								{#if t.completed}
-									<span class="tag tag-success">已掌握</span>
-								{:else}
-									<span class="tag">学习中</span>
-								{/if}
-							</div>
-						</div>
-					{/each}
-				</div>
-			</section>
-		{/if}
-
-		<!-- 错题本 -->
-		{#if totalMistakes > 0}
-			<section class="mb-12" use:reveal>
-				<div class="chapter-head">
-					<div class="section-label">错题本</div>
-					<span class="chapter-count">{pendingMistakes} 道待复习</span>
-				</div>
-				<div class="mistake-list">
-					{#each $progress.mistakes as mistake (mistake.id)}
-						<div class="mistake-row">
-							<div class="mistake-head">
-								<span class="mistake-question">{mistake.question}</span>
-								<div class="mistake-tags">
-									{#if mistake.mastered}
+								<div class="topic-right">
+									<div class="topic-bar">
+										<div
+											class="topic-bar-fill"
+											style="width: 0%;"
+											data-target="{t.mastery}%"
+											class:done={t.completed}
+										></div>
+									</div>
+									<span class="topic-pct">{t.mastery}%</span>
+									{#if t.completed}
 										<span class="tag tag-success">已掌握</span>
 									{:else}
-										<span class="tag {isMistakeDue(mistake) ? 'tag-accent' : ''}"
-											>{mistakeDueText(mistake)} · 复习 {mistake.reviewCount} 次</span
-										>
+										<span class="tag">学习中</span>
 									{/if}
-									<span class="tag tag-blue">{mistake.type === 'sql' ? 'SQL' : '算法'}</span>
 								</div>
 							</div>
-							<div class="mistake-answers">
-								<div class="answer-line wrong">
-									<span class="answer-label">我的答案</span>
-									<span class="answer-text">{mistake.wrongAnswer || '—'}</span>
+						{/each}
+					</div>
+				</section>
+			{/if}
+
+			<!-- 错题本 -->
+			{#if totalMistakes > 0}
+				<section class="mb-12" use:reveal>
+					<div class="chapter-head">
+						<div class="section-label">错题本</div>
+						<span class="chapter-count">{pendingMistakes} 道待复习</span>
+					</div>
+					<div class="mistake-list">
+						{#each $progress.mistakes as mistake (mistake.id)}
+							<div class="mistake-row">
+								<div class="mistake-head">
+									<span class="mistake-question">{mistake.question}</span>
+									<div class="mistake-tags">
+										{#if mistake.mastered}
+											<span class="tag tag-success">已掌握</span>
+										{:else}
+											<span class="tag {isMistakeDue(mistake) ? 'tag-accent' : ''}"
+												>{mistakeDueText(mistake)} · 复习 {mistake.reviewCount} 次</span
+											>
+										{/if}
+										<span class="tag tag-blue">{mistake.type === 'sql' ? 'SQL' : '算法'}</span>
+									</div>
 								</div>
-								<div class="answer-line right">
-									<span class="answer-label">正确答案</span>
-									<span class="answer-text">{mistake.correctAnswer}</span>
+								<div class="mistake-answers">
+									<div class="answer-line wrong">
+										<span class="answer-label">我的答案</span>
+										<span class="answer-text">{mistake.wrongAnswer || '—'}</span>
+									</div>
+									<div class="answer-line right">
+										<span class="answer-label">正确答案</span>
+										<span class="answer-text">{mistake.correctAnswer}</span>
+									</div>
 								</div>
-							</div>
-							{#if mistake.explanation}
-								<p class="mistake-explanation">{mistake.explanation}</p>
-							{/if}
-							<div class="mistake-meta">
-								<span>{topicName(mistake.topic)}</span>
-								<span>{formatDate(mistake.timestamp)}</span>
-							</div>
-							<div class="mistake-actions">
-								{#if !mistake.mastered}
-									<button class="btn btn-ghost btn-sm" onclick={() => startReview(mistake)}>
-										重新作答
-									</button>
-									<button
-										class="btn btn-ghost btn-sm"
-										onclick={() => markMistakeMastered(mistake.id)}
-									>
-										标记已掌握
-									</button>
+								{#if mistake.explanation}
+									<p class="mistake-explanation">{mistake.explanation}</p>
 								{/if}
-								<button class="btn btn-ghost btn-sm" onclick={() => removeMistake(mistake.id)}>
-									移除
-								</button>
+								<div class="mistake-meta">
+									<span>{topicName(mistake.topic)}</span>
+									<span>{formatDate(mistake.timestamp)}</span>
+								</div>
+								<div class="mistake-actions">
+									{#if !mistake.mastered}
+										<button class="btn btn-ghost btn-sm" onclick={() => startReview(mistake)}>
+											重新作答
+										</button>
+										<button
+											class="btn btn-ghost btn-sm"
+											onclick={() => markMistakeMastered(mistake.id)}
+										>
+											标记已掌握
+										</button>
+									{/if}
+									<button class="btn btn-ghost btn-sm" onclick={() => removeMistake(mistake.id)}>
+										移除
+									</button>
+								</div>
 							</div>
-						</div>
-					{/each}
-				</div>
-			</section>
-		{/if}
+						{/each}
+					</div>
+				</section>
+			{/if}
+		</div>
 	{/if}
 
 	<!-- 数据备份：空状态也可见（换设备后第一件事就是导入恢复） -->
@@ -575,6 +578,20 @@
 </div>
 
 <style>
+	/* 两大列表：宽屏并排双列（掌握度 | 错题本），窄屏单列 */
+	.progress-columns {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0 28px;
+		align-items: start;
+	}
+
+	@media (min-width: 1200px) {
+		.progress-columns {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		}
+	}
+
 	.stat-row {
 		display: flex;
 		align-items: baseline;

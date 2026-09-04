@@ -56,6 +56,12 @@
 		}
 	}
 
+	// 答题卡跳题：与 nextQ 同一套状态语义（已答题进入即显示已选）
+	function gotoQ(i: number) {
+		idx = i;
+		picked = answers[i] ?? null;
+	}
+
 	function finishQuiz() {
 		if (timer) clearInterval(timer);
 		timer = null;
@@ -76,7 +82,7 @@
 	});
 </script>
 
-<div class="mx-auto max-w-3xl p-8">
+<div class="mx-auto max-w-6xl p-8 2xl:max-w-[1400px]">
 	<div class="section-label mb-4" use:reveal>章节自测 · QUIZ</div>
 	<h1
 		class="mb-2 font-display text-5xl font-medium"
@@ -108,37 +114,58 @@
 	{/if}
 
 	{#if started && questions.length > 0}
-		<div class="glass liquid quiz-panel" use:reveal>
-			<div class="quiz-top">
-				<span class="quiz-progress">第 {idx + 1} / {questions.length} 题</span>
-				<span class="quiz-timer" class:urgent={secondsLeft <= 60}
-					>{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}</span
-				>
-			</div>
-			<div class="quiz-question">{questions[idx].q}</div>
-			<div class="quiz-options">
-				{#each questions[idx].options as opt, i (i)}
-					<button
-						class="quiz-opt"
-						class:correct={picked !== null && i === questions[idx].answer}
-						class:wrong={picked === i && i !== questions[idx].answer}
-						disabled={picked !== null}
-						onclick={() => pick(i)}
+		<div class="quiz-grid">
+			<div class="glass liquid quiz-panel" use:reveal>
+				<div class="quiz-top">
+					<span class="quiz-progress">第 {idx + 1} / {questions.length} 题</span>
+					<span class="quiz-timer" class:urgent={secondsLeft <= 60}
+						>{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}</span
 					>
-						<span class="quiz-opt-key">{'ABCD'[i]}</span>
-						{opt}
-					</button>
-				{/each}
-			</div>
-			{#if picked !== null}
-				<div class="quiz-feedback" class:ok={picked === questions[idx].answer}>
-					{picked === questions[idx].answer ? '回答正确' : '回答错误'}
-					<span class="quiz-explain">{questions[idx].explain}</span>
 				</div>
-				<button class="btn btn-accent" onclick={nextQ}>
-					{idx < questions.length - 1 ? '下一题 →' : '交卷'}
-				</button>
-			{/if}
+				<div class="quiz-question">{questions[idx].q}</div>
+				<div class="quiz-options">
+					{#each questions[idx].options as opt, i (i)}
+						<button
+							class="quiz-opt"
+							class:correct={picked !== null && i === questions[idx].answer}
+							class:wrong={picked === i && i !== questions[idx].answer}
+							disabled={picked !== null}
+							onclick={() => pick(i)}
+						>
+							<span class="quiz-opt-key">{'ABCD'[i]}</span>
+							{opt}
+						</button>
+					{/each}
+				</div>
+				{#if picked !== null}
+					<div class="quiz-feedback" class:ok={picked === questions[idx].answer}>
+						{picked === questions[idx].answer ? '回答正确' : '回答错误'}
+						<span class="quiz-explain">{questions[idx].explain}</span>
+					</div>
+					<button class="btn btn-accent" onclick={nextQ}>
+						{idx < questions.length - 1 ? '下一题 →' : '交卷'}
+					</button>
+				{/if}
+			</div>
+			<!-- 答题卡侧栏：题号格子可点跳题（宽屏第二栏，窄屏折叠为横向条） -->
+			<aside class="glass liquid quiz-side" use:reveal={{ delay: 120 }}>
+				<div class="quiz-side-head">答题卡</div>
+				<div class="quiz-dots">
+					{#each questions as _, i (i)}
+						<button
+							class="qdot"
+							class:cur={i === idx}
+							class:done={answers[i] !== undefined}
+							onclick={() => gotoQ(i)}
+						>
+							{i + 1}
+						</button>
+					{/each}
+				</div>
+				<div class="quiz-side-foot">
+					已答 {answers.filter((a) => a !== undefined).length} / {questions.length} · {chapter}
+				</div>
+			</aside>
 		</div>
 	{/if}
 
@@ -163,6 +190,92 @@
 </div>
 
 <style>
+	/* 宽屏双栏：题卡主栏 + 答题卡侧栏；窄屏单列（侧栏折叠为横向格子条） */
+	.quiz-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 14px;
+		align-items: start;
+	}
+
+	@media (min-width: 1100px) {
+		.quiz-grid {
+			grid-template-columns: minmax(0, 1fr) 280px;
+		}
+
+		.quiz-side {
+			position: sticky;
+			top: 16px;
+		}
+	}
+
+	.quiz-side {
+		border: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-md);
+		padding: 16px 18px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.quiz-side-head {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-ink-3);
+	}
+
+	.quiz-dots {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+		gap: 8px;
+	}
+
+	@media (max-width: 1099px) {
+		.quiz-dots {
+			grid-auto-flow: column;
+			grid-auto-columns: 38px;
+			overflow-x: auto;
+			padding-bottom: 4px;
+		}
+	}
+
+	.qdot {
+		aspect-ratio: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--color-ink-3);
+		background: transparent;
+		border: 1px solid var(--color-line-regular);
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		transition:
+			border-color 120ms var(--ease-out),
+			color 120ms var(--ease-out),
+			background 120ms var(--ease-out);
+	}
+
+	.qdot.done {
+		border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+		color: var(--color-accent);
+		background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+	}
+
+	.qdot.cur {
+		border-color: var(--color-accent);
+		color: var(--color-ink);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+	}
+
+	.quiz-side-foot {
+		font-size: 12px;
+		color: var(--color-ink-3);
+	}
+
 	.quiz-panel {
 		border: 1px solid var(--color-line-hair);
 		border-radius: var(--radius-md);

@@ -112,7 +112,7 @@
 	}
 </script>
 
-<div class="mx-auto max-w-6xl px-5 pb-28">
+<div class="mx-auto max-w-6xl px-5 pb-28 2xl:max-w-[1400px]">
 	<!-- 头部：标题 + 搜索条 -->
 	<header class="catalog-head">
 		<div class="catalog-head-row">

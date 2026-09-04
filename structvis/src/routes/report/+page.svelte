@@ -132,7 +132,7 @@
 	}
 </script>
 
-<div class="mx-auto max-w-3xl p-8">
+<div class="mx-auto max-w-6xl p-8 2xl:max-w-[1400px]">
 	<div class="section-label mb-4" use:reveal>学习报告 · REPORT</div>
 	<h1
 		class="mb-2 font-display text-5xl font-medium"
@@ -145,86 +145,89 @@
 		{todayStr()} · 数据来自本地学习记录
 	</p>
 
-	<!-- 报告卡 -->
-	<div class="report-card glass" use:reveal>
-		<div class="report-head">
-			<div>
-				<div class="report-brand">StructVis</div>
-				<div class="report-slogan">看见数据结构与数据库的每一步跳动</div>
-			</div>
-			<div class="report-date">{todayStr()}</div>
-		</div>
-
-		<div class="report-body">
-			<!-- 环形掌握度 -->
-			<div class="report-ring-wrap">
-				<svg width="200" height="200" viewBox="0 0 200 200">
-					<circle
-						cx="100"
-						cy="100"
-						r={RING_R}
-						fill="none"
-						stroke="var(--color-subtle)"
-						stroke-width="22"
-					/>
-					<circle
-						cx="100"
-						cy="100"
-						r={RING_R}
-						fill="none"
-						stroke="var(--color-accent)"
-						stroke-width="22"
-						stroke-linecap="round"
-						stroke-dasharray="{ringDash} {RING_C}"
-						transform="rotate(-90 100 100)"
-					/>
-					<text x="100" y="106" text-anchor="middle" class="report-ring-num">{avgMastery}%</text>
-					<text x="100" y="132" text-anchor="middle" class="report-ring-label">平均掌握度</text>
-				</svg>
+	<!-- 报告主体：宽屏双栏（分享卡 | 雷达），窄屏单列 -->
+	<div class="report-main">
+		<!-- 报告卡 -->
+		<div class="report-card glass" use:reveal>
+			<div class="report-head">
+				<div>
+					<div class="report-brand">StructVis</div>
+					<div class="report-slogan">看见数据结构与数据库的每一步跳动</div>
+				</div>
+				<div class="report-date">{todayStr()}</div>
 			</div>
 
-			<!-- 统计 -->
-			<div class="report-stats">
-				<div class="report-stat">
-					<span class="report-stat-label">已掌握主题</span>
-					<span class="report-stat-num">{masteredCount}<i>/{topics.length}</i></span>
+			<div class="report-body">
+				<!-- 环形掌握度 -->
+				<div class="report-ring-wrap">
+					<svg width="200" height="200" viewBox="0 0 200 200">
+						<circle
+							cx="100"
+							cy="100"
+							r={RING_R}
+							fill="none"
+							stroke="var(--color-subtle)"
+							stroke-width="22"
+						/>
+						<circle
+							cx="100"
+							cy="100"
+							r={RING_R}
+							fill="none"
+							stroke="var(--color-accent)"
+							stroke-width="22"
+							stroke-linecap="round"
+							stroke-dasharray="{ringDash} {RING_C}"
+							transform="rotate(-90 100 100)"
+						/>
+						<text x="100" y="106" text-anchor="middle" class="report-ring-num">{avgMastery}%</text>
+						<text x="100" y="132" text-anchor="middle" class="report-ring-label">平均掌握度</text>
+					</svg>
 				</div>
-				<div class="report-stat">
-					<span class="report-stat-label">累计练习</span>
-					<span class="report-stat-num">{totalExercises}<i>题</i></span>
-				</div>
-				<div class="report-stat">
-					<span class="report-stat-label">正确率</span>
-					<span class="report-stat-num">{accuracy}<i>%</i></span>
-				</div>
-				<div class="report-stat">
-					<span class="report-stat-label">连续学习</span>
-					<span class="report-stat-num">{streakDays}<i>天</i></span>
-				</div>
-				<div class="report-stat">
-					<span class="report-stat-label">错题本</span>
-					<span class="report-stat-num">{mistakeCount}<i>道</i></span>
-				</div>
-				<div class="report-stat">
-					<span class="report-stat-label">待复习</span>
-					<span class="report-stat-num">{pendingReview}<i>道</i></span>
+
+				<!-- 统计 -->
+				<div class="report-stats">
+					<div class="report-stat">
+						<span class="report-stat-label">已掌握主题</span>
+						<span class="report-stat-num">{masteredCount}<i>/{topics.length}</i></span>
+					</div>
+					<div class="report-stat">
+						<span class="report-stat-label">累计练习</span>
+						<span class="report-stat-num">{totalExercises}<i>题</i></span>
+					</div>
+					<div class="report-stat">
+						<span class="report-stat-label">正确率</span>
+						<span class="report-stat-num">{accuracy}<i>%</i></span>
+					</div>
+					<div class="report-stat">
+						<span class="report-stat-label">连续学习</span>
+						<span class="report-stat-num">{streakDays}<i>天</i></span>
+					</div>
+					<div class="report-stat">
+						<span class="report-stat-label">错题本</span>
+						<span class="report-stat-num">{mistakeCount}<i>道</i></span>
+					</div>
+					<div class="report-stat">
+						<span class="report-stat-label">待复习</span>
+						<span class="report-stat-num">{pendingReview}<i>道</i></span>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<!-- 章节弱项雷达图 -->
-	<div class="glass liquid report-radar" use:reveal>
-		<div class="chapter-head">
-			<div class="section-label">章节掌握度雷达</div>
-			<span class="chapter-count">六维能力画像</span>
-		</div>
-		<div class="radar-wrap">
-			<RadarChart values={chapterMastery} />
-			<div class="radar-tip">
-				最弱章节：<b>{weakestChapter}</b>（{chapterMastery[
-					weakestChapter
-				]}%）——去对应章节复习一下吧。
+		<!-- 章节弱项雷达图 -->
+		<div class="glass liquid report-radar" use:reveal>
+			<div class="chapter-head">
+				<div class="section-label">章节掌握度雷达</div>
+				<span class="chapter-count">六维能力画像</span>
+			</div>
+			<div class="radar-wrap">
+				<RadarChart values={chapterMastery} />
+				<div class="radar-tip">
+					最弱章节：<b>{weakestChapter}</b>（{chapterMastery[
+						weakestChapter
+					]}%）——去对应章节复习一下吧。
+				</div>
 			</div>
 		</div>
 	</div>
@@ -240,6 +243,20 @@
 </div>
 
 <style>
+	/* 宽屏双栏：分享卡 | 雷达卡；窄屏单列堆叠 */
+	.report-main {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 14px;
+		align-items: stretch;
+	}
+
+	@media (min-width: 1100px) {
+		.report-main {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		}
+	}
+
 	.report-card {
 		border: 1px solid var(--color-line-hair);
 		border-radius: var(--radius-lg);

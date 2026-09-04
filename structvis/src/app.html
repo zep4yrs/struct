@@ -1,11 +1,24 @@
 <!doctype html>
-<!-- 内联纸底色：首访 CSS 下载完成前的 FOUC 窗口与站点底色一致（暗色主题在 CSS 就位后切换） -->
+<!-- 内联纸底色：首访 CSS 下载完成前的 FOUC 窗口与站点底色一致；
+     下面的小脚本在 CSS 就位前同步已存档的暗色偏好（inline 底色 + dark 类），避免暗色用户首帧白闪 -->
 <html lang="zh-CN" style="background: #faf9f6">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content="#FCFAF6" />
 		<title>StructVis — 数据结构与数据库自学工具</title>
+		<script>
+			(function () {
+				try {
+					var raw = localStorage.getItem('structvis:settings');
+					if (raw && raw.indexOf('"dark"') !== -1) {
+						document.documentElement.style.background = '#161514';
+						document.documentElement.classList.add('dark');
+						document.querySelector('meta[name="theme-color"]').content = '#161514';
+					}
+				} catch (e) {}
+			})();
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

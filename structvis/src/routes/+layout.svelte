@@ -38,9 +38,13 @@
 		}
 	}
 
-	// 主题切换：同步 settings.theme 到 <html class="dark">
+	// 主题切换：同步 settings.theme 到 <html class="dark"> + inline 背景
+	// （app.html 的 FOUC 防御内联底色是亮色值，inline 优先级压过 CSS——
+	//   切暗色时必须同步覆写 inline，否则 html 底保持亮米色，磨砂头透底发白）
 	$effect(() => {
-		document.documentElement.classList.toggle('dark', $settings.theme === 'dark');
+		const dark = $settings.theme === 'dark';
+		document.documentElement.classList.toggle('dark', dark);
+		document.documentElement.style.background = dark ? '#161514' : '#faf9f6';
 	});
 
 	// 浏览器 UI（滚动条/地址栏）颜色跟随主题

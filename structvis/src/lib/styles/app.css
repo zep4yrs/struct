@@ -84,6 +84,9 @@
 
 .dark {
 	color-scheme: dark;
+	/* 显式背景：html 的 background: var(--color-paper) 在变量切换时不保证重算
+	   （实测暗色下 html 仍渲染亮米色，sticky 磨砂头 88% 透底直接透白） */
+	background: #161514;
 
 	--color-paper: #161514; /* 墨纸 — 页面背景（粒子层之下的最底层） */
 	--color-surface: color-mix(in srgb, #1e1d1b 50%, transparent);

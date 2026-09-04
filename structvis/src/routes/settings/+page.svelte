@@ -395,6 +395,11 @@
 		color: #fff;
 	}
 
+	/* 暗色下学术蓝变浅，白字对比不足（2.57:1 < 4.5:1）→ 用墨字 */
+	:global(.dark) .btn-primary {
+		color: var(--color-ink-inverse);
+	}
+
 	.btn-primary:hover {
 		background: var(--color-academic);
 		filter: brightness(1.1);

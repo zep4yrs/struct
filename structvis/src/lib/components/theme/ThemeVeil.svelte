@@ -41,13 +41,14 @@
 			hole.style.boxShadow = `0 0 0 200vmax ${veilColor}`;
 		}
 
-		const ease = 'cubic-bezier(.55,.06,.35,1)';
-		const opt = { duration: 1150, easing: ease, fill: 'forwards' } as const;
+		// 前段发力的 ease-out：点击即刻可见合拢（前段慢的曲线会「先亮一下没反应」）
+		const ease = 'cubic-bezier(.25,.6,.3,1)';
+		const opt = { duration: 900, easing: ease, fill: 'forwards' } as const;
 
 		// ── 同步开始：洞收缩（日夜合拢）＋ 日⇄月蚀变 ＋ 字幕 ──
 		// 洞只能动 width/height——box-shadow 随 transform 缩放，scale 后期阴影够
 		// 不到视口四角会漏出旧页面（实测踩坑）。
-		// 收缩到位后不停顿：末段 22% 时长内同步渐隐（边收边灭，无「空白圆卡一下」）
+		// 收缩到位后不停顿：末段 25% 时长内同步渐隐（边收边灭，无「空白圆卡一下」）
 		const shrink = hole?.animate(
 			[
 				{ width: `${R * 2}px`, height: `${R * 2}px`, opacity: 1 },
@@ -55,7 +56,7 @@
 					width: `${HOLE_FINAL_R * 2}px`,
 					height: `${HOLE_FINAL_R * 2}px`,
 					opacity: 1,
-					offset: 0.78
+					offset: 0.75
 				},
 				{ width: `${HOLE_FINAL_R * 2}px`, height: `${HOLE_FINAL_R * 2}px`, opacity: 0 }
 			],
@@ -93,7 +94,7 @@
 					{ opacity: 0, transform: 'translateY(10px)', letterSpacing: '0.62em' },
 					{ opacity: 1, transform: 'translateY(0)', letterSpacing: '0.22em' }
 				],
-				{ duration: 750, delay: 200, easing: ease, fill: 'forwards' }
+				{ duration: 680, delay: 120, easing: ease, fill: 'forwards' }
 			);
 		}
 		if (shrink) await shrink.finished.catch(() => {});
@@ -102,7 +103,7 @@
 		settleThemeVeil(dark ? 'dark' : 'light');
 
 		// ── 图标+字幕停驻 ──
-		await wait(1050);
+		await wait(950);
 
 		// ── 揭幕淡出 ──
 		const fade = rootEl?.animate([{ opacity: 1 }, { opacity: 0 }], {

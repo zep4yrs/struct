@@ -28,7 +28,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: '线性结构',
 		q: '全文搜索一篇文章里的关键词，暴力匹配太慢。KMP 的提速关键是什么？',
-		options: ['让主串指针永不回退，失配时按 next 表跳模式串', '从后往前匹配', '给每个字符建哈希', '每次随机换一个起点'],
+		options: [
+			'让主串指针永不回退，失配时按 next 表跳模式串',
+			'从后往前匹配',
+			'给每个字符建哈希',
+			'每次随机换一个起点'
+		],
 		answer: 0,
 		explain: 'KMP 预先算好 next 数组，失配时模式串滑到该去的位置，主串指针从头到尾只进不退。',
 		topicId: 'kmp'
@@ -36,7 +41,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: '树形结构',
 		q: '往 AVL 树里连续插入几个节点后，某个节点的平衡因子变成了 2。接下来该做什么？',
-		options: ['删掉刚插的节点', '按失衡类型做单旋或双旋', '重建整棵树', '不做处理，等下次插入自动恢复'],
+		options: [
+			'删掉刚插的节点',
+			'按失衡类型做单旋或双旋',
+			'重建整棵树',
+			'不做处理，等下次插入自动恢复'
+		],
 		answer: 1,
 		explain: 'LL/RR 型单旋一次，LR/RL 型先转成单旋型再旋，树就恢复平衡。',
 		topicId: 'avl'
@@ -60,7 +70,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: '树形结构',
 		q: '往 BST 里按正顺序插入 1、2、3……10000，之后查找一个不存在的数会很慢。为什么？',
-		options: ['树退化成了单链表，最坏 O(n)', '数据太多导致 O(n²)', 'BST 查找本来就是 O(n log n)', '指针太多拖慢了速度'],
+		options: [
+			'树退化成了单链表，最坏 O(n)',
+			'数据太多导致 O(n²)',
+			'BST 查找本来就是 O(n log n)',
+			'指针太多拖慢了速度'
+		],
 		answer: 0,
 		explain: '有序插入让 BST 全部右偏成单链，查找退化为 O(n)——这正是平衡树存在的理由。',
 		topicId: 'bst'
@@ -92,7 +107,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: '图结构',
 		q: '教务系统要排出选课顺序，课程之间有先修依赖。这个需求能用拓扑排序做吗？',
-		options: ['不能，拓扑排序只用于带权图', '能，先修图是无环有向图（DAG）时可以', '不能，拓扑排序只用于无向图', '能，任何图都可以'],
+		options: [
+			'不能，拓扑排序只用于带权图',
+			'能，先修图是无环有向图（DAG）时可以',
+			'不能，拓扑排序只用于无向图',
+			'能，任何图都可以'
+		],
 		answer: 1,
 		explain: '拓扑排序适用于 DAG；如果排不完（剩余点入度非 0），说明依赖里有环。',
 		topicId: 'topo-sort'
@@ -100,7 +120,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: '图结构',
 		q: '修路问题里你已经建了一棵「部分树」，下一步要把它连向外面的村庄。Prim 的选法是？',
-		options: ['在所有边里选全局最小且不成环的', '从树内的点出发，选伸向树外的最小边', '把所有边降序排再逐条试', '删掉最贵的边'],
+		options: [
+			'在所有边里选全局最小且不成环的',
+			'从树内的点出发，选伸向树外的最小边',
+			'把所有边降序排再逐条试',
+			'删掉最贵的边'
+		],
 		answer: 1,
 		explain: 'Prim 沿着树向外扩张最小边；「全局排序选最小边判环」是 Kruskal 的做法。',
 		topicId: 'mst'
@@ -124,7 +149,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: '排序算法',
 		q: '面试官问：数据基本乱序时平均要比较多少量级？而数据恰好已经有序时呢？',
-		options: ['都是 O(n log n)', '平均 O(n log n)，已有序退化为 O(n²)', '平均 O(n²)，已有序 O(n log n)', '都是 O(n²)'],
+		options: [
+			'都是 O(n log n)',
+			'平均 O(n log n)，已有序退化为 O(n²)',
+			'平均 O(n²)，已有序 O(n log n)',
+			'都是 O(n²)'
+		],
 		answer: 1,
 		explain: '快排平均 O(n log n)；选首元素做基准且数据已有序时划分极不均衡，退化 O(n²)。',
 		topicId: 'quick-sort'
@@ -150,13 +180,19 @@ export const QUIZ_BANK: QuizQuestion[] = [
 		q: '数据量很大且基本有序，直接插入排序已经很快了。还想更快，往哪个方向优化？',
 		options: ['改成递归分治', '按递减增量分组做插入，逐步缩到 1', '改成两两交换', '改成每次选最小'],
 		answer: 1,
-		explain: '希尔排序：大步长时只搬动少量距离，数据迅速「基本有序」，最后一趟增量为 1 时几乎不用挪。',
+		explain:
+			'希尔排序：大步长时只搬动少量距离，数据迅速「基本有序」，最后一趟增量为 1 时几乎不用挪。',
 		topicId: 'shell-sort'
 	},
 	{
 		chapter: '查找',
 		q: '同事想在链表上做二分查找，被你拦下了。理由是什么？',
-		options: ['链表太占空间', '二分要求数据有序且能随机访问，链表取中间元素只能从头数', '链表不能排序', '二分只适合数字'],
+		options: [
+			'链表太占空间',
+			'二分要求数据有序且能随机访问，链表取中间元素只能从头数',
+			'链表不能排序',
+			'二分只适合数字'
+		],
 		answer: 1,
 		explain: '二分的前提 = 有序 + 顺序存储；链表定位中间元素是 O(n)，二分优势尽失。',
 		topicId: 'binary-search'
@@ -164,7 +200,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: '查找',
 		q: '哈希表里两个键算出了同一个下标。链地址法的处理方式是？',
-		options: ['往后找下一个空槽', '把同义词挂在同一个槽的链表上', '整表重新散列', '按平方间隔跳着找'],
+		options: [
+			'往后找下一个空槽',
+			'把同义词挂在同一个槽的链表上',
+			'整表重新散列',
+			'按平方间隔跳着找'
+		],
 		answer: 1,
 		explain: '链地址法：同义词挂同一条链；「顺次找空槽」和「平方跳」是开放定址法的两种。',
 		topicId: 'hash-table'
@@ -172,7 +213,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: '查找',
 		q: '线性探测的哈希表里，为什么删除元素时只能打删除标记而不能直接清空？',
-		options: ['为了节省内存', '直接清空会截断后面同义词的探测路径', '为了保持有序', '系统不允许写空'],
+		options: [
+			'为了节省内存',
+			'直接清空会截断后面同义词的探测路径',
+			'为了保持有序',
+			'系统不允许写空'
+		],
 		answer: 1,
 		explain: '清空后查找会在空位误判「不存在」，后面同义词就找不到了。',
 		topicId: 'hash-probing'
@@ -196,9 +242,15 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: 'SQL',
 		q: '你写了 SELECT name, AVG(score) FROM exam GROUP BY class，却报错了。哪里错了？',
-		options: ['name 不是分组列，不能出现在 SELECT 里', 'AVG 不能和 GROUP BY 同用', '缺 HAVING', '表名没大写'],
+		options: [
+			'name 不是分组列，不能出现在 SELECT 里',
+			'AVG 不能和 GROUP BY 同用',
+			'缺 HAVING',
+			'表名没大写'
+		],
 		answer: 0,
-		explain: '分组后每行代表一个组：SELECT 里只能出现分组列和聚合函数，非分组列必须去掉或加进 GROUP BY。',
+		explain:
+			'分组后每行代表一个组：SELECT 里只能出现分组列和聚合函数，非分组列必须去掉或加进 GROUP BY。',
 		topicId: 'group-by'
 	},
 	{
@@ -212,7 +264,12 @@ export const QUIZ_BANK: QuizQuestion[] = [
 	{
 		chapter: 'SQL',
 		q: '「比全班平均分还高的学生」写成 WHERE score > AVG(score) 直接报错。正确的改法是？',
-		options: ['把 AVG 放进先执行的内层子查询，外层拿它当比较条件', '把 AVG 挪到 HAVING', '去掉 AVG 直接比', '把 WHERE 换成 ORDER BY'],
+		options: [
+			'把 AVG 放进先执行的内层子查询，外层拿它当比较条件',
+			'把 AVG 挪到 HAVING',
+			'去掉 AVG 直接比',
+			'把 WHERE 换成 ORDER BY'
+		],
 		answer: 0,
 		explain: 'WHERE 在聚合前执行，看不到 AVG 的值；非相关子查询先算出平均值，再供外层比较。',
 		topicId: 'subquery'

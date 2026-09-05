@@ -89,6 +89,25 @@
 		{@render children()}
 	</div>
 
+	{#if topic?.usage}
+		<aside class="exam-card liquid" use:reveal={{ delay: 40, y: 12 }} aria-label="适用取舍">
+			<div class="exam-head">
+				<span class="exam-tag">取舍</span>
+				<span class="exam-title">什么时候用，什么时候别用</span>
+			</div>
+			<dl class="exam-body">
+				<div class="exam-row">
+					<dt class="use-good">✓ 适合</dt>
+					<dd>{topic.usage.good}</dd>
+				</div>
+				<div class="exam-row">
+					<dt class="use-bad">✗ 别用</dt>
+					<dd>{topic.usage.bad}</dd>
+				</div>
+			</dl>
+		</aside>
+	{/if}
+
 	{#if topic?.exam}
 		<aside class="exam-card liquid" use:reveal={{ delay: 60, y: 12 }} aria-label="考点卡">
 			<div class="exam-head">
@@ -205,6 +224,14 @@
 		font-size: 13.5px;
 		line-height: 1.7;
 		color: var(--color-ink-2);
+	}
+
+	.exam-row dt.use-good {
+		color: var(--color-success);
+	}
+
+	.exam-row dt.use-bad {
+		color: var(--color-danger);
 	}
 
 	@media (max-width: 640px) {

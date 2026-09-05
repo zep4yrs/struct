@@ -15,6 +15,11 @@ export interface TopicCard {
 	badge: string;
 	/** 课题页开场：学生的困惑原话（人话钩子） */
 	hook?: string;
+	/** 适用取舍：什么时候用 / 什么时候别用（选配，实操型概念才有） */
+	usage?: {
+		good: string;
+		bad: string;
+	};
 	/** 考点卡：这一页在考试里怎么考 */
 	exam?: {
 		how: string;
@@ -51,6 +56,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'quick-sort',
 		badge: '交互式',
 		hook: '为什么数据越乱它越快，已经排好序的反而最慢？',
+		usage: {
+			good: '数据随机分布、追求平均最快',
+			bad: '数据已基本有序，或业务要求稳定排序'
+		},
 		exam: {
 			how: '手工模拟一趟划分：写出每轮的基准与分区结果',
 			points: '划分过程、递归区间范围、每轮基准的最终位置',
@@ -67,6 +76,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'binary-tree',
 		badge: '交互式',
 		hook: '前序和中序就差一个字，到底谁先谁后？',
+		usage: {
+			good: '表达层级关系（目录、组织架构）',
+			bad: '只需要线性顺序存储'
+		},
 		exam: {
 			how: '给二叉树写四种遍历序列，或由两种序列反推树',
 			points: '前中后序的递归定义；层序遍历用队列',
@@ -99,6 +112,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'stack-queue',
 		badge: '交互式',
 		hook: '括号配对、浏览器后退键，为什么都用栈就能解决？',
+		usage: {
+			good: '配对、撤销、排队等顺序受限场景',
+			bad: '需要随机访问中间元素'
+		},
 		exam: {
 			how: '判断出栈序列合法性；循环队列的判满判空',
 			points: '入栈出栈顺序推演；循环队列 (rear+1)%M==front',
@@ -115,6 +132,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'bubble-sort',
 		badge: '交互式',
 		hook: '名字最形象的排序，为什么考试最爱考它的比较次数？',
+		usage: {
+			good: '教学演示、几乎有序的小数据',
+			bad: '大数据量的生产场景（O(n²)）'
+		},
 		exam: {
 			how: '写出每一趟结束后的序列变化',
 			points: '共 n-1 趟、第 i 趟比较 n-i 次、稳定排序',
@@ -131,6 +152,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'insertion-sort',
 		badge: '交互式',
 		hook: '理扑克牌的动作，就是最经典的插入排序？',
+		usage: {
+			good: '数据基本有序或规模很小',
+			bad: '大规模乱序数据'
+		},
 		exam: {
 			how: '写中间趟序列；分析基本有序时的效率',
 			points: '哨兵的作用、稳定、基本有序时接近 O(n)',
@@ -147,6 +172,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'selection-sort',
 		badge: '交互式',
 		hook: '每轮只交换一次的排序，为什么反而「不稳定」？',
+		usage: {
+			good: '交换成本极高、只求交换次数少',
+			bad: '要求稳定排序时'
+		},
 		exam: {
 			how: '写每趟选择后的序列；数比较与交换次数',
 			points: '比较次数固定 n(n-1)/2；交换不超过 n-1 次',
@@ -163,6 +192,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'merge-sort',
 		badge: '交互式',
 		hook: '合并两个有序列表，为什么只要扫一遍就完成？',
+		usage: {
+			good: '要求稳定且最坏 O(n log n)、链表排序',
+			bad: '内存紧张（需 O(n) 辅助数组）'
+		},
 		exam: {
 			how: '画 2 路归并的递归划分与合并过程',
 			points: 'O(n log n)、稳定、需要 O(n) 辅助空间',
@@ -179,6 +212,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'heap-sort',
 		badge: '交互式',
 		hook: '建堆只要 O(n)，为什么每次取走堆顶还要重新调整？',
+		usage: {
+			good: '内存受限、要最坏 O(n log n) 保证',
+			bad: '要求稳定排序时'
+		},
 		exam: {
 			how: '画建堆与下滤调整过程，写大顶堆的序列',
 			points: '下滤调整、O(n log n)、不稳定、原地排序',
@@ -195,6 +232,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'shell-sort',
 		badge: '交互式',
 		hook: '为什么先粗粗排几遍，最后一遍反而特别快？',
+		usage: {
+			good: '中等规模的通用排序',
+			bad: '要求稳定排序时'
+		},
 		exam: {
 			how: '按给定增量序列写出每轮的排序结果',
 			points: '增量递减、不稳定、基本有序后插入排序高效',
@@ -211,6 +252,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'radix-sort',
 		badge: '交互式',
 		hook: '不比较就能排序？位数固定时它比快排还快',
+		usage: {
+			good: '位数固定的整数或定长字符串',
+			bad: '位数很长、浮点数或动态范围'
+		},
 		exam: {
 			how: '写出每趟按位分配、收集后的序列',
 			points: '共 d 趟分配收集、稳定、O(d(n+r))',
@@ -227,6 +272,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'counting-sort',
 		badge: '交互式',
 		hook: '不比较、不交换，数一数就排好了？',
+		usage: {
+			good: '值域 k 明显小于 n',
+			bad: '值域巨大或含浮点'
+		},
 		exam: {
 			how: '写计数数组与回填结果',
 			points: 'O(n+k)、加前缀和后稳定',
@@ -275,6 +324,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'mst',
 		badge: '交互式',
 		hook: 'n 个村庄之间修路，怎样花最少的钱让全部连通？',
+		usage: {
+			good: '无向连通图的最小代价连通',
+			bad: '有向图（应改用最短路）'
+		},
 		exam: {
 			how: '手工模拟 Prim 或 Kruskal 的每一步选边',
 			points: 'Prim 适合稠密图；Kruskal 排序边 + 判环，适合稀疏图',
@@ -291,6 +344,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'shortest-path',
 		badge: '交互式',
 		hook: '导航软件怎么一步步算出最短路线？',
+		usage: {
+			good: '正权图的单源最短路',
+			bad: '含负权边（改用 Bellman-Ford）'
+		},
 		exam: {
 			how: '写出每轮 dist 数组的变化表',
 			points: '贪心策略；不能处理负权边',
@@ -307,6 +364,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'topo-sort',
 		badge: '交互式',
 		hook: '课程之间有先修依赖，怎么排出一个可行的修读顺序？',
+		usage: {
+			good: '有向无环图的依赖调度',
+			bad: '图中存在环（先做环检测）'
+		},
 		exam: {
 			how: '写拓扑序列；判断有向图有无回路',
 			points: '入度数组 + 栈或队列实现',
@@ -339,6 +400,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'kmp',
 		badge: '交互式',
 		hook: '暴力匹配最坏 O(nm)，KMP 靠一张表跳过所有重复比较',
+		usage: {
+			good: '大文本或多次重复匹配',
+			bad: '一次性短文本匹配（暴力足够）'
+		},
 		exam: {
 			how: '手算 next 数组，写出匹配过程',
 			points: 'next 值 = 最长相等前后缀长度',
@@ -387,6 +452,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'bst',
 		badge: '交互式',
 		hook: '中序遍历二叉搜索树，为什么恰好是从小到大？',
+		usage: {
+			good: '动态集合且需要中序有序输出',
+			bad: '插入顺序可能有序导致退化（换平衡树）'
+		},
 		exam: {
 			how: '画插入与删除的过程图',
 			points: '删除分叶子/单孩子/双孩子三种情况',
@@ -403,6 +472,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'huffman',
 		badge: '交互式',
 		hook: '电报编码怎么做到总长度最短，还不产生歧义？',
+		usage: {
+			good: '字符频率已知、追求最短前缀编码',
+			bad: '频率未知或必须定长编码'
+		},
 		exam: {
 			how: '画构造过程、算 WPL、写哈夫曼编码',
 			points: '左分支 0 右分支 1；编码是前缀码',
@@ -419,6 +492,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'avl',
 		badge: '交互式',
 		hook: 'BST 会退化成链表，AVL 靠四种旋转守住平衡',
+		usage: {
+			good: '查找密集、插删较少的有序场景',
+			bad: '插删极频繁（旋转成本高，用红黑树）'
+		},
 		exam: {
 			how: '画插入后的 LL/RR/LR/RL 旋转过程',
 			points: '平衡因子计算；n 层最少节点数递推',
@@ -435,6 +512,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'binary-search',
 		badge: '交互式',
 		hook: '一百万个数，最多猜 20 次就一定命中',
+		usage: {
+			good: '静态有序、支持随机访问的数据',
+			bad: '链表或频繁插删的动态数据'
+		},
 		exam: {
 			how: '写 mid 判定表、算最大比较次数或 ASL',
 			points: '前提是有序 + 顺序存储；比较次数 ⌈log₂(n+1)⌉',
@@ -451,6 +532,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'hash-table',
 		badge: '交互式',
 		hook: '不比较就能找到元素，靠的是「位置是算出来的」',
+		usage: {
+			good: '等值查找为主的字典场景',
+			bad: '需要范围查询或有序遍历'
+		},
 		exam: {
 			how: '构造散列表、计算平均查找长度',
 			points: '除留余数法；装填因子 = 元素数/表长',
@@ -467,6 +552,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'hash-probing',
 		badge: '交互式',
 		hook: '为什么哈希表里删除元素不能真删，只能打标记？',
+		usage: {
+			good: '装填因子可控、删除少',
+			bad: '高删除率或高装填（堆积严重）'
+		},
 		exam: {
 			how: '画每个元素的探测序列，算成功/失败 ASL',
 			points: '线性探测的堆积现象',
@@ -483,6 +572,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'rbtree',
 		badge: '交互式',
 		hook: 'AVL 平衡得太严格，红黑树凭什么更受数据库偏爱？',
+		usage: {
+			good: '插删频繁的通用有序索引',
+			bad: '需要严格平衡（如按名次查询）'
+		},
 		exam: {
 			how: '画插入后的变色与旋转过程',
 			points: '五条性质；黑高一致保证 O(log n)',
@@ -499,6 +592,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'trie',
 		badge: '交互式',
 		hook: '输入法的联想候选，为什么能一瞬间跳出来？',
+		usage: {
+			good: '前缀联想、词频统计',
+			bad: '字符集巨大而词条很少'
+		},
 		exam: {
 			how: '画一组单词依次插入后的字典树',
 			points: '根节点不含字符；节点带单词结束标记',
@@ -515,6 +612,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'astar',
 		badge: '交互式',
 		hook: 'Dijkstra 只看已经走过的路，A* 还会「预判」剩下的距离',
+		usage: {
+			good: '存在可靠的启发式估计',
+			bad: 'h 函数难以定义（退回 Dijkstra）'
+		},
 		exam: {
 			how: '列出 open 表每一步的选择',
 			points: 'f=g+h；h 不能高估才保证最优',
@@ -531,6 +632,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'union-find',
 		badge: '交互式',
 		hook: '朋友圈合并、连通性判断，怎么高效知道「谁和谁一伙」？',
+		usage: {
+			good: '动态连通性判断与集合合并',
+			bad: '需要把集合再拆开的场景'
+		},
 		exam: {
 			how: '画依次 union 之后的森林形态',
 			points: '路径压缩 + 按秩合并，均摊近似 O(1)',
@@ -547,6 +652,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'tarjan',
 		badge: '交互式',
 		hook: '怎么只遍历一遍，就找出图中所有的「圈子」？',
+		usage: {
+			good: '需要找出全部强连通分量',
+			bad: '只需判断有无环（拓扑排序更简单）'
+		},
 		exam: {
 			how: '在图上标注 dfn/low 与栈的变化',
 			points: 'low[u] 取 min(dfn[v], low[v]) 两种回边',
@@ -563,6 +672,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'cut-vertices',
 		badge: '交互式',
 		hook: '哪台路由器一宕机，整个网络就分裂了？',
+		usage: {
+			good: '分析网络健壮性与单点故障',
+			bad: '连通图很小或拓扑无关紧要'
+		},
 		exam: {
 			how: '标注 dfn/low，指出所有割点',
 			points: '非根节点 low[child]≥dfn[u]；根节点看孩子数',
@@ -579,6 +692,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'lca',
 		badge: '交互式',
 		hook: '族谱里两个人的最近共同长辈，怎么不用一步步爬？',
+		usage: {
+			good: '同一棵树上大量祖先查询',
+			bad: '只查一两次（直接向上爬即可）'
+		},
 		exam: {
 			how: '写 fa[k][v] 表与一次查询过程',
 			points: '先提到同一深度，再一起二进制上跳',
@@ -595,6 +712,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'bellman-ford',
 		badge: '交互式',
 		hook: '如果走某条路还倒贴钱（负权边），最短路该怎么求？',
+		usage: {
+			good: '有负权边或要检测负环',
+			bad: '大图且全正权（Dijkstra 更快）'
+		},
 		exam: {
 			how: '写出每轮 dist 数组的变化',
 			points: 'n-1 轮收敛；第 n 轮仍变化 = 有负环',
@@ -611,6 +732,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'max-flow',
 		badge: '交互式',
 		hook: '一套水管网络的最大输水量，怎么算出来？',
+		usage: {
+			good: '有明确容量约束的输送/分配',
+			bad: '图没有容量语义'
+		},
 		exam: {
 			how: '画每条增广路与流量分配',
 			points: '残量网络；本次流量 = 路径最小残量',
@@ -627,6 +752,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'bipartite',
 		badge: '交互式',
 		hook: '能不能把人分成两组、组内互相不认识？',
+		usage: {
+			good: '判定能否二分分组，二分图匹配的前置',
+			bad: '一般图的最大匹配（用其他算法）'
+		},
 		exam: {
 			how: 'BFS/DFS 染色并给出结论',
 			points: '二分图 ⇔ 不含奇数长度的环',
@@ -643,6 +772,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'bplus-insert',
 		badge: '交互式',
 		hook: '数据库索引为什么不用二叉树，而用几百叉的 B+ 树？',
+		usage: {
+			good: '磁盘/数据库的大规模索引',
+			bad: '数据全在内存且量小（普通结构更快）'
+		},
 		exam: {
 			how: '画 3 阶/4 阶 B+ 树依次插入后的分裂过程',
 			points: '叶满分裂、键复制上提（B+ 树特性）',
@@ -675,6 +808,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'skip-list',
 		badge: '交互式',
 		hook: 'Redis 的有序集合为什么用跳表，不用平衡树？',
+		usage: {
+			good: '需要并发友好的有序结构',
+			bad: '需要严格平衡保证的场景'
+		},
 		exam: {
 			how: '画一次查找经过的层与节点',
 			points: '抛硬币决定层高；期望 O(log n)',
@@ -691,6 +828,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'fenwick-tree',
 		badge: '交互式',
 		hook: '频繁改单点又频繁问区间和，前缀和数组一改就全错怎么办？',
+		usage: {
+			good: '单点更新 + 前缀/区间和的高频查询',
+			bad: '复杂的区间赋值（用线段树）'
+		},
 		exam: {
 			how: '画 lowbit 分层结构，写更新/查询路径',
 			points: 'lowbit(i) = i & (-i)',
@@ -707,6 +848,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'lru-cache',
 		badge: '交互式',
 		hook: '手机后台怎么决定该「杀」哪个 App？',
+		usage: {
+			good: '容量固定、热点突出的缓存',
+			bad: '访问模式是全量扫描（LRU 会全换血）'
+		},
 		exam: {
 			how: '写一组操作序列后的链表状态',
 			points: 'get/put 都是 O(1)',
@@ -739,6 +884,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'knapsack',
 		badge: '交互式',
 		hook: '背包装下最大价值，为什么一维数组要倒着循环？',
+		usage: {
+			good: '决策相互独立且满足最优子结构',
+			bad: '贪心策略已可证最优（贪心更快）'
+		},
 		exam: {
 			how: '画 DP 表格的填写过程',
 			points: '逆序循环是为了防止一件物品被选两次',
@@ -755,6 +904,10 @@ export const dsTopics: TopicCard[] = [
 		topicId: 'lcs',
 		badge: '交互式',
 		hook: '两段文字有多相似，「最长公共子序列」就是量化标准',
+		usage: {
+			good: '衡量两段文本相似度',
+			bad: '只要判断是否相同（直接比较）'
+		},
 		exam: {
 			how: '画 DP 表并回溯出一个 LCS',
 			points: '边界初始化全 0；回溯方向决定相等时走左上',

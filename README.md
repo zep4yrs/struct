@@ -10,7 +10,7 @@
 [![Tests](https://img.shields.io/badge/tests-491%20unit%20%2B%2071%20e2e-3fb96f)](#6-质量与测试)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](#8-许可)
 
-**87 个知识点** · **99 个页面** · **22 类渲染器** · SQL 本地真实执行 · 零账号 · 零上传
+**87 个知识点** · **100 个页面** · **22 类渲染器** · SQL 本地真实执行 · 零账号 · 零上传
 
 </div>
 
@@ -120,7 +120,7 @@ structvis/src/
 │   ├── components/       # player / layout / ui（AlgoPlayer · ScriptPlayer · 底部导航…）
 │   ├── content/          # topics.ts（课题单源）+ skill-graph + chapters + 守卫 spec
 │   └── stores/           # progress / settings（版本信封迁移，绝不覆盖损坏数据）
-├── routes/               # 99 个页面（/、/home、/catalog、ds×49、db×38、工具页）
+├── routes/               # 100 个页面（/、/home、/catalog、/sprint、ds×49、db×38…）
 └── e2e/                  # Playwright（含视觉截图基线）
 ```
 

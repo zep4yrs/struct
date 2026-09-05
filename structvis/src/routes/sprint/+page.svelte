@@ -76,21 +76,24 @@
 			key: 'mistakes',
 			label: '清完今日到期错题',
 			detail: dueMistakes.length > 0 ? `还有 ${dueMistakes.length} 道到期` : '今日到期错题已清空',
-			href: resolve('/progress') + '#mistakes',
+			to: '/progress',
+			hash: '#mistakes',
 			done: dueCleared
 		},
 		{
 			key: 'daily',
 			label: '完成今日一题',
 			detail: dailyDone ? '今日已完成 ✓' : '还没做，去学习进度页答题',
-			href: resolve('/progress'),
+			to: '/progress',
+			hash: '',
 			done: dailyDone
 		},
 		{
 			key: 'weak',
 			label: weakest ? `复习薄弱课题：${weakest.title}` : '复习薄弱课题',
 			detail: weakest ? `当前掌握度 ${weakest.mastery}%` : '练过题之后这里会给你推荐',
-			href: weakest ? resolve(weakest.href as '/ds/quick-sort') : resolve('/catalog'),
+			to: weakest ? (weakest.href as string) : '/catalog',
+			hash: '',
 			done: false as boolean
 		}
 	]);
@@ -152,7 +155,12 @@
 		<h2 class="mt-8 mb-4 font-display text-2xl font-semibold" use:reveal>今日任务包</h2>
 		<div class="grid gap-3">
 			{#each tasks as t (t.key)}
-				<a class="liquid sprint-task" class:done={t.done} href={t.href} use:reveal={{ y: 10 }}>
+				<a
+					class="liquid sprint-task"
+					class:done={t.done}
+					href={resolve((t.to + t.hash) as '/progress')}
+					use:reveal={{ y: 10 }}
+				>
 					<span class="sprint-dot" class:ok={t.done}></span>
 					<span class="sprint-task-label">{t.label}</span>
 					<span class="sprint-task-detail" class:ok-text={t.done}>{t.detail}</span>

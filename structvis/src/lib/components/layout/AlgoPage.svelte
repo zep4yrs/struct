@@ -108,6 +108,12 @@
 					<dt>易丢分</dt>
 					<dd>{topic.exam.pitfalls}</dd>
 				</div>
+				{#if topic.textbook}
+					<div class="exam-row">
+						<dt>教材</dt>
+						<dd>{topic.textbook}</dd>
+					</div>
+				{/if}
 			</dl>
 		</aside>
 	{/if}

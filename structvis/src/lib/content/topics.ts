@@ -21,6 +21,8 @@ export interface TopicCard {
 		points: string;
 		pitfalls: string;
 	};
+	/** 教材映射：对应教材章节（如 李春葆§2 / 杨宏霞配套）；章号可按手头教材修订 */
+	textbook?: string;
 	/** 侧边栏分组名 */
 	group: string;
 	/** 面包屑文本（含 [current] 标记） */
@@ -54,6 +56,7 @@ export const dsTopics: TopicCard[] = [
 			points: '划分过程、递归区间范围、每轮基准的最终位置',
 			pitfalls: '忘写基准归位；子区间边界写错'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]快速排序[/current]'
 	},
@@ -69,6 +72,7 @@ export const dsTopics: TopicCard[] = [
 			points: '前中后序的递归定义；层序遍历用队列',
 			pitfalls: '前序 + 后序无法唯一确定一棵二叉树'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §7 树和二叉树',
 		group: '树形结构',
 		crumb: '数据结构 / 树 / [current]二叉树遍历[/current]'
 	},
@@ -84,6 +88,7 @@ export const dsTopics: TopicCard[] = [
 			points: '头插/尾插的区别、p->next 的指向顺序',
 			pitfalls: '先断后接会把后半条链弄丢'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §2 线性表',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]单链表[/current]'
 	},
@@ -99,6 +104,7 @@ export const dsTopics: TopicCard[] = [
 			points: '入栈出栈顺序推演；循环队列 (rear+1)%M==front',
 			pitfalls: '循环队列为什么要牺牲一个存储空间'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §3 栈和队列',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]栈和队列[/current]'
 	},
@@ -114,6 +120,7 @@ export const dsTopics: TopicCard[] = [
 			points: '共 n-1 趟、第 i 趟比较 n-i 次、稳定排序',
 			pitfalls: '第 i 趟的比较次数是 n-i 而不是 n-i+1'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]冒泡排序[/current]'
 	},
@@ -129,6 +136,7 @@ export const dsTopics: TopicCard[] = [
 			points: '哨兵的作用、稳定、基本有序时接近 O(n)',
 			pitfalls: '与折半插入排序、希尔排序的关系容易混'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]直接插入排序[/current]'
 	},
@@ -144,6 +152,7 @@ export const dsTopics: TopicCard[] = [
 			points: '比较次数固定 n(n-1)/2；交换不超过 n-1 次',
 			pitfalls: '用 2、2、1 这类例子说明为什么不稳定'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]简单选择排序[/current]'
 	},
@@ -159,6 +168,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'O(n log n)、稳定、需要 O(n) 辅助空间',
 			pitfalls: '答性质时漏了辅助数组这一条'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]归并排序[/current]'
 	},
@@ -174,6 +184,7 @@ export const dsTopics: TopicCard[] = [
 			points: '下滤调整、O(n log n)、不稳定、原地排序',
 			pitfalls: '建堆要从最后一个非叶子节点开始'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]堆排序[/current]'
 	},
@@ -189,6 +200,7 @@ export const dsTopics: TopicCard[] = [
 			points: '增量递减、不稳定、基本有序后插入排序高效',
 			pitfalls: '增量应互质；最后一趟增量必须是 1'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]希尔排序[/current]'
 	},
@@ -204,6 +216,7 @@ export const dsTopics: TopicCard[] = [
 			points: '共 d 趟分配收集、稳定、O(d(n+r))',
 			pitfalls: '位数不足要补零；收集时队列顺序不能乱'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]基数排序[/current]'
 	},
@@ -219,6 +232,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'O(n+k)、加前缀和后稳定',
 			pitfalls: '值域 k 太大时辅助空间爆炸'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §10 内排序',
 		group: '排序算法',
 		crumb: '数据结构 / 排序 / [current]计数排序[/current]'
 	},
@@ -234,6 +248,7 @@ export const dsTopics: TopicCard[] = [
 			points: '无向图矩阵对称；邻接表空间 O(n+e)',
 			pitfalls: '有向图在矩阵里求入度要扫整行或整列'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]图的存储[/current]'
 	},
@@ -249,6 +264,7 @@ export const dsTopics: TopicCard[] = [
 			points: '队列 vs 栈；visited 数组防止重复访问',
 			pitfalls: '邻接表的存储顺序不同，序列就不同'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]图的遍历[/current]'
 	},
@@ -264,6 +280,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'Prim 适合稠密图；Kruskal 排序边 + 判环，适合稀疏图',
 			pitfalls: 'Kruskal 选边时要判断是否构成回路'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]最小生成树[/current]'
 	},
@@ -279,6 +296,7 @@ export const dsTopics: TopicCard[] = [
 			points: '贪心策略；不能处理负权边',
 			pitfalls: '已经「定桩」的点不会再被更新'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]最短路径[/current]'
 	},
@@ -294,6 +312,7 @@ export const dsTopics: TopicCard[] = [
 			points: '入度数组 + 栈或队列实现',
 			pitfalls: '拓扑序列不唯一；处理不完说明有环'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]拓扑排序[/current]'
 	},
@@ -309,6 +328,7 @@ export const dsTopics: TopicCard[] = [
 			points: '最早开始等于最晚开始的活动是关键活动',
 			pitfalls: 've 从前往后取 max，vl 从后往前取 min'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]关键路径[/current]'
 	},
@@ -324,6 +344,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'next 值 = 最长相等前后缀长度',
 			pitfalls: 'next 从 0 还是从 1 开始，按教材约定写清'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §4 串',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]串的模式匹配（KMP）[/current]'
 	},
@@ -339,6 +360,7 @@ export const dsTopics: TopicCard[] = [
 			points: '移动距离 = 该字符在模式串中的偏移值',
 			pitfalls: '字符不在模式串里时移动 m+1'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §4 串',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]Sunday 匹配[/current]'
 	},
@@ -354,6 +376,7 @@ export const dsTopics: TopicCard[] = [
 			points: '对称位置的半径可以复用；维护最右边界',
 			pitfalls: '忘记插 # 分隔符处理偶数长度回文'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §4 串',
 		group: '线性结构',
 		crumb: '数据结构 / 串 / [current]最长回文子串[/current]'
 	},
@@ -369,6 +392,7 @@ export const dsTopics: TopicCard[] = [
 			points: '删除分叶子/单孩子/双孩子三种情况',
 			pitfalls: '双孩子删除要用中序前驱或后继替换'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §7 树和二叉树',
 		group: '树形结构',
 		crumb: '数据结构 / 树 / [current]二叉搜索树[/current]'
 	},
@@ -384,6 +408,7 @@ export const dsTopics: TopicCard[] = [
 			points: '左分支 0 右分支 1；编码是前缀码',
 			pitfalls: 'WPL = 各叶子 权值×路径长度 求和'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §7 树和二叉树',
 		group: '树形结构',
 		crumb: '数据结构 / 树 / [current]哈夫曼树[/current]'
 	},
@@ -399,6 +424,7 @@ export const dsTopics: TopicCard[] = [
 			points: '平衡因子计算；n 层最少节点数递推',
 			pitfalls: '先判断失衡类型再旋转，LR/RL 要先转成 LL/RR'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §7 树和二叉树',
 		group: '树形结构',
 		crumb: '数据结构 / 树 / [current]AVL 树[/current]'
 	},
@@ -414,6 +440,7 @@ export const dsTopics: TopicCard[] = [
 			points: '前提是有序 + 顺序存储；比较次数 ⌈log₂(n+1)⌉',
 			pitfalls: '判定树左右子树的节点数分配'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §9 查找',
 		group: '查找',
 		crumb: '数据结构 / 查找 / [current]二分查找[/current]'
 	},
@@ -429,6 +456,7 @@ export const dsTopics: TopicCard[] = [
 			points: '除留余数法；装填因子 = 元素数/表长',
 			pitfalls: 'ASL 的分子是比较次数，不是元素个数'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §9 查找',
 		group: '查找',
 		crumb: '数据结构 / 查找 / [current]哈希表[/current]'
 	},
@@ -444,6 +472,7 @@ export const dsTopics: TopicCard[] = [
 			points: '线性探测的堆积现象',
 			pitfalls: '查找失败的 ASL 要从哈希地址走到第一个空位'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §9 查找',
 		group: '查找',
 		crumb: '数据结构 / 查找 / [current]哈希表 · 线性探测[/current]'
 	},
@@ -459,6 +488,7 @@ export const dsTopics: TopicCard[] = [
 			points: '五条性质；黑高一致保证 O(log n)',
 			pitfalls: '新插入的节点先染红，再按叔节点颜色处理'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §7 树和二叉树',
 		group: '树形结构',
 		crumb: '数据结构 / 树 / [current]红黑树[/current]'
 	},
@@ -474,6 +504,7 @@ export const dsTopics: TopicCard[] = [
 			points: '根节点不含字符；节点带单词结束标记',
 			pitfalls: '空间换时间的取舍要会说'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §4 串',
 		group: '线性结构',
 		crumb: '数据结构 / 串 / [current]Trie 字典树[/current]'
 	},
@@ -489,6 +520,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'f=g+h；h 不能高估才保证最优',
 			pitfalls: 'h 高估后找到的不再是最短路'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]A* 寻路[/current]'
 	},
@@ -504,6 +536,7 @@ export const dsTopics: TopicCard[] = [
 			points: '路径压缩 + 按秩合并，均摊近似 O(1)',
 			pitfalls: '不压缩最坏每次 find 要走 O(n)'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]并查集[/current]'
 	},
@@ -519,6 +552,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'low[u] 取 min(dfn[v], low[v]) 两种回边',
 			pitfalls: 'low[u]==dfn[u] 时才从栈里弹出整个分量'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]Tarjan 强连通分量[/current]'
 	},
@@ -534,6 +568,7 @@ export const dsTopics: TopicCard[] = [
 			points: '非根节点 low[child]≥dfn[u]；根节点看孩子数',
 			pitfalls: '根节点和非根节点的判定条件不一样'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]割点检测[/current]'
 	},
@@ -549,6 +584,7 @@ export const dsTopics: TopicCard[] = [
 			points: '先提到同一深度，再一起二进制上跳',
 			pitfalls: '预处理 O(n log n)，别答成 O(n)'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §7 树和二叉树',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]LCA 最近公共祖先[/current]'
 	},
@@ -564,6 +600,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'n-1 轮收敛；第 n 轮仍变化 = 有负环',
 			pitfalls: '和 Dijkstra 的适用范围区别要写清'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]Bellman-Ford 最短路[/current]'
 	},
@@ -579,6 +616,7 @@ export const dsTopics: TopicCard[] = [
 			points: '残量网络；本次流量 = 路径最小残量',
 			pitfalls: '反向边是为了给「反悔」留后路'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]最大流 Edmonds-Karp[/current]'
 	},
@@ -594,6 +632,7 @@ export const dsTopics: TopicCard[] = [
 			points: '二分图 ⇔ 不含奇数长度的环',
 			pitfalls: '非连通图要每个连通分量分别染'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §8 图',
 		group: '图结构',
 		crumb: '数据结构 / 图 / [current]二分图判定[/current]'
 	},
@@ -609,6 +648,7 @@ export const dsTopics: TopicCard[] = [
 			points: '叶满分裂、键复制上提（B+ 树特性）',
 			pitfalls: 'B+ 树数据全在叶子，B 树不是'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §7 树和二叉树',
 		group: '查找',
 		crumb: '数据结构 / 查找 / [current]B+ 树插入[/current]'
 	},
@@ -624,6 +664,7 @@ export const dsTopics: TopicCard[] = [
 			points: '弹栈的那一刻就是答案产生的时刻',
 			pitfalls: '严格大于还是大于等于，题意要看清'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §3 栈和队列',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]单调栈[/current]'
 	},
@@ -639,6 +680,7 @@ export const dsTopics: TopicCard[] = [
 			points: '抛硬币决定层高；期望 O(log n)',
 			pitfalls: '层高随机，不保证严格平衡'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §9 查找',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]跳表 Skip List[/current]'
 	},
@@ -654,6 +696,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'lowbit(i) = i & (-i)',
 			pitfalls: '更新是 +lowbit 往上，查询是 -lowbit 往下'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §9 查找',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]树状数组 Fenwick Tree[/current]'
 	},
@@ -669,6 +712,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'get/put 都是 O(1)',
 			pitfalls: '必须双向链表才能 O(1) 删除任意节点'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §2 线性表',
 		group: '线性结构',
 		crumb: '数据结构 / 线性表 / [current]LRU 缓存[/current]'
 	},
@@ -684,6 +728,7 @@ export const dsTopics: TopicCard[] = [
 			points: '列、主对角线、副对角线三组标记数组',
 			pitfalls: '回溯时一定要撤销标记'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §5 递归',
 		group: '回溯算法',
 		crumb: '数据结构 / 回溯 / [current]N 皇后回溯[/current]'
 	},
@@ -699,6 +744,7 @@ export const dsTopics: TopicCard[] = [
 			points: '逆序循环是为了防止一件物品被选两次',
 			pitfalls: '正序循环就变成了完全背包'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §5 递归（动态规划）',
 		group: '动态规划',
 		crumb: '数据结构 / 动态规划 / [current]0-1 背包[/current]'
 	},
@@ -714,6 +760,7 @@ export const dsTopics: TopicCard[] = [
 			points: '边界初始化全 0；回溯方向决定相等时走左上',
 			pitfalls: '子序列可以不连续，子串必须连续'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §5 递归（动态规划）',
 		group: '动态规划',
 		crumb: '数据结构 / 动态规划 / [current]最长公共子序列 LCS[/current]'
 	},
@@ -729,6 +776,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'O(n²) 与 O(n log n) 两种做法都要会',
 			pitfalls: '二分法里 tails 数组存的是各长度下最小尾元素'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §5 递归（动态规划）',
 		group: '动态规划',
 		crumb: '数据结构 / 动态规划 / [current]最长递增子序列 LIS[/current]'
 	},
@@ -744,6 +792,7 @@ export const dsTopics: TopicCard[] = [
 			points: '插入、删除、替换三种操作取最小',
 			pitfalls: '第一行第一列的初始化就是纯增/纯删'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §5 递归（动态规划）',
 		group: '动态规划',
 		crumb: '数据结构 / 动态规划 / [current]编辑距离[/current]'
 	},
@@ -759,6 +808,7 @@ export const dsTopics: TopicCard[] = [
 			points: 'm[i][j]=min(m[i][k]+m[k+1][j]+p·p·p)',
 			pitfalls: '没有 s 表就输出不了加括号方案'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §5 递归（动态规划）',
 		group: '动态规划',
 		crumb: '数据结构 / 动态规划 / [current]矩阵链乘法[/current]'
 	},
@@ -774,6 +824,7 @@ export const dsTopics: TopicCard[] = [
 			points: '正序允许重复选取，逆序不允许',
 			pitfalls: '两种背包循环方向的区别是最常考点'
 		},
+		textbook: '李春葆《数据结构教程》(第5版) §5 递归（动态规划）',
 		group: '动态规划',
 		crumb: '数据结构 / 动态规划 / [current]完全背包[/current]'
 	}
@@ -792,6 +843,7 @@ export const dbTopics: TopicCard[] = [
 			points: '连接器→分析器→优化器→执行器→InnoDB',
 			pitfalls: '查询缓存这一层在 MySQL 8.0 已经移除'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]MySQL 架构总览[/current]'
 	},
@@ -807,6 +859,7 @@ export const dbTopics: TopicCard[] = [
 			points: '排他锁；等待图检测死锁',
 			pitfalls: '按相同顺序加锁就能避免死锁'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]锁机制与死锁[/current]'
 	},
@@ -822,6 +875,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'redo prepare → 写 binlog → redo commit',
 			pitfalls: 'undo 与 redo 的职责不要混'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]InnoDB 日志体系[/current]'
 	},
@@ -837,6 +891,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'dump 线程 / IO 线程 / SQL 线程；中转靠 relay log',
 			pitfalls: '主从延迟的产生原因要会说'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]主从复制[/current]'
 	},
@@ -852,6 +907,7 @@ export const dbTopics: TopicCard[] = [
 			points: '外模式/模式/内模式；物理独立性与逻辑独立性',
 			pitfalls: '两层映像分别对应两种数据独立性'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]数据库系统概述[/current]'
 	},
@@ -867,6 +923,7 @@ export const dbTopics: TopicCard[] = [
 			points: '执行顺序 FROM→WHERE→GROUP BY→SELECT',
 			pitfalls: 'WHERE 里不能使用聚合函数'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]MySQL 数据查询[/current]'
 	},
@@ -882,6 +939,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'ON 连接条件；等值连接最常考',
 			pitfalls: '漏写连接条件会变成笛卡尔积'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]SQL 内连接 JOIN[/current]'
 	},
@@ -897,6 +955,7 @@ export const dbTopics: TopicCard[] = [
 			points: '判断没配上要用 IS NULL',
 			pitfalls: '把右表列条件写进 WHERE 会退化成内连接'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]SQL 左外连接 LEFT JOIN[/current]'
 	},
@@ -912,6 +971,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'SELECT 里的非聚合列必须出现在 GROUP BY 里',
 			pitfalls: 'COUNT(*) 和 COUNT(列名) 的区别'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]SQL 分组聚合 GROUP BY[/current]'
 	},
@@ -927,6 +987,7 @@ export const dbTopics: TopicCard[] = [
 			points: '标量子查询返回单值；集合子查询配 IN',
 			pitfalls: '子查询返回多行时用 = 会直接报错'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]SQL 子查询[/current]'
 	},
@@ -942,6 +1003,7 @@ export const dbTopics: TopicCard[] = [
 			points: '脏读/不可重复读/幻读与级别的对应关系',
 			pitfalls: 'MySQL InnoDB 默认是可重复读'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '进阶',
 		crumb: '数据库 / [current]事务隔离级别[/current]'
 	},
@@ -957,6 +1019,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'HAVING 是聚合后筛选；EXISTS 可短路',
 			pitfalls: 'WHERE 与 HAVING 的执行顺序'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]高级查询[/current]'
 	},
@@ -972,6 +1035,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'ROW_NUMBER/RANK/DENSE_RANK 的并列差异',
 			pitfalls: '窗口函数不能出现在 WHERE 里'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '进阶',
 		crumb: '数据库 / [current]窗口函数[/current]'
 	},
@@ -987,6 +1051,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'type 等级顺序；rows 是估算扫描行数',
 			pitfalls: '结合索引失效场景一起考'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '进阶',
 		crumb: '数据库 / [current]执行计划与索引选择[/current]'
 	},
@@ -1002,6 +1067,7 @@ export const dbTopics: TopicCard[] = [
 			points: '数据类型、PRIMARY KEY、NOT NULL/DEFAULT',
 			pitfalls: 'VARCHAR 长度与日期类型的选择'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]建表练习[/current]'
 	},
@@ -1017,6 +1083,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'UPDATE 多列用逗号分隔；条件靠 WHERE',
 			pitfalls: '多列之间写 AND 是语法错误'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '基础',
 		crumb: '数据库 / [current]数据更新[/current]'
 	},
@@ -1032,6 +1099,7 @@ export const dbTopics: TopicCard[] = [
 			points: '聚簇索引与二级索引；页分裂',
 			pitfalls: '索引占空间且拖慢写入'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '进阶',
 		crumb: '数据库 / [current]索引原理[/current]'
 	},
@@ -1047,6 +1115,7 @@ export const dbTopics: TopicCard[] = [
 			points: '视图不存数据，每次都查基表',
 			pitfalls: '通过视图更新数据是有限制的'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '进阶',
 		crumb: '数据库 / [current]视图[/current]'
 	},
@@ -1062,6 +1131,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'NEW 和 OLD 引用行的新旧值',
 			pitfalls: '触发器影响性能且难排查'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '进阶',
 		crumb: '数据库 / [current]触发器[/current]'
 	},
@@ -1077,6 +1147,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'CALL 调用；DELIMITER 改语句结束符',
 			pitfalls: '过程内部的提交语义'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '进阶',
 		crumb: '数据库 / [current]存储过程[/current]'
 	},
@@ -1092,6 +1163,7 @@ export const dbTopics: TopicCard[] = [
 			points: '1:1、1:n、m:n 的转换规则各不同',
 			pitfalls: 'm:n 联系必须单独建一张表'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '设计',
 		crumb: '数据库 / [current]E-R 模型[/current]'
 	},
@@ -1107,6 +1179,7 @@ export const dbTopics: TopicCard[] = [
 			points: '1NF→2NF→3NF 的判定条件',
 			pitfalls: '部分函数依赖与传递依赖要分清'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '设计',
 		crumb: '数据库 / [current]关系规范化[/current]'
 	},
@@ -1122,6 +1195,7 @@ export const dbTopics: TopicCard[] = [
 			points: '原子性靠 undo、持久性靠 redo',
 			pitfalls: '四个特性分别由什么机制保证'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '运维',
 		crumb: '数据库 / [current]事务与并发控制[/current]'
 	},
@@ -1137,6 +1211,7 @@ export const dbTopics: TopicCard[] = [
 			points: '权限层级：全局→库→表→列',
 			pitfalls: 'WITH GRANT OPTION 的含义'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '运维',
 		crumb: '数据库 / [current]用户与权限管理[/current]'
 	},
@@ -1152,6 +1227,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'CONCAT/SUBSTRING/ROUND/IFNULL',
 			pitfalls: 'NULL 参与任何运算结果都是 NULL'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]SQL 函数演练[/current]'
 	},
@@ -1167,6 +1243,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'CASE WHEN 条件 THEN 值 … ELSE … END',
 			pitfalls: '漏写 END；不写 ELSE 默认返回 NULL'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]CASE 表达式[/current]'
 	},
@@ -1182,6 +1259,7 @@ export const dbTopics: TopicCard[] = [
 			points: '执行顺序；聚合函数只能出现在 HAVING',
 			pitfalls: '在 WHERE 里用 COUNT 会直接报错'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]WHERE 与 HAVING[/current]'
 	},
@@ -1197,6 +1275,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'LIMIT offset, size；深分页的优化思路',
 			pitfalls: 'DISTINCT 作用于所有选出的列的组合'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]DISTINCT 与分页[/current]'
 	},
@@ -1212,6 +1291,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'UNION 去重，UNION ALL 不去重',
 			pitfalls: '两边的列数与类型必须对齐'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]SQL 集合运算[/current]'
 	},
@@ -1227,6 +1307,7 @@ export const dbTopics: TopicCard[] = [
 			points: '自连接必须起两个别名',
 			pitfalls: 'CROSS JOIN 的行数是两表相乘'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]JOIN 家族[/current]'
 	},
@@ -1242,6 +1323,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'WITH CHECK OPTION 的约束作用',
 			pitfalls: '更新必须能唯一映射回基表的一行'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]视图更新限制[/current]'
 	},
@@ -1257,6 +1339,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'PRIMARY KEY = 唯一 + 非空；外键可设级联',
 			pitfalls: 'MySQL 的 CHECK 在 8.0 之前不生效'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]约束体系[/current]'
 	},
@@ -1272,6 +1355,7 @@ export const dbTopics: TopicCard[] = [
 			points: '回表次数就是代价；覆盖索引可免回表',
 			pitfalls: 'SELECT * 是覆盖索引的天敌'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]索引查询与回表[/current]'
 	},
@@ -1287,6 +1371,7 @@ export const dbTopics: TopicCard[] = [
 			points: '五种常见失效场景',
 			pitfalls: '联合索引不满足最左前缀直接失效'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]索引失效实验[/current]'
 	},
@@ -1302,6 +1387,7 @@ export const dbTopics: TopicCard[] = [
 			points: 'id、type、key、rows、Extra 五个重点',
 			pitfalls: 'Extra 出现 Using filesort 的含义'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]EXPLAIN 详解[/current]'
 	},
@@ -1317,6 +1403,7 @@ export const dbTopics: TopicCard[] = [
 			points: '循环等待 = 死锁的充要条件',
 			pitfalls: 'victim 的选择与回滚代价'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]锁等待与死锁甘特图[/current]'
 	},
@@ -1332,6 +1419,7 @@ export const dbTopics: TopicCard[] = [
 			points: '冲突对：同一数据的读写、写写',
 			pitfalls: '前趋图有环 = 不可串行化'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]可串行化调度[/current]'
 	},
@@ -1347,6 +1435,7 @@ export const dbTopics: TopicCard[] = [
 			points: '语法准确性与结果正确性并重',
 			pitfalls: '细节：逗号、引号、别名拼写'
 		},
+		textbook: '杨宏霞《数据库技术及应用(MySQL)》配套',
 		group: '实验',
 		crumb: '数据库 / 实验 / [current]SQL 工作台[/current]'
 	}

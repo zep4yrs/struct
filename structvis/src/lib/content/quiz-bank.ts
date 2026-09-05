@@ -273,5 +273,87 @@ export const QUIZ_BANK: QuizQuestion[] = [
 		answer: 0,
 		explain: 'WHERE 在聚合前执行，看不到 AVG 的值；非相关子查询先算出平均值，再供外层比较。',
 		topicId: 'subquery'
+	},
+	{
+		chapter: '线性结构',
+		q: '循环队列用数组实现，队满的判定条件是？（牺牲一个空间的设计）',
+		options: ['rear == front', '(rear + 1) % M == front', 'rear == M', 'front == 0 且 rear == M'],
+		answer: 1,
+		explain: '牺牲一个单元区分队空与队满：队空 front==rear，队满 (rear+1)%M==front。',
+		topicId: 'stack-queue'
+	},
+	{
+		chapter: '线性结构',
+		q: '判断一个字符串是不是回文（正读反读一样），最顺手的结构是？',
+		options: [
+			'前半段字符依次入栈，再逐个弹出与后半段比对',
+			'先排序再比较',
+			'建一棵 BST',
+			'直接用哈希表计数'
+		],
+		answer: 0,
+		explain: '回文的「后半段是前半段的逆序」，正好是栈的出栈顺序。',
+		topicId: 'stack-queue'
+	},
+	{
+		chapter: '线性结构',
+		q: '中缀表达式「3+4*2」转成后缀表达式再求值，转换和求值分别靠什么结构？',
+		options: ['都用队列', '转换用栈，求值也用栈', '转换用队列，求值用栈', '都用树'],
+		answer: 1,
+		explain: '中缀转后缀用栈处理运算符优先级，后缀求值再用一个栈存操作数。',
+		topicId: 'stack-queue'
+	},
+	{
+		chapter: '树形结构',
+		q: '一棵哈夫曼树共有 2n+1 个节点（n 个叶子和 n-1 个内部节点），它有度为 1 的节点吗？',
+		options: [
+			'有，恰好 1 个',
+			'有，n 个',
+			'没有——哈夫曼树只有度为 0 和度为 2 的节点',
+			'看权值分布'
+		],
+		answer: 2,
+		explain: '构造时每次合并两棵树，每个新节点都有两个孩子，因此不存在度为 1 的节点。',
+		topicId: 'huffman'
+	},
+	{
+		chapter: '排序算法',
+		q: '归并排序一切顺利，但它最让人犹豫的缺点是什么？',
+		options: ['最坏 O(n²)', '需要 O(n) 的辅助数组', '不稳定', '不能处理重复元素'],
+		answer: 1,
+		explain: '归并的合并步骤要 O(n) 辅助空间——这是它相对堆排序（原地）的主要短板。',
+		topicId: 'merge-sort'
+	},
+	{
+		chapter: '查找',
+		q: '对 15 个元素的有序数组做二分查找，最坏要比较几次？',
+		options: ['3 次', '4 次', '8 次', '15 次'],
+		answer: 1,
+		explain: '最大比较次数 = ⌈log₂(15+1)⌉ = 4。',
+		topicId: 'binary-search'
+	},
+	{
+		chapter: '查找',
+		q: '哈希表长 20、已存 10 个元素，装填因子是多少？它越大意味着什么？',
+		options: ['0.5；越大冲突概率越高', '2；越大越好', '0.5；越大冲突越少', '10；与冲突无关'],
+		answer: 0,
+		explain: '装填因子 = 元素数/表长 = 10/20 = 0.5，它是冲突概率的直接指标。',
+		topicId: 'hash-table'
+	},
+	{
+		chapter: '查找',
+		q: '用除留余数法造散列函数 H(key) = key mod p，p 应该怎么选？',
+		options: ['任意偶数', '表长本身', '不超过表长的最大素数', '越小越好'],
+		answer: 2,
+		explain: '取不超过表长的最大素数能让余数分布更均匀，减少冲突。',
+		topicId: 'hash-table'
+	},
+	{
+		chapter: 'SQL',
+		q: '同事执行了 DELETE FROM exam，没写 WHERE。会发生什么？',
+		options: ['报语法错误', '只删第一行', '删除全表所有行，但表结构还在', '表连同结构一起删除'],
+		answer: 2,
+		explain: '不带 WHERE 的 DELETE 清空全部行但保留表结构；连表一起删的是 DROP TABLE。',
+		topicId: 'update'
 	}
 ];

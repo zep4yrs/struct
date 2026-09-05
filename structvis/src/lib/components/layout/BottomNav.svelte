@@ -40,14 +40,17 @@
 		{
 			href: '/race',
 			label: '实验',
-			activeMatch: (p) => p.startsWith('/race') || p.startsWith('/map') || p.startsWith('/db/workbench'),
+			activeMatch: (p) =>
+				p.startsWith('/race') || p.startsWith('/map') || p.startsWith('/db/workbench'),
 			icon: 'M13 2 3 14h9l-1 8 10-12h-9l1-8z'
 		},
 		{
 			href: '/progress',
 			label: '复习',
 			activeMatch: (p) =>
-				p.startsWith('/progress') || p.startsWith('/quiz') || p.startsWith('/report') ||
+				p.startsWith('/progress') ||
+				p.startsWith('/quiz') ||
+				p.startsWith('/report') ||
 				p.startsWith('/sprint'),
 			icon: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 13l2 2 4-4'
 		},

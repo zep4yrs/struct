@@ -252,7 +252,8 @@
 		所有数据保存在本地浏览器中，不会上传到任何服务器。
 	</p>
 	<div class="mb-8 flex items-center gap-3" use:reveal>
-		<a href={resolve('/report')} class="btn btn-accent btn-sm">生成学习报告</a>
+		<a href={resolve('/sprint')} class="btn btn-accent btn-sm">期末冲刺 →</a>
+		<a href={resolve('/report')} class="btn btn-ghost btn-sm">生成学习报告</a>
 		<a href={resolve('/map')} class="btn btn-ghost btn-sm">技能图谱 · 规划学习路径</a>
 	</div>
 

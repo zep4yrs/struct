@@ -49,7 +49,9 @@ test.describe('播放器移动端适配（375×667）', () => {
 		await openBubbleSortMobile(page);
 		// v3：课程内容页沉浸——底部导航整体隐藏（原避让问题的根治）
 		await expect(page.locator('.bottom-nav')).toHaveCount(0);
-		// 控制条完整可见（不被任何固定层遮挡）
+		// 控制条完整可见（考点卡在页尾，滚回控制条验证可达 + 不被固定层遮挡）
+		await page.locator('.control-bar').scrollIntoViewIfNeeded();
+		await page.waitForTimeout(200);
 		const cb = await page.locator('.control-bar').boundingBox();
 		expect(cb).not.toBeNull();
 		expect(cb!.y).toBeGreaterThan(0);

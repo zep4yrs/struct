@@ -163,14 +163,15 @@ describe('关卡 judge 路径', () => {
 		expect(badV.ok).toBe(false);
 	});
 
-	it('全部 16 关编号连续且字段完整', () => {
-		expect(LEVELS.length).toBe(16);
+	it('全部关卡编号连续、字段完整且带章节', () => {
+		expect(LEVELS.length).toBe(20);
 		LEVELS.forEach((l, i) => {
 			expect(l.id).toBe(i + 1);
 			expect(l.title.length).toBeGreaterThan(0);
 			expect(l.task.length).toBeGreaterThan(0);
 			expect(l.hint.length).toBeGreaterThan(0);
 			expect(l.topicId.length).toBeGreaterThan(0);
+			expect(l.chapter.length).toBeGreaterThan(0);
 		});
 	});
 });

@@ -14,6 +14,12 @@
 	let loadError = $state('');
 
 	let levelIdx = $state(0);
+	// 章节筛选：关卡多了以后按知识点分节（全部 = 难度顺序）
+	let chapterFilter = $state('全部');
+	const chapters = $derived(['全部', ...[...new Set(LEVELS.map((l) => l.chapter))]]);
+	const visibleLevels = $derived(
+		chapterFilter === '全部' ? LEVELS : LEVELS.filter((l) => l.chapter === chapterFilter)
+	);
 	let sql = $state('');
 	let result = $state<{ columns: string[]; rows: (string | number)[][]; error?: string } | null>(
 		null
@@ -153,15 +159,28 @@
 		<div class="wb-loading">正在装载 SQLite 执行器……</div>
 	{:else}
 		<div class="wb-grid">
-			<!-- ═══ 左栏：关卡列表 + schema 树 ═══ -->
+			<!-- ═══ 左栏：关卡列表（章节筛选） + schema 树 ═══ -->
 			<aside class="wb-side">
+				<div class="chapter-row" role="tablist" aria-label="章节筛选">
+					{#each chapters as c (c)}
+						<button
+							class="chapter-chip"
+							class:active={chapterFilter === c}
+							role="tab"
+							aria-selected={chapterFilter === c}
+							onclick={() => (chapterFilter = c)}
+						>
+							{c}
+						</button>
+					{/each}
+				</div>
 				<nav class="level-list" aria-label="关卡列表">
-					{#each LEVELS as l, i (l.id)}
+					{#each visibleLevels as l (l.id)}
 						<button
 							class="level-item"
-							class:active={i === levelIdx}
+							class:active={LEVELS.indexOf(l) === levelIdx}
 							class:passed={passed.includes(l.id)}
-							onclick={() => pickLevel(i)}
+							onclick={() => pickLevel(LEVELS.indexOf(l))}
 						>
 							<span class="level-badge">{passed.includes(l.id) ? '✓' : l.id}</span>
 							{l.title.split('·')[1]?.trim() ?? l.title}
@@ -296,6 +315,36 @@
 	}
 
 	/* 左栏 */
+	.chapter-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-bottom: 10px;
+	}
+
+	.chapter-chip {
+		padding: 4px 11px;
+		font-size: 11.5px;
+		color: var(--color-ink-2);
+		background: transparent;
+		border: 1px solid var(--color-line-hair);
+		border-radius: 999px;
+		cursor: pointer;
+		transition:
+			color 120ms var(--ease-out),
+			border-color 120ms var(--ease-out);
+	}
+
+	.chapter-chip:hover {
+		color: var(--color-ink);
+	}
+
+	.chapter-chip.active {
+		color: var(--color-accent-text);
+		border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+		background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+	}
+
 	.level-list {
 		display: flex;
 		flex-direction: column;

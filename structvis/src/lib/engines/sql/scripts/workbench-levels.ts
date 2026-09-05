@@ -19,6 +19,8 @@ export interface Level {
 	task: string;
 	hint: string;
 	topicId: string;
+	/** 知识点分组（工作台章节筛选：查询基础/连接查询/进阶查询/数据更新/索引优化/视图与约束/集合运算） */
+	chapter: string;
 	/** 判分：对用户 SQL 的执行结果（columns/rows）+ eqp 输出 + 库状态查询钩子 */
 	judge: (ctx: {
 		columns: string[];
@@ -60,6 +62,7 @@ export const LEVELS: Level[] = [
 		task: '查出成绩 ≥ 85 的学生姓名与成绩，按成绩从高到低排列。',
 		hint: 'WHERE + ORDER BY ... DESC',
 		topicId: 'sql',
+		chapter: '查询基础',
 		judge: ({ columns, rows }) => {
 			const ok = resultSetEquals({ columns, rows }, [
 				['周八', 95],
@@ -82,6 +85,7 @@ export const LEVELS: Level[] = [
 		task: '统计每个专业的学生人数，按人数从多到少、专业名升序排列。',
 		hint: 'GROUP BY + COUNT(*) + 多键 ORDER BY',
 		topicId: 'group-by',
+		chapter: '查询基础',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [
 				['计算机', 3],
@@ -99,6 +103,7 @@ export const LEVELS: Level[] = [
 		task: '找出从未选课的学生姓名（含 0 门者），按学号升序。',
 		hint: 'LEFT JOIN ... IS NULL',
 		topicId: 'left-join',
+		chapter: '连接查询',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [['赵六'], ['周八']]);
 			return ok
@@ -112,6 +117,7 @@ export const LEVELS: Level[] = [
 		task: '为「学生」表的姓名列建一个索引，然后查询姓名 = 王五 的行。要求执行计划走 SEARCH（索引查找）而非 SCAN。',
 		hint: 'CREATE INDEX ... 然后 SELECT（看右侧 EXPLAIN 面板）',
 		topicId: 'index-fail',
+		chapter: '索引优化',
 		judge: ({ eqp }) => {
 			const ok = eqp.includes('SEARCH') && !eqp.includes('SCAN 学生');
 			return ok
@@ -128,6 +134,7 @@ export const LEVELS: Level[] = [
 		task: '给所有软件工程专业的学生加 5 分（UPDATE），然后查出软工学生的姓名与成绩（按学号升序）验证。',
 		hint: 'UPDATE ... WHERE；验证查询 SELECT ... ORDER BY 学号',
 		topicId: 'update',
+		chapter: '数据更新',
 		judge: ({ queryTable }) => {
 			const r = queryTable("SELECT 姓名, 成绩 FROM 学生 WHERE 专业='软件工程' ORDER BY 学号");
 			const ok = resultSetEquals(r, [
@@ -148,6 +155,7 @@ export const LEVELS: Level[] = [
 		task: '用窗口函数给全部学生按成绩排名（同分同名次），输出姓名、成绩、名次，按名次升序。',
 		hint: 'RANK() OVER (ORDER BY 成绩 DESC)',
 		topicId: 'window-function',
+		chapter: '进阶查询',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [
 				['周八', 95, 1],
@@ -171,6 +179,7 @@ export const LEVELS: Level[] = [
 		task: '查出「选了 C001 或选了 C002 的学生姓名」并去重，按姓名排序。',
 		hint: '两个 WHERE 用 UNION 连接',
 		topicId: 'union-set',
+		chapter: '集合运算',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [['张三'], ['李四'], ['王五'], ['孙七']], {
 				ordered: true
@@ -186,6 +195,7 @@ export const LEVELS: Level[] = [
 		task: '统计每个专业的平均成绩，只保留平均分 ≥ 80 的专业，按平均分降序。',
 		hint: 'GROUP BY + AVG + HAVING',
 		topicId: 'having-deep',
+		chapter: '进阶查询',
 		judge: ({ rows }) => {
 			const ok =
 				resultSetEquals({ columns: [], rows }, [
@@ -207,6 +217,7 @@ export const LEVELS: Level[] = [
 		task: '用子查询查出成绩高于全体平均分的学生姓名与成绩（不限顺序）。',
 		hint: 'WHERE 成绩 > (SELECT AVG(成绩) FROM 学生)',
 		topicId: 'subquery',
+		chapter: '进阶查询',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals(
 				{ columns: [], rows },
@@ -229,6 +240,7 @@ export const LEVELS: Level[] = [
 		task: '统计每门课程的课程号与选课人数，按课程号升序。',
 		hint: '选课表 GROUP BY 课程号 + COUNT(*)',
 		topicId: 'join',
+		chapter: '连接查询',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [
 				['C001', 3],
@@ -245,6 +257,7 @@ export const LEVELS: Level[] = [
 		task: '按成绩给学生分档：大于等于 90 优秀、大于等于 80 良好、其余待提高。输出档名与人数，不限顺序。',
 		hint: 'CASE WHEN 成绩>=90 THEN ... END AS 档次，再 GROUP BY 档次',
 		topicId: 'case-expr',
+		chapter: '进阶查询',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals(
 				{ columns: [], rows },
@@ -266,6 +279,7 @@ export const LEVELS: Level[] = [
 		task: '查有选课记录的不同学号（升序），每页 2 条，取第二页。',
 		hint: 'SELECT DISTINCT 学号 ... ORDER BY 学号 LIMIT 2 OFFSET 2',
 		topicId: 'distinct-paging',
+		chapter: '查询基础',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [[20103], [20105]]);
 			return ok
@@ -279,6 +293,7 @@ export const LEVELS: Level[] = [
 		task: '从选课表删除成绩低于 70 的选课记录，然后查剩余选课记录数。',
 		hint: 'DELETE FROM 选课 WHERE 成绩 < 70；再 SELECT COUNT(*)',
 		topicId: 'update',
+		chapter: '数据更新',
 		judge: ({ queryTable }) => {
 			const r = queryTable('SELECT COUNT(*) FROM 选课');
 			const ok = resultSetEquals(r, [[4]]);
@@ -296,6 +311,7 @@ export const LEVELS: Level[] = [
 		task: '创建视图 v_good（成绩不低于 85 的学生姓名与成绩），再从视图查出全部行，按成绩降序。',
 		hint: 'CREATE VIEW v_good AS SELECT ...；再 SELECT * FROM v_good ORDER BY 成绩 DESC',
 		topicId: 'view',
+		chapter: '视图与约束',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [
 				['周八', 95],
@@ -314,6 +330,7 @@ export const LEVELS: Level[] = [
 		task: '建一张「报名」表：考号 INTEGER PRIMARY KEY、姓名 TEXT NOT NULL；插入一行 (20107, 吴九)，然后查报名表全部行。',
 		hint: 'CREATE TABLE 报名(考号 INTEGER PRIMARY KEY, 姓名 TEXT NOT NULL)；INSERT 后 SELECT',
 		topicId: 'constraints',
+		chapter: '视图与约束',
 		judge: ({ queryTable }) => {
 			const r = queryTable('SELECT 考号, 姓名 FROM 报名');
 			const ok = resultSetEquals(r, [[20107, '吴九']]);
@@ -331,6 +348,7 @@ export const LEVELS: Level[] = [
 		task: '为选课表的学号列建索引，然后连接查询每个学生的姓名与选课成绩。要求执行计划出现 SEARCH。',
 		hint: 'CREATE INDEX idx ON 选课(学号)；再 学生 JOIN 选课 ON 学号',
 		topicId: 'explain-detail',
+		chapter: '索引优化',
 		judge: ({ rows, eqp }) => {
 			const ok = rows.length === 5 && eqp.includes('SEARCH');
 			return ok
@@ -339,6 +357,83 @@ export const LEVELS: Level[] = [
 						ok: false,
 						reason: `期望 5 行且计划含 SEARCH（当前 ${rows.length} 行）——先建索引再看右侧计划。`
 					};
+		}
+	},
+	{
+		id: 17,
+		title: '第十七关 · 各专业状元',
+		task: '查每个专业的最高成绩，按最高分降序排列。',
+		hint: 'GROUP BY 专业 + MAX(成绩)',
+		topicId: 'group-by',
+		chapter: '查询基础',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals({ columns: [], rows }, [
+				['计算机', 95],
+				['软件工程', 92],
+				['网络工程', 85]
+			]);
+			return ok
+				? { ok: true, reason: '聚合正确：计算机 95 · 软工 92 · 网工 85。' }
+				: { ok: false, reason: '期望 计算机95 / 软工92 / 网工85——MAX 作用于组内成绩。' };
+		}
+	},
+	{
+		id: 18,
+		title: '第十八关 · 指定专业名单',
+		task: '查软件工程和计算机两个专业的学号与姓名，按学号升序。',
+		hint: 'WHERE 专业 IN (软件工程, 计算机)',
+		topicId: 'sql',
+		chapter: '查询基础',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals(
+				{ columns: [], rows },
+				[
+					[20101, '张三'],
+					[20102, '李四'],
+					[20103, '王五'],
+					[20105, '孙七'],
+					[20106, '周八']
+				],
+				{ ordered: true }
+			);
+			return ok
+				? { ok: true, reason: 'IN 集合查询正确：5 名两专业学生按学号列出。' }
+				: { ok: false, reason: '应 5 行（除赵六外）——IN 里写两个专业名，注意引号。' };
+		}
+	},
+	{
+		id: 19,
+		title: '第十九关 · 没选 C001 的人',
+		task: '查没有选课程 C001 的学生学号与姓名（含没选任何课的），按学号升序。',
+		hint: '学号 NOT IN (SELECT 学号 FROM 选课 WHERE 课程号 = C001)',
+		topicId: 'subquery',
+		chapter: '进阶查询',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals(
+				{ columns: [], rows },
+				[
+					[20103, '王五'],
+					[20104, '赵六']
+				],
+				{ ordered: true }
+			);
+			return ok
+				? { ok: true, reason: '排除正确：王五（只选 C002）与赵六（没选课）。' }
+				: { ok: false, reason: '应为 王五、赵六——NOT IN 的子查询只筛 C001 的选课记录。' };
+		}
+	},
+	{
+		id: 20,
+		title: '第二十关 · 姓张的同学',
+		task: '查姓「张」的学生的学号与姓名。',
+		hint: "WHERE 姓名 LIKE '张%'",
+		topicId: 'sql',
+		chapter: '查询基础',
+		judge: ({ rows }) => {
+			const ok = resultSetEquals({ columns: [], rows }, [[20101, '张三']]);
+			return ok
+				? { ok: true, reason: 'LIKE 前缀匹配正确。' }
+				: { ok: false, reason: '应为 20101 张三——LIKE 张% 只匹配姓张的。' };
 		}
 	}
 ];

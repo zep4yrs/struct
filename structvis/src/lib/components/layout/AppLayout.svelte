@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { animate } from 'animejs';
 	import { beforeNavigate, onNavigate } from '$app/navigation';
 	import BottomNav from '$lib/components/layout/BottomNav.svelte';
 	import SearchDialog from '$lib/components/layout/SearchDialog.svelte';

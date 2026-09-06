@@ -85,7 +85,7 @@
 		{/if}
 	</div>
 
-	<div class="player-wrap" use:reveal={{ delay: 270 }}>
+	<div class="player-wrap" style="view-transition-name: vt-expand" use:reveal={{ delay: 270 }}>
 		{@render children()}
 	</div>
 

@@ -638,3 +638,29 @@ pre,
 		transform: translateX(-48px);
 	}
 }
+
+/* ═══ 卡片 → 详情 container transform（共享元素形变） ═══
+   点击卡片下钻课题页：卡片(view-transition-name: vt-expand)放大为播放器区域；
+   时长/缓动统一，几何插值由浏览器完成。 */
+::view-transition-group(vt-expand) {
+	animation-duration: 380ms;
+	animation-timing-function: cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+
+::view-transition-old(vt-expand),
+::view-transition-new(vt-expand) {
+	animation-duration: 380ms;
+	height: 100%;
+	object-fit: cover;
+	overflow: hidden;
+}
+
+::view-transition-old(vt-expand) {
+	animation-name: vt-expand-fade;
+}
+
+@keyframes vt-expand-fade {
+	to {
+		opacity: 0;
+	}
+}

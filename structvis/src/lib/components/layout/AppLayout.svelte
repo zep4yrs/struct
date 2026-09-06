@@ -39,6 +39,27 @@
 		return i < 0 ? -1 : i;
 	}
 
+	/** 点击卡片下钻详情：给被点的卡片挂共享元素名，课题页播放器区域承接同名
+	 *  → VT 自动做「卡片放大成播放器」的连续形变（container transform）。 */
+	function tagExpandSource(toPath: string) {
+		const full = (base ?? '') + toPath;
+		const link = document.querySelector<HTMLAnchorElement>(`a[href="${full}"], a[href="${full}/"]`);
+		link?.style.setProperty('view-transition-name', 'vt-expand');
+	}
+
+	function clearExpandName() {
+		document.querySelectorAll('[style*="vt-expand"]').forEach((el) => {
+			(el as HTMLElement).style.removeProperty('view-transition-name');
+		});
+	}
+
+	beforeNavigate((nav) => {
+		const to = stripBase(nav.to?.url.pathname ?? '/');
+		clearExpandName();
+		// 下钻课题详情（目录/首页卡片 → 课题页）：标记来源卡片
+		if (/^\/(ds|db)\//.test(to)) tagExpandSource(to);
+	});
+
 	beforeNavigate((nav) => {
 		const from = navIndexOf(stripBase(nav.from?.url.pathname ?? '/'));
 		const to = navIndexOf(stripBase(nav.to?.url.pathname ?? '/'));

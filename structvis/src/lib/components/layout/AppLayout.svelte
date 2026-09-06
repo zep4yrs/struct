@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { animate } from 'animejs';
+	import { beforeNavigate, onNavigate } from '$app/navigation';
 	import BottomNav from '$lib/components/layout/BottomNav.svelte';
 	import SearchDialog from '$lib/components/layout/SearchDialog.svelte';
 	import ThemeVeil from '$lib/components/theme/ThemeVeil.svelte';
 	import { settings, toggleTheme } from '$lib/stores/settings';
+	import { prefersReducedMotion } from '$lib/utils/motion';
 	import { page } from '$app/stores';
 	import { base, resolve } from '$app/paths';
 
@@ -27,6 +30,35 @@
 	/** 课程内容页（/ds/*、/db/* 深页）：沉浸模式——隐藏浮动动作簇与底部导航 */
 	// 课题页解除沉浸；SQL 工作台维持全屏工具台沉浸
 	const immersive = $derived(stripBase($page.url.pathname).startsWith('/db/workbench'));
+
+	// ═══ 一镜到底页面转场：View Transitions API + 方向性滑动（tab 顺序决定方向） ═══
+	const NAV_ORDER = ['/home', '/catalog', '/race', '/progress', '/settings'];
+	function navIndexOf(p: string): number {
+		if (p === '/') return 0;
+		if (p.startsWith('/ds') || p.startsWith('/db')) return 1; // 课程 tab
+		const i = NAV_ORDER.findIndex((n) => p === n || p.startsWith(n + '/') || p.startsWith(n));
+		return i < 0 ? -1 : i;
+	}
+
+	beforeNavigate((nav) => {
+		const from = navIndexOf(stripBase(nav.from?.url.pathname ?? '/'));
+		const to = navIndexOf(stripBase(nav.to?.url.pathname ?? '/'));
+		// 方向写入 html data 属性 → ::view-transition 方向性 CSS 动画
+		document.documentElement.dataset.navDir = String(Math.sign(to - from));
+	});
+
+	onNavigate((nav) => {
+		const doc = document as Document & {
+			startViewTransition?: (cb: () => Promise<void>) => unknown;
+		};
+		if (!doc.startViewTransition || prefersReducedMotion()) return;
+		return new Promise<void>((done) => {
+			doc.startViewTransition!(async () => {
+				done();
+				await nav.complete;
+			});
+		});
+	});
 
 	const isDark = $derived($settings.theme === 'dark');
 
@@ -151,7 +183,7 @@
 		</div>
 	{/if}
 
-	<!-- 页面切换动画：路由 pathname 变化 → key 重建 → 入场上浮淡入 -->
+	<!-- 页面切换：路由 pathname 变化 → key 重建；转场由 anime.js 一镜到底驱动（方向性滑动） -->
 	<main id="main-content" tabindex="-1" class="flex-1">
 		{#key $page.url.pathname}
 			<div class="page-transition">
@@ -196,7 +228,8 @@
 		outline-offset: 2px;
 	}
 
-	/* 页面切换动画：路由 key 重建时上浮淡入（reduced-motion 直出） */
+	/* 页面转场由 anime.js 一镜到底驱动（AppLayout script：方向性滑动交叉）；
+	   同 tab 内的轻切换走内置 page-in 上浮（reduced-motion 直出） */
 	.page-transition {
 		animation: page-in 300ms var(--ease-out) both;
 	}

@@ -533,7 +533,7 @@
 		align-self: end;
 		transition:
 			box-shadow 160ms var(--ease-out),
-			transform 160ms var(--ease-out);
+			transform 160ms var(--ease-spring);
 	}
 
 	.nav-mini:hover {
@@ -713,13 +713,13 @@
 		transition:
 			color 140ms var(--ease-out),
 			background-color 140ms var(--ease-out),
-			transform 140ms var(--ease-out);
+			transform 140ms var(--ease-spring);
 	}
 
 	.sec-item svg {
 		width: 17px;
 		height: 17px;
-		transition: transform 140ms var(--ease-out);
+		transition: transform 140ms var(--ease-spring);
 	}
 
 	.sec-item:hover {
@@ -765,14 +765,14 @@
 		transition:
 			color 150ms var(--ease-out),
 			background-color 150ms var(--ease-out),
-			transform 150ms var(--ease-out),
+			transform 150ms var(--ease-spring),
 			box-shadow 150ms var(--ease-out);
 	}
 
 	.tab svg {
 		width: 21px;
 		height: 21px;
-		transition: transform 150ms var(--ease-out);
+		transition: transform 150ms var(--ease-spring);
 	}
 
 	.tab:hover {
@@ -800,7 +800,7 @@
 			inset 0 1px 0 rgb(255 255 255 / 0.22),
 			0 2px 8px color-mix(in srgb, var(--color-accent) 26%, transparent);
 		transform: translateX(calc(100% * var(--slider-index)));
-		transition: transform 320ms var(--ease-out);
+		transition: transform 320ms var(--ease-spring);
 		opacity: 0;
 		pointer-events: none;
 	}

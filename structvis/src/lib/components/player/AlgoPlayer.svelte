@@ -2053,7 +2053,7 @@
 		cursor: pointer;
 		transition:
 			border-color 120ms var(--ease-out),
-			transform 120ms var(--ease-out);
+			transform 120ms var(--ease-spring);
 	}
 
 	.pj-ctrl svg {

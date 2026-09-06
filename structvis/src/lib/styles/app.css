@@ -68,6 +68,7 @@
 
 	/* === 动画 === */
 	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* 弹性微交互：hover/按压轻微过冲 */
 	--dur-fast: 120ms;
 	--dur-base: 240ms;
 	--dur-slow: 400ms;
@@ -560,5 +561,80 @@ pre,
 		content: '';
 		position: absolute;
 		inset: -9px;
+	}
+}
+
+/* ═══ 一镜到底页面转场：View Transitions API + 方向性滑动 ═══
+   方向由 html[data-nav-dir] 决定（AppLayout beforeNavigate 写入，tab 顺序定方向）；
+   Firefox/不支持环境降级直切；reduced-motion 静止。 */
+@media (prefers-reduced-motion: no-preference) {
+	::view-transition-old(root) {
+		animation: vt-out-fade 220ms var(--ease-out) both;
+	}
+
+	::view-transition-new(root) {
+		animation: vt-in-fade 300ms var(--ease-out) both;
+	}
+
+	/* 向右切换（目标 tab 在右）：旧页左出、新页右入 */
+	html[data-nav-dir='1']::view-transition-old(root),
+	html[data-nav-dir='1']::view-transition-old(page) {
+		animation: vt-out-left 280ms var(--ease-out) both;
+	}
+
+	html[data-nav-dir='1']::view-transition-new(root),
+	html[data-nav-dir='1']::view-transition-new(page) {
+		animation: vt-in-right 320ms var(--ease-out) both;
+	}
+
+	/* 向左切换：旧页右出、新页左入 */
+	html[data-nav-dir='-1']::view-transition-old(root),
+	html[data-nav-dir='-1']::view-transition-old(page) {
+		animation: vt-out-right 280ms var(--ease-out) both;
+	}
+
+	html[data-nav-dir='-1']::view-transition-new(root),
+	html[data-nav-dir='-1']::view-transition-new(page) {
+		animation: vt-in-left 320ms var(--ease-out) both;
+	}
+}
+
+@keyframes vt-out-fade {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes vt-in-fade {
+	from {
+		opacity: 0;
+	}
+}
+
+@keyframes vt-out-left {
+	to {
+		opacity: 0;
+		transform: translateX(-48px);
+	}
+}
+
+@keyframes vt-in-right {
+	from {
+		opacity: 0;
+		transform: translateX(48px);
+	}
+}
+
+@keyframes vt-out-right {
+	to {
+		opacity: 0;
+		transform: translateX(48px);
+	}
+}
+
+@keyframes vt-in-left {
+	from {
+		opacity: 0;
+		transform: translateX(-48px);
 	}
 }

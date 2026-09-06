@@ -204,3 +204,44 @@ export function revealOnScroll(node: HTMLElement, opts: ScrollRevealOptions = {}
 		}
 	};
 }
+
+/**
+ * 组内编排入场：容器观察进入视口后，对标记 data-rg-item 的子元素做
+ * anime.js stagger 序列（错落入场，单一编排源替代逐个手动 delay）。
+ * 用法：<div use:revealGroup={{ stagger: 90 }}> <div data-rg-item>…</div>… </div>
+ */
+export function revealGroup(
+	node: HTMLElement,
+	opts: { stagger?: number; y?: number; threshold?: number } = {}
+) {
+	if (typeof window === 'undefined' || prefersReducedMotion()) return {};
+
+	const items = Array.from(node.querySelectorAll('[data-rg-item]')) as HTMLElement[];
+	if (!items.length) return {};
+
+	items.forEach((el) => {
+		el.style.opacity = '0';
+	});
+
+	const io = new IntersectionObserver(
+		(entries) => {
+			if (!entries.some((e) => e.isIntersecting)) return;
+			io.disconnect();
+			animate(items, {
+				opacity: [0, 1],
+				translateY: [opts.y ?? 18, 0],
+				delay: stagger(opts.stagger ?? 90),
+				duration: 620,
+				easing: springEasing()
+			});
+		},
+		{ threshold: opts.threshold ?? 0.2 }
+	);
+	io.observe(node);
+
+	return {
+		destroy() {
+			io.disconnect();
+		}
+	};
+}

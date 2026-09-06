@@ -2,7 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { progress, isMistakeDue } from '$lib/stores/progress';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
-	import { reveal, revealOnScroll } from '$lib/utils/motion';
+	import { reveal, revealOnScroll, revealGroup } from '$lib/utils/motion';
 	import SplashOverlay from '$lib/components/splash/SplashOverlay.svelte';
 
 	function greeting(): string {
@@ -205,9 +205,10 @@
 			<span class="block-eyebrow">全景</span>
 			<h2 class="block-title">一个学习台，四件兵器</h2>
 		</div>
-		<div class="facade-grid">
+		<div class="facade-grid" use:revealGroup={{ stagger: 90 }}>
 			<a
 				class="facade-card liquid"
+				data-rg-item
 				href={resolve('/catalog')}
 				use:revealOnScroll={{ delay: 80, y: 16 }}
 			>
@@ -219,6 +220,7 @@
 			</a>
 			<a
 				class="facade-card liquid"
+				data-rg-item
 				href={resolve('/progress')}
 				use:revealOnScroll={{ delay: 140, y: 16 }}
 			>
@@ -230,6 +232,7 @@
 			</a>
 			<a
 				class="facade-card liquid"
+				data-rg-item
 				href={resolve('/race')}
 				use:revealOnScroll={{ delay: 200, y: 16 }}
 			>
@@ -241,6 +244,7 @@
 			</a>
 			<a
 				class="facade-card liquid"
+				data-rg-item
 				href={resolve('/map')}
 				use:revealOnScroll={{ delay: 260, y: 16 }}
 			>

@@ -92,11 +92,9 @@
 	/** 滑块：active tab 下标 → transform 平移（CSS 过渡产生滑动） */
 	const activeIndex = $derived(TABS.findIndex((t) => t.activeMatch(current)));
 
-	// ═══ 二级导航：处于某 tab 的子页面（非落点）时，从主导航上方弹出 ═══
+	// ═══ 二级导航：处于配置了 children 的 tab 内（含落点）时，从主导航上方弹出 ═══
 	const activeTab = $derived(TABS.find((t) => t.activeMatch(current)) ?? null);
-	const secondaryItems = $derived(
-		activeTab?.children && current !== activeTab.href ? activeTab.children : null
-	);
+	const secondaryItems = $derived(activeTab?.children ? activeTab.children : null);
 	const secTransition = $derived(
 		prefersReducedMotion() ? { duration: 0 } : { y: 12, duration: 260 }
 	);

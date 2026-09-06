@@ -327,21 +327,24 @@ test.describe('主题与导航', () => {
 		await expect(page.locator('.fab-cluster')).toBeVisible();
 		// 当前 tab 高亮（课程）
 		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/课程/);
-		// 课程二级条弹出（覆盖式）：数据结构高亮 + 返回目录钮
+		// 课程二级条弹出（覆盖式）：数据结构高亮 + 返回钮
 		await expect(page.locator('.secondary-nav')).toBeVisible();
 		await expect(page.locator('.sec-item.cur')).toHaveText(/数据结构/);
 		await expect(page.locator('.sec-back')).toBeVisible();
-		// 返回上一级 → 课程目录（落点：二级条常驻、课程目录高亮、返回钮隐藏）
+		// 返回上一级 = 层级 pop：二级条收回、一级菜单弹回（页面不动）
 		await page.click('.sec-back');
-		await waitForHydratedGlobal(page);
 		await expect(page.locator('.nav-inner')).toBeVisible();
-		await expect(page.locator('.sec-item.cur')).toHaveText(/课程目录/);
-		await expect(page.locator('.sec-back.hidden')).toHaveCount(1);
+		await expect(page.locator('.secondary-nav')).toHaveCount(0);
+		await expect(page).toHaveURL(/bubble-sort/);
 
 		await page.goto('/struct/catalog');
 		await waitForHydratedGlobal(page);
 		await expect(page.locator('.bottom-nav')).toBeVisible();
 		await expect(page.locator('.fab-cluster')).toBeVisible();
+		// 落点：二级条常驻（课程目录高亮、返回钮隐藏）
+		await expect(page.locator('.secondary-nav')).toBeVisible();
+		await expect(page.locator('.sec-item.cur')).toHaveText(/课程目录/);
+		await expect(page.locator('.sec-back.hidden')).toHaveCount(1);
 		// 五 tab：首页/课程/实验/复习/我的
 		const tabs = (await page.locator('.bottom-nav .tab').allTextContents()).map((t) => t.trim());
 		expect(tabs).toEqual(['首页', '课程', '实验', '复习', '我的']);

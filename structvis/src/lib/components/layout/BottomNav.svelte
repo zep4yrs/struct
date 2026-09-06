@@ -20,7 +20,7 @@
 		activeMatch: (p: string) => boolean;
 		icon: string;
 		/** 二级导航项：处于该 tab 的子页面（非落点）时从主导航上方弹出 */
-		children?: { label: string; href: string }[];
+		children?: { label: string; href: string; icon: string }[];
 	}
 
 	function stripBase(path: string): string {
@@ -44,9 +44,21 @@
 			activeMatch: (p) => p.startsWith('/catalog') || p.startsWith('/ds') || p.startsWith('/db'),
 			icon: 'M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 0 3 3h7z',
 			children: [
-				{ label: '课程目录', href: '/catalog' },
-				{ label: '数据结构', href: '/ds' },
-				{ label: '数据库', href: '/db' }
+				{
+					label: '课程目录',
+					href: '/catalog',
+					icon: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z'
+				},
+				{
+					label: '数据结构',
+					href: '/ds',
+					icon: 'M12 3v6m0 0c0 3-4 3-4 6m4-6c0 3 4 3 4 6M6 12h12M8 21a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z'
+				},
+				{
+					label: '数据库',
+					href: '/db',
+					icon: 'M12 3c4.97 0 9 1.34 9 3s-4.03 3-9 3-9-1.34-9-3 4.03-3 9-3zm9 6v6c0 1.66-4.03 3-9 3s-9-1.34-9-3V9m18 0c0 1.66-4.03 3-9 3s-9-1.34-9-3'
+				}
 			]
 		},
 		{
@@ -56,9 +68,21 @@
 				p.startsWith('/race') || p.startsWith('/map') || p.startsWith('/db/workbench'),
 			icon: 'M13 2 3 14h9l-1 8 10-12h-9l1-8z',
 			children: [
-				{ label: '竞速实验室', href: '/race' },
-				{ label: '技能图谱', href: '/map' },
-				{ label: 'SQL 工作台', href: '/db/workbench' }
+				{
+					label: '竞速实验室',
+					href: '/race',
+					icon: 'M13 2 3 14h9l-1 8 10-12h-9l1-8z'
+				},
+				{
+					label: '技能图谱',
+					href: '/map',
+					icon: 'M12 5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm-7 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm14 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM12 9v3m0 0-6.5 4M12 12l6.5 4'
+				},
+				{
+					label: 'SQL 工作台',
+					href: '/db/workbench',
+					icon: 'M4 17l6-6-6-6M12 19h8'
+				}
 			]
 		},
 		{
@@ -71,10 +95,26 @@
 				p.startsWith('/sprint'),
 			icon: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 13l2 2 4-4',
 			children: [
-				{ label: '学习进度', href: '/progress' },
-				{ label: '期末冲刺', href: '/sprint' },
-				{ label: '章节自测', href: '/quiz' },
-				{ label: '学习报告', href: '/report' }
+				{
+					label: '学习进度',
+					href: '/progress',
+					icon: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 13l2 2 4-4'
+				},
+				{
+					label: '期末冲刺',
+					href: '/sprint',
+					icon: 'M4 21V4h12l-2 4 2 4H4m0 9v-9'
+				},
+				{
+					label: '章节自测',
+					href: '/quiz',
+					icon: 'M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3m0 4h.01M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20z'
+				},
+				{
+					label: '学习报告',
+					href: '/report',
+					icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 12h-2m4-4h-6'
+				}
 			]
 		},
 		{
@@ -103,6 +143,15 @@
 	const secondaryItems = $derived(activeTab?.children ? activeTab.children : null);
 	/** 落点页（current==href）已在最上层，返回钮无意义 */
 	const atLanding = $derived(!!activeTab && current === activeTab.href);
+	/** 层级栈：进入子页面自动 push（二级条覆盖一级），返回钮 pop（收回二级条、一级菜单弹回，页面不动） */
+	let secPopped = $state(false);
+	function popToPrimary() {
+		secPopped = true;
+	}
+	$effect(() => {
+		void current;
+		secPopped = false; // 路由变化 = 新的层级推入
+	});
 
 	/** 二级条当前项：拖拽中跟随浮点位置，静止时精确匹配优先、否则最长前缀匹配
 	 *  （课题页 /ds/bubble-sort → 「数据结构」；/db/workbench → 「SQL 工作台」优先于「数据库」） */
@@ -335,8 +384,8 @@
 
 {#if !immersive}
 	<nav class="bottom-nav" aria-label="底部导航">
-		<!-- 二级导航条：覆盖弹出在主导航上方（并存模型：五 tab 常驻，二级条叠加） -->
-		{#if secondaryItems && !collapsed}
+		<!-- 二级导航条：覆盖弹出在主导航上方；与一级 tab 同构单元（icon+label）；返回 = 层级 pop -->
+		{#if secondaryItems && !collapsed && !secPopped}
 			<div
 				class="secondary-nav"
 				bind:this={secEl}
@@ -350,12 +399,12 @@
 				onpointercancel={secPointerCancel}
 				onclickcapture={secClickCapture}
 			>
-				<a
+				<button
 					class="sec-back"
 					class:hidden={atLanding}
-					href={resolve(activeTab?.href as '/')}
-					aria-label="返回上一级"
-					title="返回上一级"
+					onclick={popToPrimary}
+					aria-label="返回上一级菜单"
+					title="返回上一级菜单"
 					draggable="false"
 				>
 					<svg
@@ -370,17 +419,28 @@
 						<line x1="19" y1="12" x2="7" y2="12" />
 						<polyline points="12 5 5 12 12 19" />
 					</svg>
-				</a>
+				</button>
 				<span class="sec-divider" class:hidden={atLanding} aria-hidden="true"></span>
 				{#each secondaryItems as c, i (c.href)}
 					<a
 						href={resolve(c.href as '/')}
-						class="sec-item"
+						class="sec-item tab-sec"
 						class:cur={i === secCur}
 						aria-current={i === secCur ? 'page' : undefined}
 						draggable="false"
 					>
-						{c.label}
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<path d={c.icon} />
+						</svg>
+						<span>{c.label}</span>
 					</a>
 				{/each}
 			</div>
@@ -638,25 +698,47 @@
 		flex-shrink: 0;
 	}
 
+	/* sec-item：与一级 .tab 同构的单元（icon+label 纵排小号变体）——单点维护 */
 	.sec-item {
-		padding: 7px 14px;
-		border-radius: 999px;
-		font-size: 12.5px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 3px;
+		padding: 5px 13px;
+		border-radius: 12px;
+		font-size: 10.5px;
+		line-height: 1;
 		color: var(--color-ink-2);
 		text-decoration: none;
 		transition:
 			color 140ms var(--ease-out),
-			background-color 140ms var(--ease-out);
+			background-color 140ms var(--ease-out),
+			transform 140ms var(--ease-out);
+	}
+
+	.sec-item svg {
+		width: 17px;
+		height: 17px;
+		transition: transform 140ms var(--ease-out);
 	}
 
 	.sec-item:hover {
 		color: var(--color-ink);
 	}
 
+	.sec-item:hover svg {
+		transform: translateY(-1px) scale(1.06);
+	}
+
+	.sec-item:active {
+		transform: scale(0.94);
+	}
+
 	/* 当前子页 / 拖拽跟随项：琥珀凸块语义（与主导航滑块一致） */
 	.sec-item.cur {
 		color: var(--color-accent-text);
 		font-weight: 600;
+		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 	}
 

@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { base, resolve } from '$app/paths';
-	import { fade, fly } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import { prefersReducedMotion } from '$lib/utils/motion';
 
 	/** 全端统一底部导航（v3 布局：hub + 底导，顶栏移除）

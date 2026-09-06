@@ -1503,7 +1503,9 @@
 		flex-direction: column;
 		gap: 2px;
 		padding: 6px;
-		background: var(--color-surface);
+		background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+		-webkit-backdrop-filter: blur(14px) saturate(1.5);
+		backdrop-filter: blur(14px) saturate(1.5);
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-md);
 		box-shadow:
@@ -1616,7 +1618,7 @@
 	.status-bar {
 		padding: 10px 24px;
 		border-top: 1px solid var(--color-line-hair);
-		background: var(--color-paper);
+		background: color-mix(in srgb, var(--color-surface) 70%, transparent);
 		flex-shrink: 0;
 		display: flex;
 		align-items: center;
@@ -1696,7 +1698,9 @@
 	.right-panel {
 		display: flex;
 		flex-direction: column;
-		background: var(--color-paper);
+		background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+		-webkit-backdrop-filter: blur(20px) saturate(1.4);
+		backdrop-filter: blur(20px) saturate(1.4);
 		overflow: hidden;
 	}
 
@@ -1758,7 +1762,9 @@
 		max-height: min(560px, calc(100vh - 96px));
 		overflow-y: auto;
 		overscroll-behavior: contain;
-		background: var(--color-surface);
+		background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+		-webkit-backdrop-filter: blur(14px) saturate(1.5);
+		backdrop-filter: blur(14px) saturate(1.5);
 		border: 1px solid var(--color-line-regular);
 		border-radius: var(--radius-lg);
 		padding: 16px 24px;
@@ -1877,6 +1883,7 @@
 		font-family: var(--font-mono);
 		font-size: 13px;
 		border: 1px solid var(--color-line-regular);
+		background: color-mix(in srgb, var(--color-surface) 70%, transparent);
 		border-radius: var(--radius-sm);
 		background: var(--color-paper);
 		color: var(--color-ink);
@@ -1911,7 +1918,9 @@
 		z-index: 60;
 		display: flex;
 		flex-direction: column;
-		background: var(--color-surface);
+		background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+		-webkit-backdrop-filter: blur(20px) saturate(1.4);
+		backdrop-filter: blur(20px) saturate(1.4);
 	}
 
 	.projector-header {
@@ -2006,7 +2015,7 @@
 	.projector-footer {
 		flex-shrink: 0;
 		border-top: 1px solid var(--color-line-hair);
-		background: var(--color-paper);
+		background: color-mix(in srgb, var(--color-surface) 70%, transparent);
 		padding: 20px 32px;
 		display: flex;
 		flex-direction: column;

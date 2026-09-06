@@ -45,10 +45,13 @@ test.describe('播放器移动端适配（375×667）', () => {
 		expect(rows.subTop).toBeGreaterThanOrEqual(rows.mainBottom - 4);
 	});
 
-	test('沉浸：播放器页底部导航隐藏，无遮挡（v3 布局）', async ({ page }) => {
+	test('课题页导航：底导可见 + 课程二级条，控制条无遮挡', async ({ page }) => {
 		await openBubbleSortMobile(page);
-		// v3：课程内容页沉浸——底部导航整体隐藏（原避让问题的根治）
-		await expect(page.locator('.bottom-nav')).toHaveCount(0);
+		// 课题页解除沉浸：底导可见（课程高亮）+ 课程二级条弹出
+		await expect(page.locator('.bottom-nav')).toBeVisible();
+		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/课程/);
+		await expect(page.locator('.secondary-nav')).toBeVisible();
+		await expect(page.locator('.sec-item.cur')).toHaveText(/数据结构/);
 		// 控制条完整可见（考点卡在页尾，滚回控制条验证可达 + 不被固定层遮挡）
 		await page.locator('.control-bar').scrollIntoViewIfNeeded();
 		await page.waitForTimeout(200);

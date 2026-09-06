@@ -25,7 +25,8 @@
 	}
 
 	/** 课程内容页（/ds/*、/db/* 深页）：沉浸模式——隐藏浮动动作簇与底部导航 */
-	const immersive = $derived(/^\/(ds|db)\//.test(stripBase($page.url.pathname)));
+	// 课题页解除沉浸；SQL 工作台维持全屏工具台沉浸
+	const immersive = $derived(stripBase($page.url.pathname).startsWith('/db/workbench'));
 
 	const isDark = $derived($settings.theme === 'dark');
 

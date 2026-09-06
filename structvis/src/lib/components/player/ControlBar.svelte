@@ -298,7 +298,9 @@
 		flex-direction: column;
 		gap: 10px;
 		padding: 14px 20px;
-		background: var(--color-surface);
+		background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+		-webkit-backdrop-filter: blur(14px) saturate(1.5);
+		backdrop-filter: blur(14px) saturate(1.5);
 		width: 100%;
 		min-width: 0;
 		max-width: 100%;

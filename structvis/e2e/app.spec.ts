@@ -320,11 +320,23 @@ test.describe('主题与导航', () => {
 		await expect(page.getByRole('heading', { name: '冒泡排序' })).toBeVisible();
 	});
 
-	test('沉浸：播放器页隐藏底部导航与动作簇，目录页恢复', async ({ page }) => {
+	test('课题页导航：主页面同款 tab 栏 + 课程二级条（覆盖式层级）', async ({ page }) => {
 		await openBubbleSort(page);
-		// 课程内容页沉浸：底部导航与右上动作簇均隐藏
-		await expect(page.locator('.bottom-nav')).toHaveCount(0);
-		await expect(page.locator('.fab-cluster')).toHaveCount(0);
+		// 课题页解除沉浸：底导与右上动作簇均可见
+		await expect(page.locator('.bottom-nav')).toBeVisible();
+		await expect(page.locator('.fab-cluster')).toBeVisible();
+		// 当前 tab 高亮（课程）
+		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/课程/);
+		// 课程二级条弹出（覆盖式）：数据结构高亮 + 返回目录钮
+		await expect(page.locator('.secondary-nav')).toBeVisible();
+		await expect(page.locator('.sec-item.cur')).toHaveText(/数据结构/);
+		await expect(page.locator('.sec-back')).toBeVisible();
+		// 返回上一级 → 课程目录（落点：二级条常驻、课程目录高亮、返回钮隐藏）
+		await page.click('.sec-back');
+		await waitForHydratedGlobal(page);
+		await expect(page.locator('.nav-inner')).toBeVisible();
+		await expect(page.locator('.sec-item.cur')).toHaveText(/课程目录/);
+		await expect(page.locator('.sec-back.hidden')).toHaveCount(1);
 
 		await page.goto('/struct/catalog');
 		await waitForHydratedGlobal(page);
@@ -335,6 +347,10 @@ test.describe('主题与导航', () => {
 		expect(tabs).toEqual(['首页', '课程', '实验', '复习', '我的']);
 		// 当前 tab 高亮（课程）
 		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/课程/);
+		// SQL 工作台维持全屏工具台沉浸
+		await page.goto('/struct/db/workbench');
+		await waitForHydratedGlobal(page);
+		await expect(page.locator('.bottom-nav')).toHaveCount(0);
 	});
 
 	test('底导跳转：首页 → 实验竞速页', async ({ page }) => {

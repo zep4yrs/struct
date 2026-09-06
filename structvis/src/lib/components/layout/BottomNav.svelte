@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { base, resolve } from '$app/paths';
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import { prefersReducedMotion } from '$lib/utils/motion';
 
 	/** 全端统一底部导航（v3 布局：hub + 底导，顶栏移除）
@@ -42,7 +42,12 @@
 			href: '/catalog',
 			label: '课程',
 			activeMatch: (p) => p.startsWith('/catalog') || p.startsWith('/ds') || p.startsWith('/db'),
-			icon: 'M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 0 3 3h7z'
+			icon: 'M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 0 3 3h7z',
+			children: [
+				{ label: '课程目录', href: '/catalog' },
+				{ label: '数据结构', href: '/ds' },
+				{ label: '数据库', href: '/db' }
+			]
 		},
 		{
 			href: '/race',
@@ -83,7 +88,8 @@
 	const current = $derived(stripBase($page.url.pathname));
 
 	/** 课程内容页沉浸：底部导航隐藏（路径线由 AlgoPage 返回 + pager 承担） */
-	const immersive = $derived(/^\/(ds|db)\//.test(current));
+	// 课题页解除沉浸（主页面同款 tab 栏）；SQL 工作台维持全屏工具台沉浸
+	const immersive = $derived(current.startsWith('/db/workbench'));
 
 	function isActive(item: TabItem): boolean {
 		return item.activeMatch(current);
@@ -97,24 +103,24 @@
 	const secondaryItems = $derived(activeTab?.children ? activeTab.children : null);
 	/** 落点页（current==href）已在最上层，返回钮无意义 */
 	const atLanding = $derived(!!activeTab && current === activeTab.href);
-	/** 一镜到底 morph：位置 + 缩放 + 透明度连续变形（无断层） */
-	function morph(node: Element, { duration = 300 } = {}) {
-		const d = prefersReducedMotion() ? 0 : duration;
-		return {
-			duration: d,
-			css: (t: number) =>
-				`opacity: ${t}; transform: translateY(${((1 - t) * 14).toFixed(2)}px) scale(${(0.94 + 0.06 * t).toFixed(3)});`
-		};
-	}
-	const navT = $derived(prefersReducedMotion() ? { duration: 0 } : { y: 16, duration: 260 });
 
-	/** 二级条当前项：拖拽中跟随浮点位置，静止时按路径精确匹配 */
+	/** 二级条当前项：拖拽中跟随浮点位置，静止时精确匹配优先、否则最长前缀匹配
+	 *  （课题页 /ds/bubble-sort → 「数据结构」；/db/workbench → 「SQL 工作台」优先于「数据库」） */
 	const secCur = $derived.by(() => {
 		const n = secondaryItems?.length ?? 0;
 		if (!n) return -1;
 		if (secDragPos !== null) return Math.max(0, Math.min(n - 1, Math.round(secDragPos)));
 		const exact = secondaryItems!.findIndex((c) => c.href === current);
-		return exact;
+		if (exact >= 0) return exact;
+		let best = -1;
+		let bestLen = 0;
+		secondaryItems!.forEach((c, i) => {
+			if (current.startsWith(c.href) && c.href.length > bestLen) {
+				best = i;
+				bestLen = c.href.length;
+			}
+		});
+		return best;
 	});
 
 	// === 二级条拖拽滑切（与主导航同款：轴线锁定 + 跨中线切换 + 释放吞 click） ===
@@ -329,37 +335,93 @@
 
 {#if !immersive}
 	<nav class="bottom-nav" aria-label="底部导航">
-		<!-- 同位堆叠：一级胶囊 / 二级条 / 闲置白条 互斥占位，切换即「一级 ⇄ 二级」交叉动画 -->
-		<div class="nav-layer">
-			{#if collapsed}
-				<button
-					class="nav-mini"
-					in:fly={navT}
-					out:fly={{ duration: prefersReducedMotion() ? 0 : 160, y: 10 }}
-					onpointerenter={poke}
-					onclick={poke}
-					aria-label="展开导航"
-				></button>
-			{:else if secondaryItems}
-				<div
-					class="secondary-nav"
-					bind:this={secEl}
-					role="tablist"
-					aria-label="{activeTab?.label}二级导航"
-					in:morph={{ duration: 320 }}
-					out:morph={{ duration: 180 }}
-					onpointerdown={secPointerDown}
-					onpointermove={secPointerMove}
-					onpointerup={secPointerUp}
-					onpointercancel={secPointerCancel}
-					onclickcapture={secClickCapture}
+		<!-- 二级导航条：覆盖弹出在主导航上方（并存模型：五 tab 常驻，二级条叠加） -->
+		{#if secondaryItems && !collapsed}
+			<div
+				class="secondary-nav"
+				bind:this={secEl}
+				role="tablist"
+				aria-label="{activeTab?.label}二级导航"
+				in:fly={{ y: 12, duration: prefersReducedMotion() ? 0 : 240 }}
+				out:fly={{ duration: prefersReducedMotion() ? 0 : 150, y: 12 }}
+				onpointerdown={secPointerDown}
+				onpointermove={secPointerMove}
+				onpointerup={secPointerUp}
+				onpointercancel={secPointerCancel}
+				onclickcapture={secClickCapture}
+			>
+				<a
+					class="sec-back"
+					class:hidden={atLanding}
+					href={resolve(activeTab?.href as '/')}
+					aria-label="返回上一级"
+					title="返回上一级"
+					draggable="false"
 				>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<line x1="19" y1="12" x2="7" y2="12" />
+						<polyline points="12 5 5 12 12 19" />
+					</svg>
+				</a>
+				<span class="sec-divider" class:hidden={atLanding} aria-hidden="true"></span>
+				{#each secondaryItems as c, i (c.href)}
 					<a
-						class="sec-back"
-						class:hidden={atLanding}
-						href={resolve(activeTab?.href as '/')}
-						aria-label="返回上一级"
-						title="返回上一级"
+						href={resolve(c.href as '/')}
+						class="sec-item"
+						class:cur={i === secCur}
+						aria-current={i === secCur ? 'page' : undefined}
+						draggable="false"
+					>
+						{c.label}
+					</a>
+				{/each}
+			</div>
+		{/if}
+		{#if collapsed}
+			<button
+				class="nav-mini"
+				transition:fade={{ duration: prefersReducedMotion() ? 0 : 160 }}
+				onpointerenter={poke}
+				onclick={poke}
+				aria-label="展开导航"
+			></button>
+		{:else}
+			<div
+				class="nav-inner"
+				bind:this={navEl}
+				role="tablist"
+				aria-label="主导航"
+				tabindex="-1"
+				onpointerdown={onPointerDown}
+				onpointermove={onPointerMove}
+				onpointerup={onPointerUp}
+				onpointercancel={onPointerCancel}
+				onclickcapture={onClickCapture}
+			>
+				<!-- 滑块（玻璃凸块）：随 active tab 平移；拖拽中跟手（无过渡）；z-0 在 tab 内容之下 -->
+				<div
+					class="nav-slider"
+					class:ready={activeIndex >= 0}
+					class:dragging={dragPos !== null}
+					bind:this={sliderEl}
+					style="--slider-index:{sliderIndex}; --slider-count:{TABS.length};"
+					aria-hidden="true"
+				></div>
+				{#each TABS as item (item.href)}
+					{@const active = isActive(item)}
+					<a
+						href={resolve(item.href as '/')}
+						class="tab"
+						class:active
+						aria-current={active ? 'page' : undefined}
 						draggable="false"
 					>
 						<svg
@@ -371,73 +433,13 @@
 							stroke-linejoin="round"
 							aria-hidden="true"
 						>
-							<line x1="19" y1="12" x2="7" y2="12" />
-							<polyline points="12 5 5 12 12 19" />
+							<path d={item.icon} />
 						</svg>
+						<span>{item.label}</span>
 					</a>
-					<span class="sec-divider" class:hidden={atLanding} aria-hidden="true"></span>
-					{#each secondaryItems as c, i (c.href)}
-						<a
-							href={resolve(c.href as '/')}
-							class="sec-item"
-							class:cur={i === secCur}
-							aria-current={i === secCur ? 'page' : undefined}
-							draggable="false"
-						>
-							{c.label}
-						</a>
-					{/each}
-				</div>
-			{:else}
-				<div
-					class="nav-inner"
-					in:morph={{ duration: 300 }}
-					out:morph={{ duration: 180 }}
-					bind:this={navEl}
-					role="tablist"
-					aria-label="主导航"
-					tabindex="-1"
-					onpointerdown={onPointerDown}
-					onpointermove={onPointerMove}
-					onpointerup={onPointerUp}
-					onpointercancel={onPointerCancel}
-					onclickcapture={onClickCapture}
-				>
-					<!-- 滑块（玻璃凸块）：随 active tab 平移；拖拽中跟手（无过渡）；z-0 在 tab 内容之下 -->
-					<div
-						class="nav-slider"
-						class:ready={activeIndex >= 0}
-						class:dragging={dragPos !== null}
-						bind:this={sliderEl}
-						style="--slider-index:{sliderIndex}; --slider-count:{TABS.length};"
-						aria-hidden="true"
-					></div>
-					{#each TABS as item (item.href)}
-						{@const active = isActive(item)}
-						<a
-							href={resolve(item.href as '/')}
-							class="tab"
-							class:active
-							aria-current={active ? 'page' : undefined}
-							draggable="false"
-						>
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								aria-hidden="true"
-							>
-								<path d={item.icon} />
-							</svg>
-							<span>{item.label}</span>
-						</a>
-					{/each}
-				</div>
-			{/if}
-		</div>
+				{/each}
+			</div>
+		{/if}
 	</nav>
 {/if}
 
@@ -452,18 +454,6 @@
 		justify-content: center;
 		padding-bottom: env(safe-area-inset-bottom);
 		pointer-events: none; /* 胶囊外区域不拦截点击 */
-	}
-
-	/* ═══ 同位堆叠层：一级胶囊 / 二级条 / 闲置白条 互斥占位，交叉动画即层级切换 ═══ */
-	.nav-layer {
-		display: grid;
-		align-items: end;
-		justify-items: center;
-		min-height: 66px; /* 一级胶囊高度基准，避免层级切换时跳动 */
-	}
-
-	.nav-layer > * {
-		grid-area: 1 / 1;
 	}
 
 	/* 闲置白条：120×10 把手条，悬浮/触碰展开 */
@@ -586,6 +576,10 @@
 
 	/* ═══ 二级导航条：从主导航上方弹出的同款玻璃小胶囊 ═══ */
 	.secondary-nav {
+		position: absolute;
+		bottom: calc(100% + 10px);
+		left: 50%;
+		transform: translateX(-50%);
 		display: flex;
 		align-items: center;
 		gap: 2px;

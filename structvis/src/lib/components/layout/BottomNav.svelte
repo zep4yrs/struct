@@ -1,19 +1,26 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { base, resolve } from '$app/paths';
+	import { fly } from 'svelte/transition';
+	import { prefersReducedMotion } from '$lib/utils/motion';
 
 	/** 全端统一底部导航（v3 布局：hub + 底导，顶栏移除）
 	 *  - 五个一级目的地：首页 / 课程 / 实验 / 复习 / 我的
 	 *  - 桌面 ≥768px：居中悬浮胶囊；移动 <768px：通栏贴底（安全区适配）
 	 *  - 课程内容页（/ds/*、/db/* 深页）沉浸隐藏——路径线由 AlgoPage 的返回+pager 承担
 	 *  - 指针/触摸拖拽：按住滑块水平拖动，跨过 tab 中线释放即切换（drag-to-switch）
+	 *  - 闲置收纳：10s 无交互缩为小白条，任意交互即展开
+	 *  - 二级导航：处于某 tab 的子页面时，从主导航上方弹出二级胶囊（子页面直切）
 	 */
 	interface TabItem {
 		href: string;
 		label: string;
 		activeMatch: (p: string) => boolean;
 		icon: string;
+		/** 二级导航项：处于该 tab 的子页面（非落点）时从主导航上方弹出 */
+		children?: { label: string; href: string }[];
 	}
 
 	function stripBase(path: string): string {
@@ -42,7 +49,12 @@
 			label: '实验',
 			activeMatch: (p) =>
 				p.startsWith('/race') || p.startsWith('/map') || p.startsWith('/db/workbench'),
-			icon: 'M13 2 3 14h9l-1 8 10-12h-9l1-8z'
+			icon: 'M13 2 3 14h9l-1 8 10-12h-9l1-8z',
+			children: [
+				{ label: '竞速实验室', href: '/race' },
+				{ label: '技能图谱', href: '/map' },
+				{ label: 'SQL 工作台', href: '/db/workbench' }
+			]
 		},
 		{
 			href: '/progress',
@@ -52,7 +64,13 @@
 				p.startsWith('/quiz') ||
 				p.startsWith('/report') ||
 				p.startsWith('/sprint'),
-			icon: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 13l2 2 4-4'
+			icon: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 13l2 2 4-4',
+			children: [
+				{ label: '学习进度', href: '/progress' },
+				{ label: '期末冲刺', href: '/sprint' },
+				{ label: '章节自测', href: '/quiz' },
+				{ label: '学习报告', href: '/report' }
+			]
 		},
 		{
 			href: '/settings',
@@ -73,6 +91,102 @@
 
 	/** 滑块：active tab 下标 → transform 平移（CSS 过渡产生滑动） */
 	const activeIndex = $derived(TABS.findIndex((t) => t.activeMatch(current)));
+
+	// ═══ 二级导航：处于某 tab 的子页面（非落点）时，从主导航上方弹出 ═══
+	const activeTab = $derived(TABS.find((t) => t.activeMatch(current)) ?? null);
+	const secondaryItems = $derived(
+		activeTab?.children && current !== activeTab.href ? activeTab.children : null
+	);
+	const secTransition = $derived(
+		prefersReducedMotion() ? { duration: 0 } : { y: 12, duration: 260 }
+	);
+
+	/** 二级条当前项：拖拽中跟随浮点位置，静止时按路径精确匹配 */
+	const secCur = $derived.by(() => {
+		const n = secondaryItems?.length ?? 0;
+		if (!n) return -1;
+		if (secDragPos !== null) return Math.max(0, Math.min(n - 1, Math.round(secDragPos)));
+		const exact = secondaryItems!.findIndex((c) => c.href === current);
+		return exact;
+	});
+
+	// === 二级条拖拽滑切（与主导航同款：轴线锁定 + 跨中线切换 + 释放吞 click） ===
+	let secEl = $state<HTMLDivElement | null>(null);
+	let secDrag: {
+		startX: number;
+		startY: number;
+		baseIdx: number;
+		moved: boolean;
+		pointerId: number;
+	} | null = null;
+	let secDragPos = $state<number | null>(null);
+	let secSuppressUntil = 0;
+
+	function secSegWidth(): number {
+		if (!secEl || !secondaryItems) return 1;
+		return secEl.clientWidth / secondaryItems.length;
+	}
+
+	function secPointerDown(e: PointerEvent) {
+		poke(); // 任何交互重置闲置收纳
+		if (!secEl || !secondaryItems) return;
+		secDrag = {
+			startX: e.clientX,
+			startY: e.clientY,
+			baseIdx: secCur < 0 ? 0 : secCur,
+			moved: false,
+			pointerId: e.pointerId
+		};
+	}
+
+	function secPointerMove(e: PointerEvent) {
+		if (!secDrag || !secEl || !secondaryItems) return;
+		const dx = e.clientX - secDrag.startX;
+		const dy = e.clientY - secDrag.startY;
+		if (!secDrag.moved) {
+			if (Math.abs(dx) <= 6) return;
+			if (Math.abs(dy) > Math.abs(dx)) {
+				secDrag = null;
+				return;
+			}
+			secDrag.moved = true;
+			try {
+				secEl.setPointerCapture(secDrag.pointerId);
+			} catch {
+				/* 忽略 */
+			}
+		}
+		secDragPos = Math.max(
+			0,
+			Math.min(secondaryItems.length - 1, secDrag.baseIdx + dx / secSegWidth())
+		);
+	}
+
+	function secPointerUp() {
+		if (!secDrag || !secondaryItems) return;
+		const wasDrag = secDrag.moved;
+		const pos = secDragPos;
+		secDrag = null;
+		if (!wasDrag || pos === null) return;
+		secSuppressUntil = performance.now() + 350;
+		const target = Math.round(pos);
+		secDragPos = null;
+		if (target !== secCur && secondaryItems[target]) {
+			goto(resolve(secondaryItems[target].href as '/'));
+		}
+	}
+
+	function secPointerCancel() {
+		secDrag = null;
+		secDragPos = null;
+	}
+
+	function secClickCapture(e: MouseEvent) {
+		if (performance.now() < secSuppressUntil) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	}
 
 	// === 指针/触摸拖拽滑切（drag-to-switch） ===
 	// 拖动时滑块跟手（无过渡），释放时按停留位置吸附到最近 tab：
@@ -96,6 +210,10 @@
 	}
 
 	function onPointerDown(e: PointerEvent) {
+		if (collapsed) {
+			poke(); // 白条态：任意触碰先展开，不做拖拽判定
+			return;
+		}
 		if (activeIndex < 0 || !navEl) return;
 		dragState = {
 			startX: e.clientX,
@@ -167,12 +285,90 @@
 
 	// 滑块渲染位置：拖拽中用跟手浮点值，否则用 activeIndex（CSS 过渡滑动）
 	const sliderIndex = $derived(dragPos !== null ? dragPos : activeIndex < 0 ? 0 : activeIndex);
+
+	// ═══ 闲置收纳：10s 无交互缩为小白条，任意交互（含触碰白条）即展开 ═══
+	const IDLE_MS = 10000;
+	let collapsed = $state(false);
+	let idleTimer: ReturnType<typeof setTimeout> | null = null;
+
+	function poke() {
+		collapsed = false;
+		if (idleTimer) clearTimeout(idleTimer);
+		idleTimer = setTimeout(() => {
+			collapsed = true;
+		}, IDLE_MS);
+	}
+
+	onMount(() => {
+		poke();
+		const evs: (keyof WindowEventMap)[] = [
+			'pointerdown',
+			'keydown',
+			'scroll',
+			'wheel',
+			'touchstart'
+		];
+		const onPoke = () => poke();
+		evs.forEach((ev) => window.addEventListener(ev, onPoke, { passive: true }));
+		return () => {
+			evs.forEach((ev) => window.removeEventListener(ev, onPoke));
+			if (idleTimer) clearTimeout(idleTimer);
+		};
+	});
 </script>
 
 {#if !immersive}
 	<nav class="bottom-nav" aria-label="底部导航">
+		{#if secondaryItems && !collapsed}
+			<div
+				class="secondary-nav"
+				bind:this={secEl}
+				role="tablist"
+				aria-label="{activeTab?.label}二级导航"
+				transition:fly={secTransition}
+				onpointerdown={secPointerDown}
+				onpointermove={secPointerMove}
+				onpointerup={secPointerUp}
+				onpointercancel={secPointerCancel}
+				onclickcapture={secClickCapture}
+			>
+				<a
+					class="sec-back"
+					href={resolve(activeTab?.href as '/')}
+					aria-label="返回上一级"
+					title="返回上一级"
+					draggable="false"
+				>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<line x1="19" y1="12" x2="7" y2="12" />
+						<polyline points="12 5 5 12 12 19" />
+					</svg>
+				</a>
+				<span class="sec-divider" aria-hidden="true"></span>
+				{#each secondaryItems as c, i (c.href)}
+					<a
+						href={resolve(c.href as '/')}
+						class="sec-item"
+						class:cur={i === secCur}
+						aria-current={i === secCur ? 'page' : undefined}
+						draggable="false"
+					>
+						{c.label}
+					</a>
+				{/each}
+			</div>
+		{/if}
 		<div
 			class="nav-inner"
+			class:collapsed
 			bind:this={navEl}
 			role="tablist"
 			aria-label="主导航"
@@ -245,6 +441,7 @@
 		align-items: stretch;
 		gap: 4px;
 		width: 100%;
+		max-width: 100%; /* 数值型，供折叠动画 100%→46px 过渡 */
 		background: color-mix(in srgb, var(--color-surface) 46%, transparent);
 		border-top: 1px solid var(--color-line-hair);
 		-webkit-backdrop-filter: blur(14px) saturate(1.7);
@@ -253,6 +450,36 @@
 			inset 0 1px 0 var(--glass-hi),
 			inset 0 -1px 0 rgb(0 0 0 / 0.06);
 		animation: nav-enter 420ms var(--ease-out) both;
+		transition:
+			max-width 340ms var(--ease-out),
+			min-height 340ms var(--ease-out),
+			border-radius 340ms var(--ease-out),
+			margin 340ms var(--ease-out),
+			box-shadow 340ms var(--ease-out);
+		overflow: hidden;
+	}
+
+	/* ═══ 闲置收纳态：胶囊缩成小白条（内容淡出，尺寸塌缩） ═══
+	   触碰白条即展开；reduced-motion 下直切。 */
+	.nav-inner.collapsed {
+		max-width: 46px;
+		min-height: 0;
+		height: 6px;
+		padding: 0;
+		gap: 0;
+		border-radius: 999px;
+		border-top: none;
+		margin-bottom: 10px;
+		cursor: pointer;
+		box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+	}
+
+	.nav-inner.collapsed .tab,
+	.nav-inner.collapsed .nav-slider,
+	.nav-inner.collapsed::before,
+	.nav-inner.collapsed::after {
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	/* 顶缘液态高光带（磨砂面上的镜面流光） */
@@ -290,6 +517,11 @@
 	@media (prefers-reduced-motion: reduce) {
 		.nav-inner {
 			animation: none;
+			transition: none;
+		}
+
+		.secondary-nav {
+			transition: none;
 		}
 	}
 
@@ -297,6 +529,7 @@
 	@media (min-width: 768px) {
 		.nav-inner {
 			width: auto;
+			max-width: 640px; /* 数值上限供折叠动画过渡 */
 			margin-bottom: 18px;
 			padding: 6px 10px;
 			border: 1px solid var(--color-line-regular);
@@ -307,6 +540,86 @@
 				0 4px 10px rgb(0 0 0 / 0.08),
 				0 14px 40px rgb(0 0 0 / 0.18);
 		}
+	}
+
+	/* ═══ 二级导航条：从主导航上方弹出的同款玻璃小胶囊 ═══ */
+	.secondary-nav {
+		position: absolute;
+		bottom: calc(100% + 10px);
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		align-items: center;
+		gap: 2px;
+		padding: 5px 7px;
+		background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+		border: 1px solid var(--color-line-regular);
+		border-radius: 999px;
+		-webkit-backdrop-filter: blur(14px) saturate(1.7);
+		backdrop-filter: blur(14px) saturate(1.7);
+		box-shadow:
+			inset 0 1px 0 var(--glass-hi),
+			0 10px 30px rgb(0 0 0 / 0.14);
+		pointer-events: auto;
+		white-space: nowrap;
+		touch-action: pan-y;
+		user-select: none;
+		-webkit-user-select: none;
+	}
+
+	.sec-back {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 30px;
+		height: 30px;
+		border-radius: 999px;
+		color: var(--color-ink-2);
+		text-decoration: none;
+		flex-shrink: 0;
+		transition:
+			color 140ms var(--ease-out),
+			background-color 140ms var(--ease-out);
+	}
+
+	.sec-back:hover {
+		color: var(--color-ink);
+		background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+	}
+
+	.sec-back svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	.sec-divider {
+		width: 1px;
+		height: 16px;
+		background: var(--color-line-hair);
+		margin: 0 4px;
+		flex-shrink: 0;
+	}
+
+	.sec-item {
+		padding: 7px 14px;
+		border-radius: 999px;
+		font-size: 12.5px;
+		color: var(--color-ink-2);
+		text-decoration: none;
+		transition:
+			color 140ms var(--ease-out),
+			background-color 140ms var(--ease-out);
+	}
+
+	.sec-item:hover {
+		color: var(--color-ink);
+	}
+
+	/* 当前子页 / 拖拽跟随项：琥珀凸块语义（与主导航滑块一致） */
+	.sec-item.cur {
+		color: var(--color-accent-text);
+		font-weight: 600;
+		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 	}
 
 	.tab {

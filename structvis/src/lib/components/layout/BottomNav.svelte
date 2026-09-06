@@ -94,16 +94,19 @@
 
 	// ═══ 二级导航：处于配置了 children 的 tab 内（含落点）时，从主导航上方弹出 ═══
 	const activeTab = $derived(TABS.find((t) => t.activeMatch(current)) ?? null);
-	const secondaryItems = $derived(
-		activeTab?.children && current !== activeTab.href ? activeTab.children : null
-	);
-	/** 进入二级：从一级位置弹出；返回一级：二级收回、一级升回——同位交叉即层级动画 */
-	const secTransition = $derived(
-		prefersReducedMotion() ? { duration: 0 } : { y: 20, duration: 260 }
-	);
-	const secOutTransition = $derived(
-		prefersReducedMotion() ? { duration: 0 } : { y: 20, duration: 200 }
-	);
+	const secondaryItems = $derived(activeTab?.children ? activeTab.children : null);
+	/** 落点页（current==href）已在最上层，返回钮无意义 */
+	const atLanding = $derived(!!activeTab && current === activeTab.href);
+	/** 一镜到底 morph：位置 + 缩放 + 透明度连续变形（无断层） */
+	function morph(node: Element, { duration = 300 } = {}) {
+		const d = prefersReducedMotion() ? 0 : duration;
+		return {
+			duration: d,
+			css: (t: number) =>
+				`opacity: ${t}; transform: translateY(${((1 - t) * 14).toFixed(2)}px) scale(${(0.94 + 0.06 * t).toFixed(3)});`
+		};
+	}
+	const navT = $derived(prefersReducedMotion() ? { duration: 0 } : { y: 16, duration: 260 });
 
 	/** 二级条当前项：拖拽中跟随浮点位置，静止时按路径精确匹配 */
 	const secCur = $derived.by(() => {
@@ -312,7 +315,10 @@
 			'wheel',
 			'touchstart'
 		];
-		const onPoke = () => poke();
+		const onPoke = () => {
+			if (collapsed) return; // 已收纳：窗口交互不展开，唯触碰白条展开
+			poke();
+		};
 		evs.forEach((ev) => window.addEventListener(ev, onPoke, { passive: true }));
 		return () => {
 			evs.forEach((ev) => window.removeEventListener(ev, onPoke));
@@ -328,7 +334,9 @@
 			{#if collapsed}
 				<button
 					class="nav-mini"
-					transition:fade={{ duration: prefersReducedMotion() ? 0 : 160 }}
+					in:fly={navT}
+					out:fly={{ duration: prefersReducedMotion() ? 0 : 160, y: 10 }}
+					onpointerenter={poke}
 					onclick={poke}
 					aria-label="展开导航"
 				></button>
@@ -338,8 +346,8 @@
 					bind:this={secEl}
 					role="tablist"
 					aria-label="{activeTab?.label}二级导航"
-					in:fly={secTransition}
-					out:fly={secOutTransition}
+					in:morph={{ duration: 320 }}
+					out:morph={{ duration: 180 }}
 					onpointerdown={secPointerDown}
 					onpointermove={secPointerMove}
 					onpointerup={secPointerUp}
@@ -348,6 +356,7 @@
 				>
 					<a
 						class="sec-back"
+						class:hidden={atLanding}
 						href={resolve(activeTab?.href as '/')}
 						aria-label="返回上一级"
 						title="返回上一级"
@@ -366,7 +375,7 @@
 							<polyline points="12 5 5 12 12 19" />
 						</svg>
 					</a>
-					<span class="sec-divider" aria-hidden="true"></span>
+					<span class="sec-divider" class:hidden={atLanding} aria-hidden="true"></span>
 					{#each secondaryItems as c, i (c.href)}
 						<a
 							href={resolve(c.href as '/')}
@@ -382,8 +391,8 @@
 			{:else}
 				<div
 					class="nav-inner"
-					in:fly={secTransition}
-					out:fly={secOutTransition}
+					in:morph={{ duration: 300 }}
+					out:morph={{ duration: 180 }}
 					bind:this={navEl}
 					role="tablist"
 					aria-label="主导航"
@@ -457,20 +466,31 @@
 		grid-area: 1 / 1;
 	}
 
-	/* 闲置白条：46×6 居中小条，触碰展开 */
+	/* 闲置白条：120×10 把手条，悬浮/触碰展开 */
 	.nav-mini {
 		pointer-events: auto;
-		width: 46px;
-		height: 6px;
-		margin-bottom: 26px;
-		border: none;
+		width: 120px;
+		height: 10px;
+		margin-bottom: 22px;
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--color-surface) 82%, transparent);
-		border: 1px solid var(--color-line-hair);
-		box-shadow: 0 2px 10px rgb(0 0 0 / 0.12);
+		background: color-mix(in srgb, var(--color-surface) 88%, var(--color-ink) 3%);
+		border: 1px solid var(--color-line-regular);
+		box-shadow:
+			inset 0 1px 0 var(--glass-hi),
+			0 3px 14px rgb(0 0 0 / 0.2);
 		cursor: pointer;
 		padding: 0;
 		align-self: end;
+		transition:
+			box-shadow 160ms var(--ease-out),
+			transform 160ms var(--ease-out);
+	}
+
+	.nav-mini:hover {
+		transform: scaleY(1.35);
+		box-shadow:
+			inset 0 1px 0 var(--glass-hi),
+			0 4px 18px rgb(0 0 0 / 0.26);
 	}
 
 	/* ═══ 3D 液态玻璃胶囊 ═══
@@ -609,6 +629,11 @@
 	.sec-back svg {
 		width: 16px;
 		height: 16px;
+	}
+
+	.sec-back.hidden,
+	.sec-divider.hidden {
+		display: none;
 	}
 
 	.sec-divider {

@@ -564,78 +564,54 @@ pre,
 	}
 }
 
-/* ═══ 一镜到底页面转场：View Transitions API + 方向性滑动 ═══
-   方向由 html[data-nav-dir] 决定（AppLayout beforeNavigate 写入，tab 顺序定方向）；
+/* ═══ 一镜到底页面转场：全屏滑动（旧页整体滑走 + 新页整屏滑入，连续无断层） ═══
+   方向由 html[data-nav-dir] 决定（跨 tab 按 tab 顺序，同 tab 按层级深度：下钻右入/回退左入）；
    Firefox/不支持环境降级直切；reduced-motion 静止。 */
 @media (prefers-reduced-motion: no-preference) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 420ms;
+		animation-timing-function: cubic-bezier(0.3, 0.7, 0.2, 1);
+	}
+
 	::view-transition-old(root) {
-		animation: vt-out-fade 220ms var(--ease-out) both;
+		animation-name: vt-out-left;
 	}
 
 	::view-transition-new(root) {
-		animation: vt-in-fade 300ms var(--ease-out) both;
+		animation-name: vt-in-right;
 	}
 
-	/* 向右切换（目标 tab 在右）：旧页左出、新页右入 */
-	html[data-nav-dir='1']::view-transition-old(root),
-	html[data-nav-dir='1']::view-transition-old(page) {
-		animation: vt-out-left 280ms var(--ease-out) both;
+	html[data-nav-dir='-1']::view-transition-old(root) {
+		animation-name: vt-out-right;
 	}
 
-	html[data-nav-dir='1']::view-transition-new(root),
-	html[data-nav-dir='1']::view-transition-new(page) {
-		animation: vt-in-right 320ms var(--ease-out) both;
-	}
-
-	/* 向左切换：旧页右出、新页左入 */
-	html[data-nav-dir='-1']::view-transition-old(root),
-	html[data-nav-dir='-1']::view-transition-old(page) {
-		animation: vt-out-right 280ms var(--ease-out) both;
-	}
-
-	html[data-nav-dir='-1']::view-transition-new(root),
-	html[data-nav-dir='-1']::view-transition-new(page) {
-		animation: vt-in-left 320ms var(--ease-out) both;
-	}
-}
-
-@keyframes vt-out-fade {
-	to {
-		opacity: 0;
-	}
-}
-
-@keyframes vt-in-fade {
-	from {
-		opacity: 0;
+	html[data-nav-dir='-1']::view-transition-new(root) {
+		animation-name: vt-in-left;
 	}
 }
 
 @keyframes vt-out-left {
 	to {
-		opacity: 0;
-		transform: translateX(-48px);
+		transform: translateX(-100%);
 	}
 }
 
 @keyframes vt-in-right {
 	from {
-		opacity: 0;
-		transform: translateX(48px);
+		transform: translateX(100%);
 	}
 }
 
 @keyframes vt-out-right {
 	to {
-		opacity: 0;
-		transform: translateX(48px);
+		transform: translateX(100%);
 	}
 }
 
 @keyframes vt-in-left {
 	from {
-		opacity: 0;
-		transform: translateX(-48px);
+		transform: translateX(-100%);
 	}
 }
 
@@ -663,4 +639,25 @@ pre,
 	to {
 		opacity: 0;
 	}
+}
+
+/* 转场期间隐藏固定导航（旧页滑动影像里已含其形态，防重影） */
+html[data-nav-transition] .bottom-nav,
+html[data-nav-transition] .fab-cluster,
+html[data-nav-transition] .secondary-nav {
+	visibility: hidden;
+}
+
+/* 卡片下钻（expand 模式）：整页只做轻淡切，镜头让给卡片形变 */
+html[data-expand='1']::view-transition-old(root),
+html[data-expand='1']::view-transition-new(root) {
+	animation-duration: 120ms;
+}
+
+html[data-expand='1']::view-transition-old(root) {
+	animation-name: vt-out-fade;
+}
+
+html[data-expand='1']::view-transition-new(root) {
+	animation-name: vt-in-fade;
 }

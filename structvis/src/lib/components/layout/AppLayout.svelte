@@ -38,6 +38,12 @@
 		const i = NAV_ORDER.findIndex((n) => p === n || p.startsWith(n + '/') || p.startsWith(n));
 		return i < 0 ? -1 : i;
 	}
+	/** 层级深度：hub=0 / 列表与功能页=1 / 课题详情=2 —— 同 tab 内下钻/回退的方向来源 */
+	function levelOf(p: string): number {
+		if (p === '/' || p === '/home') return 0;
+		if (p.startsWith('/ds/') || p.startsWith('/db/')) return 2;
+		return 1;
+	}
 
 	/** 点击卡片下钻详情：给被点的卡片挂共享元素名，课题页播放器区域承接同名
 	 *  → VT 自动做「卡片放大成播放器」的连续形变（container transform）。 */
@@ -56,15 +62,24 @@
 	beforeNavigate((nav) => {
 		const to = stripBase(nav.to?.url.pathname ?? '/');
 		clearExpandName();
-		// 下钻课题详情（目录/首页卡片 → 课题页）：标记来源卡片
-		if (/^\/(ds|db)\//.test(to)) tagExpandSource(to);
+		// 下钻课题详情（目录/首页卡片 → 课题页）：标记来源卡片 + expand 模式
+		//（有共享形变时整页动画退为轻淡切，卡片展开独占镜头）
+		const isDrill = /^\/(ds|db)\//.test(to);
+		if (isDrill) tagExpandSource(to);
+		if (isDrill) document.documentElement.dataset.expand = '1';
+		else document.documentElement.removeAttribute('data-expand');
 	});
 
 	beforeNavigate((nav) => {
-		const from = navIndexOf(stripBase(nav.from?.url.pathname ?? '/'));
-		const to = navIndexOf(stripBase(nav.to?.url.pathname ?? '/'));
-		// 方向写入 html data 属性 → ::view-transition 方向性 CSS 动画
-		document.documentElement.dataset.navDir = String(Math.sign(to - from));
+		const fromP = stripBase(nav.from?.url.pathname ?? '/');
+		const toP = stripBase(nav.to?.url.pathname ?? '/');
+		let dir = Math.sign(navIndexOf(toP) - navIndexOf(fromP));
+		if (dir === 0) dir = Math.sign(levelOf(toP) - levelOf(fromP)); // 同 tab：下钻/回退
+		// 方向写入 html data 属性 → ::view-transition 全屏方向性滑动
+		document.documentElement.dataset.navDir = String(dir);
+		// 转场期间隐藏固定导航（滑动影像里已含其形态，避免重影）；VT 结束自动恢复
+		document.documentElement.dataset.navTransition = '1';
+		setTimeout(() => delete document.documentElement.dataset.navTransition, 480);
 	});
 
 	onNavigate((nav) => {

@@ -592,7 +592,7 @@
 	</div>
 	<!-- 跑道：经典 / 娱乐 两组 -->
 	{#snippet lane(r: Racer)}
-		<div class="race-lane glass" use:reveal>
+		<div class="race-lane glass liquid" use:reveal>
 			<div class="race-lane-head">
 				<div class="race-lane-title">
 					<span class="race-lane-dot" style="background: {r.color};"></span>
@@ -642,7 +642,7 @@
 	</div>
 
 	<!-- 复杂度曲线 -->
-	<div class="race-chart glass" use:reveal>
+	<div class="race-chart glass liquid" use:reveal>
 		<div class="chapter-head">
 			<div class="section-label">复杂度实战曲线</div>
 			<span class="chapter-count">实测操作数 · 输入 {data.length} 个元素</span>

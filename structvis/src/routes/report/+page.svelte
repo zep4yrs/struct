@@ -150,7 +150,7 @@
 	<!-- 报告主体：宽屏双栏（分享卡 | 雷达），窄屏单列 -->
 	<div class="report-main">
 		<!-- 报告卡 -->
-		<div class="report-card glass" use:reveal>
+		<div class="report-card glass liquid" use:reveal>
 			<div class="report-head">
 				<div>
 					<div class="report-brand">StructVis</div>

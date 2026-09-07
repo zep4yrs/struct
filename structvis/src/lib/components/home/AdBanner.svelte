@@ -38,106 +38,162 @@
 </script>
 
 {#if !dismissed}
-	<aside
-		class="ad-banner"
-		role="complementary"
-		aria-label="公益广告：宝贝回家"
-		transition:fade={{ duration: prefersReduced() ? 0 : 180 }}
-	>
-		<span class="ad-tag">公益 · 宝贝回家</span>
-		<p class="ad-text">每一个转发的寻亲信息，都是一个家庭团圆的可能——帮失踪的孩子找到回家的路。</p>
+	<div class="ad-card" transition:fade={{ duration: prefersReduced() ? 0 : 180 }}>
 		<a
-			class="ad-link"
+			class="ad-media"
 			href="https://www.baobeihuijia.com"
 			target="_blank"
 			rel="noopener noreferrer"
+			aria-label="公益广告：宝贝回家——帮失踪的孩子找到回家的路（打开宝贝回家官网）"
 		>
-			去了解 →
+			<svg
+				viewBox="0 0 1040 240"
+				preserveAspectRatio="xMidYMid slice"
+				role="img"
+				aria-hidden="true"
+			>
+				<defs>
+					<linearGradient id="ad-sky" x1="0" y1="0" x2="1" y2="1">
+						<stop offset="0" stop-color="#0f2b46" />
+						<stop offset="0.62" stop-color="#1b4965" />
+						<stop offset="1" stop-color="#2d6a7e" />
+					</linearGradient>
+					<radialGradient id="ad-glow" cx="0.78" cy="0.42" r="0.5">
+						<stop offset="0" stop-color="#f5c96b" stop-opacity="0.55" />
+						<stop offset="1" stop-color="#f5c96b" stop-opacity="0" />
+					</radialGradient>
+				</defs>
+				<rect width="1040" height="240" fill="url(#ad-sky)" />
+				<circle cx="812" cy="86" r="150" fill="url(#ad-glow)" />
+				<path
+					d="M60 190 C 220 130, 380 210, 560 140 S 860 60, 940 96"
+					stroke="#f5c96b"
+					stroke-width="2.5"
+					stroke-dasharray="2 10"
+					stroke-linecap="round"
+					fill="none"
+					opacity="0.8"
+				/>
+				<g fill="#0b1f33">
+					<circle cx="700" cy="98" r="13" />
+					<path
+						d="M700 112 c-12 0 -19 10 -19 26 l6 44 h9 l2 -30 3 0 2 30 h9 l6 -44 c0 -16 -7 -26 -18 -26 z"
+					/>
+					<circle cx="756" cy="112" r="9" />
+					<path
+						d="M756 123 c-9 0 -14 8 -14 20 l5 33 h7 l1 -22 2 0 1 22 h7 l5 -33 c0 -12 -5 -20 -13 -20 z"
+					/>
+				</g>
+				<g>
+					<path
+						d="M905 96 l30 -24 30 24 v42 a6 6 0 0 1 -6 6 h-48 a6 6 0 0 1 -6 -6 z"
+						fill="#f5c96b"
+						opacity="0.92"
+					/>
+					<rect x="928" y="112" width="14" height="32" rx="2" fill="#0f2b46" />
+				</g>
+				<text
+					x="52"
+					y="84"
+					fill="#f5c96b"
+					font-family="Georgia, 'Noto Serif SC', serif"
+					font-size="15"
+					letter-spacing="6"
+					opacity="0.9">公 益 · 宝 贝 回 家</text
+				>
+				<text
+					x="50"
+					y="136"
+					fill="#faf9f6"
+					font-family="Georgia, 'Noto Serif SC', serif"
+					font-size="42"
+					font-weight="600"
+					letter-spacing="2">宝贝回家</text
+				>
+				<text
+					x="52"
+					y="176"
+					fill="#c9d6df"
+					font-family="'PingFang SC', 'Microsoft YaHei', sans-serif"
+					font-size="17">每一个转发的寻亲信息，都是一个家庭团圆的可能</text
+				>
+				<text
+					x="52"
+					y="206"
+					fill="#7fa3bd"
+					font-family="Consolas, monospace"
+					font-size="13"
+					letter-spacing="1">baobeihuijia.com</text
+				>
+				<g>
+					<rect x="876" y="188" width="112" height="30" rx="15" fill="#f5a623" />
+					<text
+						x="932"
+						y="208"
+						text-anchor="middle"
+						fill="#0f2b46"
+						font-family="'PingFang SC', 'Microsoft YaHei', sans-serif"
+						font-size="14"
+						font-weight="600">去帮一把 ↗</text
+					>
+				</g>
+			</svg>
 		</a>
-		<button class="ad-close" aria-label="关闭公益广告" onclick={dismiss}>✕</button>
-	</aside>
+		<button class="ad-close" aria-label="关闭公益广告" title="关闭公益广告" onclick={dismiss}
+			>✕</button
+		>
+	</div>
 {/if}
 
 <style>
-	.ad-banner {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		margin-bottom: 22px;
-		padding: 12px 16px;
-		border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-line-hair));
-		border-radius: var(--radius-md);
-		background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+	.ad-card {
+		position: relative;
+		display: block;
+		margin-bottom: 24px;
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+		border: 1px solid var(--color-line-hair);
+		box-shadow:
+			inset 0 1px 0 var(--glass-hi),
+			0 10px 34px rgb(0 0 0 / 0.16);
 	}
 
-	.ad-tag {
-		flex-shrink: 0;
-		font-family: var(--font-mono);
-		font-size: 10.5px;
-		letter-spacing: 0.1em;
-		color: var(--color-accent-text);
-		border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
-		border-radius: 999px;
-		padding: 2px 9px;
-	}
-
-	.ad-text {
-		margin: 0;
-		font-size: 13px;
-		line-height: 1.5;
-		color: var(--color-ink-2);
-	}
-
-	.ad-link {
-		flex-shrink: 0;
-		font-size: 12.5px;
-		font-weight: 500;
-		color: var(--color-accent-text);
+	.ad-media {
+		display: block;
 		text-decoration: none;
-		transition: opacity 120ms var(--ease-out);
 	}
 
-	.ad-link:hover {
-		opacity: 0.75;
+	.ad-media :global(svg) {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 1040 / 240;
+		object-fit: cover;
 	}
 
 	.ad-close {
-		margin-left: auto;
-		flex-shrink: 0;
-		width: 26px;
-		height: 26px;
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		width: 28px;
+		height: 28px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		border: none;
-		background: transparent;
-		border-radius: 8px;
-		color: var(--color-ink-3);
+		border-radius: 999px;
+		background: rgb(0 0 0 / 0.28);
+		color: #fff;
 		font-size: 12px;
 		cursor: pointer;
+		backdrop-filter: blur(4px);
 		transition:
-			color 120ms var(--ease-out),
-			background-color 120ms var(--ease-out);
+			background-color 120ms var(--ease-out),
+			transform 120ms var(--ease-spring);
 	}
 
 	.ad-close:hover {
-		color: var(--color-ink);
-		background: var(--color-subtle);
-	}
-
-	@media (max-width: 640px) {
-		.ad-banner {
-			flex-wrap: wrap;
-			gap: 8px;
-		}
-
-		.ad-text {
-			flex-basis: 100%;
-			order: 3;
-		}
-
-		.ad-link {
-			order: 4;
-		}
+		background: rgb(0 0 0 / 0.45);
+		transform: scale(1.08);
 	}
 </style>

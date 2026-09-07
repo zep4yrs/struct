@@ -52,19 +52,18 @@ test.describe('页面加载', () => {
 		await expect(page.locator('.home-course-title', { hasText: 'MySQL 数据库' })).toBeVisible();
 	});
 
-	test('工作台首页：问候、继续学习空态与门面全景', async ({ page }) => {
+	test('工作台首页：问候、继续学习空态与公益广告位', async ({ page }) => {
 		await page.goto('/struct/home');
 		await waitForHydratedGlobal(page);
 		await expect(page.locator('.dash-title')).toBeVisible();
 		// 全新存储：继续学习显示空态引导
 		await expect(page.getByText('从第一课开始')).toBeVisible();
-		// 门面区：产品全景四卡 + 两门课程卡（滚动入场后可见）
-		await expect(page.getByText('一个学习台，四件兵器')).toBeVisible();
-		const facadeTitles = await page.locator('.facade-title').allTextContents();
-		for (const t of ['步进可视化', '练习闭环', '实验竞技场', '路径导航']) {
-			expect(facadeTitles).toContain(t);
-		}
-		await expect(page.locator('.course-card')).toHaveCount(2);
+		// 公益广告位：宝贝回家（可关闭）
+		await expect(page.locator('.ad-banner')).toBeVisible();
+		await expect(page.locator('.ad-banner')).toContainText('宝贝回家');
+		// 门面/课程区块已按需求移除：不再出现
+		await expect(page.locator('.facade-grid')).toHaveCount(0);
+		await expect(page.locator('.course-card')).toHaveCount(0);
 		// 底导首页 tab 高亮
 		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/首页/);
 	});

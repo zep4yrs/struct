@@ -1,15 +1,31 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
+	import { base } from '$app/paths';
 	import { fade } from 'svelte/transition';
 
 	/**
-	 * 公益广告位（首页顶部横幅）：宝贝回家（baobeihuijia.com）寻亲公益。
-	 * 关闭后当日不再显示（次日自动回归），状态存 localStorage；reduced-motion 直切。
+	 * 图片式公益广告位（首页顶部）：宝贝回家真实寻亲个案轮播。
+	 * - 数据：static/ads/missing.json（宝贝回家官方 API 公开寻亲信息，标注来源与官网链接）
+	 * - 照片大图同位淡切轮播（6s 自动）+ 圆点切换；右上角可关闭（当日记忆）
+	 * - reduced-motion 不自动轮播；点击卡片打开宝贝回家官网
 	 */
+	interface MissingItem {
+		name: string;
+		sex: string;
+		birth: string;
+		lostDay: string;
+		lostAddr: string;
+		feature: string;
+		photo: string;
+	}
+
 	const DISMISS_KEY = 'structvis:ad:dismissed';
 	const AD_ID = 'baobeihuijia';
 
 	let dismissed = $state(false);
+	let items = $state<MissingItem[]>([]);
+	let cur = $state(0);
+	let timer: ReturnType<typeof setInterval> | null = null;
 
 	function todayStr(): string {
 		return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' });
@@ -19,125 +35,79 @@
 		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	}
 
-	onMount(() => {
-		try {
-			dismissed = localStorage.getItem(DISMISS_KEY) === `${AD_ID}:${todayStr()}`;
-		} catch {
-			dismissed = false;
-		}
-	});
-
 	function dismiss(): void {
 		dismissed = true;
+		if (timer) clearInterval(timer);
 		try {
 			localStorage.setItem(DISMISS_KEY, `${AD_ID}:${todayStr()}`);
 		} catch {
 			/* 隐私模式忽略 */
 		}
 	}
+
+	onMount(async () => {
+		try {
+			dismissed = localStorage.getItem(DISMISS_KEY) === `${AD_ID}:${todayStr()}`;
+		} catch {
+			dismissed = false;
+		}
+		try {
+			const res = await fetch(`${base}/ads/missing.json`);
+			if (res.ok) items = (await res.json()).items ?? [];
+		} catch {
+			/* 静态资源缺失时静默降级 */
+		}
+		if (!items.length || prefersReduced()) return;
+		timer = setInterval(() => {
+			cur = (cur + 1) % items.length;
+		}, 6000);
+	});
+
+	onDestroy(() => {
+		if (timer) clearInterval(timer);
+	});
 </script>
 
-{#if !dismissed}
+{#if !dismissed && items.length}
 	<div class="ad-card" transition:fade={{ duration: prefersReduced() ? 0 : 180 }}>
 		<a
 			class="ad-media"
 			href="https://www.baobeihuijia.com"
 			target="_blank"
 			rel="noopener noreferrer"
-			aria-label="公益广告：宝贝回家——帮失踪的孩子找到回家的路（打开宝贝回家官网）"
+			aria-label="公益广告：宝贝回家寻亲信息（点击打开宝贝回家官网）"
 		>
-			<svg
-				viewBox="0 0 1040 240"
-				preserveAspectRatio="xMidYMid slice"
-				role="img"
-				aria-hidden="true"
-			>
-				<defs>
-					<linearGradient id="ad-sky" x1="0" y1="0" x2="1" y2="1">
-						<stop offset="0" stop-color="#0f2b46" />
-						<stop offset="0.62" stop-color="#1b4965" />
-						<stop offset="1" stop-color="#2d6a7e" />
-					</linearGradient>
-					<radialGradient id="ad-glow" cx="0.78" cy="0.42" r="0.5">
-						<stop offset="0" stop-color="#f5c96b" stop-opacity="0.55" />
-						<stop offset="1" stop-color="#f5c96b" stop-opacity="0" />
-					</radialGradient>
-				</defs>
-				<rect width="1040" height="240" fill="url(#ad-sky)" />
-				<circle cx="812" cy="86" r="150" fill="url(#ad-glow)" />
-				<path
-					d="M60 190 C 220 130, 380 210, 560 140 S 860 60, 940 96"
-					stroke="#f5c96b"
-					stroke-width="2.5"
-					stroke-dasharray="2 10"
-					stroke-linecap="round"
-					fill="none"
-					opacity="0.8"
-				/>
-				<g fill="#0b1f33">
-					<circle cx="700" cy="98" r="13" />
-					<path
-						d="M700 112 c-12 0 -19 10 -19 26 l6 44 h9 l2 -30 3 0 2 30 h9 l6 -44 c0 -16 -7 -26 -18 -26 z"
+			{#each items as m, i (m.name + m.photo)}
+				<div class="slide" class:on={i === cur}>
+					<img
+						src={base + m.photo}
+						alt="寻亲人员 {m.name} 的照片"
+						loading={i === 0 ? 'eager' : 'lazy'}
 					/>
-					<circle cx="756" cy="112" r="9" />
-					<path
-						d="M756 123 c-9 0 -14 8 -14 20 l5 33 h7 l1 -22 2 0 1 22 h7 l5 -33 c0 -12 -5 -20 -13 -20 z"
-					/>
-				</g>
-				<g>
-					<path
-						d="M905 96 l30 -24 30 24 v42 a6 6 0 0 1 -6 6 h-48 a6 6 0 0 1 -6 -6 z"
-						fill="#f5c96b"
-						opacity="0.92"
-					/>
-					<rect x="928" y="112" width="14" height="32" rx="2" fill="#0f2b46" />
-				</g>
-				<text
-					x="52"
-					y="84"
-					fill="#f5c96b"
-					font-family="Georgia, 'Noto Serif SC', serif"
-					font-size="15"
-					letter-spacing="6"
-					opacity="0.9">公 益 · 宝 贝 回 家</text
-				>
-				<text
-					x="50"
-					y="136"
-					fill="#faf9f6"
-					font-family="Georgia, 'Noto Serif SC', serif"
-					font-size="42"
-					font-weight="600"
-					letter-spacing="2">宝贝回家</text
-				>
-				<text
-					x="52"
-					y="176"
-					fill="#c9d6df"
-					font-family="'PingFang SC', 'Microsoft YaHei', sans-serif"
-					font-size="17">每一个转发的寻亲信息，都是一个家庭团圆的可能</text
-				>
-				<text
-					x="52"
-					y="206"
-					fill="#7fa3bd"
-					font-family="Consolas, monospace"
-					font-size="13"
-					letter-spacing="1">baobeihuijia.com</text
-				>
-				<g>
-					<rect x="876" y="188" width="112" height="30" rx="15" fill="#f5a623" />
-					<text
-						x="932"
-						y="208"
-						text-anchor="middle"
-						fill="#0f2b46"
-						font-family="'PingFang SC', 'Microsoft YaHei', sans-serif"
-						font-size="14"
-						font-weight="600">去帮一把 ↗</text
-					>
-				</g>
-			</svg>
+					<div class="slide-info">
+						<span class="ad-tag">公益 · 宝贝回家</span>
+						<span class="slide-name">{m.name}</span>
+						<span class="slide-meta"
+							>{m.sex} · 失踪于 {m.lostDay}{m.lostAddr ? ' · ' + m.lostAddr : ''}</span
+						>
+					</div>
+				</div>
+			{/each}
+			<div class="ad-brand">宝贝回家 · baobeihuijia.com</div>
+			<div class="ad-dots" role="tablist" aria-label="寻亲个案切换">
+				{#each items as _, i (i)}
+					<button
+						class="dot"
+						class:on={i === cur}
+						aria-label="第 {i + 1} 条"
+						tabindex="-1"
+						onclick={(e) => {
+							e.preventDefault();
+							cur = i;
+						}}
+					></button>
+				{/each}
+			</div>
 		</a>
 		<button class="ad-close" aria-label="关闭公益广告" title="关闭公益广告" onclick={dismiss}
 			>✕</button
@@ -160,21 +130,133 @@
 
 	.ad-media {
 		display: block;
+		position: relative;
 		text-decoration: none;
+		aspect-ratio: 1040 / 240;
 	}
 
-	.ad-media :global(svg) {
-		display: block;
-		width: 100%;
-		height: auto;
-		aspect-ratio: 1040 / 240;
+	/* 幻灯堆叠：同位淡切（一镜到底） */
+	.slide {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transition: opacity 600ms var(--ease-out);
+	}
+
+	.slide.on {
+		opacity: 1;
+	}
+
+	.slide {
+		display: flex;
+		align-items: stretch;
+		background: #0b1f33;
+	}
+
+	/* 照片完整展示（contain，白衬底），任意比例不失真 */
+	.slide img {
+		height: 100%;
+		width: auto;
+		max-width: 38%;
 		object-fit: cover;
+		object-position: center top;
+		display: block;
+		flex-shrink: 0;
+	}
+
+	.slide::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			90deg,
+			rgb(8 24 40 / 0.85) 0%,
+			rgb(8 24 40 / 0.15) 55%,
+			transparent 100%
+		);
+		pointer-events: none;
+	}
+
+	.slide-info {
+		position: absolute;
+		left: 42%;
+		right: 24px;
+		bottom: 18px;
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+		flex-wrap: wrap;
+		z-index: 1;
+	}
+
+	.ad-tag {
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		letter-spacing: 0.1em;
+		color: #f5c96b;
+		border: 1px solid color-mix(in srgb, #f5c96b 45%, transparent);
+		border-radius: 999px;
+		padding: 2px 9px;
+		background: rgb(0 0 0 / 0.25);
+	}
+
+	.slide-name {
+		font-family: var(--font-display);
+		font-size: 24px;
+		font-weight: 600;
+		color: #faf9f6;
+		text-shadow: 0 2px 8px rgb(0 0 0 / 0.5);
+	}
+
+	.slide-meta {
+		font-size: 12.5px;
+		color: #d8e2ea;
+		text-shadow: 0 1px 6px rgb(0 0 0 / 0.5);
+	}
+
+	.ad-brand {
+		position: absolute;
+		top: 12px;
+		left: 16px;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.08em;
+		color: rgb(255 255 255 / 0.75);
+		text-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+	}
+
+	.ad-dots {
+		position: absolute;
+		right: 16px;
+		bottom: 14px;
+		display: flex;
+		gap: 7px;
+		z-index: 1;
+	}
+
+	.dot {
+		width: 8px;
+		height: 8px;
+		padding: 0;
+		border: none;
+		border-radius: 999px;
+		background: rgb(255 255 255 / 0.4);
+		cursor: pointer;
+		transition:
+			background-color 140ms var(--ease-out),
+			transform 140ms var(--ease-spring);
+	}
+
+	.dot.on {
+		background: #f5c96b;
+		transform: scale(1.25);
 	}
 
 	.ad-close {
 		position: absolute;
 		top: 10px;
 		right: 10px;
+		z-index: 2;
 		width: 28px;
 		height: 28px;
 		display: flex;
@@ -182,7 +264,7 @@
 		justify-content: center;
 		border: none;
 		border-radius: 999px;
-		background: rgb(0 0 0 / 0.28);
+		background: rgb(0 0 0 / 0.3);
 		color: #fff;
 		font-size: 12px;
 		cursor: pointer;
@@ -193,7 +275,7 @@
 	}
 
 	.ad-close:hover {
-		background: rgb(0 0 0 / 0.45);
+		background: rgb(0 0 0 / 0.5);
 		transform: scale(1.08);
 	}
 </style>

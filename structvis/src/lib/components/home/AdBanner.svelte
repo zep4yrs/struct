@@ -9,21 +9,20 @@
 	 * - 照片大图同位淡切轮播（6s 自动）+ 圆点切换；右上角可关闭（当日记忆）
 	 * - reduced-motion 不自动轮播；点击卡片打开宝贝回家官网
 	 */
-	interface MissingItem {
-		name: string;
-		sex: string;
-		birth: string;
-		lostDay: string;
-		lostAddr: string;
-		feature: string;
-		photo: string;
+	interface PsaItem {
+		id: string;
+		tag: string;
+		title: string;
+		desc: string;
+		link: string;
+		img: string;
 	}
 
 	const DISMISS_KEY = 'structvis:ad:dismissed';
 	const AD_ID = 'baobeihuijia';
 
 	let dismissed = $state(false);
-	let items = $state<MissingItem[]>([]);
+	let items = $state<PsaItem[]>([]);
 	let cur = $state(0);
 	let timer: ReturnType<typeof setInterval> | null = null;
 
@@ -52,7 +51,7 @@
 			dismissed = false;
 		}
 		try {
-			const res = await fetch(`${base}/ads/missing.json`);
+			const res = await fetch(`${base}/ads/psa.json`);
 			if (res.ok) items = (await res.json()).items ?? [];
 		} catch {
 			/* 静态资源缺失时静默降级 */
@@ -77,23 +76,17 @@
 			rel="noopener noreferrer"
 			aria-label="公益广告：宝贝回家寻亲信息（点击打开宝贝回家官网）"
 		>
-			{#each items as m, i (m.name + m.photo)}
+			{#each items as it, i (it.id)}
 				<div class="slide" class:on={i === cur}>
-					<img
-						src={base + m.photo}
-						alt="寻亲人员 {m.name} 的照片"
-						loading={i === 0 ? 'eager' : 'lazy'}
-					/>
+					<img src={it.img} alt={it.title} loading={i === 0 ? 'eager' : 'lazy'} />
 					<div class="slide-info">
-						<span class="ad-tag">公益 · 宝贝回家</span>
-						<span class="slide-name">{m.name}</span>
-						<span class="slide-meta"
-							>{m.sex} · 失踪于 {m.lostDay}{m.lostAddr ? ' · ' + m.lostAddr : ''}</span
-						>
+						<span class="ad-tag">{it.tag}</span>
+						<span class="slide-name">{it.title}</span>
+						<span class="slide-meta">{it.desc}</span>
 					</div>
 				</div>
 			{/each}
-			<div class="ad-brand">宝贝回家 · baobeihuijia.com</div>
+			<div class="ad-brand">腾讯志愿者 · 404 计划</div>
 			<div class="ad-dots" role="tablist" aria-label="寻亲个案切换">
 				{#each items as _, i (i)}
 					<button

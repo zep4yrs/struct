@@ -1,0 +1,51 @@
+{
+  "source": "腾讯志愿者 404 计划",
+  "updatedAt": "2026-09-07",
+  "items": [
+    {
+      "id": "baby001",
+      "tag": "寻亲",
+      "title": "宝贝回家 · 失踪宝贝信息传播计划",
+      "desc": "让每一个走失的宝贝被更多人看见",
+      "link": "https://www.baobeihuijia.com/",
+      "img": "https://volunteer.cdn-go.cn/404/latest/img/baobeihuijia/baobeihuijia1-1600.jpg",
+      "star": 1
+    },
+    {
+      "id": "flood01",
+      "tag": "救灾",
+      "title": "洪水救援行动",
+      "desc": "帮助灾区孩子重回课堂",
+      "link": "http://www.cneb.gov.cn/2021/02/26/VIDE1614329850710962.shtml",
+      "img": "https://volunteer.cdn-go.cn/404/latest/img/flood_pc.jpg",
+      "star": 0
+    },
+    {
+      "id": "greenback001",
+      "tag": "环保",
+      "title": "绿色找回计划",
+      "desc": "闲置回收，让爱心循环",
+      "link": "https://wj.qq.com/s2/9163450/732e/",
+      "img": "https://volunteer.cdn-go.cn/404/latest/img/greenback.png",
+      "star": 0
+    },
+    {
+      "id": "lamp001",
+      "tag": "乡村",
+      "title": "点亮乡村计划",
+      "desc": "为乡村孩子点亮一盏求知的灯",
+      "link": "https://support.qq.com/products/378306",
+      "img": "https://volunteer.cdn-go.cn/404/latest/img/lamp/dianliangxiangcun1-1600.jpg",
+      "star": 0
+    },
+    {
+      "id": "freelunch01",
+      "tag": "暖餐",
+      "title": "免费午餐计划",
+      "desc": "帮助山区孩子吃上热腾腾的午餐",
+      "link": "https://www.qq.com/404/",
+      "img": "https://volunteer.cdn-go.cn/404/latest/img/freelunch1600.jpg",
+      "star": 0
+    }
+  ]
+}

@@ -71,14 +71,11 @@
 	<div class="ad-card" transition:fade={{ duration: prefersReduced() ? 0 : 180 }}>
 		<div class="slides">
 			{#each items as it, i (it.id)}
-				<!-- svelte-ignore svelte/no-navigation-without-resolve -->
-				<a
+				<button
 					class="slide"
 					class:on={i === cur}
-					href={it.link}
-					target="_blank"
-					rel="noopener noreferrer"
-					draggable="false"
+					onclick={() => window.open(it.link, '_blank', 'noopener')}
+					aria-label="{it.tag}：{it.title}（打开专题页面）"
 				>
 					<img src={it.img} alt="{it.tag} · {it.title}" loading={i === 0 ? 'eager' : 'lazy'} />
 					<div class="scrim"></div>
@@ -87,7 +84,7 @@
 						<span class="nm">{it.title}</span>
 						<span class="ds">{it.desc}</span>
 					</div>
-				</a>
+				</button>
 			{/each}
 		</div>
 		<div class="ad-dots" role="tablist" aria-label="公益专题切换">

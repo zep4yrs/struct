@@ -258,17 +258,17 @@
 
 	@media (max-width: 767px) {
 		.slides {
-			height: 300px;
+			height: 240px;
 		}
 
 		.s-info {
-			left: 22px;
-			right: 90px;
-			bottom: 18px;
+			left: 18px;
+			right: 76px;
+			bottom: 16px;
 		}
 
 		.nm {
-			font-size: 22px;
+			font-size: 20px;
 		}
 
 		.ds {

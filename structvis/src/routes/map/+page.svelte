@@ -20,32 +20,70 @@
 	const NODE_W = 128;
 	const NODE_H = 46;
 	const COL_GAP = 20;
-	const ROW_GAP = 50;
-	const PAD_Y = 36;
+	const NODE_STEP = NODE_W + COL_GAP;
+	const PER_ROW = 8; // 礁盘内每行节点上限，超出换行（图 11、实验 14 拆两行）
+	const REEF_PAD_X = 18;
+	const REEF_HEAD = 46; // 礁盘头：组名 + 统计行
+	const REEF_ROW_GAP = 14;
+	const REEF_PAD_BOT = 14;
+	const REEF_GAP = 26;
+	const PAD_Y = 30;
 
-	// 行内居中布局：每组占一行，组内节点水平均布
+	// 章节群岛布局：每组一块「礁盘」（淡色圆角容器 + 组名 + 掌握统计），
+	// 盘内节点 8 个一行换行；礁盘宽度随组大小自适应，居中落位。
 	const layout = $derived.by(() => {
 		const pos: Record<string, { x: number; y: number }> = {};
-		const rowWidth = (g: string) => {
-			const count = NODES.filter((n) => n.group === g).length;
-			return count * NODE_W + Math.max(0, count - 1) * COL_GAP;
-		};
-		// 画布宽度随最宽行自适应（新课程入册无需手调），下限保证窄内容也有呼吸感
-		const w = Math.max(1200, ...GROUP_ORDER.map(rowWidth));
+		const reefs: {
+			group: string;
+			track: 'course' | 'lab';
+			x: number;
+			y: number;
+			w: number;
+			h: number;
+			count: number;
+			mastery: number;
+		}[] = [];
+		const w = Math.max(
+			1200,
+			PER_ROW * NODE_STEP - COL_GAP + REEF_PAD_X * 2 + 8
+		);
 		let y = PAD_Y;
 		for (const g of GROUP_ORDER) {
-			let x = (w - rowWidth(g)) / 2;
-			for (const n of NODES.filter((n) => n.group === g)) {
-				pos[n.id] = { x, y };
-				x += NODE_W + COL_GAP;
-			}
-			y += NODE_H + ROW_GAP;
+			const members = NODES.filter((n) => n.group === g);
+			if (!members.length) continue;
+			const cols = Math.min(PER_ROW, members.length);
+			const rows = Math.ceil(members.length / PER_ROW);
+			const reefW = cols * NODE_STEP - COL_GAP + REEF_PAD_X * 2;
+			const reefH = REEF_HEAD + rows * NODE_H + (rows - 1) * REEF_ROW_GAP + REEF_PAD_BOT;
+			const rx = (w - reefW) / 2;
+			const track = trackOf(g);
+			// 组均掌握度（未入册课题不计入分母）
+			const ms = members
+				.filter((n) => n.topicId)
+				.map((n) => $progress.topics[n.topicId!]?.mastery ?? 0);
+			const mastery = ms.length ? ms.reduce((a, b) => a + b, 0) / ms.length : 0;
+			reefs.push({ group: g, track, x: rx, y, w: reefW, h: reefH, count: members.length, mastery });
+			members.forEach((n, i) => {
+				const col = i % PER_ROW;
+				const row = Math.floor(i / PER_ROW);
+				pos[n.id] = {
+					x: rx + REEF_PAD_X + col * NODE_STEP,
+					y: y + REEF_HEAD + row * (NODE_H + REEF_ROW_GAP)
+				};
+			});
+			y += reefH + REEF_GAP;
 		}
-		return { pos, w };
+		return { pos, reefs, w };
 	});
 
 	const W = $derived(layout.w);
-	const H = $derived(GROUP_ORDER.length * (NODE_H + ROW_GAP) + PAD_Y + 24);
+	const H = $derived(
+		layout.reefs.length
+			? layout.reefs[layout.reefs.length - 1].y +
+					layout.reefs[layout.reefs.length - 1].h +
+					20
+			: 0
+	);
 
 	/** 节点轨道：课程系（教材主线）vs 实验区（动手实验室）——两类性质用颜色语义区分 */
 	function trackOf(group: string): 'course' | 'lab' {
@@ -139,6 +177,24 @@
 
 	<div class="map-panel glass liquid" use:reveal>
 		<svg width="100%" viewBox="0 0 {W} {H}" role="img" aria-label="知识依赖图谱">
+			<!-- 章节礁盘层：每组一块，课程系=暖实线 / 实验区=蓝虚线 -->
+			{#each layout.reefs as reef (reef.group)}
+				{@const dim = filter !== 'all' && reef.track !== filter}
+				<g class="reef" class:reef-lab={reef.track === 'lab'} class:reef-dim={dim}>
+					<rect
+						x={reef.x}
+						y={reef.y}
+						width={reef.w}
+						height={reef.h}
+						rx="18"
+						class="reef-rect"
+					/>
+					<text class="reef-name" x={reef.x + 16} y={reef.y + 27}>{reef.group}</text>
+					<text class="reef-stat" x={reef.x + reef.w - 16} y={reef.y + 27} text-anchor="end">
+						{reef.count} 关 · 掌握 {Math.round(reef.mastery)}%
+					</text>
+				</g>
+			{/each}
 			{#each EDGES as edge (edge.from + edge.to)}
 				{@const fromNode = NODES.find((n) => n.id === edge.from)}
 				{@const toNode = NODES.find((n) => n.id === edge.to)}
@@ -195,6 +251,19 @@
 							>
 								{n.title}
 							</text>
+							{#if masteryOf(n.id) > 0}
+								<rect
+									x={layout.pos[n.id].x + 10}
+									y={layout.pos[n.id].y + NODE_H - 7}
+									width={(NODE_W - 20) * (masteryOf(n.id) / 100)}
+									height="3"
+									rx="1.5"
+									fill={masteryOf(n.id) >= 80
+										? 'var(--color-success)'
+										: 'var(--color-accent)'}
+									pointer-events="none"
+								/>
+							{/if}
 							<title>{n.title} — {n.desc}{state === 'done' ? '（已掌握）' : ''}</title>
 						</a>
 					</g>
@@ -305,6 +374,43 @@
 		border-radius: var(--radius-md);
 		padding: 18px 14px;
 		overflow-x: auto;
+	}
+
+	/* ═══ 章节礁盘：组与组之间的「创造性区分」——课程系暖实线 / 实验区蓝虚线 ═══ */
+	.reef {
+		transition: opacity 180ms var(--ease-out);
+	}
+
+	.reef-rect {
+		fill: color-mix(in srgb, var(--color-accent) 4.5%, transparent);
+		stroke: color-mix(in srgb, var(--color-accent) 22%, var(--color-line-hair));
+		stroke-width: 1;
+		transition:
+			fill 180ms var(--ease-out),
+			stroke 180ms var(--ease-out);
+	}
+
+	.reef-lab .reef-rect {
+		fill: color-mix(in srgb, var(--color-academic) 6%, transparent);
+		stroke: color-mix(in srgb, var(--color-academic) 38%, var(--color-line-hair));
+		stroke-dasharray: 7 5;
+	}
+
+	.reef-dim {
+		opacity: 0.3;
+	}
+
+	.reef-name {
+		font-size: 13.5px;
+		font-weight: 600;
+		fill: var(--color-ink);
+	}
+
+	.reef-stat {
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		fill: var(--color-ink-3);
+		letter-spacing: 0.04em;
 	}
 
 	.map-node {

@@ -591,4 +591,26 @@
 		color: var(--color-ink-2);
 		line-height: 1.5;
 	}
+
+	/* 移动端：解除 schema 卡与 SQL 输入框的桌面硬宽（360/200px 在 375 视口撑出横向溢出） */
+	@media (max-width: 767px) {
+		.page {
+			padding: 28px 16px 64px;
+		}
+
+		.op-panel {
+			padding: 12px 14px;
+		}
+
+		.custom-input {
+			min-width: 0;
+		}
+
+		.schema-table {
+			min-width: 0;
+			/* flex:1 的 basis 0 会压过 width:100%，必须显式占满整行再让图例换行 */
+			flex-basis: 100%;
+			width: 100%;
+		}
+	}
 </style>

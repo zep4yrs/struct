@@ -845,8 +845,12 @@
 				0 -6px 24px rgb(0 0 0 / 0.06);
 		}
 
+		/* 375 视口：5×74+gap 溢出 11px → tab 允许收缩（min-width 74 是桌面拖拽热区） */
 		.tab {
 			border-radius: 0;
+			min-width: 0;
+			flex: 1 1 0;
+			padding: 4px 8px;
 		}
 
 		.nav-slider {

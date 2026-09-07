@@ -148,6 +148,9 @@
    ============================================================ */
 
 html {
+	/* 幽灵溢出止血：SVG/table 等固有宽可撑出 scrollWidth 却无可见越界元素；
+	   clip 不产生滚动容器，sticky/磨砂不受影响 */
+	overflow-x: clip;
 	font-family: var(--font-body);
 	font-size: var(--text-body);
 	line-height: var(--leading-normal);

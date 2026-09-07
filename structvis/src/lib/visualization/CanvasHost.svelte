@@ -77,13 +77,17 @@
 		width: 100%;
 		height: 100%;
 		display: flex;
-		align-items: center;
-		justify-content: center;
+		/* 渲染器按 minW 保真绘制；容器更窄时画布区内部横向平移（地图范式），
+		   不把溢出放大到文档层。margin:auto 居中可避免 flex center 在滚动容器
+		   里裁掉左半边的经典问题 */
+		overflow-x: auto;
+		overflow-y: hidden;
 	}
 
 	canvas {
 		display: block;
 		width: 100%;
 		height: 100%;
+		margin: auto;
 	}
 </style>

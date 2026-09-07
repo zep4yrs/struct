@@ -16,11 +16,13 @@
 
 <div class="mx-auto max-w-7xl px-8 py-16">
 	<section class="mb-16 border-b pb-12" style="border-color: var(--color-line-hair);">
-		<div class="mb-8 flex items-end gap-6" use:reveal>
-			<Logo size={56} />
+		<div class="mb-8 flex flex-wrap items-end gap-6" use:reveal>
+			<div class="shrink-0">
+				<Logo size={56} />
+			</div>
 			<div class="section-label">关于 · ABOUT</div>
 			<h1
-				class="font-display text-5xl leading-none font-medium"
+				class="font-display text-4xl leading-none font-medium sm:text-5xl"
 				style="letter-spacing: -0.03em; color: var(--color-ink);"
 			>
 				关于 StructVis

@@ -875,7 +875,8 @@
 
 	.race-grid {
 		display: grid;
-		grid-template-columns: 1fr;
+		/* minmax(0,1fr)：1fr 的 min=auto 会被卡片 min-content 撑破 375 视口 */
+		grid-template-columns: minmax(0, 1fr);
 		gap: 14px;
 		margin-bottom: 20px;
 	}

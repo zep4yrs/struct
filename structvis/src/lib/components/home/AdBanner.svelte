@@ -78,9 +78,8 @@
 					aria-label="{it.tag}：{it.title}（打开专题页面）"
 				>
 					<img src={it.img} alt="{it.tag} · {it.title}" loading={i === 0 ? 'eager' : 'lazy'} />
-					<div class="scrim"></div>
 					<div class="s-info">
-						<span class="tag">{it.tag}</span>
+						<span class="ad-tag">{it.tag}</span>
 						<span class="nm">{it.title}</span>
 						<span class="ds">{it.desc}</span>
 					</div>
@@ -108,7 +107,7 @@
 {/if}
 
 <style>
-	/* ═══ 公益广告位：BankSystem hero-ad 同款布局（380px 大图轮播） ═══ */
+	/* ═══ 公益广告位：推挤式轮播（新张从右推入盖住旧张，一镜到底连续方向） ═══ */
 	.ad-card {
 		position: relative;
 		display: block;
@@ -125,14 +124,15 @@
 		height: 380px;
 	}
 
+	/* 单张专题：官方插画整幅 + 左下信息区（毛玻璃 tag / 大标题 / 描述） */
 	.slide {
 		position: absolute;
 		inset: 0;
 		opacity: 0;
 		transform: translateX(64px);
 		transition:
-			opacity 620ms var(--ease-out),
-			transform 620ms var(--ease-out);
+			transform 620ms var(--ease-out),
+			opacity 620ms var(--ease-out);
 		pointer-events: none;
 	}
 
@@ -150,48 +150,48 @@
 		object-position: center;
 	}
 
-	/* 双向 scrim：垂直下压 + 水平左压（文字区可读） */
-	.scrim {
+	.slide::after {
+		content: '';
 		position: absolute;
 		inset: 0;
-		background:
-			linear-gradient(180deg, rgba(25, 18, 6, 0.02) 34%, rgba(25, 18, 6, 0.62) 100%),
-			linear-gradient(90deg, rgba(25, 18, 6, 0.34), rgba(25, 18, 6, 0) 46%);
+		background: linear-gradient(180deg, rgba(15, 20, 28, 0.05) 30%, rgba(15, 20, 28, 0.66) 100%);
 	}
 
 	.s-info {
 		position: absolute;
-		left: 34px;
-		bottom: 30px;
+		left: 40px;
+		bottom: 28px;
 		right: 200px;
-		color: #fff;
-		max-width: 76%;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+		z-index: 1;
 	}
 
-	.tag {
-		display: inline-block;
+	.ad-tag {
+		font-family: var(--font-mono);
 		font-size: 11px;
-		padding: 3px 12px;
-		border-radius: 99px;
-		background: rgba(255, 255, 255, 0.22);
-		backdrop-filter: blur(8px);
 		letter-spacing: 0.1em;
-		margin-bottom: 10px;
+		color: #f5c96b;
+		border: 1px solid color-mix(in srgb, #f5c96b 45%, transparent);
+		border-radius: 999px;
+		padding: 3px 12px;
+		background: rgb(0 0 0 / 0.3);
 	}
 
 	.nm {
-		display: block;
-		font-size: 26px;
-		font-weight: 800;
+		font-family: var(--font-display);
+		font-size: 30px;
+		font-weight: 700;
 		letter-spacing: 0.02em;
-		text-shadow: 0 2px 10px rgb(0 0 0 / 0.35);
+		color: #faf9f6;
+		text-shadow: 0 2px 12px rgb(0 0 0 / 0.45);
 	}
 
 	.ds {
-		display: block;
-		margin-top: 6px;
-		font-size: 14px;
-		opacity: 0.92;
+		font-size: 15px;
+		color: #d8e2ea;
 		text-shadow: 0 1px 6px rgb(0 0 0 / 0.4);
 	}
 
@@ -251,8 +251,8 @@
 
 	@media (prefers-reduced-motion: reduce) {
 		.slide {
-			transition: none;
 			transform: none;
+			transition: none;
 		}
 	}
 
@@ -263,17 +263,16 @@
 
 		.s-info {
 			left: 22px;
-			bottom: 20px;
 			right: 90px;
-			max-width: none;
+			bottom: 18px;
 		}
 
 		.nm {
-			font-size: 20px;
+			font-size: 22px;
 		}
 
 		.ds {
-			font-size: 12.5px;
+			font-size: 13px;
 		}
 	}
 </style>

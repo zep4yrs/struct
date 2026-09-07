@@ -76,10 +76,8 @@
 		let dir = Math.sign(navIndexOf(toP) - navIndexOf(fromP));
 		if (dir === 0) dir = Math.sign(levelOf(toP) - levelOf(fromP)); // 同 tab：下钻/回退
 		// 方向写入 html data 属性 → ::view-transition 全屏方向性滑动
+		// 底导/二级条/fab 通过独立 view-transition-name 脱离转场层，全程固定不消失
 		document.documentElement.dataset.navDir = String(dir);
-		// 转场期间隐藏固定导航（滑动影像里已含其形态，避免重影）；VT 结束自动恢复
-		document.documentElement.dataset.navTransition = '1';
-		setTimeout(() => delete document.documentElement.dataset.navTransition, 480);
 	});
 
 	onNavigate((nav) => {

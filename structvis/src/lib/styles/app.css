@@ -641,11 +641,17 @@ pre,
 	}
 }
 
-/* 转场期间隐藏固定导航（旧页滑动影像里已含其形态，防重影） */
-html[data-nav-transition] .bottom-nav,
-html[data-nav-transition] .fab-cluster,
-html[data-nav-transition] .secondary-nav {
-	visibility: hidden;
+/* 底导/动作簇/二级条各自独立脱离页面转场层：切页时固定原位不参与滑动 */
+.bottom-nav {
+	view-transition-name: nav-fixed;
+}
+
+.fab-cluster {
+	view-transition-name: fab-fixed;
+}
+
+.secondary-nav {
+	view-transition-name: secondary-nav;
 }
 
 /* 卡片下钻（expand 模式）：整页只做轻淡切，镜头让给卡片形变 */

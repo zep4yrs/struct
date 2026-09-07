@@ -103,11 +103,7 @@
 				></button>
 			{/each}
 		</div>
-		<button
-			class="ad-close"
-			aria-label="关闭公益广告"
-			title="关闭公益广告"
-			onclick={dismiss}
+		<button class="ad-close" aria-label="关闭公益广告" title="关闭公益广告" onclick={dismiss}
 			>✕</button
 		>
 	</div>

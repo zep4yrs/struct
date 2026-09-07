@@ -71,6 +71,7 @@
 	<div class="ad-card" transition:fade={{ duration: prefersReduced() ? 0 : 180 }}>
 		<div class="slides">
 			{#each items as it, i (it.id)}
+				<!-- svelte-ignore svelte/no-navigation-without-resolve -->
 				<a
 					class="slide"
 					class:on={i === cur}

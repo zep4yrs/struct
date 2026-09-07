@@ -1,25 +1,24 @@
-# StructVis 桌面端（Tauri v2）
+# StructVis App（Tauri v2 Mobile · Android/iOS）
 
-加载仓库根 `docs/`（SvelteKit adapter-static 构建产物）的桌面壳。
+与 `feat/desktop-tauri` 共用同一 Tauri v2 壳（lib.rs 已带 mobile entry point），
+`frontendDist` 同样加载 `docs/` 构建产物。
 
-## 环境要求
+## 环境要求（移动端额外）
 
-- Rust 1.77+（本地已确认 1.97 ✓）
-- Windows：MSVC toolchain + WebView2（Win10/11 自带）
-- 前置：仓库根先 `cd structvis && npm run build` 产出 `docs/`
+- Android：Android Studio + NDK + SDK（tauri android init 需要）
+- iOS：macOS + Xcode（Windows 机器无法构建 iOS，只能开发 Android 侧）
 
-## 开发 / 构建
+## 脚手架初始化（首次）
 
 ```bash
-# 无 cargo-tauri CLI 时先安装：
-cargo install tauri-cli --version ^2
-
-cargo tauri dev      # 开发窗口（加载 docs/）
-cargo tauri build    # 产出 msi/nsis 安装包（src-tauri/target/release/bundle/）
+cargo tauri android init   # 生成 gen/android
+cargo tauri ios init       # 生成 gen/ios（需 macOS）
+cargo tauri android dev    # 真机/模拟器开发
+cargo tauri android build  # 产出 APK/AAB
 ```
 
-## 说明
+## 与桌面的差异（本分支的开发重点）
 
-- `frontendDist: "../docs"`：与 GitHub Pages 共用同一构建产物，桌面端功能 = 线上功能
-- `lib.rs` 已带 `#[cfg_attr(mobile, tauri::mobile_entry_point)]`，`feat/mobile-app` 分支复用同一壳
-- 数据同步（服务器信箱方案）在两条分支共享同一前端同步模块
+- 安全区适配：页面已用 env(safe-area-inset-bottom)，底导避让复用
+- 触控：拖拽滑切已做轴线锁定；44px 热区已达标
+- 数据：本地存储沿用（同步模块与桌面共享，见 ROADMAP 服务器信箱方案）

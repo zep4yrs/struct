@@ -9,7 +9,12 @@ const IMG_BASE = 'https://volunteer.cdn-go.cn/404/latest/';
 
 /** 专题元信息：cid 前缀 → tag/title/desc（与 BankSystem 版一致，宝贝回家 star 最前） */
 const PSA_META = {
-	baby: { tag: '寻亲', title: '宝贝回家 · 失踪宝贝信息传播计划', desc: '让每一个走失的宝贝被更多人看见', star: 1 },
+	baby: {
+		tag: '寻亲',
+		title: '宝贝回家 · 失踪宝贝信息传播计划',
+		desc: '让每一个走失的宝贝被更多人看见',
+		star: 1
+	},
 	freelunch: { tag: '暖餐', title: '免费午餐计划', desc: '帮助山区孩子吃上热腾腾的午餐', star: 0 },
 	dream4school: { tag: '助学', title: '一校一梦想', desc: '支持乡村小学实现一个小小梦想', star: 0 },
 	lamp: { tag: '乡村', title: '点亮乡村计划', desc: '为乡村孩子点亮一盏求知的灯', star: 0 },
@@ -30,10 +35,23 @@ for (const m of raw.matchAll(
 	if (!metaKey) continue;
 	const meta = PSA_META[metaKey];
 	const linkM = reSearch(pc, /href=\\+"([^"\\]+)/);
-	const link = linkM && /^https?:/i.test(linkM) ? linkM : metaKey === 'baby' ? 'https://www.baobeihuijia.com/' : 'https://www.qq.com/404/';
+	const link =
+		linkM && /^https?:/i.test(linkM)
+			? linkM
+			: metaKey === 'baby'
+				? 'https://www.baobeihuijia.com/'
+				: 'https://www.qq.com/404/';
 	const imgM = reSearch(pc, /path404[^"]*?"([^"\\]+\.(?:png|jpe?g))/i);
 	const img = imgM ? IMG_BASE + imgM : '';
-	items.push({ id: cid, tag: meta.tag, title: meta.title, desc: meta.desc, link, img, star: meta.star });
+	items.push({
+		id: cid,
+		tag: meta.tag,
+		title: meta.title,
+		desc: meta.desc,
+		link,
+		img,
+		star: meta.star
+	});
 }
 
 function reSearch(text, re) {

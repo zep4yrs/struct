@@ -29,7 +29,7 @@ const items = [];
 for (const m of raw.matchAll(
 	/\{\s*"name":"([^"]+)"[\s\S]*?id:"([^"]+)"[\s\S]*?expires:"([^"]+)"[\s\S]*?"pc":"([\s\S]*?)"\s*,\s*"mobile"/g
 )) {
-	const [, name, cid, expires, pc] = m;
+	const [, , cid, expires, pc] = m;
 	if (expires < today) continue; // 过期专题不展示
 	const metaKey = Object.keys(PSA_META).find((k) => cid.startsWith(k));
 	if (!metaKey) continue;

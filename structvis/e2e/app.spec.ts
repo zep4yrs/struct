@@ -58,9 +58,9 @@ test.describe('页面加载', () => {
 		await expect(page.locator('.dash-title')).toBeVisible();
 		// 全新存储：继续学习显示空态引导
 		await expect(page.getByText('从第一课开始')).toBeVisible();
-		// 公益广告位：宝贝回家图片海报（可关闭）
+		// 公益广告位：404 计划真实专题大图轮播（可关闭）
 		await expect(page.locator('.ad-card')).toBeVisible();
-		await expect(page.locator('.ad-media')).toContainText('宝贝回家');
+		await expect(page.locator('.slide.on .nm').first()).toBeVisible();
 		// 门面/课程区块已按需求移除：不再出现
 		await expect(page.locator('.facade-grid')).toHaveCount(0);
 		await expect(page.locator('.course-card')).toHaveCount(0);

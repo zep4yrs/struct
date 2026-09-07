@@ -4,10 +4,10 @@
 	import { fade } from 'svelte/transition';
 
 	/**
-	 * 图片式公益广告位（首页顶部）：宝贝回家真实寻亲个案轮播。
-	 * - 数据：static/ads/missing.json（宝贝回家官方 API 公开寻亲信息，标注来源与官网链接）
-	 * - 照片大图同位淡切轮播（6s 自动）+ 圆点切换；右上角可关闭（当日记忆）
-	 * - reduced-motion 不自动轮播；点击卡片打开宝贝回家官网
+	 * 公益广告位（首页顶部）：腾讯志愿者 404 计划真实专题大图轮播。
+	 * 布局参数沿用 BankSystem hero-ad（用户验收过的成熟设计）：
+	 * 380px 大图、slide 交叉带 26px 滑动、双向 scrim、左下毛玻璃 tag 信息区。
+	 * 数据：static/ads/psa.json（官方 CDN feed 聚合，宝贝回家优先，构建/手动更新）。
 	 */
 	interface PsaItem {
 		id: string;
@@ -19,29 +19,19 @@
 	}
 
 	const DISMISS_KEY = 'structvis:ad:dismissed';
-	const AD_ID = 'baobeihuijia';
+	const AD_ID = 'tencent404';
 
 	let dismissed = $state(false);
 	let items = $state<PsaItem[]>([]);
 	let cur = $state(0);
 	let timer: ReturnType<typeof setInterval> | null = null;
 
-	function todayStr(): string {
-		return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' });
-	}
-
 	function prefersReduced(): boolean {
 		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	}
 
-	function dismiss(): void {
-		dismissed = true;
-		if (timer) clearInterval(timer);
-		try {
-			localStorage.setItem(DISMISS_KEY, `${AD_ID}:${todayStr()}`);
-		} catch {
-			/* 隐私模式忽略 */
-		}
+	function todayStr(): string {
+		return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' });
 	}
 
 	onMount(async () => {
@@ -65,175 +55,169 @@
 	onDestroy(() => {
 		if (timer) clearInterval(timer);
 	});
+
+	function dismiss(): void {
+		dismissed = true;
+		if (timer) clearInterval(timer);
+		try {
+			localStorage.setItem(DISMISS_KEY, `${AD_ID}:${todayStr()}`);
+		} catch {
+			/* 隐私模式忽略 */
+		}
+	}
 </script>
 
 {#if !dismissed && items.length}
 	<div class="ad-card" transition:fade={{ duration: prefersReduced() ? 0 : 180 }}>
-		<a
-			class="ad-media"
-			href="https://www.baobeihuijia.com"
-			target="_blank"
-			rel="noopener noreferrer"
-			aria-label="公益广告：宝贝回家寻亲信息（点击打开宝贝回家官网）"
-		>
+		<div class="slides">
 			{#each items as it, i (it.id)}
-				<div class="slide" class:on={i === cur}>
-					<img src={it.img} alt={it.title} loading={i === 0 ? 'eager' : 'lazy'} />
-					<div class="slide-info">
-						<span class="ad-tag">{it.tag}</span>
-						<span class="slide-name">{it.title}</span>
-						<span class="slide-meta">{it.desc}</span>
+				<a
+					class="slide"
+					class:on={i === cur}
+					href={it.link}
+					target="_blank"
+					rel="noopener noreferrer"
+					draggable="false"
+				>
+					<img src={it.img} alt="{it.tag} · {it.title}" loading={i === 0 ? 'eager' : 'lazy'} />
+					<div class="scrim"></div>
+					<div class="s-info">
+						<span class="tag">{it.tag}</span>
+						<span class="nm">{it.title}</span>
+						<span class="ds">{it.desc}</span>
 					</div>
-				</div>
+				</a>
 			{/each}
-			<div class="ad-brand">腾讯志愿者 · 404 计划</div>
-			<div class="ad-dots" role="tablist" aria-label="寻亲个案切换">
-				{#each items as _, i (i)}
-					<button
-						class="dot"
-						class:on={i === cur}
-						aria-label="第 {i + 1} 条"
-						tabindex="-1"
-						onclick={(e) => {
-							e.preventDefault();
-							cur = i;
-						}}
-					></button>
-				{/each}
-			</div>
-		</a>
-		<button class="ad-close" aria-label="关闭公益广告" title="关闭公益广告" onclick={dismiss}
+		</div>
+		<div class="ad-dots" role="tablist" aria-label="公益专题切换">
+			{#each items as _, i (i)}
+				<button
+					class="dot"
+					class:on={i === cur}
+					aria-label="第 {i + 1} 个专题"
+					tabindex="-1"
+					onclick={(e) => {
+						e.preventDefault();
+						cur = i;
+					}}
+				></button>
+			{/each}
+		</div>
+		<button
+			class="ad-close"
+			aria-label="关闭公益广告"
+			title="关闭公益广告"
+			onclick={dismiss}
 			>✕</button
 		>
 	</div>
 {/if}
 
 <style>
+	/* ═══ 公益广告位：BankSystem hero-ad 同款布局（380px 大图轮播） ═══ */
 	.ad-card {
 		position: relative;
 		display: block;
 		margin-bottom: 24px;
-		border-radius: var(--radius-lg);
 		overflow: hidden;
-		border: 1px solid var(--color-line-hair);
-		box-shadow:
-			inset 0 1px 0 var(--glass-hi),
-			0 10px 34px rgb(0 0 0 / 0.16);
+		border-radius: 20px;
+		background: linear-gradient(165deg, rgba(255, 206, 150, 0.24), rgba(255, 178, 110, 0.14));
+		border: 1px solid rgba(255, 205, 160, 0.6);
+		box-shadow: 0 14px 40px rgba(20, 60, 60, 0.1);
 	}
 
-	.ad-media {
-		display: block;
+	.slides {
 		position: relative;
-		text-decoration: none;
-		aspect-ratio: 1040 / 240;
+		height: 380px;
 	}
 
-	/* 幻灯堆叠：同位淡切（一镜到底） */
 	.slide {
 		position: absolute;
 		inset: 0;
 		opacity: 0;
-		transition: opacity 600ms var(--ease-out);
+		transform: translateX(26px);
+		transition:
+			opacity 0.55s var(--ease-out),
+			transform 0.55s var(--ease-out);
+		pointer-events: none;
 	}
 
 	.slide.on {
 		opacity: 1;
+		transform: none;
+		pointer-events: auto;
 	}
 
-	.slide {
-		display: flex;
-		align-items: stretch;
-		background: #0b1f33;
-	}
-
-	/* 照片完整展示（contain，白衬底），任意比例不失真 */
 	.slide img {
-		height: 100%;
-		width: auto;
-		max-width: 38%;
-		object-fit: cover;
-		object-position: center top;
-		display: block;
-		flex-shrink: 0;
-	}
-
-	.slide::after {
-		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(
-			90deg,
-			rgb(8 24 40 / 0.85) 0%,
-			rgb(8 24 40 / 0.15) 55%,
-			transparent 100%
-		);
-		pointer-events: none;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
 	}
 
-	.slide-info {
+	/* 双向 scrim：垂直下压 + 水平左压（文字区可读） */
+	.scrim {
 		position: absolute;
-		left: 42%;
-		right: 24px;
-		bottom: 18px;
-		display: flex;
-		align-items: baseline;
-		gap: 12px;
-		flex-wrap: wrap;
-		z-index: 1;
+		inset: 0;
+		background:
+			linear-gradient(180deg, rgba(25, 18, 6, 0.02) 34%, rgba(25, 18, 6, 0.62) 100%),
+			linear-gradient(90deg, rgba(25, 18, 6, 0.34), rgba(25, 18, 6, 0) 46%);
 	}
 
-	.ad-tag {
-		font-family: var(--font-mono);
-		font-size: 10.5px;
-		letter-spacing: 0.1em;
-		color: #f5c96b;
-		border: 1px solid color-mix(in srgb, #f5c96b 45%, transparent);
-		border-radius: 999px;
-		padding: 2px 9px;
-		background: rgb(0 0 0 / 0.25);
-	}
-
-	.slide-name {
-		font-family: var(--font-display);
-		font-size: 24px;
-		font-weight: 600;
-		color: #faf9f6;
-		text-shadow: 0 2px 8px rgb(0 0 0 / 0.5);
-	}
-
-	.slide-meta {
-		font-size: 12.5px;
-		color: #d8e2ea;
-		text-shadow: 0 1px 6px rgb(0 0 0 / 0.5);
-	}
-
-	.ad-brand {
+	.s-info {
 		position: absolute;
-		top: 12px;
-		left: 16px;
-		font-family: var(--font-mono);
+		left: 34px;
+		bottom: 30px;
+		right: 200px;
+		color: #fff;
+		max-width: 76%;
+	}
+
+	.tag {
+		display: inline-block;
 		font-size: 11px;
-		letter-spacing: 0.08em;
-		color: rgb(255 255 255 / 0.75);
-		text-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+		padding: 3px 12px;
+		border-radius: 99px;
+		background: rgba(255, 255, 255, 0.22);
+		backdrop-filter: blur(8px);
+		letter-spacing: 0.1em;
+		margin-bottom: 10px;
+	}
+
+	.nm {
+		display: block;
+		font-size: 26px;
+		font-weight: 800;
+		letter-spacing: 0.02em;
+		text-shadow: 0 2px 10px rgb(0 0 0 / 0.35);
+	}
+
+	.ds {
+		display: block;
+		margin-top: 6px;
+		font-size: 14px;
+		opacity: 0.92;
+		text-shadow: 0 1px 6px rgb(0 0 0 / 0.4);
 	}
 
 	.ad-dots {
 		position: absolute;
-		right: 16px;
-		bottom: 14px;
+		right: 22px;
+		bottom: 22px;
 		display: flex;
 		gap: 7px;
-		z-index: 1;
+		z-index: 2;
 	}
 
 	.dot {
-		width: 8px;
-		height: 8px;
+		width: 9px;
+		height: 9px;
 		padding: 0;
 		border: none;
 		border-radius: 999px;
-		background: rgb(255 255 255 / 0.4);
+		background: rgb(255 255 255 / 0.42);
 		cursor: pointer;
 		transition:
 			background-color 140ms var(--ease-out),
@@ -241,17 +225,17 @@
 	}
 
 	.dot.on {
-		background: #f5c96b;
-		transform: scale(1.25);
+		background: #fff;
+		transform: scale(1.2);
 	}
 
 	.ad-close {
 		position: absolute;
-		top: 10px;
-		right: 10px;
-		z-index: 2;
-		width: 28px;
-		height: 28px;
+		top: 14px;
+		right: 14px;
+		z-index: 3;
+		width: 30px;
+		height: 30px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -261,7 +245,7 @@
 		color: #fff;
 		font-size: 12px;
 		cursor: pointer;
-		backdrop-filter: blur(4px);
+		backdrop-filter: blur(6px);
 		transition:
 			background-color 120ms var(--ease-out),
 			transform 120ms var(--ease-spring);
@@ -270,5 +254,33 @@
 	.ad-close:hover {
 		background: rgb(0 0 0 / 0.5);
 		transform: scale(1.08);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.slide {
+			transition: none;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.slides {
+			height: 300px;
+		}
+
+		.s-info {
+			left: 22px;
+			bottom: 20px;
+			right: 90px;
+			max-width: none;
+		}
+
+		.nm {
+			font-size: 20px;
+		}
+
+		.ds {
+			font-size: 12.5px;
+		}
 	}
 </style>

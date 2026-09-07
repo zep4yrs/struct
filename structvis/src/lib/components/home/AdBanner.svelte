@@ -129,17 +129,16 @@
 		position: absolute;
 		inset: 0;
 		opacity: 0;
-		transform: translateX(26px);
+		transform: translateX(64px);
 		transition:
-			opacity 0.55s var(--ease-out),
-			transform 0.55s var(--ease-out);
+			opacity 620ms var(--ease-out),
+			transform 620ms var(--ease-out);
 		pointer-events: none;
 	}
 
 	.slide.on {
 		opacity: 1;
-		transform: none;
-		pointer-events: auto;
+		transform: translateX(0);
 	}
 
 	.slide img {

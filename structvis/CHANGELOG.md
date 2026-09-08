@@ -2,6 +2,11 @@
 
 ## [未发布]
 
+### 新增（2026-09-08 · 广告 16:10 + 画布质感升级）
+
+- **首页广告卡 16:10**：高度不变（380/移动 240），宽度收至 `min(608px, 100%)` 居中（608×380 恰为 16:10）；移动端视口内维持全宽现状
+- **画布质感升级**：柱体圆角 3→5px + 柱内纵向微渐变（顶部微提亮，parseColorStr 解析失败回退平涂）；CanvasHost 底板圆角 14px + 发丝描边 + 顶部微光渐变（token 化双主题自适应）；顺带清掉 ArrayRenderer 组件内第三份 parseColorStr 副本
+
 ### 修复（2026-09-08 · 画布巡检双缺陷）
 
 - **暗色画布元素隐形**（批次六补充清偿）：根因非 parseColor（实测 fillStyle 接受 color-mix），是 token 层 subtle≈surface 同族相融——新增画布专用 token `--viz-elem`（暗色提亮一档、亮色零扰动），12 渲染器元素填充改指向；颜色解析链升级为浏览器探针解析（resolveTokenColor：color-mix/color(srgb)/var 嵌套全兼容），双解析副本合一

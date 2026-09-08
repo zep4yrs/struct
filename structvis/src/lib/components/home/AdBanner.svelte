@@ -111,7 +111,8 @@
 	.ad-card {
 		position: relative;
 		display: block;
-		margin-bottom: 24px;
+		width: min(608px, 100%); /* 高度不变（380），宽度收至 16:10 */
+		margin: 0 auto 24px;
 		overflow: hidden;
 		border-radius: 20px;
 		background: linear-gradient(165deg, rgba(255, 206, 150, 0.24), rgba(255, 178, 110, 0.14));

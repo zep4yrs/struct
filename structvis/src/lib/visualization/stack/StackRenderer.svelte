@@ -56,7 +56,7 @@
 			current: resolveCSSVar('--color-accent'),
 			compare: resolveCSSVar('--color-academic'),
 			pivot: resolveCSSVar('--color-danger'),
-			hover: resolveCSSVar('--color-subtle')
+			hover: resolveCSSVar('--viz-elem')
 		};
 	}
 

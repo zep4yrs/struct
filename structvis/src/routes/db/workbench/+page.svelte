@@ -144,11 +144,13 @@
 
 <svelte:window onkeydown={onKey} />
 
-<div class="mx-auto max-w-7xl px-5 pb-28">
+<div class="wb-shell mx-auto max-w-7xl px-5">
 	<header class="wb-head">
 		<div>
 			<h1 class="wb-title">SQL 工作台</h1>
-			<p class="wb-sub">亲手写 SQL · sql.js 真实执行 · 过关点亮掌握度（Ctrl+Enter 运行）</p>
+			<p class="wb-sub">
+				动手场：关卡闯关真实执行 · 亲手写 SQL · 过关点亮掌握度（Ctrl+Enter 运行）
+			</p>
 		</div>
 		<div class="wb-passed">{passed.length} / {LEVELS.length} 关</div>
 	</header>
@@ -272,11 +274,22 @@
 </div>
 
 <style>
+	/* ═══ 视口锁定工作台（≥1024px）：整页不滚，向下滑动只滚目录（各栏独立内滚）；
+	   <1024px 单列堆叠，保持文档流滚动 ═══ */
+	.wb-shell {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		height: 100dvh;
+		overflow: hidden;
+	}
+
 	.wb-head {
 		display: flex;
 		align-items: flex-end;
 		justify-content: space-between;
-		padding: 28px 0 16px;
+		padding: 20px 0 14px;
+		flex-shrink: 0;
 	}
 
 	.wb-title {
@@ -305,12 +318,35 @@
 		display: grid;
 		grid-template-columns: 230px 1fr 1fr;
 		gap: 14px;
-		align-items: start;
+		align-items: stretch;
+		flex: 1;
+		min-height: 0; /* 允许列内滚：视口锁定后文档层不再滚动 */
+	}
+
+	/* 向下滑动只滚目录：三栏各自内滚（左=关卡目录，中/右=任务与结果），互不牵动 */
+	.wb-side,
+	.wb-main,
+	.wb-out {
+		min-height: 0;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		padding-bottom: 10px;
 	}
 
 	@media (max-width: 1023px) {
+		.wb-shell {
+			height: auto;
+			overflow: visible;
+		}
+
 		.wb-grid {
 			grid-template-columns: 1fr;
+		}
+
+		.wb-side,
+		.wb-main,
+		.wb-out {
+			overflow: visible;
 		}
 	}
 

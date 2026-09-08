@@ -37,7 +37,7 @@
 	function updateColorsFromCSS() {
 		if (!browser) return;
 		colors = {
-			light: resolveCSSVar('--color-subtle'),
+			light: resolveCSSVar('--viz-elem'),
 			dark: resolveCSSVar('--color-surface'),
 			border: resolveCSSVar('--color-line-regular'),
 			queen: resolveCSSVar('--color-academic'),

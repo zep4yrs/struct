@@ -105,6 +105,13 @@
 		return t.topicId ? ($progress.topics[t.topicId]?.mastery ?? 0) : 0;
 	}
 
+	/** 章节面板头部的组均掌握度（无绑定课题的组返回 0，进度条照常显示空轨） */
+	function avgMastery(g: Group): number {
+		const ms = g.topics.filter((t) => t.topicId).map((t) => masteryOf(t));
+		if (!ms.length) return 0;
+		return ms.reduce((a, b) => a + b, 0) / ms.length;
+	}
+
 	function jump(groupId: string) {
 		document
 			.getElementById('group-' + groupId)
@@ -129,6 +136,8 @@
 			<nav class="tool-links" aria-label="学习工具">
 				<a class="tool-link" href={resolve('/map')}>技能图谱</a>
 				<a class="tool-link" href={resolve('/race')}>竞速实验室</a>
+				<a class="tool-link" href={resolve('/db/workbench')}>SQL 工作台</a>
+				<span class="tool-hint">先看竞速建立直觉 → 再去工作台动手</span>
 			</nav>
 		</div>
 	</header>
@@ -159,33 +168,35 @@
 			{/if}
 		</div>
 
-		<!-- 三分段 tab：数据结构 / MySQL 课程 / SQL 实验 -->
-		<div class="seg-row" role="tablist" aria-label="课程分段" tabindex="-1">
-			{#each SEGMENTS as s (s.id)}
-				<button
-					class="seg-chip"
-					class:active={segment === s.id && !searching}
-					role="tab"
-					aria-selected={segment === s.id}
-					onclick={() => {
-						segment = s.id;
-						query = '';
-					}}
-				>
-					<span class="seg-name">{s.label}</span>
-					<span class="seg-count">{s.count}</span>
-				</button>
-			{/each}
-		</div>
-
-		<!-- 段内分组锚点（搜索时隐藏） -->
-		{#if !searching}
-			<nav class="anchor-row" aria-label="分组锚点">
-				{#each activeSegment.groups as g (g.id)}
-					<button class="anchor-chip" onclick={() => jump(g.id)}>{g.shortLabel}</button>
+		<!-- 控制行：分段 tab + 段内锚点合并为一行（少一层堆叠，杂感降半） -->
+		<div class="ctrl-row">
+			<div class="seg-row" role="tablist" aria-label="课程分段" tabindex="-1">
+				{#each SEGMENTS as s (s.id)}
+					<button
+						class="seg-chip"
+						class:active={segment === s.id && !searching}
+						role="tab"
+						aria-selected={segment === s.id}
+						onclick={() => {
+							segment = s.id;
+							query = '';
+						}}
+					>
+						<span class="seg-name">{s.label}</span>
+						<span class="seg-count">{s.count}</span>
+					</button>
 				{/each}
-			</nav>
-		{/if}
+			</div>
+
+			<!-- 段内分组锚点（搜索时隐藏） -->
+			{#if !searching}
+				<nav class="anchor-row" aria-label="分组锚点">
+					{#each activeSegment.groups as g (g.id)}
+						<button class="anchor-chip" onclick={() => jump(g.id)}>{g.shortLabel}</button>
+					{/each}
+				</nav>
+			{/if}
+		</div>
 	</div>
 
 	<!-- 段标识行 -->
@@ -196,17 +207,33 @@
 		</div>
 	{/if}
 
-	<!-- 分组列表 -->
-	{#each visibleGroups as g (g.id)}
-		<section id="group-{g.id}" class="group" use:revealOnScroll={{ delay: 60, y: 18 }}>
-			<h2 class="group-label">{g.label}</h2>
+	<!-- 分组列表：章节面板化——每组一块淡色礁盘（数据结构=暖调 / 数据库=学术蓝调），组头带序号+均掌握度 -->
+	{#each visibleGroups as g, gi (g.id)}
+		<section
+			id="group-{g.id}"
+			class="group"
+			class:tint-accent={g.id.startsWith('ds-')}
+			class:tint-academic={!g.id.startsWith('ds-')}
+			use:revealOnScroll={{ delay: 60, y: 18 }}
+		>
+			<header class="group-head">
+				<span class="group-num">{String(gi + 1).padStart(2, '0')}</span>
+				<h2 class="group-label">{g.label}</h2>
+				<span class="group-count">{g.topics.length} 课题</span>
+				<span class="group-mastery" aria-label="组均掌握度 {Math.round(avgMastery(g))}%">
+					<i style="width:{Math.round(avgMastery(g))}%"></i>
+				</span>
+				<span class="group-mastery-num">{Math.round(avgMastery(g))}%</span>
+			</header>
 			<ul class="topic-list">
 				{#each g.topics as t, ti (t.href)}
 					{@const m = masteryOf(t)}
 					<li use:reveal={{ delay: Math.min(ti * 40, 320), y: 10 }}>
 						<a class="topic-row liquid" href={resolve(t.href as '/ds/quick-sort')}>
 							<div class="topic-main">
-								<span class="topic-title">{t.title}</span>
+								<span class="topic-title">
+									<span class="topic-num">{String(ti + 1).padStart(2, '0')}</span>{t.title}</span
+								>
 								<span class="topic-desc">{t.description}</span>
 							</div>
 							<div class="topic-side">
@@ -277,7 +304,18 @@
 
 	.tool-links {
 		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
 		gap: 8px;
+	}
+
+	.tool-hint {
+		width: 100%;
+		text-align: right;
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		letter-spacing: 0.05em;
+		color: var(--color-ink-3);
 	}
 
 	.tool-link {
@@ -341,11 +379,26 @@
 		color: var(--color-ink-3);
 	}
 
-	/* ═══ 三分段 tab ═══ */
+	/* ═══ 控制行：分段 tab + 锚点同排 ═══ */
+	.ctrl-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px 12px;
+		margin-top: 14px;
+	}
+
 	.seg-row {
 		display: flex;
+		flex-wrap: wrap;
 		gap: 8px;
-		margin-top: 14px;
+	}
+
+	.anchor-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-left: auto;
 	}
 
 	.seg-chip {
@@ -396,12 +449,12 @@
 	}
 
 	.anchor-chip {
-		border: 1px solid var(--color-line-hair);
+		border: 1px solid transparent;
 		border-radius: 999px;
-		background: var(--glass-tint);
+		background: transparent;
 		padding: 4px 11px;
 		font-size: 11.5px;
-		color: var(--color-ink-2);
+		color: var(--color-ink-3);
 		cursor: pointer;
 		transition:
 			color 120ms var(--ease-out),
@@ -437,18 +490,84 @@
 		color: var(--color-ink-3);
 	}
 
+	/* ═══ 章节面板：每组一块淡色礁盘，视觉上把 87 课题切成可扫读的区块 ═══ */
 	.group {
-		margin-top: 24px;
+		margin-top: 22px;
 		scroll-margin-top: 150px;
+		padding: 16px 18px 18px;
+		border: 1px solid var(--color-line-hair);
+		border-radius: var(--radius-lg, 16px);
+		background:
+			linear-gradient(180deg, rgb(255 255 255 / 0.1), transparent 42%),
+			var(--reef-tint, transparent);
+		box-shadow: inset 0 1px 0 var(--glass-hi);
+	}
+
+	.group.tint-accent {
+		--reef-tint: color-mix(in srgb, var(--color-accent) 5%, transparent);
+	}
+
+	.group.tint-academic {
+		--reef-tint: color-mix(in srgb, var(--color-academic) 6%, transparent);
+	}
+
+	.group-head {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+		margin: 0 0 12px;
+	}
+
+	.group-num {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--color-accent);
 	}
 
 	.group-label {
+		font-family: var(--font-display);
+		font-size: 17px;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		color: var(--color-ink);
+		margin: 0;
+	}
+
+	.group-count {
 		font-family: var(--font-mono);
-		font-size: 11px;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
+		font-size: 10.5px;
 		color: var(--color-ink-3);
-		margin: 0 0 8px;
+	}
+
+	.group-mastery {
+		flex: 1;
+		max-width: 120px;
+		height: 4px;
+		border-radius: 2px;
+		background: var(--color-line-hair);
+		overflow: hidden;
+		align-self: center;
+		margin-left: auto;
+	}
+
+	.group-mastery i {
+		display: block;
+		height: 100%;
+		border-radius: 2px;
+		background: linear-gradient(
+			90deg,
+			color-mix(in srgb, var(--color-accent) 70%, transparent),
+			var(--color-accent)
+		);
+	}
+
+	.group-mastery-num {
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		color: var(--color-ink-3);
+		min-width: 32px;
+		text-align: right;
 	}
 
 	.topic-list {
@@ -482,6 +601,15 @@
 		font-size: 14.5px;
 		font-weight: 500;
 		color: var(--color-ink);
+	}
+
+	/* 章节内序号：教材条目感，行与行之间建立顺序 */
+	.topic-num {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--color-ink-3);
+		margin-right: 8px;
+		font-weight: 400;
 	}
 
 	.topic-desc {

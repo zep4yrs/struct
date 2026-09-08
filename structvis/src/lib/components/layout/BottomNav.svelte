@@ -380,10 +380,31 @@
 			if (idleTimer) clearTimeout(idleTimer);
 		};
 	});
+
+	// ═══ 滚动收纳：滚动即缩为小白条（不消失）；悬停/触碰白条展开悬浮胶囊 ═══
+	let pointerInNav = $state(false);
+
+	function onScrollCollapse() {
+		if (pointerInNav) return; // 悬停期间滚轮不收纳（正要点击时滚走不打断）
+		collapsed = true;
+		if (idleTimer) clearTimeout(idleTimer);
+	}
+
+	function navEnter() {
+		pointerInNav = true;
+	}
+	function navLeave() {
+		pointerInNav = false;
+	}
+
+	onMount(() => {
+		window.addEventListener('scroll', onScrollCollapse, { passive: true });
+		return () => window.removeEventListener('scroll', onScrollCollapse);
+	});
 </script>
 
 {#if !immersive}
-	<nav class="bottom-nav" aria-label="底部导航">
+	<nav class="bottom-nav" aria-label="底部导航" onfocusin={poke}>
 		<!-- 二级导航条：覆盖弹出在主导航上方；与一级 tab 同构单元（icon+label）；返回 = 层级 pop -->
 		{#if secondaryItems && !collapsed && !secPopped}
 			<div
@@ -393,6 +414,8 @@
 				aria-label="{activeTab?.label}二级导航"
 				in:fly={{ y: 12, duration: prefersReducedMotion() ? 0 : 240 }}
 				out:fly={{ duration: prefersReducedMotion() ? 0 : 150, y: 12 }}
+				onpointerenter={navEnter}
+				onpointerleave={navLeave}
 				onpointerdown={secPointerDown}
 				onpointermove={secPointerMove}
 				onpointerup={secPointerUp}
@@ -449,7 +472,11 @@
 			<button
 				class="nav-mini"
 				transition:fade={{ duration: prefersReducedMotion() ? 0 : 160 }}
-				onpointerenter={poke}
+				onpointerenter={() => {
+					poke();
+					navEnter();
+				}}
+				onpointerleave={navLeave}
 				onclick={poke}
 				aria-label="展开导航"
 			></button>
@@ -460,6 +487,8 @@
 				role="tablist"
 				aria-label="主导航"
 				tabindex="-1"
+				onpointerenter={navEnter}
+				onpointerleave={navLeave}
 				onpointerdown={onPointerDown}
 				onpointermove={onPointerMove}
 				onpointerup={onPointerUp}
@@ -845,8 +874,12 @@
 				0 -6px 24px rgb(0 0 0 / 0.06);
 		}
 
+		/* 375 视口：5×74+gap 溢出 11px → tab 允许收缩（min-width 74 是桌面拖拽热区） */
 		.tab {
 			border-radius: 0;
+			min-width: 0;
+			flex: 1 1 0;
+			padding: 4px 8px;
 		}
 
 		.nav-slider {

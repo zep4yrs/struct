@@ -51,7 +51,7 @@
 			ink3: resolveCSSVar('--color-ink-3'),
 			current: resolveCSSVar('--color-academic'),
 			inserted: resolveCSSVar('--color-accent'),
-			sentinel: resolveCSSVar('--color-subtle')
+			sentinel: resolveCSSVar('--viz-elem')
 		};
 	}
 

@@ -172,7 +172,7 @@
 	{/if}
 
 	{#if finished}
-		<div class="glass quiz-panel quiz-result" use:reveal>
+		<div class="glass liquid quiz-panel quiz-result" use:reveal>
 			<div class="quiz-score">{score} / {questions.length}</div>
 			<div class="quiz-score-label">
 				正确率 {Math.round((score / Math.max(1, questions.length)) * 100)}%

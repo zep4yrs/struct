@@ -45,7 +45,7 @@
 		colors = {
 			bg: 'transparent',
 			textBg: resolveCSSVar('--color-surface'),
-			patBg: resolveCSSVar('--color-subtle'),
+			patBg: resolveCSSVar('--viz-elem'),
 			border: resolveCSSVar('--color-line-regular'),
 			ink: resolveCSSVar('--color-ink'),
 			ink2: resolveCSSVar('--color-ink-2'),

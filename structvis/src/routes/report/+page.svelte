@@ -150,7 +150,7 @@
 	<!-- 报告主体：宽屏双栏（分享卡 | 雷达），窄屏单列 -->
 	<div class="report-main">
 		<!-- 报告卡 -->
-		<div class="report-card glass" use:reveal>
+		<div class="report-card glass liquid" use:reveal>
 			<div class="report-head">
 				<div>
 					<div class="report-brand">StructVis</div>
@@ -248,7 +248,7 @@
 	/* 宽屏双栏：分享卡 | 雷达卡；窄屏单列堆叠 */
 	.report-main {
 		display: grid;
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 14px;
 		align-items: stretch;
 	}
@@ -321,10 +321,29 @@
 
 	.report-stats {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(110px, 1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 18px 24px;
 		flex: 1;
-		min-width: 280px;
+		min-width: 0;
+	}
+
+	@media (min-width: 640px) {
+		.report-stats {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	/* 移动端：环图与统计列纵排——flex 行内 stats 被 basis 0 压到逐字竖排 */
+	@media (max-width: 639px) {
+		.report-body {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 20px;
+		}
+
+		.report-ring-wrap {
+			align-self: center;
+		}
 	}
 
 	.report-stat {

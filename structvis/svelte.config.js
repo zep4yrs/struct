@@ -14,7 +14,9 @@ const config = {
 		adapter: adapter({ pages: OUT, assets: OUT }),
 		paths: {
 			base: MOBILE ? '' : '/struct',
-			relative: true
+			// App 变体必须绝对引用：Capacitor 对子路径 SPA-fallback 返回根 index.html，
+			// 相对引用会在深链接/刷新时按页面深度解析出错误资源路径（404 报废）
+			relative: MOBILE ? false : true
 		}
 	}
 };

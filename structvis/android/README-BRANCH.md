@@ -44,6 +44,12 @@ cd android && ./gradlew assembleDebug   # 产物 app/build/outputs/apk/debug/app
 
 ## 已知边界
 
+- **深链接回落首页**：Capacitor 本地服务器对所有子路径 SPA-fallback 返回根 index.html（携带 `/` 的预渲染数据），
+  SvelteKit 水合后回落介绍页——因此 App 变体使用**绝对资源路径**（`relative:false`，修掉子路径整页加载
+  CSS/JS 全 404 报废的问题）。SPA 内导航完整可用；刷新/进程恢复的降级 = 回到首页（业界常见形态）。
+- CDP 调试：debug 包 WebView 可 `adb forward tcp:9222 localabstract:webview_devtools_remote_<pid>`
+  后用 `scripts/night-inspect.mjs` 逐页导航/截图/收集错误。
+
 - 图标已品牌化（favicon.svg 栅格化 mipmap 全密度 + 墨底自适应前景层）；
 - 模拟器/真机联调：`adb install app-debug.apk` 即可（SDK platform-tools 就绪）；
 - `docs/sqljs/sql-wasm.js` 等构建产物是 Mimosa L3 误报源（wasm/emscripten 的 `exec`/`fetch` 特征），

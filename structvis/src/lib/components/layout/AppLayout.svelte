@@ -8,6 +8,7 @@
 	import { prefersReducedMotion } from '$lib/utils/motion';
 	import { page } from '$app/stores';
 	import { base, resolve } from '$app/paths';
+	import { initNativeShell, applyStatusBar } from '$lib/native/mobile-shell';
 
 	interface Props {
 		children: import('svelte').Snippet;
@@ -120,6 +121,12 @@
 			navigator.serviceWorker.addEventListener('controllerchange', () => (updateReady = true));
 		}
 		return () => window.removeEventListener('structvis:storage-warning', onStorageWarning);
+		initNativeShell($settings.theme);
+	});
+
+	// 原生状态栏随主题切换（Capacitor 宿主内生效；Web 静默跳过）
+	$effect(() => {
+		applyStatusBar($settings.theme === 'dark' ? 'dark' : 'light');
 	});
 </script>
 
@@ -288,8 +295,8 @@
 	/* 右上浮动动作簇（v3：顶栏移除后的全局动作入口） */
 	.fab-cluster {
 		position: fixed;
-		top: 14px;
-		right: 16px;
+		top: calc(14px + env(safe-area-inset-top));
+		right: calc(16px + env(safe-area-inset-right));
 		z-index: 60;
 		display: flex;
 		gap: 4px;

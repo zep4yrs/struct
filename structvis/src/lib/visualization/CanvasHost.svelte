@@ -76,6 +76,8 @@
 	.canvas-host {
 		width: 100%;
 		height: 100%;
+		/* 高度保底：App WebView 里父级高度链可能断裂（height:100% 塌缩成空槽） */
+		min-height: 220px;
 		border-radius: 14px;
 		/* 画布底板质感：顶部微光渐变 + 发丝描边（token 化，双主题自适应） */
 		background: linear-gradient(

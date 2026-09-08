@@ -94,7 +94,7 @@
 		const academic = resolveCSSVar('--color-academic');
 		colors = {
 			bg: 'transparent',
-			defaultBar: resolveCSSVar('--color-subtle'),
+			defaultBar: resolveCSSVar('--viz-elem'),
 			defaultBorder: resolveCSSVar('--color-line-hair'),
 			pivot: resolveCSSVar('--color-danger'),
 			compare: academic,

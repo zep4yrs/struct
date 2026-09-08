@@ -45,7 +45,7 @@
 		if (!browser) return;
 		colors = {
 			bg: 'transparent',
-			headerBg: resolveCSSVar('--color-subtle'),
+			headerBg: resolveCSSVar('--viz-elem'),
 			border: resolveCSSVar('--color-line-regular'),
 			ink: resolveCSSVar('--color-ink'),
 			ink2: resolveCSSVar('--color-ink-2'),

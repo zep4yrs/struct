@@ -136,6 +136,8 @@
 			<nav class="tool-links" aria-label="学习工具">
 				<a class="tool-link" href={resolve('/map')}>技能图谱</a>
 				<a class="tool-link" href={resolve('/race')}>竞速实验室</a>
+				<a class="tool-link" href={resolve('/db/workbench')}>SQL 工作台</a>
+				<span class="tool-hint">先看竞速建立直觉 → 再去工作台动手</span>
 			</nav>
 		</div>
 	</header>
@@ -302,7 +304,18 @@
 
 	.tool-links {
 		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
 		gap: 8px;
+	}
+
+	.tool-hint {
+		width: 100%;
+		text-align: right;
+		font-family: var(--font-mono);
+		font-size: 10.5px;
+		letter-spacing: 0.05em;
+		color: var(--color-ink-3);
 	}
 
 	.tool-link {

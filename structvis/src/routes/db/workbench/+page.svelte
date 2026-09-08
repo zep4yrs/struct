@@ -148,7 +148,7 @@
 	<header class="wb-head">
 		<div>
 			<h1 class="wb-title">SQL 工作台</h1>
-			<p class="wb-sub">亲手写 SQL · sql.js 真实执行 · 过关点亮掌握度（Ctrl+Enter 运行）</p>
+			<p class="wb-sub">动手场：关卡闯关真实执行 · 亲手写 SQL · 过关点亮掌握度（Ctrl+Enter 运行）</p>
 		</div>
 		<div class="wb-passed">{passed.length} / {LEVELS.length} 关</div>
 	</header>

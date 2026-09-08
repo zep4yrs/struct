@@ -381,31 +381,13 @@
 		};
 	});
 
-	// ═══ 滚动隐匿：滚动即整簇滑出；指针进入底部热区悬浮展开 ═══
-	// 桌面（hover: hover）= 悬停呼出；触屏无 hover = 滚动停止 ~300ms 自动归位（点热区亦可）
-	let scrollHidden = $state(false);
+	// ═══ 滚动收纳：滚动即缩为小白条（不消失）；悬停/触碰白条展开悬浮胶囊 ═══
 	let pointerInNav = $state(false);
-	let revealTimer: ReturnType<typeof setTimeout> | null = null;
-	let hoverFine = true;
-	try {
-		hoverFine = matchMedia('(hover: hover)').matches;
-	} catch {
-		hoverFine = true;
-	}
 
-	function onScrollHide() {
-		if (pointerInNav) return; // 悬停期间滚轮不隐匿（正要点击时滚走不打断）
-		scrollHidden = true;
-		if (!hoverFine) {
-			if (revealTimer) clearTimeout(revealTimer);
-			revealTimer = setTimeout(() => (scrollHidden = false), 300);
-		}
-	}
-
-	function revealFloating() {
-		if (revealTimer) clearTimeout(revealTimer);
-		scrollHidden = false;
-		poke(); // 展开为完整悬浮胶囊并重置闲置计时
+	function onScrollCollapse() {
+		if (pointerInNav) return; // 悬停期间滚轮不收纳（正要点击时滚走不打断）
+		collapsed = true;
+		if (idleTimer) clearTimeout(idleTimer);
 	}
 
 	function navEnter() {
@@ -416,29 +398,13 @@
 	}
 
 	onMount(() => {
-		window.addEventListener('scroll', onScrollHide, { passive: true });
-		return () => {
-			window.removeEventListener('scroll', onScrollHide);
-			if (revealTimer) clearTimeout(revealTimer);
-		};
+		window.addEventListener('scroll', onScrollCollapse, { passive: true });
+		return () => window.removeEventListener('scroll', onScrollCollapse);
 	});
 </script>
 
 {#if !immersive}
-	{#if scrollHidden}
-		<div
-			class="nav-hotzone"
-			onpointerenter={revealFloating}
-			onclick={revealFloating}
-			aria-hidden="true"
-		></div>
-	{/if}
-	<nav
-		class="bottom-nav"
-		class:scroll-away={scrollHidden}
-		aria-label="底部导航"
-		onfocusin={revealFloating}
-	>
+	<nav class="bottom-nav" aria-label="底部导航" onfocusin={poke}>
 		<!-- 二级导航条：覆盖弹出在主导航上方；与一级 tab 同构单元（icon+label）；返回 = 层级 pop -->
 		{#if secondaryItems && !collapsed && !secPopped}
 			<div
@@ -577,30 +543,6 @@
 		justify-content: center;
 		padding-bottom: env(safe-area-inset-bottom);
 		pointer-events: none; /* 胶囊外区域不拦截点击 */
-		transition:
-			transform 260ms var(--ease-out),
-			opacity 200ms var(--ease-out);
-	}
-
-	/* 滚动隐匿：整簇滑出视口；底部 26px 热区悬停/触碰呼出 */
-	.bottom-nav.scroll-away {
-		transform: translateY(115%);
-		opacity: 0;
-	}
-
-	.nav-hotzone {
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		height: 26px;
-		z-index: 79; /* 内容之上、导航之下；仅隐匿期存在，呼出即卸载 */
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.bottom-nav {
-			transition: none;
-		}
 	}
 
 	/* 闲置白条：120×10 把手条，悬浮/触碰展开 */

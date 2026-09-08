@@ -49,6 +49,13 @@ test.describe('播放器移动端适配（375×667）', () => {
 		await openBubbleSortMobile(page);
 		// 课题页解除沉浸：底导可见（课程高亮）+ 课程二级条弹出
 		await expect(page.locator('.bottom-nav')).toBeVisible();
+		// 滚动收纳契约：打开时已滚到底，tab 栏缩为白条；触碰白条展开完整胶囊
+		const mini = page.locator('.nav-mini');
+		if (await mini.count()) {
+			// 白条是悬停即展开的元素（pointerenter 卸载自身），用事件触发而非 tap
+			await mini.dispatchEvent('pointerenter');
+			await page.waitForTimeout(250);
+		}
 		await expect(page.locator('.bottom-nav .tab.active')).toHaveText(/课程/);
 		await expect(page.locator('.secondary-nav')).toBeVisible();
 		await expect(page.locator('.sec-item.cur')).toHaveText(/数据结构/);

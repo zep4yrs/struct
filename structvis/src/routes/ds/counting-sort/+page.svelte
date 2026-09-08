@@ -5,7 +5,8 @@
 
 	function createEngine(): CountingSortEngine {
 		const e = new CountingSortEngine();
-		e.init([0]);
+		// 演示数据须与 applyPreset 一致——占位 [0] 会让画布只剩一根 0 高度柱
+		e.init([4, 2, 2, 8, 3, 3, 1]);
 		return e;
 	}
 

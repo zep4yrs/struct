@@ -555,7 +555,11 @@
 		display: block;
 		height: 100%;
 		border-radius: 2px;
-		background: linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 70%, transparent), var(--color-accent));
+		background: linear-gradient(
+			90deg,
+			color-mix(in srgb, var(--color-accent) 70%, transparent),
+			var(--color-accent)
+		);
 	}
 
 	.group-mastery-num {

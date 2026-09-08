@@ -43,10 +43,7 @@
 			count: number;
 			mastery: number;
 		}[] = [];
-		const w = Math.max(
-			1200,
-			PER_ROW * NODE_STEP - COL_GAP + REEF_PAD_X * 2 + 8
-		);
+		const w = Math.max(1200, PER_ROW * NODE_STEP - COL_GAP + REEF_PAD_X * 2 + 8);
 		let y = PAD_Y;
 		for (const g of GROUP_ORDER) {
 			const members = NODES.filter((n) => n.group === g);
@@ -79,9 +76,7 @@
 	const W = $derived(layout.w);
 	const H = $derived(
 		layout.reefs.length
-			? layout.reefs[layout.reefs.length - 1].y +
-					layout.reefs[layout.reefs.length - 1].h +
-					20
+			? layout.reefs[layout.reefs.length - 1].y + layout.reefs[layout.reefs.length - 1].h + 20
 			: 0
 	);
 
@@ -181,14 +176,7 @@
 			{#each layout.reefs as reef (reef.group)}
 				{@const dim = filter !== 'all' && reef.track !== filter}
 				<g class="reef" class:reef-lab={reef.track === 'lab'} class:reef-dim={dim}>
-					<rect
-						x={reef.x}
-						y={reef.y}
-						width={reef.w}
-						height={reef.h}
-						rx="18"
-						class="reef-rect"
-					/>
+					<rect x={reef.x} y={reef.y} width={reef.w} height={reef.h} rx="18" class="reef-rect" />
 					<text class="reef-name" x={reef.x + 16} y={reef.y + 27}>{reef.group}</text>
 					<text class="reef-stat" x={reef.x + reef.w - 16} y={reef.y + 27} text-anchor="end">
 						{reef.count} 关 · 掌握 {Math.round(reef.mastery)}%
@@ -258,9 +246,7 @@
 									width={(NODE_W - 20) * (masteryOf(n.id) / 100)}
 									height="3"
 									rx="1.5"
-									fill={masteryOf(n.id) >= 80
-										? 'var(--color-success)'
-										: 'var(--color-accent)'}
+									fill={masteryOf(n.id) >= 80 ? 'var(--color-success)' : 'var(--color-accent)'}
 									pointer-events="none"
 								/>
 							{/if}

@@ -2,6 +2,12 @@
 
 ## [未发布]
 
+### 修复（2026-09-08 · 画布巡检双缺陷）
+
+- **暗色画布元素隐形**（批次六补充清偿）：根因非 parseColor（实测 fillStyle 接受 color-mix），是 token 层 subtle≈surface 同族相融——新增画布专用 token `--viz-elem`（暗色提亮一档、亮色零扰动），12 渲染器元素填充改指向；颜色解析链升级为浏览器探针解析（resolveTokenColor：color-mix/color(srgb)/var 嵌套全兼容），双解析副本合一
+- **counting-sort 空画布**：页面演示数据占位 `init([0])`（仅 4 步、一根 0 高柱）改为真实数据 [4,2,2,8,3,3,1]；canvas-audit 巡检确认其余 12 页"空白"旗标均为稀疏初始态误报（树/串类初始只有根节点/文本行）
+- 巡检工具：`scripts/canvas-audit.mjs`（90 页 × 双主题：缺失/内滚/裁剪/模糊/像素多样性/暗亮对比度比）
+
 ### 新增（2026-09-08 深夜批次 · 玻璃铺开 + 双页区分 + 实验室定位）
 
 - **liquid 玻璃+3D 微悬浮铺开收尾**：report 分享卡 / quiz 结果卡 / progress 每日卡 / race 赛道卡与图表卡并入 .liquid（磨砂+噪点+悬停透视抬升）

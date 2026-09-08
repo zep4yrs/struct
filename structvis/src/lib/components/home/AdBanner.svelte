@@ -30,13 +30,11 @@
 		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	}
 
-	function todayStr(): string {
-		return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' });
-	}
-
 	onMount(async () => {
 		try {
-			dismissed = localStorage.getItem(DISMISS_KEY) === `${AD_ID}:${todayStr()}`;
+			// ✕ = 本次会话免打扰（sessionStorage）；不再全天屏蔽——
+			// 全天版曾被误读为“广告消失”，且旧行为对新访客无自愈能力
+			dismissed = sessionStorage.getItem(DISMISS_KEY) === AD_ID;
 		} catch {
 			dismissed = false;
 		}
@@ -60,7 +58,7 @@
 		dismissed = true;
 		if (timer) clearInterval(timer);
 		try {
-			localStorage.setItem(DISMISS_KEY, `${AD_ID}:${todayStr()}`);
+			sessionStorage.setItem(DISMISS_KEY, AD_ID);
 		} catch {
 			/* 隐私模式忽略 */
 		}

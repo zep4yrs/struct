@@ -19,9 +19,13 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
 		"test:e2e": "playwright test",
-		"test:all": "npm run test && npm run test:e2e"
+		"test:all": "npm run test && npm run test:e2e",
+		"build:app": "node scripts/build-app.mjs",
+		"cap:sync": "npm run build:app && cap sync android",
+		"apk:debug": "cd android && gradlew.bat assembleDebug"
 	},
 	"devDependencies": {
+		"@capacitor/cli": "^8.5.1",
 		"@eslint/js": "^10.0.1",
 		"@playwright/test": "^1.62.1",
 		"@sveltejs/adapter-static": "^3.0.10",
@@ -50,6 +54,11 @@
 		"vitest": "^4.1.8"
 	},
 	"dependencies": {
+		"@capacitor/android": "^8.5.1",
+		"@capacitor/app": "^8.1.1",
+		"@capacitor/core": "^8.5.1",
+		"@capacitor/splash-screen": "^8.0.2",
+		"@capacitor/status-bar": "^8.0.3",
 		"animejs": "^4.5.0",
 		"sql.js": "^1.14.2",
 		"three": "^0.185.1"

@@ -1,0 +1,55 @@
+name: Android APK
+
+on:
+  push:
+    branches: [feat/mobile-app]
+    paths:
+      - 'structvis/src/**'
+      - 'structvis/static/**'
+      - 'structvis/android/**'
+      - 'structvis/package.json'
+      - 'structvis/svelte.config.js'
+      - 'structvis/capacitor.config.ts'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: structvis
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: structvis/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web variant (base='')
+        run: node scripts/build-app.mjs
+
+      - name: Sync into Android project
+        run: npx cap sync android
+
+      - name: Ensure SDK packages (compileSdk 36)
+        run: yes | sdkmanager --licenses > /dev/null && sdkmanager "platforms;android-36" "build-tools;36.0.0" > /dev/null
+
+      - name: Assemble debug APK
+        run: cd android && ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StructVis-debug-apk
+          path: structvis/android/app/build/outputs/apk/debug/app-debug.apk

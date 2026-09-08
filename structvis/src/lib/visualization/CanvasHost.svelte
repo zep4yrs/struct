@@ -76,6 +76,14 @@
 	.canvas-host {
 		width: 100%;
 		height: 100%;
+		border-radius: 14px;
+		/* 画布底板质感：顶部微光渐变 + 发丝描边（token 化，双主题自适应） */
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--color-paper) 55%, transparent),
+			transparent 62%
+		);
+		box-shadow: inset 0 0 0 1px var(--color-line-hair);
 		display: flex;
 		/* 渲染器按 minW 保真绘制；容器更窄时画布区内部横向平移（地图范式），
 		   不把溢出放大到文档层。margin:auto 居中可避免 flex center 在滚动容器

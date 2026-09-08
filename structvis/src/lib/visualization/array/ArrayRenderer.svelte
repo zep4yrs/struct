@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment';
 	import type { AlgorithmStep, HighlightType } from '$lib/engines/algorithm/types';
 	import { precomputeBarIdentities, easeOutCubic } from './array-render-utils';
-	import { resolveCSSVar, hexToRgba } from '../visualization-utils';
+	import { resolveCSSVar, hexToRgba, parseColorStr } from '../visualization-utils';
 	import CanvasHost, { type CanvasHostState } from '../CanvasHost.svelte';
 
 	interface Props {
@@ -131,24 +131,6 @@
 	}
 
 	// === 颜色插值（高亮状态平滑过渡，不再瞬间跳变） ===
-	function parseColorStr(c: string): { r: number; g: number; b: number; a: number } | null {
-		const hex = c.match(/^#([0-9a-fA-F]{6})$/);
-		if (hex) {
-			const n = parseInt(hex[1], 16);
-			return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255, a: 1 };
-		}
-		const rgb = c.match(/^rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)$/);
-		if (rgb) {
-			return {
-				r: Math.round(Number(rgb[1])),
-				g: Math.round(Number(rgb[2])),
-				b: Math.round(Number(rgb[3])),
-				a: rgb[4] !== undefined ? Number(rgb[4]) : 1
-			};
-		}
-		return null;
-	}
-
 	function lerpColorStr(a: string, b: string, t: number): string {
 		// 端点保真：直接返回原色值（保持 hex 格式，测试与视觉一致）
 		if (t <= 0) return a;
@@ -335,7 +317,18 @@
 		ringAlpha = 0.15
 	) {
 		if (!ctx) return;
-		const radius = Math.min(3, w / 2);
+		const radius = Math.min(5, w / 2);
+
+		// 柱内纵向微渐变：顶部微提亮，玻璃质感（解析失败回退平涂）
+		let paint: string | CanvasGradient = fill;
+		const parsed = parseColorStr(fill);
+		if (parsed && h > 4) {
+			const g = ctx.createLinearGradient(x, y, x, y + h);
+			const cap = (v: number) => Math.min(255, Math.round(v + 16));
+			g.addColorStop(0, `rgb(${cap(parsed.r)}, ${cap(parsed.g)}, ${cap(parsed.b)})`);
+			g.addColorStop(1, `rgb(${parsed.r}, ${parsed.g}, ${parsed.b})`);
+			paint = g;
+		}
 
 		// 比较态的外发光环（透明度随过渡淡入淡出）
 		if (compareRing) {
@@ -365,7 +358,7 @@
 			ctx.restore();
 		}
 
-		ctx.fillStyle = fill;
+		ctx.fillStyle = paint;
 		ctx.strokeStyle = border;
 		ctx.lineWidth = 1;
 

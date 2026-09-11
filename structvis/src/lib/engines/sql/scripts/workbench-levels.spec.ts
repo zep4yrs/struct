@@ -64,10 +64,54 @@ describe('关卡 judge 路径（express-station 驿站库）', () => {
 		const v = LEVELS[1].judge({
 			columns: [],
 			rows: [
-				[1, 'SF2026001', '张三', '13800001111', 1, '顺丰', '已取件', '2026-03-25 09:00:00', '2026-03-25 14:30:00', '582916'],
-				[6, 'SF2026002', '周八', '13800006666', 3, '顺丰', '待取件', '2026-03-26 09:00:00', null, '715384'],
-				[9, 'SF2026003', '张三', '13800001111', 5, '顺丰', '待取件', '2026-03-26 11:00:00', null, '502847'],
-				[13, 'SF2026004', '王五', '13800003333', 6, '顺丰', '已取件', '2026-03-24 09:00:00', '2026-03-24 18:00:00', '816394']
+				[
+					1,
+					'SF2026001',
+					'张三',
+					'13800001111',
+					1,
+					'顺丰',
+					'已取件',
+					'2026-03-25 09:00:00',
+					'2026-03-25 14:30:00',
+					'582916'
+				],
+				[
+					6,
+					'SF2026002',
+					'周八',
+					'13800006666',
+					3,
+					'顺丰',
+					'待取件',
+					'2026-03-26 09:00:00',
+					null,
+					'715384'
+				],
+				[
+					9,
+					'SF2026003',
+					'张三',
+					'13800001111',
+					5,
+					'顺丰',
+					'待取件',
+					'2026-03-26 11:00:00',
+					null,
+					'502847'
+				],
+				[
+					13,
+					'SF2026004',
+					'王五',
+					'13800003333',
+					6,
+					'顺丰',
+					'已取件',
+					'2026-03-24 09:00:00',
+					'2026-03-24 18:00:00',
+					'816394'
+				]
 			],
 			eqp: '',
 			queryTable: noQuery
@@ -83,7 +127,12 @@ describe('关卡 judge 路径（express-station 驿站库）', () => {
 			queryTable: noQuery
 		});
 		expect(okV.ok).toBe(true);
-		const badV = LEVELS[7].judge({ columns: [], rows: [], eqp: 'SCAN packages', queryTable: noQuery });
+		const badV = LEVELS[7].judge({
+			columns: [],
+			rows: [],
+			eqp: 'SCAN packages',
+			queryTable: noQuery
+		});
 		expect(badV.ok).toBe(false);
 	});
 
@@ -100,7 +149,9 @@ describe('关卡 judge 路径（express-station 驿站库）', () => {
 			['YT2026003', '尚未取件']
 		];
 		expect(LEVELS[11].judge({ columns: [], rows, eqp: '', queryTable: noQuery }).ok).toBe(true);
-		expect(LEVELS[11].judge({ columns: [], rows: rows.slice(0, 8), eqp: '', queryTable: noQuery }).ok).toBe(false);
+		expect(
+			LEVELS[11].judge({ columns: [], rows: rows.slice(0, 8), eqp: '', queryTable: noQuery }).ok
+		).toBe(false);
 	});
 
 	it('第 17关 数据更新：queryTable 状态判分通过/拒绝', () => {
@@ -142,7 +193,12 @@ describe('关卡 judge 路径（express-station 驿站库）', () => {
 		];
 		const v = LEVELS[20].judge({ columns: [], rows, eqp: '', queryTable: noQuery });
 		expect(v.ok).toBe(true);
-		const miss = LEVELS[20].judge({ columns: [], rows: rows.slice(0, 10), eqp: '', queryTable: noQuery });
+		const miss = LEVELS[20].judge({
+			columns: [],
+			rows: rows.slice(0, 10),
+			eqp: '',
+			queryTable: noQuery
+		});
 		expect(miss.ok).toBe(false);
 	});
 

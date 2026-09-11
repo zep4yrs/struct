@@ -51,14 +51,28 @@ for (const [k, sql] of Object.entries(REFS)) {
 }
 
 // state 判分基准（L17/L18/L19 数据更新后的表状态）
-db.run(`UPDATE packages SET status = '已取件', pickup_time = '2026-03-27 10:00:00' WHERE pickup_code = '173042'`);
+db.run(
+	`UPDATE packages SET status = '已取件', pickup_time = '2026-03-27 10:00:00' WHERE pickup_code = '173042'`
+);
 db.run(`UPDATE shelves SET current_count = current_count - 1 WHERE shelf_id = 1`);
-console.log('L17_packages_1:', JSON.stringify(q(`SELECT status, pickup_time FROM packages WHERE pickup_code = '173042'`)));
-console.log('L17_shelf1:', JSON.stringify(q(`SELECT current_count FROM shelves WHERE shelf_id = 1`)));
+console.log(
+	'L17_packages_1:',
+	JSON.stringify(q(`SELECT status, pickup_time FROM packages WHERE pickup_code = '173042'`))
+);
+console.log(
+	'L17_shelf1:',
+	JSON.stringify(q(`SELECT current_count FROM shelves WHERE shelf_id = 1`))
+);
 db.run(`DELETE FROM complaints WHERE complaint_id = 2`);
 console.log('L18_complaints:', JSON.stringify(q(`SELECT COUNT(*) FROM complaints`)));
-console.log('L18_id2:', JSON.stringify(q(`SELECT COUNT(*) FROM complaints WHERE complaint_id = 2`)));
+console.log(
+	'L18_id2:',
+	JSON.stringify(q(`SELECT COUNT(*) FROM complaints WHERE complaint_id = 2`))
+);
 db.run(`UPDATE packages SET shelf_id = 5 WHERE shelf_id = 6`);
 db.run(`DELETE FROM shelves WHERE shelf_id = 6`);
-console.log('L19_moved:', JSON.stringify(q(`SELECT COUNT(*) FROM packages WHERE shelf_id = 5 AND status = '待取件'`)));
+console.log(
+	'L19_moved:',
+	JSON.stringify(q(`SELECT COUNT(*) FROM packages WHERE shelf_id = 5 AND status = '待取件'`))
+);
 console.log('L19_shelf6:', JSON.stringify(q(`SELECT COUNT(*) FROM shelves WHERE shelf_id = 6`)));

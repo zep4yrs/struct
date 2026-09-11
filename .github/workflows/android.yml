@@ -12,6 +12,9 @@ on:
       - 'structvis/capacitor.config.ts'
       - '.github/workflows/android.yml'
   workflow_dispatch:
+  concurrency:
+    group: android-apk
+    cancel-in-progress: true
 
 jobs:
   apk:

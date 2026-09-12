@@ -68,7 +68,7 @@ export const LEVELS: Level[] = [
 		title: '第一关 · 待取件看板',
 		task: '站长大屏：列出所有「待取件」包裹的快递单号与收件人，按到达时间先后排列。',
 		hint: "WHERE status = '待取件' ORDER BY arrival_time ASC",
-		sql: "SELECT tracking_no, recipient_name FROM packages\nWHERE /* 状态筛选 */\nORDER BY arrival_time ASC",
+		sql: 'SELECT tracking_no, recipient_name FROM packages\nWHERE /* 状态筛选 */\nORDER BY arrival_time ASC',
 		topicId: 'sql',
 		chapter: '查询基础',
 		judge: ({ rows }) => {
@@ -85,7 +85,10 @@ export const LEVELS: Level[] = [
 			]);
 			return ok
 				? { ok: true, reason: '9 件待取件按到达顺序上屏，看板就绪。' }
-				: { ok: false, reason: '应为 9 行且按 arrival_time 升序——检查 WHERE status 与 ORDER BY 方向。' };
+				: {
+						ok: false,
+						reason: '应为 9 行且按 arrival_time 升序——检查 WHERE status 与 ORDER BY 方向。'
+					};
 		}
 	},
 	{
@@ -98,14 +101,61 @@ export const LEVELS: Level[] = [
 		chapter: '查询基础',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [
-				[1, 'SF2026001', '张三', '13800001111', 1, '顺丰', '已取件', '2026-03-25 09:00:00', '2026-03-25 14:30:00', '582916'],
-				[6, 'SF2026002', '周八', '13800006666', 3, '顺丰', '待取件', '2026-03-26 09:00:00', null, '715384'],
-				[9, 'SF2026003', '张三', '13800001111', 5, '顺丰', '待取件', '2026-03-26 11:00:00', null, '502847'],
-				[13, 'SF2026004', '王五', '13800003333', 6, '顺丰', '已取件', '2026-03-24 09:00:00', '2026-03-24 18:00:00', '816394']
+				[
+					1,
+					'SF2026001',
+					'张三',
+					'13800001111',
+					1,
+					'顺丰',
+					'已取件',
+					'2026-03-25 09:00:00',
+					'2026-03-25 14:30:00',
+					'582916'
+				],
+				[
+					6,
+					'SF2026002',
+					'周八',
+					'13800006666',
+					3,
+					'顺丰',
+					'待取件',
+					'2026-03-26 09:00:00',
+					null,
+					'715384'
+				],
+				[
+					9,
+					'SF2026003',
+					'张三',
+					'13800001111',
+					5,
+					'顺丰',
+					'待取件',
+					'2026-03-26 11:00:00',
+					null,
+					'502847'
+				],
+				[
+					13,
+					'SF2026004',
+					'王五',
+					'13800003333',
+					6,
+					'顺丰',
+					'已取件',
+					'2026-03-24 09:00:00',
+					'2026-03-24 18:00:00',
+					'816394'
+				]
 			]);
 			return ok
 				? { ok: true, reason: '4 件顺丰包裹全字段调出，明细无误。' }
-				: { ok: false, reason: '应为 4 行（SF2026001/002/003/004）整行数据——SELECT * 且等值条件写对。' };
+				: {
+						ok: false,
+						reason: '应为 4 行（SF2026001/002/003/004）整行数据——SELECT * 且等值条件写对。'
+					};
 		}
 	},
 	{
@@ -153,9 +203,42 @@ export const LEVELS: Level[] = [
 		chapter: '查询基础',
 		judge: ({ rows }) => {
 			const ok = resultSetEquals({ columns: [], rows }, [
-				[1, 'SF2026001', '张三', '13800001111', 1, '顺丰', '已取件', '2026-03-25 09:00:00', '2026-03-25 14:30:00', '582916'],
-				[9, 'SF2026003', '张三', '13800001111', 5, '顺丰', '待取件', '2026-03-26 11:00:00', null, '502847'],
-				[15, 'YT2026003', '张三', '13800001111', 3, '圆通', '待取件', '2026-03-26 16:00:00', null, '657238']
+				[
+					1,
+					'SF2026001',
+					'张三',
+					'13800001111',
+					1,
+					'顺丰',
+					'已取件',
+					'2026-03-25 09:00:00',
+					'2026-03-25 14:30:00',
+					'582916'
+				],
+				[
+					9,
+					'SF2026003',
+					'张三',
+					'13800001111',
+					5,
+					'顺丰',
+					'待取件',
+					'2026-03-26 11:00:00',
+					null,
+					'502847'
+				],
+				[
+					15,
+					'YT2026003',
+					'张三',
+					'13800001111',
+					3,
+					'圆通',
+					'待取件',
+					'2026-03-26 16:00:00',
+					null,
+					'657238'
+				]
 			]);
 			return ok
 				? { ok: true, reason: '张三名下 3 件包裹全部调出。' }
@@ -326,7 +409,11 @@ export const LEVELS: Level[] = [
 			]);
 			return ok
 				? { ok: true, reason: '6 组货架空位计算+排序正确。' }
-				: { ok: false, reason: '应为 C-01 28 / C-02 29 / B-01 37 / B-02 39 / A-01 48 / A-02 48——表达式列 + ORDER BY 别名。' };
+				: {
+						ok: false,
+						reason:
+							'应为 C-01 28 / C-02 29 / B-01 37 / B-02 39 / A-01 48 / A-02 48——表达式列 + ORDER BY 别名。'
+					};
 		}
 	},
 	{
@@ -345,7 +432,10 @@ export const LEVELS: Level[] = [
 			]);
 			return ok
 				? { ok: true, reason: '3 件已取件包裹的耗时计算正确（5/5/9 小时）。' }
-				: { ok: false, reason: '应为 SF2026001 5 / JD2026001 5 / SF2026004 9——julianday 差值 ×24 再取整。' };
+				: {
+						ok: false,
+						reason: '应为 SF2026001 5 / JD2026001 5 / SF2026004 9——julianday 差值 ×24 再取整。'
+					};
 		}
 	},
 	{
@@ -396,7 +486,10 @@ export const LEVELS: Level[] = [
 			const ok = resultSetEquals(pkg, [['已取件']]) && resultSetEquals(shelf, [[1]]);
 			return ok
 				? { ok: true, reason: '取件完成：包裹状态与货架库存同步更新。' }
-				: { ok: false, reason: '包裹状态应为 已取件，且 1 号货架 current_count 减为 1——两条 UPDATE 都要执行。' };
+				: {
+						ok: false,
+						reason: '包裹状态应为 已取件，且 1 号货架 current_count 减为 1——两条 UPDATE 都要执行。'
+					};
 		}
 	},
 	{
@@ -421,7 +514,7 @@ export const LEVELS: Level[] = [
 		title: '第十九关 · 货架撤并（写）',
 		task: 'C-02 货架要撤了：把 6 号货架上的所有「待取件」包裹转移到 5 号货架，然后删除 6 号货架。完成后待取件在 5 号货架的应有 3 件。',
 		hint: 'UPDATE packages SET shelf_id = 5 WHERE shelf_id = 6；再 DELETE FROM shelves WHERE shelf_id = 6',
-		sql: 'UPDATE packages SET shelf_id = 5 WHERE shelf_id = 6;\nDELETE FROM shelves WHERE shelf_id = 6;\n\nSELECT shelf_id, COUNT(*) FROM packages WHERE status = \'待取件\' GROUP BY shelf_id',
+		sql: "UPDATE packages SET shelf_id = 5 WHERE shelf_id = 6;\nDELETE FROM shelves WHERE shelf_id = 6;\n\nSELECT shelf_id, COUNT(*) FROM packages WHERE status = '待取件' GROUP BY shelf_id",
 		topicId: 'update',
 		chapter: '数据更新',
 		judge: ({ queryTable }) => {
@@ -432,7 +525,10 @@ export const LEVELS: Level[] = [
 			const ok = resultSetEquals(moved, [[3]]) && resultSetEquals(gone, [[0]]);
 			return ok
 				? { ok: true, reason: '撤并完成：3 件待取件转移至 5 号货架，6 号货架已删。' }
-				: { ok: false, reason: '应先 UPDATE 转移包裹（5 号货架待取件 3 件），再 DELETE 6 号货架——顺序不能反。' };
+				: {
+						ok: false,
+						reason: '应先 UPDATE 转移包裹（5 号货架待取件 3 件），再 DELETE 6 号货架——顺序不能反。'
+					};
 		}
 	},
 	{
@@ -440,7 +536,7 @@ export const LEVELS: Level[] = [
 		title: '第二十关 · 待取件视图',
 		task: '前台常用「待取件」清单：创建一个名为 待取件视图 的视图（含 tracking_no, recipient_name, pickup_code 三列，只看待取件），然后 SELECT 全部验证。',
 		hint: "CREATE VIEW 待取件视图 AS SELECT tracking_no, recipient_name, pickup_code FROM packages WHERE status = '待取件'",
-		sql: "CREATE VIEW 待取件视图 AS\nSELECT tracking_no, recipient_name, pickup_code FROM packages\nWHERE /* 状态筛选 */;\n\nSELECT * FROM 待取件视图",
+		sql: 'CREATE VIEW 待取件视图 AS\nSELECT tracking_no, recipient_name, pickup_code FROM packages\nWHERE /* 状态筛选 */;\n\nSELECT * FROM 待取件视图',
 		topicId: 'subquery',
 		chapter: '视图与约束',
 		judge: ({ rows }) => {
@@ -457,7 +553,11 @@ export const LEVELS: Level[] = [
 			]);
 			return ok
 				? { ok: true, reason: '视图创建并查询成功：9 件待取件一屏掌握。' }
-				: { ok: false, reason: '应为 9 行待取件（单号/收件人/取件码）——CREATE VIEW 后直接 SELECT * FROM 待取件视图。' };
+				: {
+						ok: false,
+						reason:
+							'应为 9 行待取件（单号/收件人/取件码）——CREATE VIEW 后直接 SELECT * FROM 待取件视图。'
+					};
 		}
 	},
 	{

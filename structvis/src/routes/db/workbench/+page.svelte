@@ -61,18 +61,8 @@
 	}
 
 	function defaultSqlFor(l: (typeof LEVELS)[number]): string {
-		// 关卡给出骨架提示（不直接给答案）
-		const stubs: Record<number, string> = {
-			1: 'SELECT 姓名, 成绩 FROM 学生\nWHERE /* 条件 */\nORDER BY /* 排序 */',
-			2: 'SELECT 专业, COUNT(*) FROM 学生\nGROUP BY /* 分组键 */\nORDER BY /* 排序 */',
-			3: 'SELECT 姓名 FROM 学生 s\nLEFT JOIN 选课 c ON /* 连接条件 */\nWHERE /* 反查条件 */\nORDER BY s.学号',
-			4: "-- 先建索引（分号分隔可多句）\n-- CREATE INDEX idx_学生_姓名 ON 学生(姓名);\n\nSELECT * FROM 学生 WHERE 姓名 = '王五'",
-			5: "UPDATE 学生 SET 成绩 = 成绩 + 5 WHERE 专业 = '软件工程';\n\nSELECT 姓名, 成绩 FROM 学生 WHERE 专业='软件工程' ORDER BY 学号",
-			6: 'SELECT 姓名, 成绩, /* 窗口函数 */ FROM 学生\nORDER BY /* 名次 */',
-			7: "SELECT 姓名 FROM 学生 WHERE 学号 IN (SELECT 学号 FROM 选课 WHERE 课程号='C001')\nUNION\nSELECT 姓名 FROM 学生 WHERE 学号 IN (SELECT 学号 FROM 选课 WHERE 课程号='C002')\nORDER BY 姓名",
-			8: 'SELECT 专业, AVG(成绩) FROM 学生\nGROUP BY 专业\nHAVING /* 聚合条件 */\nORDER BY /* 排序 */'
-		};
-		return stubs[l.id] ?? '-- 写你的 SQL';
+		// 骨架内聚在关卡定义（Level.sql），驿站库 SQLite 方言
+		return l.sql ?? '-- 写你的 SQL';
 	}
 
 	function run() {

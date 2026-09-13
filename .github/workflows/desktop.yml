@@ -40,7 +40,8 @@ jobs:
         run: node scripts/build-app.mjs
 
       - name: Tauri build (exe + msi/nsis bundle)
-        run: npx tauri build
+        working-directory: src-tauri
+        run: node ../structvis/node_modules/@tauri-apps/cli/cli.js build
 
       - name: Upload desktop exe artifact
         uses: actions/upload-artifact@v4

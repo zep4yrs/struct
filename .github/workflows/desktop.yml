@@ -41,7 +41,7 @@ jobs:
 
       - name: Tauri build (exe + msi/nsis bundle)
         working-directory: src-tauri
-        run: node ../structvis/node_modules/@tauri-apps/cli/cli.js build
+        run: node ../structvis/node_modules/@tauri-apps/cli/tauri.js build
 
       - name: Upload desktop exe artifact
         uses: actions/upload-artifact@v4

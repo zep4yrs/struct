@@ -1,5 +1,9 @@
 import adapter from '@sveltejs/adapter-static';
 
+// MOBILE_APP=1：App（Capacitor）构建变体——base 归零 + 产物落 build-app/（进 android WebView）
+const MOBILE = !!process.env.MOBILE_APP;
+const OUT = MOBILE ? 'build-app' : '../docs';
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	compilerOptions: {
@@ -7,10 +11,12 @@ const config = {
 		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
 	},
 	kit: {
-		adapter: adapter({ pages: '../docs', assets: '../docs' }),
+		adapter: adapter({ pages: OUT, assets: OUT }),
 		paths: {
-			base: '/struct',
-			relative: true
+			base: MOBILE ? '' : '/struct',
+			// App 变体必须绝对引用：Capacitor 对子路径 SPA-fallback 返回根 index.html，
+			// 相对引用会在深链接/刷新时按页面深度解析出错误资源路径（404 报废）
+			relative: MOBILE ? false : true
 		}
 	}
 };

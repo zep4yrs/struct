@@ -4,7 +4,7 @@
 	"version": "2.0.0",
 	"identifier": "top.work.feng-qiao.structvis",
 	"build": {
-		"frontendDist": "../docs"
+		"frontendDist": "../structvis/build-app"
 	},
 	"app": {
 		"windows": [
@@ -23,6 +23,6 @@
 	"bundle": {
 		"active": true,
 		"targets": ["msi", "nsis"],
-		"icon": ["icons/icon.svg"]
+		"icon": ["icons/icon.ico", "icons/icon.svg"]
 	}
 }

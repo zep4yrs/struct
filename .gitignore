@@ -36,3 +36,4 @@ vite.config.ts.timestamp-*
 
 # Build output (adapter-static) — committed to repo for GitHub Pages
 # /docs
+src-tauri/target/

@@ -53,7 +53,7 @@
 			accent: resolveCSSVar('--color-accent'),
 			success: resolveCSSVar('--color-success'),
 			line: resolveCSSVar('--color-line-hair'),
-			nodeBg: resolveCSSVar('--color-subtle'),
+			nodeBg: resolveCSSVar('--viz-elem'),
 			nodeBorder: resolveCSSVar('--color-line-regular'),
 			wordBg: 'rgba(45, 106, 79, 0.14)'
 		};

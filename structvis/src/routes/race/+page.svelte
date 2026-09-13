@@ -546,8 +546,9 @@
 	</div>
 
 	<p class="mb-8" style="color: var(--color-ink-2); max-width: 560px;" use:reveal={{ delay: 160 }}>
-		同一份乱序数组，30 个排序引擎同时开跑（21 经典 + 9
-		娱乐，可分组筛选）。每步节奏相同——步数少的先冲线。看谁先跑完，复杂度一目了然。
+		<strong style="color: var(--color-ink); font-weight: 600;">观察场</strong>——30
+		种实现同屏竞速，先看竞速建立直觉，再去工作台动手。同一份乱序数组，30 个排序引擎同时开跑（21 经典
+		+ 9 娱乐，可分组筛选）。每步节奏相同——步数少的先冲线。看谁先跑完，复杂度一目了然。
 	</p>
 
 	<!-- 控制条 -->
@@ -592,7 +593,7 @@
 	</div>
 	<!-- 跑道：经典 / 娱乐 两组 -->
 	{#snippet lane(r: Racer)}
-		<div class="race-lane glass" use:reveal>
+		<div class="race-lane glass liquid" use:reveal>
 			<div class="race-lane-head">
 				<div class="race-lane-title">
 					<span class="race-lane-dot" style="background: {r.color};"></span>
@@ -642,7 +643,7 @@
 	</div>
 
 	<!-- 复杂度曲线 -->
-	<div class="race-chart glass" use:reveal>
+	<div class="race-chart glass liquid" use:reveal>
 		<div class="chapter-head">
 			<div class="section-label">复杂度实战曲线</div>
 			<span class="chapter-count">实测操作数 · 输入 {data.length} 个元素</span>
@@ -875,7 +876,8 @@
 
 	.race-grid {
 		display: grid;
-		grid-template-columns: 1fr;
+		/* minmax(0,1fr)：1fr 的 min=auto 会被卡片 min-content 撑破 375 视口 */
+		grid-template-columns: minmax(0, 1fr);
 		gap: 14px;
 		margin-bottom: 20px;
 	}

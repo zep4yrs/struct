@@ -11,6 +11,8 @@
 	/* 液态玻璃：面板底色半透明，粒子背景透出；外层容器由 .glass/.card 负责 backdrop-blur */
 	--color-surface: color-mix(in srgb, #ffffff 55%, transparent);
 	--color-subtle: color-mix(in srgb, #f3f1ec 60%, transparent);
+	/* 画布内元素默认填充（柱体/节点/表头带）——与画布底 --color-surface 保持可辨对比 */
+	--viz-elem: color-mix(in srgb, #f3f1ec 60%, transparent);
 	--color-code-bg: #1a1a1a; /* 深灰 — 代码块背景（保持不透明，保证可读性） */
 
 	--color-ink: #1a1a1a; /* 墨黑 — 主文字 */
@@ -92,6 +94,8 @@
 	--color-paper: #161514; /* 墨纸 — 页面背景（粒子层之下的最底层） */
 	--color-surface: color-mix(in srgb, #1e1d1b 50%, transparent);
 	--color-subtle: color-mix(in srgb, #282624 55%, transparent);
+	/* 暗色下 subtle≈surface 同族相融（柱体曾在画布上隐形），元素填充提亮一档 */
+	--viz-elem: color-mix(in srgb, #4a453d 78%, transparent);
 	--color-code-bg: #0f0e0d; /* 更深 — 代码块背景（保持不透明） */
 
 	--color-ink: #e9e6e0; /* 暖白 — 主文字 */
@@ -148,6 +152,9 @@
    ============================================================ */
 
 html {
+	/* 幽灵溢出止血：SVG/table 等固有宽可撑出 scrollWidth 却无可见越界元素；
+	   clip 不产生滚动容器，sticky/磨砂不受影响 */
+	overflow-x: clip;
 	font-family: var(--font-body);
 	font-size: var(--text-body);
 	line-height: var(--leading-normal);
@@ -641,11 +648,17 @@ pre,
 	}
 }
 
-/* 转场期间隐藏固定导航（旧页滑动影像里已含其形态，防重影） */
-html[data-nav-transition] .bottom-nav,
-html[data-nav-transition] .fab-cluster,
-html[data-nav-transition] .secondary-nav {
-	visibility: hidden;
+/* 底导/动作簇/二级条各自独立脱离页面转场层：切页时固定原位不参与滑动 */
+.bottom-nav {
+	view-transition-name: nav-fixed;
+}
+
+.fab-cluster {
+	view-transition-name: fab-fixed;
+}
+
+.secondary-nav {
+	view-transition-name: secondary-nav;
 }
 
 /* 卡片下钻（expand 模式）：整页只做轻淡切，镜头让给卡片形变 */

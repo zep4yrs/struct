@@ -2,8 +2,9 @@
 	import { resolve } from '$app/paths';
 	import { progress, isMistakeDue } from '$lib/stores/progress';
 	import { dsTopics, dbTopics } from '$lib/content/topics';
-	import { reveal, revealOnScroll, revealGroup } from '$lib/utils/motion';
+	import { reveal, revealOnScroll } from '$lib/utils/motion';
 	import SplashOverlay from '$lib/components/splash/SplashOverlay.svelte';
+	import AdBanner from '$lib/components/home/AdBanner.svelte';
 
 	function greeting(): string {
 		const h = new Date().getHours();
@@ -71,6 +72,7 @@
 <svelte:head><title>我的学习台 · StructVis</title></svelte:head>
 
 <div class="dash">
+	<AdBanner />
 	<!-- ═══ 首屏：问候 + 继续学习 hero + 今日待办 ═══ -->
 	<header class="dash-head" use:reveal>
 		<div class="section-label">我的学习台 · HOME</div>
@@ -198,98 +200,6 @@
 			</section>
 		{/if}
 	{/if}
-
-	<!-- ═══ 门面区：产品全景 ═══ -->
-	<section class="facade">
-		<div class="block-head" use:revealOnScroll>
-			<span class="block-eyebrow">全景</span>
-			<h2 class="block-title">一个学习台，四件兵器</h2>
-		</div>
-		<div class="facade-grid" use:revealGroup={{ stagger: 90 }}>
-			<a
-				class="facade-card liquid"
-				data-rg-item
-				href={resolve('/catalog')}
-				use:revealOnScroll={{ delay: 80, y: 16 }}
-			>
-				<span class="facade-num">01</span>
-				<h3 class="facade-title">步进可视化</h3>
-				<p class="facade-desc">
-					{allTopics.length} 个课题，一帧一帧放给你看。哪一步没看懂就停在哪一步，想换成自己的数据再演一遍也随你。
-				</p>
-			</a>
-			<a
-				class="facade-card liquid"
-				data-rg-item
-				href={resolve('/progress')}
-				use:revealOnScroll={{ delay: 140, y: 16 }}
-			>
-				<span class="facade-num">02</span>
-				<h3 class="facade-title">练习闭环</h3>
-				<p class="facade-desc">
-					做错的题不会消失：隔几天它会回来找你，直到你真的会了。每答一题，对应课题的掌握度都会更新。
-				</p>
-			</a>
-			<a
-				class="facade-card liquid"
-				data-rg-item
-				href={resolve('/race')}
-				use:revealOnScroll={{ delay: 200, y: 16 }}
-			>
-				<span class="facade-num">03</span>
-				<h3 class="facade-title">实验竞技场</h3>
-				<p class="facade-desc">
-					同一个算法，30 种实现谁更快？跑一遍见分晓。SQL 也是真的在你浏览器里执行的——不是演的。
-				</p>
-			</a>
-			<a
-				class="facade-card liquid"
-				data-rg-item
-				href={resolve('/map')}
-				use:revealOnScroll={{ delay: 260, y: 16 }}
-			>
-				<span class="facade-num">04</span>
-				<h3 class="facade-title">路径导航</h3>
-				<p class="facade-desc">
-					不知道下一步学什么？图谱把依赖关系点亮；哪里薄弱，报告一看便知。Ctrl+K 随时跳到任意课题。
-				</p>
-			</a>
-		</div>
-	</section>
-
-	<!-- ═══ 两门课程入口 ═══ -->
-	<section class="courses">
-		<div class="block-head" use:revealOnScroll>
-			<span class="block-eyebrow">课程</span>
-			<h2 class="block-title">两门课，{allTopics.length} 个知识点</h2>
-		</div>
-		<div class="courses-grid">
-			<a
-				class="course-card liquid"
-				href={resolve('/catalog')}
-				use:revealOnScroll={{ delay: 100, y: 18 }}
-			>
-				<div class="course-tag">数据结构</div>
-				<h3 class="course-title">
-					数据结构与算法<span class="course-count">{dsTopics.length}</span>
-				</h3>
-				<p class="course-desc">李春葆《数据结构教程》第5版配套</p>
-				<span class="course-meta">排序 · 树 · 图 · 查找 · 动态规划</span>
-			</a>
-			<a
-				class="course-card liquid"
-				href={resolve('/catalog')}
-				use:revealOnScroll={{ delay: 180, y: 18 }}
-			>
-				<div class="course-tag tag-blue">MySQL</div>
-				<h3 class="course-title">
-					MySQL 数据库<span class="course-count">{dbTopics.length}</span>
-				</h3>
-				<p class="course-desc">杨宏霞《数据库技术及应用（MySQL）》配套</p>
-				<span class="course-meta">查询 · 索引 · 事务 · 范式 · SQL 实验</span>
-			</a>
-		</div>
-	</section>
 
 	<footer class="dash-foot">
 		<a href={resolve('/about')}>关于 StructVis</a>
@@ -529,28 +439,6 @@
 		background: var(--color-line-hair);
 	}
 
-	/* ═══ 区块头（门面/课程共用） ═══ */
-	.block-head {
-		margin: 48px 0 18px;
-	}
-
-	.block-eyebrow {
-		font-family: var(--font-mono);
-		font-size: 11px;
-		text-transform: uppercase;
-		letter-spacing: 0.14em;
-		color: var(--color-accent);
-	}
-
-	.block-title {
-		font-family: var(--font-display);
-		font-size: clamp(22px, 2.6vw, 30px);
-		font-weight: 600;
-		letter-spacing: -0.02em;
-		color: var(--color-ink);
-		margin: 4px 0 0;
-	}
-
 	.block-label {
 		font-family: var(--font-mono);
 		font-size: 11px;
@@ -610,115 +498,6 @@
 
 	.recent-bar i.mastered {
 		background: var(--color-success);
-	}
-
-	/* ═══ 门面区：产品全景四卡 ═══ */
-	.facade-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: 14px;
-	}
-
-	.facade-card {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		padding: 22px 22px 20px;
-		border-radius: 18px;
-		text-decoration: none;
-	}
-
-	.facade-num {
-		position: absolute;
-		top: 16px;
-		right: 18px;
-		font-family: var(--font-mono);
-		font-size: 12px;
-		color: var(--color-ink-3);
-		opacity: 0.7;
-	}
-
-	.facade-title {
-		font-family: var(--font-display);
-		font-size: 19px;
-		font-weight: 600;
-		letter-spacing: -0.01em;
-		color: var(--color-ink);
-		margin: 0;
-	}
-
-	.facade-desc {
-		font-size: 13px;
-		line-height: 1.65;
-		color: var(--color-ink-2);
-		margin: 0;
-	}
-
-	/* ═══ 两门课程入口 ═══ */
-	.courses-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-		gap: 14px;
-	}
-
-	.course-card {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		padding: 26px;
-		border-radius: 20px;
-		text-decoration: none;
-	}
-
-	.course-tag {
-		align-self: flex-start;
-		font-family: var(--font-mono);
-		font-size: 10.5px;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--color-accent);
-		border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
-		border-radius: 999px;
-		padding: 3px 10px;
-	}
-
-	.course-tag.tag-blue {
-		color: var(--color-academic);
-		border-color: color-mix(in srgb, var(--color-academic) 40%, transparent);
-	}
-
-	.course-title {
-		font-family: var(--font-display);
-		font-size: 26px;
-		font-weight: 600;
-		letter-spacing: -0.02em;
-		color: var(--color-ink);
-		margin: 4px 0 0;
-		display: flex;
-		align-items: baseline;
-		gap: 10px;
-	}
-
-	.course-count {
-		font-family: var(--font-mono);
-		font-size: 13px;
-		font-weight: 500;
-		color: var(--color-ink-3);
-	}
-
-	.course-desc {
-		font-size: 13px;
-		color: var(--color-ink-2);
-		margin: 0;
-	}
-
-	.course-meta {
-		margin-top: 6px;
-		font-family: var(--font-mono);
-		font-size: 11px;
-		letter-spacing: 0.04em;
-		color: var(--color-ink-3);
 	}
 
 	/* ═══ 页脚 ═══ */

@@ -8,6 +8,7 @@
  */
 
 import type { AlgorithmStep, HighlightType } from '$lib/engines/algorithm/types';
+import { parseColorStr } from '../visualization-utils';
 
 /** 单个柱子的视觉状态 */
 export interface VisualBar {
@@ -201,35 +202,11 @@ function resolveColor(
 		const varName = colorStr.slice(4, -1).trim();
 		const resolved = computedStyles.getPropertyValue(varName).trim();
 		if (resolved) {
-			return parseColor(resolved);
+			return parseColorStr(resolved);
 		}
 		return null;
 	}
-	return parseColor(colorStr);
-}
-
-function parseColor(color: string): { r: number; g: number; b: number } | null {
-	// #RRGGBB
-	if (color.startsWith('#')) {
-		const hex = color.slice(1);
-		if (hex.length === 6) {
-			return {
-				r: parseInt(hex.slice(0, 2), 16),
-				g: parseInt(hex.slice(2, 4), 16),
-				b: parseInt(hex.slice(4, 6), 16)
-			};
-		}
-	}
-	// rgb(r, g, b)
-	const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-	if (rgbMatch) {
-		return {
-			r: parseInt(rgbMatch[1]),
-			g: parseInt(rgbMatch[2]),
-			b: parseInt(rgbMatch[3])
-		};
-	}
-	return null;
+	return parseColorStr(colorStr);
 }
 
 /**

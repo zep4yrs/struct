@@ -61,18 +61,8 @@
 	}
 
 	function defaultSqlFor(l: (typeof LEVELS)[number]): string {
-		// 关卡给出骨架提示（不直接给答案）
-		const stubs: Record<number, string> = {
-			1: 'SELECT 姓名, 成绩 FROM 学生\nWHERE /* 条件 */\nORDER BY /* 排序 */',
-			2: 'SELECT 专业, COUNT(*) FROM 学生\nGROUP BY /* 分组键 */\nORDER BY /* 排序 */',
-			3: 'SELECT 姓名 FROM 学生 s\nLEFT JOIN 选课 c ON /* 连接条件 */\nWHERE /* 反查条件 */\nORDER BY s.学号',
-			4: "-- 先建索引（分号分隔可多句）\n-- CREATE INDEX idx_学生_姓名 ON 学生(姓名);\n\nSELECT * FROM 学生 WHERE 姓名 = '王五'",
-			5: "UPDATE 学生 SET 成绩 = 成绩 + 5 WHERE 专业 = '软件工程';\n\nSELECT 姓名, 成绩 FROM 学生 WHERE 专业='软件工程' ORDER BY 学号",
-			6: 'SELECT 姓名, 成绩, /* 窗口函数 */ FROM 学生\nORDER BY /* 名次 */',
-			7: "SELECT 姓名 FROM 学生 WHERE 学号 IN (SELECT 学号 FROM 选课 WHERE 课程号='C001')\nUNION\nSELECT 姓名 FROM 学生 WHERE 学号 IN (SELECT 学号 FROM 选课 WHERE 课程号='C002')\nORDER BY 姓名",
-			8: 'SELECT 专业, AVG(成绩) FROM 学生\nGROUP BY 专业\nHAVING /* 聚合条件 */\nORDER BY /* 排序 */'
-		};
-		return stubs[l.id] ?? '-- 写你的 SQL';
+		// 骨架内聚在关卡定义（Level.sql），驿站库 SQLite 方言
+		return l.sql ?? '-- 写你的 SQL';
 	}
 
 	function run() {
@@ -144,11 +134,13 @@
 
 <svelte:window onkeydown={onKey} />
 
-<div class="mx-auto max-w-7xl px-5 pb-28">
+<div class="wb-shell mx-auto max-w-7xl px-5">
 	<header class="wb-head">
 		<div>
 			<h1 class="wb-title">SQL 工作台</h1>
-			<p class="wb-sub">亲手写 SQL · sql.js 真实执行 · 过关点亮掌握度（Ctrl+Enter 运行）</p>
+			<p class="wb-sub">
+				动手场：关卡闯关真实执行 · 亲手写 SQL · 过关点亮掌握度（Ctrl+Enter 运行）
+			</p>
 		</div>
 		<div class="wb-passed">{passed.length} / {LEVELS.length} 关</div>
 	</header>
@@ -272,11 +264,22 @@
 </div>
 
 <style>
+	/* ═══ 视口锁定工作台（≥1024px）：整页不滚，向下滑动只滚目录（各栏独立内滚）；
+	   <1024px 单列堆叠，保持文档流滚动 ═══ */
+	.wb-shell {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		height: 100dvh;
+		overflow: hidden;
+	}
+
 	.wb-head {
 		display: flex;
 		align-items: flex-end;
 		justify-content: space-between;
-		padding: 28px 0 16px;
+		padding: 20px 0 14px;
+		flex-shrink: 0;
 	}
 
 	.wb-title {
@@ -305,12 +308,35 @@
 		display: grid;
 		grid-template-columns: 230px 1fr 1fr;
 		gap: 14px;
-		align-items: start;
+		align-items: stretch;
+		flex: 1;
+		min-height: 0; /* 允许列内滚：视口锁定后文档层不再滚动 */
+	}
+
+	/* 向下滑动只滚目录：三栏各自内滚（左=关卡目录，中/右=任务与结果），互不牵动 */
+	.wb-side,
+	.wb-main,
+	.wb-out {
+		min-height: 0;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		padding-bottom: 10px;
 	}
 
 	@media (max-width: 1023px) {
+		.wb-shell {
+			height: auto;
+			overflow: visible;
+		}
+
 		.wb-grid {
 			grid-template-columns: 1fr;
+		}
+
+		.wb-side,
+		.wb-main,
+		.wb-out {
+			overflow: visible;
 		}
 	}
 

@@ -47,7 +47,7 @@
 			success: resolveCSSVar('--color-success'),
 			danger: resolveCSSVar('--color-danger'),
 			surface: resolveCSSVar('--color-surface'),
-			subtle: resolveCSSVar('--color-subtle')
+			subtle: resolveCSSVar('--viz-elem')
 		};
 	}
 

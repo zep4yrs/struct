@@ -53,7 +53,7 @@
 			current: resolveCSSVar('--color-accent'),
 			pop: resolveCSSVar('--color-danger'),
 			done: resolveCSSVar('--color-success'),
-			stackBg: resolveCSSVar('--color-subtle'),
+			stackBg: resolveCSSVar('--viz-elem'),
 			stackBorder: resolveCSSVar('--color-line-regular')
 		};
 	}

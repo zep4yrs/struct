@@ -74,7 +74,7 @@
 				<div class="setting-label">动画速度</div>
 				<div class="setting-desc">播放器步进动画的播放速率（0.5× ~ 2×）</div>
 			</div>
-			<div class="setting-control">
+			<div class="setting-control range-row">
 				<input type="range" min="0.5" max="2" step="0.25" bind:value={speed} class="speed-range" />
 				<span class="speed-value">{speed}×</span>
 			</div>
@@ -375,5 +375,27 @@
 	.btn-primary:hover {
 		background: var(--color-academic);
 		filter: brightness(1.1);
+	}
+
+	/* 移动端：文字列与控件纵排——flex 行内 info 被 basis 0 压成逐字竖排窄条 */
+	@media (max-width: 767px) {
+		.setting-item {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 14px;
+			padding: 18px;
+		}
+
+		.setting-control {
+			justify-content: flex-end;
+		}
+
+		.range-row {
+			justify-content: space-between;
+		}
+
+		.range-row .speed-range {
+			flex: 1;
+		}
 	}
 </style>

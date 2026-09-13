@@ -76,10 +76,8 @@
 		let dir = Math.sign(navIndexOf(toP) - navIndexOf(fromP));
 		if (dir === 0) dir = Math.sign(levelOf(toP) - levelOf(fromP)); // 同 tab：下钻/回退
 		// 方向写入 html data 属性 → ::view-transition 全屏方向性滑动
+		// 底导/二级条/fab 通过独立 view-transition-name 脱离转场层，全程固定不消失
 		document.documentElement.dataset.navDir = String(dir);
-		// 转场期间隐藏固定导航（滑动影像里已含其形态，避免重影）；VT 结束自动恢复
-		document.documentElement.dataset.navTransition = '1';
-		setTimeout(() => delete document.documentElement.dataset.navTransition, 480);
 	});
 
 	onNavigate((nav) => {
@@ -232,8 +230,9 @@
 
 {#if updateReady}
 	<div class="update-toast" role="status">
-		<span>🔄 新版本已就绪</span>
-		<button class="update-reload" onclick={() => location.reload()}>立即刷新</button>
+		<span class="ut-dot" aria-hidden="true"></span>
+		<span class="ut-text">StructVis 悄悄更新了新内容</span>
+		<button class="update-reload" onclick={() => location.reload()}>刷新看看</button>
 		<button class="update-close" aria-label="关闭提示" onclick={() => (updateReady = false)}
 			>✕</button
 		>
@@ -366,7 +365,11 @@
 		color: var(--color-danger);
 		background: rgba(155, 34, 38, 0.08);
 		border: 1px solid rgba(155, 34, 38, 0.3);
-		border-radius: var(--radius-md);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+		-webkit-backdrop-filter: blur(14px) saturate(1.5);
+		backdrop-filter: blur(14px) saturate(1.5);
+		box-shadow: 0 10px 34px rgb(0 0 0 / 0.14);
 		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 	}
 
@@ -402,10 +405,11 @@
 		z-index: 160;
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		padding: 10px 16px;
+		gap: 10px;
+		padding: 10px 14px 10px 12px;
 		font-size: 13px;
 		color: var(--color-ink);
+		border: 1px solid color-mix(in srgb, var(--color-accent) 30%, var(--color-line-hair));
 		background: color-mix(in srgb, var(--color-surface) 46%, transparent);
 		border: 1px solid var(--color-line-hair);
 		border-radius: 999px;
@@ -427,6 +431,30 @@
 		to {
 			opacity: 1;
 			transform: translateX(-50%) translateY(0);
+		}
+	}
+
+	.ut-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 999px;
+		background: var(--color-accent);
+		animation: ut-breathe 2.2s var(--ease-out) infinite;
+	}
+
+	@keyframes ut-breathe {
+		0%,
+		100% {
+			box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 40%, transparent);
+		}
+		50% {
+			box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-accent) 0%, transparent);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ut-dot {
+			animation: none;
 		}
 	}
 

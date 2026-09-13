@@ -7,6 +7,7 @@ installCanvasMock();
 // 渲染器通过 resolveCSSVar 读取设计 token（jsdom 无样式表，内联注入可控色值）
 const TOKENS: Record<string, string> = {
 	'--color-subtle': '#F3F1EC',
+	'--viz-elem': '#F3F1EC',
 	'--color-line-hair': '#E5E2DB',
 	'--color-line-regular': '#D4D0C8',
 	'--color-danger': '#9B2226',

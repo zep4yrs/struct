@@ -26,6 +26,18 @@ npm run tauri:build      # = build:app + tauri build（debug 去掉即 release�
 
 ## 已知边界
 
-- 深链接/刷新回落首页：Capacitor/Tauri 静态壳同一形态边界（SPA 内导航完整）；
-  如需拦截 F5，可在 Rust 端 `WebviewWindow` 导航事件重写（v1 未做）。
+- 深链接/刷新：**已验证支持，无需修复**（此前"回落首页"的记录不成立）。
+  依据：Tauri 2 资源协议的资产解析链（tauri 2.11.5 `src/manager/mod.rs` 的
+  `get_asset()`）按 `精确路径 → {path}.html → {path}/index.html → 根 index.html`
+  逐级回退——预渲染目录树（每路由一个含 `index.html` 的目录）的子路径 URL
+  天然命中第三级；仅访问**完全不存在的**路径才会回落首页。
+  验证方法与证据：
+  1) 读 `tauri.conf.json`（frontendDist=build-app）与上述 crate 源码确认解析链；
+  2) 运行 `target/debug/structvis.exe`（内嵌当前 build-app 资产），窗口恢复到
+     `/settings` 子路径后按 F5，页面重载仍为设置页、未回落首页（截图留档）；
+  3) 扫描 build-app：除 `ads/`、`audio/` 资源目录外，全部路由目录（根、about、
+     catalog、db/* 29 个、ds/* 50 个、home 等）均含 `index.html`，回退链对所有
+     内部路由可达；`service-worker.js` 的 navigate 分支为 network-first（fetch
+     经 Tauri 协议正确解析），其缓存回退目标为过时的 `/struct/` 路径，不会造成回落。
+  如需对不存在路径的自定义 404 行为，可在 Rust 端导航事件重写（未做，无需求）。
 - `docs/` 是 Web（GitHub Pages）产物，桌面不再依赖（frontendDist 已切 build-app）。

@@ -28,16 +28,27 @@ npm run tauri:build      # = build:app + tauri build（debug 去掉即 release�
 
 - 深链接/刷新：**已验证支持，无需修复**（此前"回落首页"的记录不成立）。
   依据：Tauri 2 资源协议的资产解析链（tauri 2.11.5 `src/manager/mod.rs` 的
-  `get_asset()`）按 `精确路径 → {path}.html → {path}/index.html → 根 index.html`
+  `get_asset()`，L384-418）按 `精确路径 → {path}.html → {path}/index.html → 根 index.html`
   逐级回退——预渲染目录树（每路由一个含 `index.html` 的目录）的子路径 URL
-  天然命中第三级；仅访问**完全不存在的**路径才会回落首页。
-  验证方法与证据：
-  1) 读 `tauri.conf.json`（frontendDist=build-app）与上述 crate 源码确认解析链；
-  2) 运行 `target/debug/structvis.exe`（内嵌当前 build-app 资产），窗口恢复到
-     `/settings` 子路径后按 F5，页面重载仍为设置页、未回落首页（截图留档）；
-  3) 扫描 build-app：除 `ads/`、`audio/` 资源目录外，全部路由目录（根、about、
-     catalog、db/* 29 个、ds/* 50 个、home 等）均含 `index.html`，回退链对所有
-     内部路由可达；`service-worker.js` 的 navigate 分支为 network-first（fetch
-     经 Tauri 协议正确解析），其缓存回退目标为过时的 `/struct/` 路径，不会造成回落。
+  天然命中第三级；仅访问**完全不存在的**路径才会落到第四级（根 index.html 首页）。
+  Windows/WebView2 侧无平台差异：wry 0.55.1 `custom_protocol_workaround.rs` 的
+  `revert_uri_work_around()` 先把 `https://tauri.localhost/{path}` 还原为
+  `tauri://localhost/{path}`，再由 `src/protocol/tauri.rs` 剥离查询/片段后交给
+  `get_asset()`。
+  验证方法与证据（2026-09-25 复核；纯代码阅读 + 官方文档，未启动 GUI）：
+  1) 读 `tauri.conf.json`（frontendDist=build-app，资产递归内嵌）；官方配置文档
+     （v2.tauri.app/reference/config）确认 frontendDist 递归嵌入并以 index.html
+     为默认入口；按 Cargo.lock 锁定的 tauri 2.11.5 / wry 0.55.1 crate 源码逐行
+     确认上述解析链与 URI 还原；
+  2) （历史实测，早前会话）运行 `target/debug/structvis.exe`（内嵌当期 build-app
+     资产），窗口恢复到 `/settings` 子路径后按 F5，页面重载仍为设置页、未回落
+     首页（截图留档）；
+  3) 扫描 build-app：除 `ads/`、`audio/*` 资源目录与 `_app/immutable/*` 哈希目录外，
+     全部路由目录均含 `index.html`（2026-09-25 实测：根、about、catalog、home、
+     map、progress、quiz、race、report、settings、sprint + db/* 38 个子路由 +
+     ds/* 49 个子路由；计数随构建漂移，以扫描为准），回退链对所有内部路由可达；
+     `service-worker.js` 的 navigate 分支为 network-first（fetch 经 Tauri 协议
+     正确解析），其缓存回退目标为过时的 `/struct/` 路径且仅 fetch 失败才触达，
+     不会造成回落。
   如需对不存在路径的自定义 404 行为，可在 Rust 端导航事件重写（未做，无需求）。
 - `docs/` 是 Web（GitHub Pages）产物，桌面不再依赖（frontendDist 已切 build-app）。

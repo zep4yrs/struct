@@ -1,0 +1,18 @@
+{
+	"name": "StructVis — 数据结构与数据库可视化",
+	"short_name": "StructVis",
+	"description": "看见数据结构与数据库的每一步跳动",
+	"start_url": "/struct/",
+	"scope": "/struct/",
+	"display": "standalone",
+	"background_color": "#FCFAF6",
+	"theme_color": "#1B4965",
+	"icons": [
+		{
+			"src": "/struct/favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		}
+	]
+}

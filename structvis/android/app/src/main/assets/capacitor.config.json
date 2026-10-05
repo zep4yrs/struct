@@ -1,0 +1,8 @@
+{
+	"appId": "top.fengqiao.structvis",
+	"appName": "StructVis",
+	"webDir": "build-app",
+	"android": {
+		"allowMixedContent": false
+	}
+}
